@@ -1,0 +1,353 @@
+#include <PiDxe.h>
+
+#include <Library/ArmLib.h>
+#include <Library/CacheMaintenanceLib.h>
+#include <Library/FrameBufferSerialPortLib.h>
+#include <Library/HobLib.h>
+#include <Library/SerialPortLib.h>
+
+#include <Resources/font5x12.h>
+#include <Resources/FbColor.h>
+
+FBCON_POSITION m_Position;
+FBCON_POSITION m_MaxPosition;
+FBCON_COLOR m_Color;
+BOOLEAN m_Initialized = FALSE;
+
+UINTN gWidth = FixedPcdGet32(PcdMipiFrameBufferWidth);
+UINTN gHeight = FixedPcdGet32(PcdMipiFrameBufferHeight);
+UINTN gBpp = FixedPcdGet32(PcdMipiFrameBufferPixelBpp);
+
+// Module-used internal routine
+void FbConPutCharWithFactor
+(
+    char c, 
+    int type, 
+    unsigned scale_factor
+);
+
+void FbConDrawglyph
+(
+    char *pixels, 
+    unsigned stride,
+    unsigned bpp, 
+    unsigned *glyph, 
+    unsigned scale_factor
+);
+    
+void FbConScrollUp(void);
+void FbConFlush(void);
+
+RETURN_STATUS
+EFIAPI
+SerialPortInitialize
+(
+    VOID
+)
+{
+    // Clear current screen.
+    char* Pixels = (void*) FixedPcdGet32(PcdMipiFrameBufferAddress);
+    UINTN BgColor = FB_BGRA8888_BLACK;
+
+    // Set to black color.
+    for (UINTN i = 0; i < gWidth; i++)
+    {
+        for (UINTN j = 0; j < gHeight; j++)
+        {
+            BgColor = FB_BGRA8888_BLACK;
+            // Set pixel bit
+            for (UINTN p = 0; p < (gBpp / 8); p++)
+            {
+                *Pixels = (unsigned char) BgColor;
+                BgColor = BgColor >> 8;
+                Pixels++;
+		    }
+        }
+    }
+
+    // Reset position.
+    m_Position.x = 0;
+    m_Position.y = 0;
+
+    // Calc max position.
+    m_MaxPosition.x = gWidth / (FONT_WIDTH + 1);
+	m_MaxPosition.y = (gHeight - 1) / FONT_HEIGHT;
+
+    // Reset color.
+    m_Color.Foreground = FB_BGRA8888_WHITE;
+    m_Color.Background = FB_BGRA8888_BLACK;
+
+    // Set flag
+    m_Initialized = TRUE;
+
+    return RETURN_SUCCESS;
+}
+
+void FbConPutCharWithFactor
+(
+    char c, 
+    int type, 
+    unsigned scale_factor
+)
+{
+    char* Pixels;
+
+    if (!m_Initialized) return;
+
+    if ((unsigned char) c > 127) return;
+
+	if ((unsigned char) c < 32) 
+    {
+		if (c == '\n')
+        {
+            goto newline;
+        }
+		else if (c == '\r') 
+        {
+			m_Position.x = 0;
+			return;
+		}
+		else
+        {
+            return;
+        }
+	}
+
+    // Save some space
+    if (m_Position.x == 0 && (unsigned char) c == ' ' &&
+		type != FBCON_SUBTITLE_MSG &&
+		type != FBCON_TITLE_MSG)
+		return;
+
+    Pixels = (void*) FixedPcdGet32(PcdMipiFrameBufferAddress);
+	Pixels += m_Position.y * ((gBpp / 8) * FONT_HEIGHT * gWidth);
+	Pixels += m_Position.x * scale_factor * ((gBpp / 8) * (FONT_WIDTH + 1));
+
+    FbConDrawglyph(
+        Pixels, 
+        gWidth, 
+        (gBpp / 8),
+        font5x12 + (c - 32) * 2, 
+        scale_factor);
+
+	m_Position.x++;
+
+	if (m_Position.x >= (int) (m_MaxPosition.x / scale_factor)) goto newline;
+	return;
+
+newline:
+	m_Position.y += scale_factor;
+	m_Position.x = 0;
+	if (m_Position.y >= m_MaxPosition.y) 
+    {
+		m_Position.y = m_MaxPosition.y - 1;
+		FbConScrollUp();
+	} else
+	{
+        FbConFlush();
+    }
+}
+
+void FbConDrawglyph
+(
+    char *pixels, 
+    unsigned stride,
+    unsigned bpp, 
+    unsigned *glyph, 
+    unsigned scale_factor
+)
+{
+    unsigned x, y, i, j, k;
+	unsigned data, temp;
+	unsigned int fg_color = m_Color.Foreground;
+	stride -= FONT_WIDTH * scale_factor;
+
+	data = glyph[0];
+	for (y = 0; y < FONT_HEIGHT / 2; ++y) 
+    {
+		temp = data;
+		for (i = 0; i < scale_factor; i++) 
+        {
+			data = temp;
+			for (x = 0; x < FONT_WIDTH; ++x) 
+            {
+				if (data & 1) 
+                {
+					for (j = 0; j < scale_factor; j++) 
+                    {
+						fg_color = m_Color.Foreground;
+						for (k = 0; k < bpp; k++) 
+                        {
+							*pixels = (unsigned char) fg_color;
+							fg_color = fg_color >> 8;
+							pixels++;
+						}
+					}
+				}
+				else
+				{
+					for (j = 0; j < scale_factor; j++) 
+                    {
+						pixels = pixels + bpp;
+					}
+				}
+				data >>= 1;
+			}
+			pixels += (stride * bpp);
+		}
+	}
+
+	data = glyph[1];
+	for (y = 0; y < FONT_HEIGHT / 2; ++y) 
+    {
+		temp = data;
+		for (i = 0; i < scale_factor; i++) 
+        {
+			data = temp;
+			for (x = 0; x < FONT_WIDTH; ++x) 
+            {
+				if (data & 1) 
+                {
+					for (j = 0; j < scale_factor; j++) 
+                    {
+						fg_color = m_Color.Foreground;
+						for (k = 0; k < bpp; k++) 
+                        {
+							*pixels = (unsigned char) fg_color;
+							fg_color = fg_color >> 8;
+							pixels++;
+						}
+					}
+				}
+				else
+				{
+					for (j = 0; j < scale_factor; j++) 
+                    {
+						pixels = pixels + bpp;
+					}
+				}
+				data >>= 1;
+			}
+			pixels += (stride * bpp);
+		}
+	}
+}
+
+/* TODO: Take stride into account */
+void FbConScrollUp(void)
+{
+	unsigned short *dst = (void*) FixedPcdGet32(PcdMipiFrameBufferAddress);
+	unsigned short *src = dst + (gWidth * FONT_HEIGHT);
+	unsigned count = gWidth * (gHeight - FONT_HEIGHT);
+
+	while (count--) 
+    {
+		*dst++ = *src++;
+	}
+
+	count = gWidth * FONT_HEIGHT;
+	while (count--) 
+    {
+		*dst++ = m_Color.Background;
+	}
+
+	FbConFlush();
+}
+
+void FbConFlush(void)
+{
+	unsigned total_x, total_y;
+	unsigned bytes_per_bpp;
+
+	total_x = gWidth;
+	total_y = gHeight;
+	bytes_per_bpp = (gBpp / 8);
+
+    WriteBackInvalidateDataCacheRange(
+        (void*) FixedPcdGet32(PcdMipiFrameBufferAddress),
+        (total_x * total_y * bytes_per_bpp)
+    );
+}
+
+UINTN
+EFIAPI
+SerialPortWrite
+(
+    IN UINT8     *Buffer,
+    IN UINTN     NumberOfBytes
+)
+{
+    UINT8* CONST Final = &Buffer[NumberOfBytes];
+    while (Buffer < Final) 
+    {
+        FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
+    }
+    return NumberOfBytes;
+}
+
+UINTN
+EFIAPI
+SerialPortRead
+(
+    OUT UINT8     *Buffer,
+    IN  UINTN     NumberOfBytes
+)
+{
+    return 0;
+}
+
+BOOLEAN
+EFIAPI
+SerialPortPoll
+(
+    VOID
+)
+{
+    return FALSE;
+}
+
+RETURN_STATUS
+EFIAPI
+SerialPortSetControl
+(
+    IN UINT32 Control
+)
+{
+    return RETURN_UNSUPPORTED;
+}
+
+RETURN_STATUS
+EFIAPI
+SerialPortGetControl
+(
+    OUT UINT32 *Control
+)
+{
+    return RETURN_UNSUPPORTED;
+}
+
+RETURN_STATUS
+EFIAPI
+SerialPortSetAttributes
+(
+    IN OUT UINT64             *BaudRate,
+    IN OUT UINT32             *ReceiveFifoDepth,
+    IN OUT UINT32             *Timeout,
+    IN OUT EFI_PARITY_TYPE    *Parity,
+    IN OUT UINT8              *DataBits,
+    IN OUT EFI_STOP_BITS_TYPE *StopBits
+)
+{
+    return RETURN_UNSUPPORTED;
+}
+
+UINTN SerialPortFlush (VOID)
+{
+    return 0;
+}
+
+VOID
+EnableSynchronousSerialPortIO (VOID)
+{
+    // Already synchronous
+}
