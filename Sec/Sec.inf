@@ -1,0 +1,78 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Sec
+  FILE_GUID                      = 8AF09F13-44C5-96EC-1437-DD899CB5EE5D
+  MODULE_TYPE                    = SEC
+  VERSION_STRING                 = 1.0
+
+[Sources.common]
+  Pi.c
+
+[Sources.AARCH64]
+  ReleaseInfo.S | GCC
+  ModuleEntryPoint.S | GCC
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Werror -Wno-error=unused-function
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  ArmPkg/ArmPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  DragonboardVendorPkg/QcomPkg.dec
+  Dragonboard820cPkg/Dragonboard820cPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  ArmLib
+  ArmMmuLib
+  IoLib
+  ExtractGuidedSectionLib
+  LzmaDecompressLib
+  PeCoffGetEntryPointLib
+  DebugAgentLib
+  SerialPortLib
+  QcomBaseLib
+  FBPTLib
+  ProcLib
+  MemoryAllocationLib
+  PrePiMemoryAllocationLib
+  ShLib
+  PerformanceLib
+  HobLib
+  CompilerIntrinsicsLib
+
+[FeaturePcd]
+  gEmbeddedTokenSpaceGuid.PcdCacheEnable
+
+[FixedPcd]
+  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress
+  gEfiMdePkgTokenSpaceGuid.PcdUartDefaultBaudRate
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize
+  gArmTokenSpaceGuid.PcdFvBaseAddress
+  gArmTokenSpaceGuid.PcdFvSize
+  gQcomTokenSpaceGuid.PcdPreAllocatedMemorySize
+  gQcomTokenSpaceGuid.PcdUefiMemPoolBaseOffset
+  gQcomTokenSpaceGuid.PcdUefiMemPoolSize
+  gQcomTokenSpaceGuid.PcdMaxMemRegions
+  gQcomTokenSpaceGuid.PcdHLOSCrashCookieAddr
+  gQcomTokenSpaceGuid.PcdAppsProcFrequencyMhz
+  gQcomTokenSpaceGuid.PcdHLOSMemoryBaseOffset
+  gQcomTokenSpaceGuid.PcdHLOSMemorySize
+  gQcomTokenSpaceGuid.PcdEmbeddedFdBaseAddress
+  gQcomTokenSpaceGuid.PcdUefiInfoBlockOffset
+  gQcomTokenSpaceGuid.PcdIMemCookiesBase
+  gQcomTokenSpaceGuid.PcdUefiDebugCookieOffset
+  gQcomTokenSpaceGuid.PcdUefiDebugCookie
+  gQcomTokenSpaceGuid.PcdMemorySize
+
+[Guids]
+  gQcomMemoryCaptureGuid
+  gEfiInfoBlkHobGuid
+  gQcomMemoryCaptureValueGuid
+  gQcomAbnormalResetOccurredValueGuid
+  gQcomProdmodeInfoGuid
