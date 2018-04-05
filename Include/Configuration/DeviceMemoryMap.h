@@ -3,10 +3,13 @@
 
 #include <Library/ArmLib.h>
 
+#define MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT 64
+
 typedef enum {
     NoHob,
     AddMem,
     AddDev,
+    AddReserved,
     MaxMem
 } DeviceMemoryAddHob;
 
@@ -15,12 +18,12 @@ typedef struct {
   EFI_VIRTUAL_ADDRESS           VirtualBase;
   UINT64                        Length;
   ARM_MEMORY_REGION_ATTRIBUTES  Attributes;
-  DeviceMemoryAddHob            HobStatus;
-} ARM_MEMORY_REGION_DESCRIPTOR_EXTENDED;
+  DeviceMemoryAddHob            HobOption;
+} ARM_MEMORY_REGION_DESCRIPTOR_EXTENDED, *PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED;
 
 static ARM_MEMORY_REGION_DESCRIPTOR_EXTENDED gDeviceMemoryDescriptor[] = 
 {
-    /* PhysicalBase, VirtualBase, Length, Attribute, HobStatus */
+    /* PhysicalBase, VirtualBase, Length, Attribute, HobOption */
     { 0x00010000, 0x00010000, 0x00014000, ARM_MEMORY_REGION_ATTRIBUTE_DEVICE, NoHob },
     { 0x00024000, 0x00024000, 0x00002000, ARM_MEMORY_REGION_ATTRIBUTE_DEVICE, NoHob },
     { 0x00100000, 0x00100000, 0x00100000, ARM_MEMORY_REGION_ATTRIBUTE_WRITE_BACK, AddMem },
@@ -46,6 +49,7 @@ static ARM_MEMORY_REGION_DESCRIPTOR_EXTENDED gDeviceMemoryDescriptor[] =
     { 0x06E80000, 0x06E80000, 0x00180000, ARM_MEMORY_REGION_ATTRIBUTE_DEVICE, AddMem },
     { 0x07000000, 0x07000000, 0x07F00000, ARM_MEMORY_REGION_ATTRIBUTE_DEVICE, AddMem },
     { 0x0EF00000, 0x0EF00000, 0x00300000, ARM_MEMORY_REGION_ATTRIBUTE_DEVICE, AddMem },
+    /* OS Memory Region */
     { 0x0F200000, 0x0F200000, 0x10E00000, ARM_MEMORY_REGION_ATTRIBUTE_WRITE_BACK, AddMem },
     { 0x20000000, 0x20000000, 0xA0000000, ARM_MEMORY_REGION_ATTRIBUTE_WRITE_BACK, AddMem },
     /* Register & Other Memory Regions */

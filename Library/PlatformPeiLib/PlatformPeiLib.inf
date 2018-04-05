@@ -1,7 +1,8 @@
 #/** @file
 #
-#  Copyright (c) 2011-2014, ARM Ltd. All rights reserved.<BR>
-#  Copyright (c) 2016, Linaro, Ltd. All rights reserved.<BR>
+#  Copyright (c) 2011-2015, ARM Limited. All rights reserved.
+#  Copyright (c) 2014, Linaro Limited. All rights reserved.
+#
 #  This program and the accompanying materials
 #  are licensed and made available under the terms and conditions of the BSD License
 #  which accompanies this distribution.  The full text of the license may be found at
@@ -14,37 +15,31 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = MemoryInitPeiLib
-  FILE_GUID                      = 4bbc9c10-a100-43fb-8311-332ba497d1b4
-  MODULE_TYPE                    = BASE
+  BASE_NAME                      = PlatformPeiLib
+  FILE_GUID                      = 59C11815-F8DA-4F49-B4FB-EC1E41ED1F06
+  MODULE_TYPE                    = SEC
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = MemoryInitPeiLib|SEC PEIM
+  LIBRARY_CLASS                  = PlatformPeiLib
 
 [Sources]
-  MemoryInitPeiLib.c
+  PlatformPeiLib.c
 
 [Packages]
+  ArmPkg/ArmPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
-  ArmPkg/ArmPkg.dec
-  ArmPlatformPkg/ArmPlatformPkg.dec
-  Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
   DebugLib
   HobLib
-  ArmMmuLib
-
-[Guids]
-  gEfiMemoryTypeInformationGuid
-
-[FeaturePcd]
-  gEmbeddedTokenSpaceGuid.PcdPrePiProduceMemoryTypeInformationHob
 
 [FixedPcd]
-  gArmTokenSpaceGuid.PcdSystemMemoryBase
-  gArmTokenSpaceGuid.PcdSystemMemorySize
+  gArmTokenSpaceGuid.PcdFvSize
+
+[Pcd]
+  gArmTokenSpaceGuid.PcdFvBaseAddress
 
 [Depex]
-  TRUE
+  gEfiPeiMemoryDiscoveredPpiGuid

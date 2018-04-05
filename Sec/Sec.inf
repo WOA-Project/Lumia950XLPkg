@@ -22,28 +22,30 @@
   ArmPkg/ArmPkg.dec
   IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
   DragonboardVendorPkg/QcomPkg.dec
-  Dragonboard820cPkg/Dragonboard820cPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
-  BaseLib
-  DebugLib
   ArmLib
   ArmMmuLib
+  BaseLib
+  DebugLib
   IoLib
   ExtractGuidedSectionLib
   LzmaDecompressLib
   PeCoffGetEntryPointLib
+  PrePiHobListPointerLib
+  CacheMaintenanceLib
   DebugAgentLib
   SerialPortLib
-  QcomBaseLib
-  FBPTLib
-  ProcLib
   MemoryAllocationLib
   PrePiMemoryAllocationLib
   ShLib
   PerformanceLib
   HobLib
   CompilerIntrinsicsLib
+  # Platform-specific libraries
+  MemoryInitPeiLib
+  PlatformPeiLib
 
 [FeaturePcd]
   gEmbeddedTokenSpaceGuid.PcdCacheEnable
@@ -51,6 +53,7 @@
 [FixedPcd]
   gArmTokenSpaceGuid.PcdCpuVectorBaseAddress
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultBaudRate
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
   gEmbeddedTokenSpaceGuid.PcdPrePiStackBase
   gEmbeddedTokenSpaceGuid.PcdPrePiStackSize
   gArmTokenSpaceGuid.PcdFvBaseAddress
@@ -68,11 +71,11 @@
   gQcomTokenSpaceGuid.PcdIMemCookiesBase
   gQcomTokenSpaceGuid.PcdUefiDebugCookieOffset
   gQcomTokenSpaceGuid.PcdUefiDebugCookie
+  gQcomTokenSpaceGuid.PcdMemoryBase
   gQcomTokenSpaceGuid.PcdMemorySize
+  gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress
+  gLumia950XLPkgTokenSpaceGuid.PcdFdSize
+  
 
 [Guids]
-  gQcomMemoryCaptureGuid
   gEfiInfoBlkHobGuid
-  gQcomMemoryCaptureValueGuid
-  gQcomAbnormalResetOccurredValueGuid
-  gQcomProdmodeInfoGuid

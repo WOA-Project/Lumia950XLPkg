@@ -21,74 +21,111 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PcdLib.h>
 
+// This varies by device
+#include <Configuration/DeviceMemoryMap.h>
+
 extern UINT64 mSystemMemoryEnd;
 
 VOID
-BuildMemoryTypeInformationHob (
-  VOID
-  );
+BuildMemoryTypeInformationHob
+(
+    VOID
+);
 
 STATIC
 VOID
-InitMmu (
-  IN ARM_MEMORY_REGION_DESCRIPTOR  *MemoryTable
-  )
+InitMmu
+(
+    IN ARM_MEMORY_REGION_DESCRIPTOR  *MemoryTable
+)
 {
 
-  VOID                          *TranslationTableBase;
-  UINTN                         TranslationTableSize;
-  RETURN_STATUS                 Status;
+    VOID                          *TranslationTableBase;
+    UINTN                         TranslationTableSize;
+    RETURN_STATUS                 Status;
 
-  //Note: Because we called PeiServicesInstallPeiMemory() before to call InitMmu() the MMU Page Table resides in
-  //      DRAM (even at the top of DRAM as it is the first permanent memory allocation)
-  Status = ArmConfigureMmu (MemoryTable, &TranslationTableBase, &TranslationTableSize);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((EFI_D_ERROR, "Error: Failed to enable MMU\n"));
-  }
+    // Note: Because we called PeiServicesInstallPeiMemory() before 
+    // to call InitMmu() the MMU Page Table resides in
+    // RAM (even at the top of DRAM as it is the first permanent memory allocation)
+    Status = ArmConfigureMmu(
+      MemoryTable, 
+      &TranslationTableBase, 
+      &TranslationTableSize
+    );
+
+    if (EFI_ERROR(Status))
+    {
+        DEBUG((EFI_D_ERROR, "Error: Failed to enable MMU: %r\n", Status));
+    }
 }
 
 STATIC
 VOID
-AddAndReserved(ARM_MEMORY_REGION_DESCRIPTOR *Desc)
+AddAndReserved
+(
+    PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED Desc
+)
 {
-  BuildResourceDescriptorHob (
-                              EFI_RESOURCE_SYSTEM_MEMORY,
-                              EFI_RESOURCE_ATTRIBUTE_PRESENT |
-                              EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
-                              EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
-                              EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
-                              EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE |
-                              EFI_RESOURCE_ATTRIBUTE_TESTED,
-                              Desc->PhysicalBase,
-                              Desc->Length
-                              );
+    BuildResourceDescriptorHob(
+        EFI_RESOURCE_SYSTEM_MEMORY,
+        EFI_RESOURCE_ATTRIBUTE_PRESENT |
+        EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+        EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
+        EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
+        EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE |
+        EFI_RESOURCE_ATTRIBUTE_TESTED,
+        Desc->PhysicalBase,
+        Desc->Length
+    );
 
-  BuildMemoryAllocationHob (
-                            Desc->PhysicalBase,
-                            Desc->Length,
-                            EfiReservedMemoryType
-                            );
+    BuildMemoryAllocationHob(
+        Desc->PhysicalBase,
+        Desc->Length,
+        EfiReservedMemoryType
+    );
 }
 
 STATIC
 VOID
-AddAndMmio(ARM_MEMORY_REGION_DESCRIPTOR *Desc)
+AddUsable
+(
+    PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED Desc
+)
 {
-  BuildResourceDescriptorHob (
-                              EFI_RESOURCE_SYSTEM_MEMORY,
-                              (EFI_RESOURCE_ATTRIBUTE_PRESENT    |
-                               EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
-                               EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE |
-                               EFI_RESOURCE_ATTRIBUTE_TESTED),
-                              Desc->PhysicalBase,
-                              Desc->Length
-                              );
+    BuildResourceDescriptorHob(
+      EFI_RESOURCE_SYSTEM_MEMORY,
+      EFI_RESOURCE_ATTRIBUTE_PRESENT |
+      EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+      EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
+      EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
+      EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE |
+      EFI_RESOURCE_ATTRIBUTE_TESTED,
+      Desc->PhysicalBase,
+      Desc->Length
+    );
+}
 
-  BuildMemoryAllocationHob (
-                            Desc->PhysicalBase,
-                            Desc->Length,
-                            EfiMemoryMappedIO
-                            );
+STATIC
+VOID
+AddAndMmio(
+    PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED Desc
+)
+{
+    BuildResourceDescriptorHob(
+        EFI_RESOURCE_SYSTEM_MEMORY,
+        (EFI_RESOURCE_ATTRIBUTE_PRESENT    |
+        EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+        EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE |
+        EFI_RESOURCE_ATTRIBUTE_TESTED),
+        Desc->PhysicalBase,
+        Desc->Length
+    );
+
+    BuildMemoryAllocationHob(
+        Desc->PhysicalBase,
+        Desc->Length,
+        EfiMemoryMappedIO
+    );
 }
 
 /*++
@@ -109,46 +146,66 @@ Returns:
 --*/
 EFI_STATUS
 EFIAPI
-MemoryPeim (
-  IN EFI_PHYSICAL_ADDRESS               UefiMemoryBase,
-  IN UINT64                             UefiMemorySize
-  )
+MemoryPeim
+(
+    IN EFI_PHYSICAL_ADDRESS               UefiMemoryBase,
+    IN UINT64                             UefiMemorySize
+)
 {
-  ARM_MEMORY_REGION_DESCRIPTOR *MemoryTable;
 
-  // Get Virtual Memory Map from the Platform Library
-  ArmPlatformGetVirtualMemoryMap (&MemoryTable);
+    PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED MemoryDescriptorEx = gDeviceMemoryDescriptor;
+    ARM_MEMORY_REGION_DESCRIPTOR MemoryDescriptor[MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT];
+    UINTN Index = 0;
 
-  // Ensure PcdSystemMemorySize has been set
-  ASSERT (PcdGet64 (PcdSystemMemorySize) != 0);
+    // Ensure PcdSystemMemorySize has been set
+    ASSERT (PcdGet64 (PcdSystemMemorySize) != 0);
 
-  // Reserved FD + Trusted Firmware region
-  AddAndReserved(&MemoryTable[0]);
-  AddAndReserved(&MemoryTable[1]);
+    // Run through each memory descriptor
+    while (MemoryDescriptorEx->Length != 0)
+    {
+        switch (MemoryDescriptorEx->HobOption)
+        {
+            case AddMem:
+                AddUsable(MemoryDescriptorEx);
+                break;
+            case AddDev:
+                AddAndMmio(MemoryDescriptorEx);
+                break;
+            case AddReserved:
+                AddAndReserved(MemoryDescriptorEx);
+                break;
+            case NoHob:
+            default:
+                goto update;
+        }
 
-  // Usable memory.
-  BuildResourceDescriptorHob (
-                              EFI_RESOURCE_SYSTEM_MEMORY,
-                              EFI_RESOURCE_ATTRIBUTE_PRESENT |
-                              EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
-                              EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
-                              EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
-                              EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE |
-                              EFI_RESOURCE_ATTRIBUTE_TESTED,
-                              MemoryTable[2].PhysicalBase,
-                              MemoryTable[2].Length
-                              );
+    update:
+        ASSERT(Index < MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT);
 
-  AddAndReserved(&MemoryTable[3]);
-  AddAndMmio(&MemoryTable[4]);
+        MemoryDescriptor[Index].PhysicalBase = MemoryDescriptorEx->PhysicalBase;
+        MemoryDescriptor[Index].VirtualBase = MemoryDescriptorEx->VirtualBase;
+        MemoryDescriptor[Index].Length = MemoryDescriptorEx->Length;
+        MemoryDescriptor[Index].Attributes = MemoryDescriptorEx->Attributes;
 
-  // Build Memory Allocation Hob
-  InitMmu (MemoryTable);
+        Index++;
+        MemoryDescriptorEx++;
+    }
 
-  if (FeaturePcdGet (PcdPrePiProduceMemoryTypeInformationHob)) {
-    // Optional feature that helps prevent EFI memory map fragmentation.
-    BuildMemoryTypeInformationHob ();
-  }
+    // Last one (terminator)
+    ASSERT(Index < MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT);
+    MemoryDescriptor[Index].PhysicalBase = 0;
+    MemoryDescriptor[Index].VirtualBase = 0;
+    MemoryDescriptor[Index].Length = 0;
+    MemoryDescriptor[Index].Attributes = 0;
 
-  return EFI_SUCCESS;
+    // Build Memory Allocation Hob
+    InitMmu(MemoryDescriptor);
+
+    if (FeaturePcdGet (PcdPrePiProduceMemoryTypeInformationHob)) 
+    {
+        // Optional feature that helps prevent EFI memory map fragmentation.
+        BuildMemoryTypeInformationHob();
+    }
+
+    return EFI_SUCCESS;
 }

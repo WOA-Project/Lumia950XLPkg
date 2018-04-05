@@ -1,6 +1,7 @@
 // Pi.c: Entry point for SEC(Security).
 
 #include <PiPei.h>
+#include <Pi/PiBootMode.h>
 
 #include <Pi/PiHob.h>
 #include <Library/DebugLib.h>
@@ -9,6 +10,8 @@
 #include <Library/IoLib.h>
 #include <Library/HobLib.h>
 #include <Library/ArmLib.h>
+#include <Library/CacheMaintenanceLib.h>
+#include <Library/PrePiHobListPointerLib.h>
 #include <Library/PeCoffGetEntryPointLib.h>
 #include <Library/DebugAgentLib.h>
 #include <Ppi/GuidedSectionExtraction.h>
@@ -17,30 +20,15 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/BaseMemoryLib.h>
 
-#include <Library/ProcAsmLib.h>
-#include <Library/QcomBaseLib.h>
-#include <Library/FBPTLib.h>
-
 #include <PiDxe.h>
-// #include <PreInitializeVariableInfo.h>
+#include "Pi.h"
 
-#ifndef _BGRA8888_COLORS_
-#define _BGRA8888_COLORS_
-#define BGRA8888_BLACK          0xff000000
-#define BGRA8888_WHITE          0xffffffff
-#define BGRA8888_CYAN           0xff00ffff
-#define BGRA8888_BLUE           0xff0000ff
-#define BGRA8888_SILVER         0xffc0c0c0
-#define BGRA8888_YELLOW         0xffffff00
-#define BGRA8888_ORANGE         0xffffa500
-#define BGRA8888_RED            0xffff0000
-#define BGRA8888_GREEN          0xff00ff00
-#endif
-
-#ifndef _FB_ADDRESS_
-#define _FB_ADDRESS_
-#define FB_ADDR                 0x400000
-#endif
+VOID
+EFIAPI
+ProcessLibraryConstructorList
+(
+    VOID
+);
 
 STATIC VOID
 UartInit
@@ -48,74 +36,14 @@ UartInit
     VOID
 )
 {
-    UINT32 AbsTimems;
-    AbsTimems = GetTimerCountms();
     SerialPortInitialize();
-    DEBUG ((EFI_D_ERROR, "\nTianoCore on 950XL (AArch64)\n", AbsTimems));
-    DEBUG ((EFI_D_ERROR, "UEFI Start : %d ms\n\n", AbsTimems));
-}
 
-/* Initialize the cycle counter to track performance */
-STATIC VOID
-StartCyclCounter
-(
-    VOID
-)
-{
-    UINTN RegVal;
-    UINT64 Val;
-    UINT64 Scale;
-    UINT32 AppsProcClkMhz;
-
-    /* User mode enable to read in non secure mode */
-    WriteUserEnReg (1);
-
-    /* Reset counters */
-    RegVal = (0x41 << 24) |  /* IMP */
-            (4 << 11)    |  /* N */
-            (1 << 3)     |  /* 1/64 */
-            (1 << 2);       /* Reset CCNT */
-    WritePMonCtlReg (RegVal);
-
-    ReadCycleCntReg();
-
-    /* Scale bootcounter running at 32KHz to CPU frequency in MHz, counting every 64 cycles.
-        Get the Scale to be accurate to 3 decimal places by multiplying it with 2^10.  
-        Then divide by 2^10 (right shift by 10) to nullify the multiplication done before and 
-        divide by 64 (Right shift 6) => Right shift by 16 to set Cycle Counter Start Value */
-    AppsProcClkMhz = PcdGet32(PcdAppsProcFrequencyMhz);
-    Scale = (AppsProcClkMhz << 10) / 1000;
-    Val =  Scale * BootGetTimeNanoSec();
-    Val = (Val >> 16);
-    WriteCycleCntReg((UINT32)Val);
-
-    /* Check if write went through */
-    ReadCycleCntReg();
-
-    /* Enable Cycle counter */
-    WriteCntEnSetReg (((UINT32)1 << 31));
-
-    /* Check if we start counting */
-    ReadCycleCntReg();
-
-    /* Enable CCNT */
-    RegVal = (0x41 << 24) |     /* IMP */
-            (4 << 11)    |      /* N */
-            (1 << 3)     |      /* 1/64 */
-            (1);                /* Enable all counters */
-    WritePMonCtlReg(RegVal);
-
-    /* Disable User mode access */
-    WriteUserEnReg(0);
-
-    /* Write to TPIDRURW */
-    WriteTPIDRURWReg(0x56430000);
-
-    /* Write to TPIDRURO */
-    WriteTPIDRUROReg(0);
-
-    /* Example to Read the counter value, Should read small */
-    ReadCycleCntReg();
+    DEBUG((EFI_D_ERROR, "\nTianoCore on 950XL (AArch64)\n"));
+    DEBUG((EFI_D_ERROR, "Firmware version %s built %a %a\n\n", 
+        (CHAR16*) PcdGetPtr(PcdFirmwareVersionString), 
+        __TIME__, 
+        __DATE__
+    ));
 }
 
 VOID
@@ -126,10 +54,77 @@ Main
 )
 {
 
-    // Initialize UART.
+    EFI_HOB_HANDOFF_INFO_TABLE*     HobList;
+    EFI_STATUS                      Status;
+
+    UINTN                           MemoryBase = 0;
+    UINTN                           MemorySize = 0;
+    UINTN                           StackBaseEx = 0;
+    UINTN                           UefiMemoryBase = 0;
+    UINTN                           UefiMemorySize = 0;
+
+    // Architecture-specific initialization
+    // Enable Floating Point
+    ArmEnableVFP();
+
+    /* Enable program flow prediction, if supported */
+    ArmEnableBranchPrediction();
+
+    // Initialize (fake) UART.
     UartInit();
 
-    // We are done
+    // Declare UEFI region
+    MemoryBase      = FixedPcdGet32(PcdMemoryBase);
+    MemorySize      = FixedPcdGet32(PcdMemorySize);
+    UefiMemoryBase  = MemoryBase + FixedPcdGet32(PcdPreAllocatedMemorySize);
+    UefiMemorySize  = FixedPcdGet32(PcdUefiMemPoolSize);
+    StackBaseEx     = UefiMemoryBase + UefiMemorySize - 1;
+
+    // Set up HOB
+    HobList = HobConstructor(
+        (VOID*) UefiMemoryBase,
+        UefiMemorySize, 
+        (VOID*) UefiMemoryBase, 
+        (VOID*) StackBaseEx
+    );
+
+    PrePeiSetHobList(HobList);
+
+    // Invalidate cache
+    InvalidateDataCacheRange(
+        (VOID *) (UINTN) PcdGet64 (PcdFdBaseAddress), 
+        PcdGet32 (PcdFdSize)
+    );
+
+    // Initialize MMU
+    Status = MemoryPeim(
+        UefiMemoryBase, 
+        UefiMemorySize
+    );
+    ASSERT_EFI_ERROR(Status);
+
+    // Add HOBs
+    BuildStackHob((UINTN) StackBase, StackSize);
+
+    // Set the Boot Mode
+    SetBootMode(BOOT_WITH_FULL_CONFIGURATION);
+
+    // Initialize Platform HOBs (CpuHob and FvHob)
+    Status = PlatformPeim();
+    ASSERT_EFI_ERROR(Status);
+
+    // SEC phase needs to run library constructors by hand.
+    ProcessLibraryConstructorList();
+
+    // Assume the FV that contains the PI (our code) also contains a compressed FV.
+    Status = DecompressFirstFv();
+    ASSERT_EFI_ERROR(Status);
+
+    // Load the DXE Core and transfer control to it
+    Status = LoadDxeCoreFromFv(NULL, 0);
+    ASSERT_EFI_ERROR(Status);
+    
+    // We should never reach here
     CpuDeadLoop();
 }
 
