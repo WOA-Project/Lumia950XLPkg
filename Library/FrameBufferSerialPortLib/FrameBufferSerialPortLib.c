@@ -35,6 +35,7 @@ void FbConDrawglyph
     unsigned scale_factor
 );
     
+void FbConReset(void);
 void FbConScrollUp(void);
 void FbConFlush(void);
 
@@ -49,6 +50,17 @@ SerialPortInitialize
     // Prevent dup initialization
     if (m_Initialized) return RETURN_SUCCESS;
 
+    // Reset console
+    FbConReset();
+
+    // Set flag
+    m_Initialized = TRUE;
+
+    return RETURN_SUCCESS;
+}
+
+void FbConReset(void)
+{
     // Clear current screen.
     char* Pixels = (void*) FixedPcdGet32(PcdMipiFrameBufferAddress);
     UINTN BgColor = FB_BGRA8888_BLACK;
@@ -80,11 +92,6 @@ SerialPortInitialize
     // Reset color.
     m_Color.Foreground = FB_BGRA8888_WHITE;
     m_Color.Background = FB_BGRA8888_BLACK;
-
-    // Set flag
-    m_Initialized = TRUE;
-
-    return RETURN_SUCCESS;
 }
 
 void FbConPutCharWithFactor
@@ -145,7 +152,7 @@ newline:
 	if (m_Position.y >= m_MaxPosition.y) 
     {
 		m_Position.y = m_MaxPosition.y - 1;
-		FbConScrollUp();
+		FbConReset();
 	} else
 	{
         FbConFlush();
