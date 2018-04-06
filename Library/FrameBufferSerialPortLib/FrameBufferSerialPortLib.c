@@ -288,11 +288,15 @@ SerialPortWrite
     IN UINTN     NumberOfBytes
 )
 {
-    UINT8* CONST Final = &Buffer[NumberOfBytes];
-    while (Buffer < Final) 
+    if (FixedPcdGetBool(PcdEnableScreenSerial))
     {
-        FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
+        UINT8* CONST Final = &Buffer[NumberOfBytes];
+        while (Buffer < Final) 
+        {
+            FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
+        }
     }
+
     return NumberOfBytes;
 }
 

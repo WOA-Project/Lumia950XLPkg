@@ -147,6 +147,8 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|1920
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoHorizontalResolution|1080
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|1920
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupConOutRow|160
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupConOutColumn|120
 
 [LibraryClasses.common]
   ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
@@ -363,6 +365,9 @@
   MdeModulePkg/Universal/Network/Udp4Dxe/Udp4Dxe.inf
   MdeModulePkg/Universal/Network/UefiPxeBcDxe/UefiPxeBcDxe.inf
   MdeModulePkg/Universal/Network/IScsiDxe/IScsiDxe.inf
+
+  # ACPI and SMBIOS
+  Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
 
   # Shell
   ShellPkg/Application/Shell/Shell.inf {

@@ -18,3 +18,4 @@
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x102
   gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress|0x00200000|UINT64|0x103
   gLumia950XLPkgTokenSpaceGuid.PcdFdSize|0x00120000|UINT32|0x104
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE|BOOLEAN|0x105

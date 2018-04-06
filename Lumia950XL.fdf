@@ -101,6 +101,9 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/Network/UefiPxeBcDxe/UefiPxeBcDxe.inf
   INF MdeModulePkg/Universal/Network/IScsiDxe/IScsiDxe.inf
 
+  # ACPI and SMBIOS
+  INF Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
+
   # Shell
   INF ShellPkg/Application/Shell/Shell.inf
 
