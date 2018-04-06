@@ -56,6 +56,8 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
   gEmbeddedTokenSpaceGuid.PcdPrePiStackBase
   gEmbeddedTokenSpaceGuid.PcdPrePiStackSize
+  gEmbeddedTokenSpaceGuid.PcdPrePiCpuMemorySize
+  gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize
   gArmTokenSpaceGuid.PcdFvBaseAddress
   gArmTokenSpaceGuid.PcdFvSize
   gQcomTokenSpaceGuid.PcdPreAllocatedMemorySize

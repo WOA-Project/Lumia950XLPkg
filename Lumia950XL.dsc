@@ -110,12 +110,17 @@
   gArmTokenSpaceGuid.PcdArmArchTimerFreqInHz|19200000
   gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|18
   gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|19
-  gEmbeddedTokenSpaceGuid.PcdInterruptBaseAddress|0x09bc0000
-  gArmTokenSpaceGuid.PcdGicDistributorBase|0x09bc0000
-  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0x09c00000
   
-  gQcomTokenSpaceGuid.PcdUefiMemPoolSize|0x06c00000         # 108 MB
-  gQcomTokenSpaceGuid.PcdPreAllocatedMemorySize|0x0F200000  # Start here
+  gEmbeddedTokenSpaceGuid.PcdInterruptBaseAddress|0xf9000000
+  gArmTokenSpaceGuid.PcdGicDistributorBase|0xf9000000
+  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0xf9002000
+  gArmPlatformTokenSpaceGuid.PcdCoreCount|8
+
+  gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|16
+  gEmbeddedTokenSpaceGuid.PcdPrePiCpuMemorySize|40
+  
+  gQcomTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000         
+  gQcomTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000  # Start here
   gQcomTokenSpaceGuid.PcdEmbeddedFdBaseAddress|0x00200000   # FD Start
 
   gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress|0x00200000  # TODO: Merge
@@ -271,3 +276,8 @@
     <LibraryClasses>
       PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
   }
+
+  ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+  ArmPkg/Drivers/TimerDxe/TimerDxe.inf
+  ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+  MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf

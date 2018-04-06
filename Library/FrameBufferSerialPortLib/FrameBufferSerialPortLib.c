@@ -45,6 +45,10 @@ SerialPortInitialize
     VOID
 )
 {
+
+    // Prevent dup initialization
+    if (m_Initialized) return RETURN_SUCCESS;
+
     // Clear current screen.
     char* Pixels = (void*) FixedPcdGet32(PcdMipiFrameBufferAddress);
     UINTN BgColor = FB_BGRA8888_BLACK;
