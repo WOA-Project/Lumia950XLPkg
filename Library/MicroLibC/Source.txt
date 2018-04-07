@@ -1,0 +1,3 @@
+FILES:  atoi.c bsearch.c ctype.c
+URL:    https://github.com/littlekernel/lk.git
+BRANCH: master@f781ba74

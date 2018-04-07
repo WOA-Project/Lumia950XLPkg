@@ -1,0 +1,8 @@
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = MicroLibC
+  PACKAGE_GUID                   = 696945ad-67e9-4cfc-bc7d-b5f7a7f1d397
+  PACKAGE_VERSION                = 0.1
+
+[Includes]
+  Include

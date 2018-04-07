@@ -49,7 +49,10 @@ VOID *memalign(UINTN Boundary, UINTN Size)
   if (Type == ALLOCTYPE_POOL)
     BaseMemory = AllocatePool(NodeSize);
   else if (Type == ALLOCTYPE_ALIGNED_PAGES)
+  {
     BaseMemory = AllocateAlignedPages(EFI_SIZE_TO_PAGES(NodeSize), Boundary);
+    DEBUG((DEBUG_POOL, "Allocated at 0x%llx\n", BaseMemory));
+  }
   else
     ASSERT(FALSE);
   if (BaseMemory == NULL) {
@@ -107,12 +110,15 @@ VOID free(VOID *Ptr)
     if (Head->Signature == CPOOL_HEAD_SIGNATURE) {
       HeadSize = ALIGN_VALUE(sizeof(CPOOL_HEAD), Head->Boundary);
       NodeSize = HeadSize + Head->Size;
-      BaseMemory = Ptr - HeadSize;
+      BaseMemory = Ptr - HeadSize + 0x4;
 
       if (Head->Type == ALLOCTYPE_POOL)
         FreePool (BaseMemory);
       else if (Head->Type == ALLOCTYPE_ALIGNED_PAGES)
+      {
+        DEBUG((DEBUG_POOL, "About to free %p, head size 0x%llx\n", BaseMemory, HeadSize));
         FreeAlignedPages (BaseMemory, EFI_SIZE_TO_PAGES(NodeSize));
+      }
       else
         ASSERT(FALSE);
     }

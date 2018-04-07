@@ -1,0 +1,11 @@
+FILES:  strtok.c
+URL:    http://cvsweb.openbsd.org/cgi-bin/cvsweb/
+BRANCH: OPENBSD_6_0
+
+FILES:  strchr.c strspn.c strpbrk.c
+URL:    https://github.com/littlekernel/lk.git
+BRANCH: master@f781ba74
+
+FILES:  strlcat.c
+URL:    http://cvsweb.netbsd.org/bsdweb.cgi/src/common/lib/libc/string/strlcat.c
+BRANCH: netbsd-7-1-RELEASE

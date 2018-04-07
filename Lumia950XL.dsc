@@ -134,6 +134,19 @@
   # SoC Drivers SPMI
   gQcomTokenSpaceGuid.PcdSpmiBaseAddress|0xFC4C0000
 
+  # SoC Drivers MMC
+  gQcomTokenSpaceGuid.PcdSdccMciHcMode|0x00000078
+  gQcomTokenSpaceGuid.PcdSdccHcPwrctlStatusReg|0x000000DC
+  gQcomTokenSpaceGuid.PcdSdccHcPwrctlMaskReg|0x000000E0
+  gQcomTokenSpaceGuid.PcdSdccHcPwrctlClearReg|0x000000E4
+  gQcomTokenSpaceGuid.PcdSdccHcPwrctlCtlReg|0x000000E8
+  gQcomTokenSpaceGuid.PcdMmcSdhciDdrCfgVal|0x80040870 # DDR_CFG_DLY_VAL
+  gQcomTokenSpaceGuid.PcdMmcSdc1HdrvPullCtlOffset|0x00002044
+  gQcomTokenSpaceGuid.PcdMmcSdc2HdrvPullCtlOffset|0x00002048
+
+  # SoC Drivers Misc
+  gQcomTokenSpaceGuid.PcdGicSpiStart|32
+
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000         
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000  # Start here
 
@@ -184,7 +197,6 @@
   DxeServicesLib|MdePkg/Library/DxeServicesLib/DxeServicesLib.inf
   DxeServicesTableLib|MdePkg/Library/DxeServicesTableLib/DxeServicesTableLib.inf
   ExtractGuidedSectionLib|EmbeddedPkg/Library/PrePiExtractGuidedSectionLib/PrePiExtractGuidedSectionLib.inf
-  EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
   FileExplorerLib|MdeModulePkg/Library/FileExplorerLib/FileExplorerLib.inf
   FdtLib|EmbeddedPkg/Library/FdtLib/FdtLib.inf
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
@@ -234,6 +246,17 @@
   MallocLib|Lumia950XLPkg/Library/MallocLib/MallocLib.inf
   KeypadDeviceHelperLib|Lumia950XLPkg/Library/KeypadDeviceHelperLib/KeypadDeviceHelperLib.inf
   KeypadDeviceImplLib|Lumia950XLPkg/Library/KeypadDeviceImplLib/KeypadDeviceImplLib.inf
+  DloadUtilLib|Lumia950XLPkg/Library/DloadUtilLib/DloadUtilLib.inf
+  QcomPlatformClockInitLib|Lumia950XLPkg/Library/QcomPlatformClockInitLib/QcomPlatformClockInitLib.inf
+  QcomPlatformMmcLib|Lumia950XLPkg/Library/PlatformMmcLib/QcomPlatformMmcLib.inf
+  QcomPlatformMmcClockOverrideLib|Lumia950XLPkg/Library/QcomPlatformMmcClockOverrideLib/QcomPlatformMmcClockOverrideLib.inf
+  QcomTargetMmcSdhciLib|Lumia950XLPkg/Library/TargetMmcSdhciLib/QcomTargetMmcSdhciLib.inf
+  LcmLib|Lumia950XLPkg/Library/LcmLib/LcmLib.inf
+  MicroLibC|Lumia950XLPkg/Library/MicroLibC/MicroLibC.inf
+  StrLib|Lumia950XLPkg/Library/StrLib/StrLib.inf
+
+  # System Reset
+  EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
 
 [LibraryClasses.common.SEC]
   HobLib|EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
@@ -245,6 +268,7 @@
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmImplLib.inf
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
+  ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockImplLib.inf
 
 [LibraryClasses.common.DXE_CORE]
   HobLib|MdePkg/Library/DxeCoreHobLib/DxeCoreHobLib.inf
@@ -268,6 +292,7 @@
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
+  ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
 
 [LibraryClasses.common.UEFI_APPLICATION]
   UefiDecompressLib|IntelFrameworkModulePkg/Library/BaseUefiTianoCustomDecompressLib/BaseUefiTianoCustomDecompressLib.inf
@@ -282,6 +307,7 @@
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
+  ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER]
   ReportStatusCodeLib|IntelFrameworkModulePkg/Library/DxeReportStatusCodeLibFramework/DxeReportStatusCodeLib.inf
@@ -295,6 +321,7 @@
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
+  ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
@@ -343,6 +370,8 @@
   Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Dxe.inf
   Lumia950XLPkg/Driver/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
   Lumia950XLPkg/Driver/KeypadDxe/KeypadDxe.inf
+  Lumia950XLPkg/Driver/ClockDxe/ClockDxe.inf
+  Lumia950XLPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
 
   # Runtime Services
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf

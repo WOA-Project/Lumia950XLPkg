@@ -14,11 +14,13 @@
   clock-local.c
   clock_pll.c
 
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-overflow
+
 [Packages]
   MdePkg/MdePkg.dec
   ArmPkg/ArmPkg.dec
-  EFIDroidPkg/EFIDroidPkg.dec
-  EFIDroidPkg/Qcom/Qcom.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
   QcomPlatformClockInitLib

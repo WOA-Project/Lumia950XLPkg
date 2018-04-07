@@ -13,6 +13,7 @@
 
 [Protocols]
   gQcomBamProtocolGuid = { 0xacdd545a, 0xf1f6, 0x4272, { 0x81, 0xc5, 0x04, 0x93, 0xe3, 0x58, 0x05, 0x32 } }
+  gQcomClockProtocolGuid = { 0x4fcc91c2, 0x9c4f, 0x4e3c, { 0xa6, 0x73, 0xc6, 0xdf, 0x62, 0xe0, 0x41, 0xd5 } }
   gQcomGpioTlmmProtocolGuid = { 0x8054947b, 0x3223, 0x407a, { 0xa1, 0xcc, 0x31, 0x22, 0x2f, 0x80, 0x66, 0x40 } }
   gQcomGpioTlmmInterruptProtocolGuid = { 0x1634c987, 0x50a7, 0x4f98, { 0x88, 0xf0, 0x7e, 0xbc, 0x60, 0x11, 0xa5, 0x32 } }
   gQcomSpmiProtocolGuid = { 0xa95ee608, 0x52be, 0x46c9, { 0x9f, 0x78, 0x03, 0x86, 0x42, 0xdb, 0xd0, 0x7c } }
@@ -78,3 +79,44 @@
   gQcomTokenSpaceGuid.PcdPmicArbChannelNum|0|UINT64|0x00000094
   gQcomTokenSpaceGuid.PcdPmicArbOwnerId|0|UINT64|0x00000095
 
+  # MMCHSDxe
+  gQcomTokenSpaceGuid.PcdMmcSdc1BamBase|0|UINT64|0x000000c0
+  gQcomTokenSpaceGuid.PcdMmcSdc2BamBase|0|UINT64|0x000000c1
+  gQcomTokenSpaceGuid.PcdMmcSdc3BamBase|0|UINT64|0x000000c2
+  gQcomTokenSpaceGuid.PcdMmcSdc4BamBase|0|UINT64|0x000000c3
+  gQcomTokenSpaceGuid.PcdMmcSdc1DmlBase|0|UINT64|0x000000c4
+  gQcomTokenSpaceGuid.PcdMmcSdc2DmlBase|0|UINT64|0x000000c5
+  gQcomTokenSpaceGuid.PcdMmcSdc3DmlBase|0|UINT64|0x000000c6
+  gQcomTokenSpaceGuid.PcdMmcSdc4DmlBase|0|UINT64|0x000000c7
+  gQcomTokenSpaceGuid.PcdMmcAdmChn|0|UINT64|0x000000c8
+  gQcomTokenSpaceGuid.PcdMmcAdmSd|0|UINT64|0x000000c9
+  gQcomTokenSpaceGuid.PcdMmcAdmBase|0|UINT64|0x000000ca
+  gQcomTokenSpaceGuid.PcdMmcAdmSdOffset|0|UINT64|0x000000cb
+  gQcomTokenSpaceGuid.PcdMmcAdmMap0|0|UINT8|0x000000cc
+  gQcomTokenSpaceGuid.PcdMmcAdmMap1|0|UINT8|0x000000cd
+  gQcomTokenSpaceGuid.PcdMmcAdmMap2|0|UINT8|0x000000ce
+  gQcomTokenSpaceGuid.PcdMmcAdmMap3|0|UINT8|0x000000cf
+  gQcomTokenSpaceGuid.PcdMmcAdmMap4|0|UINT8|0x000000d0
+
+  # SdhciMMCHSDxe
+  gQcomTokenSpaceGuid.PcdSdccMciHcMode|0|UINT64|0x000000e0
+  gQcomTokenSpaceGuid.PcdSdccHcPwrctlStatusReg|0|UINT64|0x000000e1
+  gQcomTokenSpaceGuid.PcdSdccHcPwrctlMaskReg|0|UINT64|0x000000e2
+  gQcomTokenSpaceGuid.PcdSdccHcPwrctlClearReg|0|UINT64|0x000000e3
+  gQcomTokenSpaceGuid.PcdSdccHcPwrctlCtlReg|0|UINT64|0x000000e4
+  gQcomTokenSpaceGuid.PcdMmcSdhciDdrCfgVal|0x80040853|UINT64|0x000000e5 # DDR_CONFIG_VAL
+  gQcomTokenSpaceGuid.PcdMmcSdc1HdrvPullCtlOffset|0|UINT64|0x000000e6
+  gQcomTokenSpaceGuid.PcdMmcSdc2HdrvPullCtlOffset|0|UINT64|0x000000e7
+  gQcomTokenSpaceGuid.PcdMmcSdc3HdrvPullCtlOffset|0|UINT64|0x000000e8
+  gQcomTokenSpaceGuid.PcdMmcSdc4HdrvPullCtlOffset|0|UINT64|0x000000e9
+
+  # Misc
+  gQcomTokenSpaceGuid.PcdGicSpiStart|0|UINT64|0x00000200
+
+[PcdsFeatureFlag.common]
+  # MMCHSDxe
+  gQcomTokenSpaceGuid.PcdMmcAdmSupport|FALSE|BOOLEAN|0x00010001
+  gQcomTokenSpaceGuid.PcdMmcBamSupport|FALSE|BOOLEAN|0x00010002
+
+  # SdhciMMCHSDxe
+  gQcomTokenSpaceGuid.PcdMmcHs200Caps|FALSE|BOOLEAN|0x00010010

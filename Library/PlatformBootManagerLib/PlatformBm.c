@@ -432,44 +432,39 @@ PlatformRegisterOptionsAndKeys (
   VOID
   )
 {
-  EFI_STATUS                   Status;
-  EFI_INPUT_KEY                Enter;
-  EFI_INPUT_KEY                F1;
-  EFI_INPUT_KEY                Esc;
-  EFI_BOOT_MANAGER_LOAD_OPTION BootOption;
   INTN ShellOption;
 
-  ShellOption = PlatformRegisterFvBootOption (&gUefiShellFileGuid, L"UEFI Shell",
-                                              LOAD_OPTION_ACTIVE);
-  if (ShellOption != -1) {
-    //
-    // F1 boots Shell.
-    //
-    F1.ScanCode = SCAN_F1;
-    F1.UnicodeChar = CHAR_NULL;
-    Status = EfiBootManagerAddKeyOptionVariable (
-      NULL, (UINT16) ShellOption, 0, &F1, NULL);
-    ASSERT (Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
-  }
+  ShellOption = PlatformRegisterFvBootOption(
+      &gUefiShellFileGuid, 
+      L"UEFI Shell",
+      LOAD_OPTION_ACTIVE
+  );
+}
+
+STATIC
+VOID
+PlatformRegisterSetupKey(
+  VOID
+)
+{
+  EFI_STATUS                   Status;
+  EFI_INPUT_KEY                PowerBtn;
+  EFI_BOOT_MANAGER_LOAD_OPTION BootOption;
 
   //
-  // Register ENTER as CONTINUE key
+  // Map Power to Boot Manager Menu
   //
-  Enter.ScanCode    = SCAN_NULL;
-  Enter.UnicodeChar = CHAR_CARRIAGE_RETURN;
-  Status = EfiBootManagerRegisterContinueKeyOption (0, &Enter, NULL);
-  ASSERT_EFI_ERROR (Status);
-
-  //
-  // Map ESC to Boot Manager Menu
-  //
-  Esc.ScanCode    = SCAN_ESC;
-  Esc.UnicodeChar = CHAR_NULL;
-  Status = EfiBootManagerGetBootManagerMenu (&BootOption);
-  ASSERT_EFI_ERROR (Status);
-  Status = EfiBootManagerAddKeyOptionVariable (
-             NULL, (UINT16) BootOption.OptionNumber, 0, &Esc, NULL
-             );
+  PowerBtn.ScanCode    = SCAN_NULL;
+  PowerBtn.UnicodeChar = CHAR_CARRIAGE_RETURN;
+  Status = EfiBootManagerGetBootManagerMenu(&BootOption);
+  ASSERT_EFI_ERROR(Status);
+  Status = EfiBootManagerAddKeyOptionVariable(
+      NULL, 
+      (UINT16) BootOption.OptionNumber, 
+      0, 
+      &PowerBtn, 
+      NULL
+  );
   ASSERT (Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
 }
 
@@ -526,6 +521,8 @@ PlatformBootManagerBeforeConsole (
   // on them to ConIn.
   //
   FilterAndProcess (&gEFIDroidKeypadDeviceProtocolGuid, NULL, AddInput);
+  // Register setup key then
+  PlatformRegisterSetupKey();
 
   //
   // Add the hardcoded serial console device path to ConIn, ConOut, ErrOut.
@@ -623,7 +620,7 @@ PlatformBootManagerWaitCallback (
   Status = BootLogoUpdateProgress (
              White.Pixel,
              Black.Pixel,
-             L"Vol+ (setup), Vol- (shell), Camera (boot)\n",
+             L"Press Power Button for Setup Utility\n",
              White.Pixel,
              (Timeout - TimeoutRemain) * 100 / Timeout,
              0
