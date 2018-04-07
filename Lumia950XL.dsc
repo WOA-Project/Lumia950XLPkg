@@ -160,7 +160,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
   # Enable Debug
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE
 
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
@@ -428,7 +428,11 @@
   MdeModulePkg/Universal/Network/IScsiDxe/IScsiDxe.inf
 
   # ACPI and SMBIOS
+  Lumia950XLPkg/AcpiTables/Lumia950XLAcpiTables.inf
   Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
+  MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
+  MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
 
   # Shell
   ShellPkg/Application/Shell/Shell.inf {
