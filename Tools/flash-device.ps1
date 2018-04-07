@@ -17,4 +17,4 @@ if ($BuildContent -eq $null)
 
 # Flash image
 fastboot flash boot "$($BuildContent.FullName)"
-fastboot reboot
+fastboot continue

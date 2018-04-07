@@ -21,7 +21,6 @@
   EmbeddedPkg/EmbeddedPkg.dec
   ArmPkg/ArmPkg.dec
   IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
-  DragonboardVendorPkg/QcomPkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
@@ -39,7 +38,6 @@
   SerialPortLib
   MemoryAllocationLib
   PrePiMemoryAllocationLib
-  ShLib
   PerformanceLib
   HobLib
   CompilerIntrinsicsLib
@@ -51,33 +49,19 @@
   gEmbeddedTokenSpaceGuid.PcdCacheEnable
 
 [FixedPcd]
+  gArmTokenSpaceGuid.PcdSystemMemoryBase
+  gArmTokenSpaceGuid.PcdSystemMemorySize
   gArmTokenSpaceGuid.PcdCpuVectorBaseAddress
+  gArmTokenSpaceGuid.PcdFvBaseAddress
+  gArmTokenSpaceGuid.PcdFvSize
+  gArmTokenSpaceGuid.PcdFdBaseAddress
+  gArmTokenSpaceGuid.PcdFdSize
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultBaudRate
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
   gEmbeddedTokenSpaceGuid.PcdPrePiStackBase
   gEmbeddedTokenSpaceGuid.PcdPrePiStackSize
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuMemorySize
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize
-  gArmTokenSpaceGuid.PcdFvBaseAddress
-  gArmTokenSpaceGuid.PcdFvSize
-  gQcomTokenSpaceGuid.PcdPreAllocatedMemorySize
-  gQcomTokenSpaceGuid.PcdUefiMemPoolBaseOffset
-  gQcomTokenSpaceGuid.PcdUefiMemPoolSize
-  gQcomTokenSpaceGuid.PcdMaxMemRegions
-  gQcomTokenSpaceGuid.PcdHLOSCrashCookieAddr
-  gQcomTokenSpaceGuid.PcdAppsProcFrequencyMhz
-  gQcomTokenSpaceGuid.PcdHLOSMemoryBaseOffset
-  gQcomTokenSpaceGuid.PcdHLOSMemorySize
-  gQcomTokenSpaceGuid.PcdEmbeddedFdBaseAddress
-  gQcomTokenSpaceGuid.PcdUefiInfoBlockOffset
-  gQcomTokenSpaceGuid.PcdIMemCookiesBase
-  gQcomTokenSpaceGuid.PcdUefiDebugCookieOffset
-  gQcomTokenSpaceGuid.PcdUefiDebugCookie
-  gQcomTokenSpaceGuid.PcdMemoryBase
-  gQcomTokenSpaceGuid.PcdMemorySize
-  gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress
-  gLumia950XLPkgTokenSpaceGuid.PcdFdSize
-  
+  gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize
+  gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize
 
-[Guids]
-  gEfiInfoBlkHobGuid

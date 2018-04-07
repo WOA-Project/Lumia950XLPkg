@@ -9,6 +9,10 @@
 
 [Guids.common]
   gLumia950XLPkgTokenSpaceGuid = { 0x4c59628e, 0x0a8a, 0x4099, { 0x8d, 0xe5, 0xf2, 0x08, 0xff, 0x80, 0xc4, 0xbf } }
+  gQcomTokenSpaceGuid = { 0x59f58449, 0x99e1, 0x4a19, { 0x86, 0x65, 0x12, 0xd6, 0x37, 0xed, 0xbe, 0x5e } }
+
+[Protocols]
+  gQcomBamProtocolGuid = { 0xacdd545a, 0xf1f6, 0x4272, { 0x81, 0xc5, 0x04, 0x93, 0xe3, 0x58, 0x05, 0x32 } }
 
 [PcdsFixedAtBuild.common]
   # Simple FrameBuffer
@@ -16,6 +20,15 @@
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080|UINT32|0x100
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920|UINT32|0x101
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x102
+
   gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress|0x00200000|UINT64|0x103
   gLumia950XLPkgTokenSpaceGuid.PcdFdSize|0x00120000|UINT32|0x104
+
   gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE|BOOLEAN|0x105
+  
+  gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000|UINT64|0x106
+  gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000|UINT32|0x107
+
+  # QTimer
+  gQcomTokenSpaceGuid.PcdQTimerBase|0|UINT64|0xF9021000
+

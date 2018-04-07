@@ -701,8 +701,8 @@ MemArrMapInfoUpdateSmbiosType19 (
   VOID
   )
 {
-  mMemArrMapInfoType19.StartingAddress = PcdGet32(PcdMemoryBase) / 1024;
-  mMemArrMapInfoType19.EndingAddress = (PcdGet32(PcdMemorySize) + PcdGet32(PcdMemoryBase) - 1) / 1024;
+  mMemArrMapInfoType19.StartingAddress = FixedPcdGet32(PcdSystemMemoryBase) / 1024;
+  mMemArrMapInfoType19.EndingAddress = (FixedPcdGet32(PcdSystemMemorySize) + FixedPcdGet32(PcdSystemMemoryBase) - 1) / 1024;
 
   LogSmbiosData ((EFI_SMBIOS_TABLE_HEADER *)&mMemArrMapInfoType19, mMemArrMapInfoType19Strings, NULL);
 }

@@ -10,13 +10,12 @@
   StaticSmBiosTableDxe.c
 
 [FixedPcd]
+  gArmPlatformTokenSpaceGuid.PcdCoreCount
+  gArmTokenSpaceGuid.PcdSystemMemoryBase
+  gArmTokenSpaceGuid.PcdSystemMemorySize
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
-  gQcomTokenSpaceGuid.PcdSystemMfrStr
-  gQcomTokenSpaceGuid.PcdMemoryBase
-  gQcomTokenSpaceGuid.PcdMemorySize
-  gArmPlatformTokenSpaceGuid.PcdCoreCount
-
+  
 [Packages]
   ArmPkg/ArmPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
@@ -24,7 +23,6 @@
   EmbeddedPkg/EmbeddedPkg.dec
   MdeModulePkg/MdeModulePkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
-  DragonboardVendorPkg/QcomPkg.dec
 
 [LibraryClasses]
   BaseLib

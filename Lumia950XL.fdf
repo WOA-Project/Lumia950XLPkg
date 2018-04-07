@@ -53,6 +53,9 @@ READ_LOCK_STATUS   = TRUE
   INF EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
   INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
 
+  # SoC Drivers (Cross-referenced from EFIDroid)
+  INF Lumia950XLPkg/Driver/BamDxe/BamDxe.inf
+
   # Runtime Services
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
@@ -125,7 +128,7 @@ READ_STATUS        = TRUE
 READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
-  INF Lumia950XLPkg/Sec/Sec.inf
+  INF Lumia950XLPkg/PrePi/PrePi.inf
 
   FILE FREEFORM = a4c429b1-046a-4e7d-afbc-c6988e8fe7cc {
     SECTION UI = "platform.json"

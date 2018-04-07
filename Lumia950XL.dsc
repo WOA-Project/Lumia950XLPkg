@@ -38,18 +38,32 @@
   RVCT:*_*_ARM_DLINK_FLAGS = --scatter $(EDK_TOOLS_PATH)/Scripts/Rvct-Align4K.sct
 
 [PcdsFeatureFlag.common]
+  gArmTokenSpaceGuid.PcdCpuDxeProduceDebugSupport|FALSE
+
   gEfiMdePkgTokenSpaceGuid.PcdComponentNameDisable|TRUE
   gEfiMdePkgTokenSpaceGuid.PcdDriverDiagnosticsDisable|TRUE
   gEfiMdePkgTokenSpaceGuid.PcdComponentName2Disable|TRUE
   gEfiMdePkgTokenSpaceGuid.PcdDriverDiagnostics2Disable|TRUE
-  gEmbeddedTokenSpaceGuid.PcdCacheEnable|TRUE
-  gEmbeddedTokenSpaceGuid.PcdPrePiProduceMemoryTypeInformationHob|TRUE
-  gArmTokenSpaceGuid.PcdCpuDxeProduceDebugSupport|FALSE
+
   gEfiMdeModulePkgTokenSpaceGuid.PcdTurnOffUsbLegacySupport|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutGopSupport|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdSupportUpdateCapsuleReset|TRUE
 
+  gEmbeddedTokenSpaceGuid.PcdCacheEnable|TRUE
+  gEmbeddedTokenSpaceGuid.PcdPrePiProduceMemoryTypeInformationHob|TRUE
+  
 [PcdsFixedAtBuild.common]
+  gArmTokenSpaceGuid.PcdSystemMemoryBase|0x00000000         # Starting address
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
+  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x00C40000
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
+  gArmTokenSpaceGuid.PcdArmArchTimerFreqInHz|19200000
+  gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|18
+  gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|19
+  gArmTokenSpaceGuid.PcdGicDistributorBase|0xf9000000
+  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0xf9002000
+  gArmPlatformTokenSpaceGuid.PcdCoreCount|8
+
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"Little Moe, LLC."
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"1.01"
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId|"LMNL  "
@@ -57,17 +71,6 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000001
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultCreatorId|0x4D4F4351
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultCreatorRevision|0x00000001
-
-  gQcomTokenSpaceGuid.PcdSystemMfrStr|"Qualcomm Inc."
-  gQcomTokenSpaceGuid.PcdSystemProductNameStr|"Lumia 950 XL"
-  gQcomTokenSpaceGuid.PcdSystemProductFamilyStr|"MTP"
-  gQcomTokenSpaceGuid.DisableWriteProtect|TRUE
-
-  # Required by UART library
-  gQcomTokenSpaceGuid.UartPlatform|"MSM8994"
-
-  gEmbeddedTokenSpaceGuid.PcdPrePiCpuMemorySize|32
-  gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|0
   gEfiMdePkgTokenSpaceGuid.PcdMaximumUnicodeStringLength|1000000
   gEfiMdePkgTokenSpaceGuid.PcdMaximumAsciiStringLength|1000000
   gEfiMdePkgTokenSpaceGuid.PcdMaximumLinkedListLength|1000000
@@ -79,9 +82,10 @@
   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2f
   gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x800fee0f
   gEfiMdePkgTokenSpaceGuid.PcdReportStatusCodePropertyMask|0x07
-  gEmbeddedTokenSpaceGuid.PcdEmbeddedAutomaticBootCommand|""
-  gEmbeddedTokenSpaceGuid.PcdEmbeddedDefaultTextColor|0x07
-  gEmbeddedTokenSpaceGuid.PcdEmbeddedMemVariableStoreSize|0x10000
+  gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
+
+  gEmbeddedTokenSpaceGuid.PcdPrePiCpuMemorySize|32
+  gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|0
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiACPIReclaimMemory|0
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiACPIMemoryNVS|0
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiReservedMemoryType|0
@@ -91,43 +95,14 @@
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiBootServicesData|800
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiLoaderCode|10
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiLoaderData|0
-
-  gQcomTokenSpaceGuid.PcdMemoryBase|0x00000000              # Starting address
-  gQcomTokenSpaceGuid.PcdMemorySize|0xC0000000              # 3GB
-  gQcomTokenSpaceGuid.PcdHLOSMemoryBaseOffset|0x0F200000    # remaining memory after this is HLOS
-  gQcomTokenSpaceGuid.PcdSmemBaseAddress|0x06A00000
-  gQcomTokenSpaceGuid.PcdSmemSize|0x00200000                # 2MB
-  gQcomTokenSpaceGuid.PcdSmemInformation|0x00000002         # 2 = bear-family
-  gQcomTokenSpaceGuid.PcdMaxMemRegions|64
-
   gEmbeddedTokenSpaceGuid.PcdPrePiStackBase|0x00C00000
   gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0x00040000      # 256K stack
-
-  gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
-
-  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x00C40000
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
-  gArmTokenSpaceGuid.PcdArmArchTimerFreqInHz|19200000
-  gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|18
-  gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|19
-  
   gEmbeddedTokenSpaceGuid.PcdInterruptBaseAddress|0xf9000000
-  gArmTokenSpaceGuid.PcdGicDistributorBase|0xf9000000
-  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0xf9002000
-  gArmPlatformTokenSpaceGuid.PcdCoreCount|8
-
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|16
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuMemorySize|40
-  
-  gQcomTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000         
-  gQcomTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000  # Start here
-  gQcomTokenSpaceGuid.PcdEmbeddedFdBaseAddress|0x00200000   # FD Start
 
-  gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress|0x00200000  # TODO: Merge
-  gLumia950XLPkgTokenSpaceGuid.PcdFdSize|0x00120000
-
-  # According to XBL report (S - Core 0 Frequency, 1228 MHz)
-  gQcomTokenSpaceGuid.PcdAppsProcFrequencyMhz|1228
+  gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000         
+  gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000  # Start here
 
   ## Default Terminal Type
   ## 0-PCANSI, 1-VT100, 2-VT00+, 3-UTF8, 4-TTYTERM
@@ -138,11 +113,10 @@
   gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdShellFile|{ 0x83, 0xA5, 0x04, 0x7C, 0x3E, 0x9E, 0x1C, 0x4F, 0xAD, 0x65, 0xE0, 0x52, 0x68, 0xD0, 0xB4, 0xD1 }
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
+  # Enable Debug
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
+
 [PcdsDynamicDefault.common]
-  #
-  # Set video resolution for boot options and for text setup.
-  # PlatformDxe can set the former at runtime.
-  #
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|1920
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoHorizontalResolution|1080
@@ -215,14 +189,6 @@
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
 
-  FBPTLib|DragonboardVendorPkg/Library/FBPTLib/FBPTLib.inf
-  QcomBaseLib|DragonboardVendorPkg/Library/QcomBaseLib/QcomBaseLib.inf
-  ProcLib|DragonboardVendorPkg/Library/ProcLib/ProcLib.inf
-  ShLib|DragonboardVendorPkg/Library/ShLib/ShLibMgr.inf
-  TargetResetLib|DragonboardVendorPkg/Library/TargetResetLib/TargetResetLib.inf
-  SPMILib|DragonboardPkg/Library/SPMILibV2/SPMILib.inf
-  PmicShutdownLibBoot|DragonboardVendorPkg/Library/PmicShutdownLib/PmicShutdownBoottimeLib.inf
-
   SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
   MemoryInitPeiLib|Lumia950XLPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
   PlatformPeiLib|Lumia950XLPkg/Library/PlatformPeiLib/PlatformPeiLib.inf
@@ -251,7 +217,6 @@
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
-  OfflineCrashDumpLib|DragonboardVendorPkg/Library/OfflineCrashDumpLib/OfflineCrashDumpDxeLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
 
 [LibraryClasses.common.UEFI_APPLICATION]
@@ -283,8 +248,8 @@
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
 
 [Components.common]
-  # Security. To be replaced with general ARM PEI
-  Lumia950XLPkg/Sec/Sec.inf
+  # PrePI
+  Lumia950XLPkg/PrePi/PrePi.inf
 
   # DXE
   MdeModulePkg/Core/Dxe/DxeMain.inf {
@@ -311,6 +276,9 @@
     <LibraryClasses>
       RealTimeClockLib|ArmVirtPkg/Library/XenRealTimeClockLib/XenRealTimeClockLib.inf
   }
+
+  # SoC Drivers (Cross-referenced from EFIDroid)
+  Lumia950XLPkg/Driver/BamDxe/BamDxe.inf
 
   # Runtime Services
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
