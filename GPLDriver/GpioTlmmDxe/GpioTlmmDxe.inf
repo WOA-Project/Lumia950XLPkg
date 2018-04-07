@@ -1,0 +1,42 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = GpioTlmmDxe
+  FILE_GUID                      = 56C743C0-499B-4734-9BE3-24ABFB1BB8E3
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = GpioTlmmDxeInitialize
+
+[Sources.common]
+  Driver.c
+  LibraryImpl.c
+  tlmm.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  IoLib
+
+[Protocols]
+  gQcomGpioTlmmProtocolGuid
+
+[Pcd.common]
+  gQcomTokenSpaceGuid.PcdGpioTlmmBaseAddress
+  gQcomTokenSpaceGuid.PcdGpioTlmmCtlOffset
+  gQcomTokenSpaceGuid.PcdGpioTlmmCtlElementSize
+  gQcomTokenSpaceGuid.PcdGpioTlmmIoOffset
+  gQcomTokenSpaceGuid.PcdGpioTlmmIoElementSize
+  gQcomTokenSpaceGuid.PcdGpioTlmmOeBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmMuxBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmOutBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmInBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmNumFunctions
+  gQcomTokenSpaceGuid.PcdGpioTlmmDrvBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmPullBit
+
+[Depex]
+  TRUE

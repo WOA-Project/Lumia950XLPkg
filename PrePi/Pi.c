@@ -20,6 +20,7 @@
 #include <Library/SerialPortLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/BaseMemoryLib.h>
+#include <Library/FrameBufferSerialPortLib.h>
 
 #include <PiDxe.h>
 #include "Pi.h"
@@ -70,6 +71,9 @@ Main
 
     /* Enable program flow prediction, if supported */
     ArmEnableBranchPrediction();
+
+    // Clear FB
+    ResetFb();
 
     // Initialize (fake) UART.
     UartInit();

@@ -15,7 +15,8 @@ FBCON_COLOR m_Color;
 BOOLEAN m_Initialized = FALSE;
 
 UINTN gWidth = FixedPcdGet32(PcdMipiFrameBufferWidth);
-UINTN gHeight = FixedPcdGet32(PcdMipiFrameBufferHeight);
+// Reserve half screen for output
+UINTN gHeight = FixedPcdGet32(PcdMipiFrameBufferHeight) / 2;
 UINTN gBpp = FixedPcdGet32(PcdMipiFrameBufferPixelBpp);
 
 // Module-used internal routine
@@ -59,7 +60,7 @@ SerialPortInitialize
     return RETURN_SUCCESS;
 }
 
-void FbConReset(void)
+void ResetFb(void)
 {
     // Clear current screen.
     char* Pixels = (void*) FixedPcdGet32(PcdMipiFrameBufferAddress);
@@ -77,10 +78,13 @@ void FbConReset(void)
                 *Pixels = (unsigned char) BgColor;
                 BgColor = BgColor >> 8;
                 Pixels++;
-		    }
+            }
         }
     }
+}
 
+void FbConReset(void)
+{
     // Reset position.
     m_Position.x = 0;
     m_Position.y = 0;
@@ -151,9 +155,11 @@ newline:
 	m_Position.x = 0;
 	if (m_Position.y >= m_MaxPosition.y) 
     {
-		m_Position.y = m_MaxPosition.y - 1;
-		FbConReset();
-	} else
+        ResetFb();
+        FbConFlush();
+		m_Position.y = 0; 
+	} 
+    else
 	{
         FbConFlush();
     }

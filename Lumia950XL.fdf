@@ -55,6 +55,12 @@ READ_LOCK_STATUS   = TRUE
 
   # SoC Drivers (Cross-referenced from EFIDroid)
   INF Lumia950XLPkg/Driver/BamDxe/BamDxe.inf
+  INF Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmDxe.inf
+  INF Lumia950XLPkg/GPLDriver/GpioTlmmInterruptDxe/GpioTlmmInterruptDxe.inf
+  INF Lumia950XLPkg/Driver/SpmiDxe/SpmiDxe.inf
+  INF Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Dxe.inf
+  INF Lumia950XLPkg/Driver/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
+  INF Lumia950XLPkg/Driver/KeypadDxe/KeypadDxe.inf
 
   # Runtime Services
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf

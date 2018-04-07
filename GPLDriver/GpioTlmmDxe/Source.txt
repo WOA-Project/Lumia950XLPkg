@@ -1,0 +1,4 @@
+URL:    https://source.codeaurora.org/quic/la/kernel/lk
+BRANCH: LA.AF.1.1-02810-8064.0
+UPDATED FROM: LA.BF64.1.2.3-01510-8x94.0
+UPDATED FROM: LINUX v4.11

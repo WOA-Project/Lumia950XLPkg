@@ -31,6 +31,7 @@
 #include <Protocol/LoadedImage.h>
 #include <Guid/EventGroup.h>
 #include <Guid/TtyTerm.h>
+#include <Configuration/BootDevices.h>
 
 #include "PlatformBm.h"
 
@@ -312,6 +313,35 @@ AddOutput (
 }
 
 STATIC
+VOID
+EFIAPI
+AddInput (
+  IN EFI_HANDLE   Handle,
+  IN CONST CHAR16 *ReportText
+  )
+{
+  EFI_STATUS               Status;
+  EFI_DEVICE_PATH_PROTOCOL *DevicePath;
+
+  DevicePath = DevicePathFromHandle (Handle);
+  if (DevicePath == NULL) {
+    DEBUG ((EFI_D_ERROR, "%a: %s: handle %p: device path not found\n",
+      __FUNCTION__, ReportText, Handle));
+    return;
+  }
+
+  Status = EfiBootManagerUpdateConsoleVariable (ConIn, DevicePath, NULL);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "%a: %s: adding to ConIn: %r\n", __FUNCTION__,
+      ReportText, Status));
+    return;
+  }
+
+  DEBUG ((EFI_D_VERBOSE, "%a: %s: added to ConOut and ErrOut\n", __FUNCTION__,
+    ReportText));
+}
+
+STATIC
 INTN
 PlatformRegisterBootOption (
   EFI_DEVICE_PATH_PROTOCOL *DevicePath,
@@ -491,7 +521,11 @@ PlatformBootManagerBeforeConsole (
   EfiBootManagerUpdateConsoleVariable (ConIn,
     (EFI_DEVICE_PATH_PROTOCOL *)&mUsbKeyboard, NULL);
 
-  // TODO: Add Serial Devices
+  //
+  // Now add the device path of all handles with QcomKeypadDeviceProtocolGuid
+  // on them to ConIn.
+  //
+  FilterAndProcess (&gEFIDroidKeypadDeviceProtocolGuid, NULL, AddInput);
 
   //
   // Add the hardcoded serial console device path to ConIn, ConOut, ErrOut.

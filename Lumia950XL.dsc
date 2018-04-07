@@ -101,6 +101,39 @@
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|16
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuMemorySize|40
 
+  # SoC Drivers GPIO TLMM
+  gQcomTokenSpaceGuid.PcdGpioTlmmBaseAddress|0xFD510000
+  gQcomTokenSpaceGuid.PcdGpioTlmmSummaryIrq|240
+  gQcomTokenSpaceGuid.PcdGpioTlmmIoOffset|0x1004
+  gQcomTokenSpaceGuid.PcdGpioTlmmIoElementSize|0x10
+  gQcomTokenSpaceGuid.PcdGpioTlmmCtlOffset|0x1000
+  gQcomTokenSpaceGuid.PcdGpioTlmmCtlElementSize|0x10
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrCfgOffset|0x1008
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrCfgElementSize|0x10
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrStatusOffset|0x100c
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrStatusElementSize|0x10
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrTargetOffset|0x1008
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrTargetElementSize|0x10
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrEnableBit|0
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrStatusBit|0
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrAckHigh|FALSE
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrTargetBit|5
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrTargetKpssValue|4
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrRawStatusBit|4
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrPolarityBit|1
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrDetectionBit|2
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrDetectionWidth|2
+  gQcomTokenSpaceGuid.PcdGpioTlmmInBit|0
+  gQcomTokenSpaceGuid.PcdGpioTlmmOutBit|1
+  gQcomTokenSpaceGuid.PcdGpioTlmmOeBit|9
+  gQcomTokenSpaceGuid.PcdGpioTlmmMuxBit|2
+  gQcomTokenSpaceGuid.PcdGpioTlmmDrvBit|6
+  gQcomTokenSpaceGuid.PcdGpioTlmmPullBit|0
+  gQcomTokenSpaceGuid.PcdGpioTlmmNumFunctions|12
+
+  # SoC Drivers SPMI
+  gQcomTokenSpaceGuid.PcdSpmiBaseAddress|0xFC4C0000
+
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000         
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000  # Start here
 
@@ -189,10 +222,18 @@
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
 
+  # Platform Drivers
   SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
   MemoryInitPeiLib|Lumia950XLPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
   PlatformPeiLib|Lumia950XLPkg/Library/PlatformPeiLib/PlatformPeiLib.inf
   PlatformBootManagerLib|Lumia950XLPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
+
+  # SoC Drivers
+  QTimerLib|Lumia950XLPkg/Library/QTimerLib/QTimerLib.inf
+  InterruptsLib|Lumia950XLPkg/Library/InterruptsLib/InterruptsLib.inf
+  MallocLib|Lumia950XLPkg/Library/MallocLib/MallocLib.inf
+  KeypadDeviceHelperLib|Lumia950XLPkg/Library/KeypadDeviceHelperLib/KeypadDeviceHelperLib.inf
+  KeypadDeviceImplLib|Lumia950XLPkg/Library/KeypadDeviceImplLib/KeypadDeviceImplLib.inf
 
 [LibraryClasses.common.SEC]
   HobLib|EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
@@ -200,6 +241,10 @@
   PrePiMemoryAllocationLib|EmbeddedPkg/Library/PrePiMemoryAllocationLib/PrePiMemoryAllocationLib.inf
   PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobListPointerLib.inf
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
+  # SoC Drivers
+  GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmImplLib.inf
+  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
+  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
 
 [LibraryClasses.common.DXE_CORE]
   HobLib|MdePkg/Library/DxeCoreHobLib/DxeCoreHobLib.inf
@@ -218,6 +263,11 @@
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
+  # SoC Drivers
+  QcomDxeTimerLib|Lumia950XLPkg/Library/QTimerLib/QcomQTimerDxeTimerLib.inf
+  GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
+  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
+  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
 
 [LibraryClasses.common.UEFI_APPLICATION]
   UefiDecompressLib|IntelFrameworkModulePkg/Library/BaseUefiTianoCustomDecompressLib/BaseUefiTianoCustomDecompressLib.inf
@@ -228,6 +278,10 @@
   FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
+  # SoC Drivers
+  GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
+  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
+  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
 
 [LibraryClasses.common.UEFI_DRIVER]
   ReportStatusCodeLib|IntelFrameworkModulePkg/Library/DxeReportStatusCodeLibFramework/DxeReportStatusCodeLib.inf
@@ -237,6 +291,10 @@
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
   UefiScsiLib|MdePkg/Library/UefiScsiLib/UefiScsiLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
+  # SoC Drivers
+  GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
+  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
+  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
@@ -279,6 +337,12 @@
 
   # SoC Drivers (Cross-referenced from EFIDroid)
   Lumia950XLPkg/Driver/BamDxe/BamDxe.inf
+  Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmDxe.inf
+  Lumia950XLPkg/GPLDriver/GpioTlmmInterruptDxe/GpioTlmmInterruptDxe.inf
+  Lumia950XLPkg/Driver/SpmiDxe/SpmiDxe.inf
+  Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Dxe.inf
+  Lumia950XLPkg/Driver/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
+  Lumia950XLPkg/Driver/KeypadDxe/KeypadDxe.inf
 
   # Runtime Services
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf

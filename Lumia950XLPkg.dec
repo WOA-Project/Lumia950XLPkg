@@ -13,22 +13,68 @@
 
 [Protocols]
   gQcomBamProtocolGuid = { 0xacdd545a, 0xf1f6, 0x4272, { 0x81, 0xc5, 0x04, 0x93, 0xe3, 0x58, 0x05, 0x32 } }
+  gQcomGpioTlmmProtocolGuid = { 0x8054947b, 0x3223, 0x407a, { 0xa1, 0xcc, 0x31, 0x22, 0x2f, 0x80, 0x66, 0x40 } }
+  gQcomGpioTlmmInterruptProtocolGuid = { 0x1634c987, 0x50a7, 0x4f98, { 0x88, 0xf0, 0x7e, 0xbc, 0x60, 0x11, 0xa5, 0x32 } }
+  gQcomSpmiProtocolGuid = { 0xa95ee608, 0x52be, 0x46c9, { 0x9f, 0x78, 0x03, 0x86, 0x42, 0xdb, 0xd0, 0x7c } }
+  gQcomPm8x41ProtocolGuid = { 0xb6e811d5, 0x1dce, 0x4ccb, { 0xaf, 0x21, 0xe9, 0xf7, 0xef, 0x68, 0x60, 0x7b } }
+  gEFIDroidKeypadDeviceProtocolGuid = { 0xb27625b5, 0x0b6c, 0x4614, { 0xaa, 0x3c, 0x33, 0x13, 0xb5, 0x1d, 0x36, 0x46 } }
 
 [PcdsFixedAtBuild.common]
   # Simple FrameBuffer
-  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferAddress|0x00400000|UINT32|0x99
-  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080|UINT32|0x100
-  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920|UINT32|0x101
-  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x102
+  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferAddress|0x00400000|UINT32|0x0000a400
+  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080|UINT32|0x0000a401
+  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920|UINT32|0x0000a402
+  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x0000a403
 
-  gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress|0x00200000|UINT64|0x103
-  gLumia950XLPkgTokenSpaceGuid.PcdFdSize|0x00120000|UINT32|0x104
+  # FD
+  gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress|0x00200000|UINT64|0x0000a103
+  gLumia950XLPkgTokenSpaceGuid.PcdFdSize|0x00120000|UINT32|0x0000a104
 
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE|BOOLEAN|0x105
+  # Debug Screen Serial
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE|BOOLEAN|0x00000a105
   
-  gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000|UINT64|0x106
-  gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000|UINT32|0x107
+  # Memory allocation
+  gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000|UINT64|0x00000a106
+  gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000|UINT32|0x00000a107
 
   # QTimer
-  gQcomTokenSpaceGuid.PcdQTimerBase|0|UINT64|0xF9021000
+  gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000|UINT64|0x00000050
+
+  # GpioTlmmDxe and GpioTlmmInterruptDxe
+  gQcomTokenSpaceGuid.PcdGpioTlmmBaseAddress|0|UINT64|0x00000100
+  gQcomTokenSpaceGuid.PcdGpioTlmmSummaryIrq|0|UINT64|0x00000101
+  gQcomTokenSpaceGuid.PcdGpioTlmmIoOffset|0|UINT64|0x00000102
+  gQcomTokenSpaceGuid.PcdGpioTlmmIoElementSize|0|UINT64|0x00000103
+  gQcomTokenSpaceGuid.PcdGpioTlmmCtlOffset|0|UINT64|0x00000104
+  gQcomTokenSpaceGuid.PcdGpioTlmmCtlElementSize|0|UINT64|0x00000105
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrCfgOffset|0|UINT64|0x00000106
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrCfgElementSize|0|UINT64|0x00000107
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrStatusOffset|0|UINT64|0x00000108
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrStatusElementSize|0|UINT64|0x00000109
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrTargetOffset|0|UINT64|0x0000010a
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrTargetElementSize|0|UINT64|0x0000010b
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrEnableBit|0|UINT64|0x0000010c
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrStatusBit|0|UINT64|0x0000010d
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrAckHigh|FALSE|BOOLEAN|0x0000010e
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrTargetBit|0|UINT64|0x0000010f
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrTargetKpssValue|0|UINT64|0x00000110
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrRawStatusBit|0|UINT64|0x00000111
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrPolarityBit|0|UINT64|0x00000112
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrDetectionBit|0|UINT64|0x00000113
+  gQcomTokenSpaceGuid.PcdGpioTlmmIntrDetectionWidth|0|UINT64|0x00000114
+  gQcomTokenSpaceGuid.PcdGpioTlmmInBit|0|UINT64|0x00000115
+  gQcomTokenSpaceGuid.PcdGpioTlmmOutBit|0|UINT64|0x00000116
+  gQcomTokenSpaceGuid.PcdGpioTlmmOeBit|0|UINT64|0x00000117
+  gQcomTokenSpaceGuid.PcdGpioTlmmMuxBit|0|UINT64|0x00000118
+  gQcomTokenSpaceGuid.PcdGpioTlmmDrvBit|0|UINT64|0x00000119
+  gQcomTokenSpaceGuid.PcdGpioTlmmPullBit|0|UINT64|0x0000011a
+  gQcomTokenSpaceGuid.PcdGpioTlmmNumFunctions|0|UINT64|0x0000011b
+
+  # SpmiDxe
+  gQcomTokenSpaceGuid.PcdSpmiMaxPeripherals|128|UINT64|0x00000090
+  gQcomTokenSpaceGuid.PcdSpmiBaseAddress|0x0|UINT64|0x00000091
+  gQcomTokenSpaceGuid.PcdSpmiVersion|1|UINT64|0x00000092
+  gQcomTokenSpaceGuid.PcdPmicArbCoreAddress|0x0|UINT64|0x00000093
+  gQcomTokenSpaceGuid.PcdPmicArbChannelNum|0|UINT64|0x00000094
+  gQcomTokenSpaceGuid.PcdPmicArbOwnerId|0|UINT64|0x00000095
 
