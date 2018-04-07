@@ -147,7 +147,7 @@
   # SoC Drivers Misc
   gQcomTokenSpaceGuid.PcdGicSpiStart|32
 
-  gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000         
+  gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x7800000      
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000  # Start here
 
   ## Default Terminal Type
@@ -160,7 +160,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
   # Enable Debug
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
 
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
