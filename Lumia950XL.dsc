@@ -147,6 +147,12 @@
   # SoC Drivers Misc
   gQcomTokenSpaceGuid.PcdGicSpiStart|32
 
+  # SoC Drivers UARTDM
+  gQcomTokenSpaceGuid.PcdUartDmClkRxTxBitRate|0xCC
+
+  # SoC Drivers QTimer
+  gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000
+
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x7800000      
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000  # Start here
 
@@ -160,7 +166,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
   # Enable Debug
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE
 
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
@@ -256,7 +262,8 @@
   StrLib|Lumia950XLPkg/Library/StrLib/StrLib.inf
 
   # System Reset
-  EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
+  ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
+  EfiResetSystemLib|Lumia950XLPkg/Library/QcomPmicResetSystemLib/QcomPmicResetSystemLib.inf
 
 [LibraryClasses.common.SEC]
   HobLib|EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
@@ -328,7 +335,7 @@
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
   ReportStatusCodeLib|IntelFrameworkModulePkg/Library/DxeReportStatusCodeLibFramework/DxeReportStatusCodeLib.inf
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
-  EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
+  EfiResetSystemLib|Lumia950XLPkg/Library/QcomPmicResetSystemLib/QcomPmicResetSystemLib.inf
   ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
 

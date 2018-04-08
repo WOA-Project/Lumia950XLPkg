@@ -10,6 +10,7 @@
 [Guids.common]
   gLumia950XLPkgTokenSpaceGuid = { 0x4c59628e, 0x0a8a, 0x4099, { 0x8d, 0xe5, 0xf2, 0x08, 0xff, 0x80, 0xc4, 0xbf } }
   gQcomTokenSpaceGuid = { 0x59f58449, 0x99e1, 0x4a19, { 0x86, 0x65, 0x12, 0xd6, 0x37, 0xed, 0xbe, 0x5e } }
+  gQcomUartDmBaseGuid = { 0xa1e1732a, 0xb28a, 0x41a1, { 0x87, 0x6d, 0xac, 0xa9, 0xfd, 0x76, 0x36, 0x40 } }
 
 [Protocols]
   gQcomBamProtocolGuid = { 0xacdd545a, 0xf1f6, 0x4272, { 0x81, 0xc5, 0x04, 0x93, 0xe3, 0x58, 0x05, 0x32 } }
@@ -112,6 +113,19 @@
 
   # Misc
   gQcomTokenSpaceGuid.PcdGicSpiStart|0|UINT64|0x00000200
+
+  # UartDmSerialPortLib
+  gQcomTokenSpaceGuid.PcdUartDmClkRxTxBitRate|0x0|UINT64|0x00000020
+  gQcomTokenSpaceGuid.PcdUartDmCsrOffset|0|UINT64|0x00000021
+  gQcomTokenSpaceGuid.PcdUartDmTfOffset|0|UINT64|0x00000022
+  gQcomTokenSpaceGuid.PcdUartDmCrOffset|0|UINT64|0x00000023
+  gQcomTokenSpaceGuid.PcdUartDmImrOffset|0|UINT64|0x00000024
+  gQcomTokenSpaceGuid.PcdUartDmIrdaOffset|0|UINT64|0x00000025
+  gQcomTokenSpaceGuid.PcdUartDmSrOffset|0|UINT64|0x00000026
+  gQcomTokenSpaceGuid.PcdUartDmRfOffset|0|UINT64|0x00000027
+  gQcomTokenSpaceGuid.PcdUartDmMisrOffset|0|UINT64|0x00000028
+  gQcomTokenSpaceGuid.PcdUartDmIsrOffset|0|UINT64|0x00000029
+  gQcomTokenSpaceGuid.PcdUartDmRxTotalSnapOffset|0|UINT64|0x0000002a
 
 [PcdsFeatureFlag.common]
   # MMCHSDxe
