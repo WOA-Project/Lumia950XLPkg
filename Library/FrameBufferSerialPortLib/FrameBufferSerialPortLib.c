@@ -47,7 +47,6 @@ SerialPortInitialize
     VOID
 )
 {
-
     // Prevent dup initialization
     if (m_Initialized) return RETURN_SUCCESS;
 
@@ -109,6 +108,8 @@ void FbConPutCharWithFactor
 
     if (!m_Initialized) return;
 
+paint:
+
     if ((unsigned char) c > 127) return;
 
 	if ((unsigned char) c < 32) 
@@ -134,6 +135,9 @@ void FbConPutCharWithFactor
 		type != FBCON_TITLE_MSG)
 		return;
 
+    BOOLEAN intstate = ArmGetInterruptState();
+	ArmDisableInterrupts();
+
     Pixels = (void*) FixedPcdGet32(PcdMipiFrameBufferAddress);
 	Pixels += m_Position.y * ((gBpp / 8) * FONT_HEIGHT * gWidth);
 	Pixels += m_Position.x * scale_factor * ((gBpp / 8) * (FONT_WIDTH + 1));
@@ -148,21 +152,28 @@ void FbConPutCharWithFactor
 	m_Position.x++;
 
 	if (m_Position.x >= (int) (m_MaxPosition.x / scale_factor)) goto newline;
+
+    if (intstate) ArmEnableInterrupts();
 	return;
 
 newline:
 	m_Position.y += scale_factor;
 	m_Position.x = 0;
-	if (m_Position.y >= m_MaxPosition.y) 
+	if (m_Position.y >= m_MaxPosition.y - scale_factor) 
     {
         ResetFb();
         FbConFlush();
-		m_Position.y = 0; 
+        m_Position.y = 0;
+
+		if (intstate) ArmEnableInterrupts();
+		goto paint;
 	} 
     else
 	{
         FbConFlush();
+		if (intstate) ArmEnableInterrupts();
     }
+   
 }
 
 void FbConDrawglyph
@@ -174,10 +185,54 @@ void FbConDrawglyph
     unsigned scale_factor
 )
 {
+    char *bg_pixels = pixels;
     unsigned x, y, i, j, k;
 	unsigned data, temp;
 	unsigned int fg_color = m_Color.Foreground;
+    unsigned int bg_color = m_Color.Background;
 	stride -= FONT_WIDTH * scale_factor;
+
+    for (y = 0; y < FONT_HEIGHT / 2; ++y) 
+    {
+		for (i = 0; i < scale_factor; i++) 
+        {
+			for (x = 0; x < FONT_WIDTH; ++x) 
+            {
+				for (j = 0; j < scale_factor; j++) 
+                {
+                    bg_color = m_Color.Background;
+                    for (k = 0; k < bpp; k++) 
+                    {
+                        *bg_pixels = (unsigned char) bg_color;
+                        bg_color = bg_color >> 8;
+                        bg_pixels++;
+                    }
+                }
+			}
+			bg_pixels += (stride * bpp);
+		}
+	}
+
+    for (y = 0; y < FONT_HEIGHT / 2; ++y) 
+    {
+		for (i = 0; i < scale_factor; i++) 
+        {
+			for (x = 0; x < FONT_WIDTH; ++x) 
+            {
+				for (j = 0; j < scale_factor; j++) 
+                {
+                    bg_color = m_Color.Background;
+                    for (k = 0; k < bpp; k++) 
+                    {
+                        *bg_pixels = (unsigned char) bg_color;
+                        bg_color = bg_color >> 8;
+                        bg_pixels++;
+                    }
+                }
+			}
+			bg_pixels += (stride * bpp);
+		}
+	}
 
 	data = glyph[0];
 	for (y = 0; y < FONT_HEIGHT / 2; ++y) 

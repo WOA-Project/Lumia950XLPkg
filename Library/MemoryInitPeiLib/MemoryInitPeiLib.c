@@ -61,71 +61,23 @@ InitMmu
 
 STATIC
 VOID
-AddAndReserved
+AddHob
 (
-    PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED Desc
+    PARM_MEMORY_REGION_DESCRIPTOR_EX Desc
 )
 {
-    BuildResourceDescriptorHob(
-        EFI_RESOURCE_SYSTEM_MEMORY,
-        EFI_RESOURCE_ATTRIBUTE_PRESENT |
-        EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
-        EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
-        EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
-        EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE |
-        EFI_RESOURCE_ATTRIBUTE_TESTED,
-        Desc->PhysicalBase,
-        Desc->Length
-    );
+	BuildResourceDescriptorHob(
+		EFI_RESOURCE_SYSTEM_MEMORY,
+		Desc->ResourceAttribute,
+		Desc->Address,
+		Desc->Length
+	);
 
-    BuildMemoryAllocationHob(
-        Desc->PhysicalBase,
-        Desc->Length,
-        EfiReservedMemoryType
-    );
-}
-
-STATIC
-VOID
-AddUsable
-(
-    PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED Desc
-)
-{
-    BuildResourceDescriptorHob(
-      EFI_RESOURCE_SYSTEM_MEMORY,
-      EFI_RESOURCE_ATTRIBUTE_PRESENT |
-      EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
-      EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
-      EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
-      EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE |
-      EFI_RESOURCE_ATTRIBUTE_TESTED,
-      Desc->PhysicalBase,
-      Desc->Length
-    );
-}
-
-STATIC
-VOID
-AddAndMmio(
-    PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED Desc
-)
-{
-    BuildResourceDescriptorHob(
-        EFI_RESOURCE_SYSTEM_MEMORY,
-        (EFI_RESOURCE_ATTRIBUTE_PRESENT    |
-        EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
-        EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE |
-        EFI_RESOURCE_ATTRIBUTE_TESTED),
-        Desc->PhysicalBase,
-        Desc->Length
-    );
-
-    BuildMemoryAllocationHob(
-        Desc->PhysicalBase,
-        Desc->Length,
-        EfiMemoryMappedIO
-    );
+	BuildMemoryAllocationHob(
+		Desc->Address,
+		Desc->Length,
+		Desc->MemoryType
+	);
 }
 
 /*++
@@ -153,7 +105,7 @@ MemoryPeim
 )
 {
 
-    PARM_MEMORY_REGION_DESCRIPTOR_EXTENDED MemoryDescriptorEx = gDeviceMemoryDescriptor;
+	PARM_MEMORY_REGION_DESCRIPTOR_EX MemoryDescriptorEx = gDeviceMemoryDescriptorEx;
     ARM_MEMORY_REGION_DESCRIPTOR MemoryDescriptor[MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT];
     UINTN Index = 0;
 
@@ -166,13 +118,8 @@ MemoryPeim
         switch (MemoryDescriptorEx->HobOption)
         {
             case AddMem:
-                AddUsable(MemoryDescriptorEx);
-                break;
-            case AddDev:
-                AddAndMmio(MemoryDescriptorEx);
-                break;
-            case AddReserved:
-                AddAndReserved(MemoryDescriptorEx);
+			case AddDev:
+                AddHob(MemoryDescriptorEx);
                 break;
             case NoHob:
             default:
@@ -182,10 +129,10 @@ MemoryPeim
     update:
         ASSERT(Index < MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT);
 
-        MemoryDescriptor[Index].PhysicalBase = MemoryDescriptorEx->PhysicalBase;
-        MemoryDescriptor[Index].VirtualBase = MemoryDescriptorEx->VirtualBase;
+        MemoryDescriptor[Index].PhysicalBase = MemoryDescriptorEx->Address;
+        MemoryDescriptor[Index].VirtualBase = MemoryDescriptorEx->Address;
         MemoryDescriptor[Index].Length = MemoryDescriptorEx->Length;
-        MemoryDescriptor[Index].Attributes = MemoryDescriptorEx->Attributes;
+		MemoryDescriptor[Index].Attributes = MemoryDescriptorEx->ArmAttributes;
 
         Index++;
         MemoryDescriptorEx++;

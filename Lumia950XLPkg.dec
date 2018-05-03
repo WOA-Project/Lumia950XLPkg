@@ -20,6 +20,7 @@
   gQcomSpmiProtocolGuid = { 0xa95ee608, 0x52be, 0x46c9, { 0x9f, 0x78, 0x03, 0x86, 0x42, 0xdb, 0xd0, 0x7c } }
   gQcomPm8x41ProtocolGuid = { 0xb6e811d5, 0x1dce, 0x4ccb, { 0xaf, 0x21, 0xe9, 0xf7, 0xef, 0x68, 0x60, 0x7b } }
   gEFIDroidKeypadDeviceProtocolGuid = { 0xb27625b5, 0x0b6c, 0x4614, { 0xaa, 0x3c, 0x33, 0x13, 0xb5, 0x1d, 0x36, 0x46 } }
+  gQcomScmProtocolGuid = { 0x231fddbd, 0xe8ff, 0x4df3, { 0x91, 0xb8, 0xe2, 0x12, 0xd7, 0x01, 0x70, 0xd6 } }
 
 [PcdsFixedAtBuild.common]
   # Simple FrameBuffer
@@ -27,6 +28,10 @@
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080|UINT32|0x0000a401
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920|UINT32|0x0000a402
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x0000a403
+
+  # Ramdisk
+  gLumia950XLPkgTokenSpaceGuid.PcdRamdiskAddress|0x00000000|UINT64|0x0001a501
+  gLumia950XLPkgTokenSpaceGuid.PcdRamdiskSize|0x00000000|UINT64|0x0001a502
 
   # FD
   gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress|0x00200000|UINT64|0x0000a103
@@ -134,3 +139,6 @@
 
   # SdhciMMCHSDxe
   gQcomTokenSpaceGuid.PcdMmcHs200Caps|FALSE|BOOLEAN|0x00010010
+
+  # ScmDxe
+  gQcomTokenSpaceGuid.PcdTcsrBootMiscDetect|0|UINT64|0x000000a0

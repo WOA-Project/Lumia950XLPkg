@@ -63,6 +63,7 @@
   gArmTokenSpaceGuid.PcdGicDistributorBase|0xf9000000
   gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0xf9002000
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8
+  gArmPlatformTokenSpaceGuid.PcdClusterCount|2
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"Little Moe, LLC."
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"1.01"
@@ -166,7 +167,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
   # Enable Debug
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
 
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
@@ -260,6 +261,10 @@
   LcmLib|Lumia950XLPkg/Library/LcmLib/LcmLib.inf
   MicroLibC|Lumia950XLPkg/Library/MicroLibC/MicroLibC.inf
   StrLib|Lumia950XLPkg/Library/StrLib/StrLib.inf
+
+  # RTC Private
+  Pm8x41LibRtcPrivate|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
+  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
 
   # System Reset
   ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
@@ -366,7 +371,8 @@
   EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
     <LibraryClasses>
-      RealTimeClockLib|ArmVirtPkg/Library/XenRealTimeClockLib/XenRealTimeClockLib.inf
+	  RealTimeClockLib|Lumia950XLPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.inf
+      # RealTimeClockLib|Lumia950XLPkg/Library/PmicRtcLib/PmicRealTimeClockLib.inf
   }
 
   # SoC Drivers (Cross-referenced from EFIDroid)

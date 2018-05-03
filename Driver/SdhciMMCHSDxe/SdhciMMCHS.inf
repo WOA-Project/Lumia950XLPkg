@@ -39,6 +39,9 @@
   gEfiBlockIoProtocolGuid
   gEfiDevicePathProtocolGuid
 
+[Guids]
+  gEfiEventVirtualAddressChangeGuid
+
 [FeaturePcd]
   gQcomTokenSpaceGuid.PcdMmcHs200Caps
 

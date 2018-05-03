@@ -17,10 +17,10 @@ Pm8x41DxeInitialize (
   Pm8x41ImplLibInitialize();
 
   Status = gBS->InstallMultipleProtocolInterfaces(
-                  &Handle,
-                  &gQcomPm8x41ProtocolGuid,      gPm8x41,
-                  NULL
-                  );
+    &Handle,
+    &gQcomPm8x41ProtocolGuid,      
+	gPm8x41,
+    NULL);
   ASSERT_EFI_ERROR(Status);
 
   return Status;
