@@ -61,7 +61,7 @@ EFI_ACPI_6_0_FIXED_ACPI_DESCRIPTION_TABLE Fadt =
     0x009020B4
   },                                                                        // EFI_ACPI_6_0_GENERIC_ADDRESS_STRUCTURE  ResetReg
   1,                                                                        // UINT8      ResetValue
-  EFI_ACPI_6_0_ARM_PSCI_COMPLIANT | EFI_ACPI_6_0_ARM_PSCI_USE_HVC,          // UINT16     ArmBootArchFlags
+  EFI_ACPI_6_0_ARM_PSCI_COMPLIANT | EFI_ACPI_6_0_ARM_PSCI_USE_HVC,			// UINT16     ArmBootArchFlags
   EFI_ACPI_6_0_FIXED_ACPI_DESCRIPTION_TABLE_MINOR_REVISION,                 // UINT8      MinorRevision
   0,                                                                        // UINT64     XFirmwareCtrl
   0,                                                                        // UINT64     XDsdt

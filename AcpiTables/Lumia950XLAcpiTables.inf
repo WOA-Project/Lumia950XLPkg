@@ -35,6 +35,7 @@
   MADT.asl
   DBG2.asl
   MADT.Uni.asl
+  DSDT.asl
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-error=missing-braces

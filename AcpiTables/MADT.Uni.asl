@@ -50,7 +50,7 @@
 [07Eh 0126   2]                     Reserved : 0000
 [080h 0128   4]         CPU Interface Number : 00000001
 [084h 0132   4]                Processor UID : 00000001
-[088h 0136   4]        Flags (decoded below) : 00000000
+[088h 0136   4]        Flags (decoded below) : 00000001
                            Processor Enabled : 0
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
@@ -71,7 +71,7 @@
 [0CEh 0206   2]                     Reserved : 0000
 [0D0h 0208   4]         CPU Interface Number : 00000002
 [0D4h 0212   4]                Processor UID : 00000002
-[0D8h 0216   4]        Flags (decoded below) : 00000000
+[0D8h 0216   4]        Flags (decoded below) : 00000001
                            Processor Enabled : 0
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
@@ -92,7 +92,7 @@
 [11Eh 0286   2]                     Reserved : 0000
 [120h 0288   4]         CPU Interface Number : 00000003
 [124h 0292   4]                Processor UID : 00000003
-[128h 0296   4]        Flags (decoded below) : 00000000
+[128h 0296   4]        Flags (decoded below) : 00000001
                            Processor Enabled : 0
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
@@ -113,7 +113,7 @@
 [16Eh 0366   2]                     Reserved : 0000
 [170h 0368   4]         CPU Interface Number : 00000004
 [174h 0372   4]                Processor UID : 00000004
-[178h 0376   4]        Flags (decoded below) : 00000000
+[178h 0376   4]        Flags (decoded below) : 00000001
                            Processor Enabled : 0
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
@@ -134,7 +134,7 @@
 [1BEh 0446   2]                     Reserved : 0000
 [1C0h 0448   4]         CPU Interface Number : 00000005
 [1C4h 0452   4]                Processor UID : 00000005
-[1C8h 0456   4]        Flags (decoded below) : 00000000
+[1C8h 0456   4]        Flags (decoded below) : 00000001
                            Processor Enabled : 0
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
@@ -155,7 +155,7 @@
 [20Eh 0526   2]                     Reserved : 0000
 [210h 0528   4]         CPU Interface Number : 00000006
 [214h 0532   4]                Processor UID : 00000006
-[218h 0536   4]        Flags (decoded below) : 00000000
+[218h 0536   4]        Flags (decoded below) : 00000001
                            Processor Enabled : 0
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
@@ -176,7 +176,7 @@
 [25Eh 0606   2]                     Reserved : 0000
 [260h 0608   4]         CPU Interface Number : 00000007
 [264h 0612   4]                Processor UID : 00000007
-[268h 0616   4]        Flags (decoded below) : 00000000
+[268h 0616   4]        Flags (decoded below) : 00000001
                            Processor Enabled : 0
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
