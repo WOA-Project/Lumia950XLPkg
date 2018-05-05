@@ -1,37 +1,3 @@
-//------------------------------------------------------------------------------ 
-//
-//  Copyright (c) 2012-2014, Qualcomm Technologies Inc. All rights reserved.
-//  Portions Copyright (c) 2011-2013, ARM Limited. All rights reserved.
-//
-//  This program and the accompanying materials
-//  are licensed and made available under the terms and conditions of the BSD License
-//  which accompanies this distribution.  The full text of the license may be found at
-//  http://opensource.org/licenses/bsd-license.php
-//
-//  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
-//
-//------------------------------------------------------------------------------
-
-//=============================================================================
-//                              EDIT HISTORY
-//
-//
-// when       who     what, where, why
-// --------   ---     ---------------------------------------------------------
-// 12/10/14   bh      Invalidate TLB/I-cache earlier, leave data cache after stack setup
-// 12/03/14   bh      Invalidate TLB
-// 09/18/14   na      Invalidate cache prior to enabling it
-// 07/28/14   lm      Add PRE_SIL for 8909
-// 07/25/14   na      Do not trap SIMD instructions
-// 05/05/14   vk      Setup exception vectors
-// 04/30/14   vk      Add PRE_SIL for 8916
-// 03/03/14   vk      Disable MMU and interrupts first
-// 02/14/14   vk      Initial revision
-//
-//============================================================================
-
-
 #include <Library/PcdLib.h>
 #include <AsmMacroIoLibV8.h>
 #include <Chipset/AArch64.h>

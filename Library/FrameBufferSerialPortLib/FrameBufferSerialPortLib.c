@@ -363,6 +363,31 @@ SerialPortWrite
 
 UINTN
 EFIAPI
+SerialPortWriteCritical
+(
+	IN UINT8     *Buffer,
+	IN UINTN     NumberOfBytes
+)
+{
+	if (FixedPcdGetBool(PcdEnableScreenSerial))
+	{
+		UINT8* CONST Final = &Buffer[NumberOfBytes];
+		UINTN CurrentForeground = m_Color.Foreground;
+		m_Color.Foreground = FB_BGRA8888_YELLOW;
+
+		while (Buffer < Final)
+		{
+			FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
+		}
+
+		m_Color.Foreground = CurrentForeground;
+	}
+
+	return NumberOfBytes;
+}
+
+UINTN
+EFIAPI
 SerialPortRead
 (
     OUT UINT8     *Buffer,

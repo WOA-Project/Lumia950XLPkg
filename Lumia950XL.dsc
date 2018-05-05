@@ -169,6 +169,9 @@
   # Enable Debug
   gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
 
+  # SoC Drivers I2C
+  gQcomTokenSpaceGuid.PcdGicSpiStart|32
+
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|1920
@@ -261,6 +264,7 @@
   LcmLib|Lumia950XLPkg/Library/LcmLib/LcmLib.inf
   MicroLibC|Lumia950XLPkg/Library/MicroLibC/MicroLibC.inf
   StrLib|Lumia950XLPkg/Library/StrLib/StrLib.inf
+  QcomPlatformI2cQupLib|Lumia950XLPkg/Library/StaticQcomPlatformI2cQupLib/StaticQcomPlatformI2cQupLib.inf
 
   # RTC Private
   Pm8x41LibRtcPrivate|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
@@ -305,6 +309,7 @@
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
   ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
+  I2cQupLib|Lumia950XLPkg/Driver/I2cQupDxe/I2cQupLib.inf
 
 [LibraryClasses.common.UEFI_APPLICATION]
   UefiDecompressLib|IntelFrameworkModulePkg/Library/BaseUefiTianoCustomDecompressLib/BaseUefiTianoCustomDecompressLib.inf
@@ -340,9 +345,12 @@
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
   ReportStatusCodeLib|IntelFrameworkModulePkg/Library/DxeReportStatusCodeLibFramework/DxeReportStatusCodeLib.inf
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
-  EfiResetSystemLib|Lumia950XLPkg/Library/QcomPmicResetSystemLib/QcomPmicResetSystemLib.inf
   ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
+
+  # System Reset
+  ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
+  EfiResetSystemLib|Lumia950XLPkg/Library/QcomPmicResetSystemLib/QcomPmicResetSystemLib.inf
 
 [Components.common]
   # PrePI
@@ -372,7 +380,6 @@
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
     <LibraryClasses>
 	  RealTimeClockLib|Lumia950XLPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.inf
-      # RealTimeClockLib|Lumia950XLPkg/Library/PmicRtcLib/PmicRealTimeClockLib.inf
   }
 
   # SoC Drivers (Cross-referenced from EFIDroid)
@@ -385,6 +392,7 @@
   Lumia950XLPkg/Driver/KeypadDxe/KeypadDxe.inf
   Lumia950XLPkg/Driver/ClockDxe/ClockDxe.inf
   Lumia950XLPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
+  Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
 
   # Runtime Services
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf

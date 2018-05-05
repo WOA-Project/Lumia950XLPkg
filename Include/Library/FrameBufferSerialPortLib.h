@@ -30,4 +30,12 @@ enum FbConMsgType {
 
 void ResetFb(void);
 
+UINTN
+EFIAPI
+SerialPortWriteCritical
+(
+	IN UINT8     *Buffer,
+	IN UINTN     NumberOfBytes
+);
+
 #endif

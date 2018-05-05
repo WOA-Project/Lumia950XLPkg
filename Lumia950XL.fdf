@@ -63,6 +63,7 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/KeypadDxe/KeypadDxe.inf
   INF Lumia950XLPkg/Driver/ClockDxe/ClockDxe.inf
   INF Lumia950XLPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
+  INF Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
 
   # Runtime Services
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
@@ -115,7 +116,7 @@ READ_LOCK_STATUS   = TRUE
   # ACPI and SMBIOS
   INF MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
   INF MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf
-  # INF MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
+  INF MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
   INF Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
 
   # ACPI Tables
