@@ -138,6 +138,8 @@
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrResetPin|0|UINT32|0x0002a502
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrIntPin|0|UINT32|0x0002a503
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice|0|UINT32|0x0002a504
+  gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|0|UINT64|0x0002a505
+  gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|0|UINT64|0x0002a506
 
 [PcdsFeatureFlag.common]
   # MMCHSDxe

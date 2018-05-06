@@ -3,17 +3,79 @@
 #include <Library/LKEnvLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/MemoryAllocationLib.h>
-#include <Protocol/QcomI2cQup.h>
-#include <Protocol/QcomGpioTlmm.h>
 #include <Library/PcdLib.h>
 
+#include <Protocol/AbsolutePointer.h>
+#include <Protocol/QcomI2cQup.h>
+#include <Protocol/QcomGpioTlmm.h>
+
 #include "SynapticsRmi4.h"
+#include <Device/TouchDevicePath.h>
 
 QCOM_GPIO_TLMM_PROTOCOL *GpioTlmmProtocol;
 QCOM_I2C_QUP_PROTOCOL *I2cQupProtocol;
 
 BOOLEAN m_DeviceInitialized = FALSE;
 struct qup_i2c_dev *m_Controller;
+
+UINT8 PageF12 = 0;
+UINT32 TouchDataAddress = 0;
+UINT32 FailureCount = 0;
+
+EFI_EVENT m_CallbackTimer;
+
+UINT64 LastX = 0;
+UINT64 LastY = 0;
+
+// Protocol information
+EFI_ABSOLUTE_POINTER_MODE m_AbsPointerModeInfo = 
+{ 
+	0, 0, 0, 
+	FixedPcdGet64(SynapticsXMax), FixedPcdGet64(SynapticsYMax), 0,
+	0 
+};
+
+EFI_STATUS AbsPReset(
+	IN EFI_ABSOLUTE_POINTER_PROTOCOL *This,
+	IN BOOLEAN                       ExtendedVerification
+)
+{
+	LastX = 0;
+	LastY = 0;
+
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS AbsPGetState(
+	IN      EFI_ABSOLUTE_POINTER_PROTOCOL  *This,
+	IN OUT  EFI_ABSOLUTE_POINTER_STATE     *State
+)
+{
+	EFI_STATUS Status = EFI_SUCCESS;
+
+	if (State == NULL)
+	{
+		Status = EFI_INVALID_PARAMETER;
+		goto exit;
+	}
+
+	State->CurrentX = LastX;
+	State->CurrentY = LastY;
+	State->CurrentZ = 0;
+	State->ActiveButtons = 0;
+
+exit:
+	return Status;
+}
+
+//Absolute Pointer Protocol
+EFI_ABSOLUTE_POINTER_PROTOCOL m_AbsPointerProtImpl =
+{
+	AbsPReset,
+	AbsPGetState,
+	(EFI_EVENT)NULL,
+	(EFI_ABSOLUTE_POINTER_MODE *) &m_AbsPointerModeInfo
+};
 
 EFI_STATUS
 EFIAPI
@@ -153,6 +215,95 @@ exit:
 
 EFI_STATUS
 EFIAPI
+SyncGetTouchData(
+	IN PTOUCH_DATA			DataBuffer
+)
+{
+	EFI_STATUS Status = EFI_SUCCESS;
+	UINT8 TouchCoordinates[TOUCH_DATA_BYTES] = { 0 };
+
+	if (!m_DeviceInitialized)
+	{
+		Status = EFI_NOT_READY;
+		goto exit;
+	}
+
+	if (DataBuffer == NULL)
+	{
+		Status = EFI_INVALID_PARAMETER;
+		goto exit;
+	}
+
+	// Change RMI page to F12
+	Status = SynaI2cWrite(RMI_CHANGE_PAGE_ADDRESS, &PageF12, 1);
+	if (EFI_ERROR(Status))
+	{
+		DEBUG((EFI_D_ERROR, "Failed to change RMI4 page address \n"));
+		goto exit;
+	}
+
+	// Read a fingerprint
+	Status = SynaI2cRead(TouchDataAddress, &TouchCoordinates[0], TOUCH_DATA_BYTES);
+	if (EFI_ERROR(Status))
+	{
+		DEBUG((EFI_D_ERROR, "Failed to read RMI4 F12 page data \n"));
+		goto exit;
+	}
+
+	DataBuffer->TouchStatus = TouchCoordinates[0];
+	DataBuffer->TouchX = ((TouchCoordinates[1] & 0xFF) | ((TouchCoordinates[2] & 0xFF) << 8));
+	DataBuffer->TouchY = ((TouchCoordinates[3] & 0xFF) | ((TouchCoordinates[4] & 0xFF) << 8));
+
+exit:
+	return Status;
+}
+
+VOID
+EFIAPI SyncPollCallback(
+	IN  EFI_EVENT   Event,
+	IN  VOID        *Context
+)
+{
+	EFI_STATUS Status;
+	TOUCH_DATA TouchPointerData;
+	UINT32 CurrentX, CurrentY;
+	
+	Status = SyncGetTouchData(&TouchPointerData);
+
+	if (EFI_ERROR(Status))
+	{
+		DEBUG((EFI_D_ERROR, "Faild to get Synaptics RMI4 F12 Data \n"));
+		FailureCount++;
+
+		if (FailureCount >= FAILURE_THRESHOLD)
+		{
+			gBS->CloseEvent(m_CallbackTimer);
+		}
+	}
+	else
+	{
+		if (TouchPointerData.TouchStatus > 0)
+		{
+			CurrentX = TouchPointerData.TouchX;
+			CurrentY = TouchPointerData.TouchY;
+
+			if (FixedPcdGetBool(PcdEnableScreenSerial) && CurrentY >= m_AbsPointerModeInfo.AbsoluteMaxY)
+			{
+				LastX = CurrentX;
+				LastY = CurrentY - m_AbsPointerModeInfo.AbsoluteMaxY;
+			}
+			else if (!FixedPcdGetBool(PcdEnableScreenSerial))
+			{
+				LastX = CurrentX;
+				LastY = CurrentY;
+			}
+		}
+	}
+
+}
+
+EFI_STATUS
+EFIAPI
 SynaInitialize(
 	IN EFI_HANDLE         ImageHandle,
 	IN EFI_SYSTEM_TABLE   *SystemTable
@@ -166,9 +317,7 @@ SynaInitialize(
 	UINT16 ControllerSlaveAddr = 0;
 
 	UINT8 Page = 0;
-	UINT8 PageF12 = 0;
 	UINT8 Function = 0;
-	UINT32 TouchDataAddress = 0;
 
 	// Device ID
 	DeviceIndex = FixedPcdGet32(SynapticsCtlrI2cDevice);
@@ -186,6 +335,13 @@ SynaInitialize(
 		DEBUG((EFI_D_ERROR, "Invalid I2C Address \n"));
 		Status = EFI_INVALID_PARAMETER;
 		goto exit;
+	}
+
+	// Position
+	if (FixedPcdGetBool(PcdEnableScreenSerial))
+	{
+		// First part is ignored
+		m_AbsPointerModeInfo.AbsoluteMaxY = m_AbsPointerModeInfo.AbsoluteMaxY / 2;
 	}
 
 	// Locate protocol
@@ -299,8 +455,38 @@ SynaInitialize(
 			goto exit;
 		}
 
-		// Install protocols
+		// Flag device as initialized
+		m_DeviceInitialized = TRUE;
 
+		// Set event routines
+		gBS->CreateEvent(
+			EVT_NOTIFY_SIGNAL | EVT_TIMER,
+			TPL_CALLBACK,
+			SyncPollCallback,
+			NULL,
+			&m_CallbackTimer
+		);
+
+		gBS->SetTimer(
+			m_CallbackTimer,
+			TimerPeriodic,
+			TIMER_INTERVAL_TOUCH_POLL
+		);
+
+		// Install protocols
+		Status = gBS->InstallMultipleProtocolInterfaces(
+			&ImageHandle,
+			&gEfiAbsolutePointerProtocolGuid,
+			&m_AbsPointerProtImpl,
+			&gEfiDevicePathProtocolGuid,
+			&TouchDxeDevicePath,
+			NULL
+		);
+
+		if (EFI_ERROR(Status))
+		{
+			DEBUG((EFI_D_ERROR, "Failed to install protocol interface \n"));
+		}
 	}
 	else
 	{

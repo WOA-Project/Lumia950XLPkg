@@ -32,6 +32,7 @@
 #include <Guid/EventGroup.h>
 #include <Guid/TtyTerm.h>
 #include <Configuration/BootDevices.h>
+#include <Device/TouchDevicePath.h>
 
 #include "PlatformBm.h"
 
@@ -515,6 +516,12 @@ PlatformBootManagerBeforeConsole (
   //
   EfiBootManagerUpdateConsoleVariable (ConIn,
     (EFI_DEVICE_PATH_PROTOCOL *)&mUsbKeyboard, NULL);
+
+  //
+  // Add touch screen to ConIn
+  //
+  EfiBootManagerUpdateConsoleVariable(ConIn,
+	  (EFI_DEVICE_PATH_PROTOCOL *) &TouchDxeDevicePath, NULL);
 
   //
   // Now add the device path of all handles with QcomKeypadDeviceProtocolGuid

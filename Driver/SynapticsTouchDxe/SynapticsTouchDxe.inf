@@ -33,11 +33,17 @@
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrResetPin
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrIntPin
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice
+  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferWidth
+  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferHeight
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial
+  gLumia950XLPkgTokenSpaceGuid.SynapticsXMax
+  gLumia950XLPkgTokenSpaceGuid.SynapticsYMax
 
 [Protocols]
   gQcomI2cQupProtocolGuid
   gHardwareInterruptProtocolGuid
   gQcomGpioTlmmProtocolGuid
+  gEfiAbsolutePointerProtocolGuid
 
 [Depex]
   gQcomI2cQupProtocolGuid

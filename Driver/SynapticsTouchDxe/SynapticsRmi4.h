@@ -11,4 +11,17 @@
 
 #define RMI_CHANGE_PAGE_ADDRESS 0xFF
 
+#define TIMER_INTERVAL_TOUCH_POLL 100000
+#define TOUCH_BUFFER_SIZE 25
+#define TOUCH_DATA_BYTES 8
+
+#define FAILURE_THRESHOLD 25
+
+typedef struct _TOUCH_DATA
+{
+	UINT16		TouchX;
+	UINT16		TouchY;
+	UINT8		TouchStatus;
+} TOUCH_DATA, *PTOUCH_DATA;
+
 #endif

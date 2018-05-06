@@ -177,6 +177,8 @@
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrResetPin|38
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrIntPin|77
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice|1
+  gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1440
+  gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
 
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
