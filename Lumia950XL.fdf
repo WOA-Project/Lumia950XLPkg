@@ -123,7 +123,15 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
 
   # ACPI Tables
-  INF RuleOverride = ACPITABLE Lumia950XLPkg/AcpiTables/Lumia950XLAcpiTables.inf
+  FILE FREEFORM = 7E374E25-8E01-4FEE-87F2-390C23C606CD {
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Generated/DBG2.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Generated/DSDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Generated/FACS.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Generated/FADT.acpi
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Generated/GTDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Generated/MADT.aml
+    SECTION UI = "AcpiTables"
+  }
 
   # Shell
   INF ShellPkg/Application/Shell/Shell.inf
