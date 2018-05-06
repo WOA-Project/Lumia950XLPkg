@@ -8,46 +8,21 @@ typedef struct _I2C_DEVICE {
 	UINT32 FreqOut;
 	UINT32 FreqIn;
 	// Device On PIN
-	UINT32 EnableDriveStrength;
-	GPIO_PULL EnablePull;
+	UINT32 DriveStrength;
+	GPIO_PULL PullMode;
 	BOOLEAN EnableSetPull;
-	UINT32 EnablePinFunction;
-	UINT32 EnablePin0;
-	UINT32 EnablePin1;
-	// Clocks
-	UINT32 ClkBlspId;
-	UINT32 ClkQupId;
+	UINT32 PinFunction;
+	UINT32 SdaPin;
+	UINT32 SclPin;
 } I2C_DEVICE, *PI2C_DEVICE;
 
 static I2C_DEVICE gI2cDevices[] =
 {
-	// I2C 1
+	// I2C 1 (Touch)
 	{
-		1, 0xf9923000, 0x7f, 0x05f5e100, 0x0124f800,
+		1, 0xf9923000, 95, 0x00061A80, 0x0124f800,
 		2, GPIO_PULL_NONE, TRUE,
-		3, 2, 3,
-		1, 1
-	},
-	// I2C 2
-	{
-		2, 0xf9924000, 0x80, 0x05f5e100, 0x0124f800,
-		2, GPIO_PULL_NONE, TRUE,
-		3, 6, 7,
-		1, 2
-	},
-	// I2C 6
-	{
-		6, 0xf9928000, 0x84, 0x05f5e100, 0x0124f800,
-		2, GPIO_PULL_NONE, TRUE,
-		3, 27, 28,
-		1, 6
-	},
-	// I2C 7
-	{
-		7, 0xf9963000, 0x85, 0x05f5e100, 0x0124f800,
-		2, GPIO_PULL_NONE, TRUE,
-		3, 43, 44,
-		2, 1
+		3, 2, 3
 	},
 	// Terminator
 	{ }

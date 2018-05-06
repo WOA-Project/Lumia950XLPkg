@@ -266,10 +266,17 @@ static int
 qup_update_state(struct qup_i2c_dev *dev, uint32_t state)
 {
 	if (qup_i2c_poll_state(dev, 0, true) != 0)
+	{
+		dprintf(CRITICAL, "Poll State failed     \n");
 		return -EIO;
+	}
+		
 	writel(state, dev->qup_base + QUP_STATE);
 	if (qup_i2c_poll_state(dev, state, false) != 0)
+	{
+		dprintf(CRITICAL, "Poll State failed (Secondary)     \n");
 		return -EIO;
+	}
 	return 0;
 }
 
@@ -737,6 +744,7 @@ qup_i2c_xfer(struct qup_i2c_dev *dev, struct i2c_msg msgs[], int num)
 		dev->err = 0;
 
 		if (qup_i2c_poll_state(dev, QUP_I2C_MAST_GEN, false) != 0) {
+			dprintf(CRITICAL, "Poll State failed     \n");
 			ret = -EIO;
 			goto out_err;
 		}

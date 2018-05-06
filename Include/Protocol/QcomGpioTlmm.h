@@ -20,6 +20,12 @@ typedef enum {
   GPIO_PULL_UP = 3,
 } GPIO_PULL;
 
+#define GPIO_DISABLE 0
+#define GPIO_ENABLE  1
+
+#define GPIO_LOW 0
+#define GPIO_HIGH  1
+
 typedef EFI_STATUS (EFIAPI *msm_gpio_direction_input_t)(UINTN id);
 typedef EFI_STATUS (EFIAPI *msm_gpio_direction_output_t)(UINTN id, UINTN value);
 typedef GPIO_DIRECTION (EFIAPI *msm_gpio_get_direction_t)(UINTN id);

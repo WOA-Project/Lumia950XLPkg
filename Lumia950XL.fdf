@@ -65,6 +65,9 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
   INF Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
 
+  # Device Drivers
+  INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
+
   # Runtime Services
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf

@@ -172,6 +172,12 @@
   # SoC Drivers I2C
   gQcomTokenSpaceGuid.PcdGicSpiStart|32
 
+  # Device Driver Synaptics 3202
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrAddress|0x4b
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrResetPin|38
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrIntPin|77
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice|1
+
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|1920
@@ -393,6 +399,9 @@
   Lumia950XLPkg/Driver/ClockDxe/ClockDxe.inf
   Lumia950XLPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
   Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
+
+  # Device Drivers
+  Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
 
   # Runtime Services
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf

@@ -133,6 +133,12 @@
   gQcomTokenSpaceGuid.PcdUartDmIsrOffset|0|UINT64|0x00000029
   gQcomTokenSpaceGuid.PcdUartDmRxTotalSnapOffset|0|UINT64|0x0000002a
 
+  # Synaptics 3202
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrAddress|0|UINT16|0x0002a501
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrResetPin|0|UINT32|0x0002a502
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrIntPin|0|UINT32|0x0002a503
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice|0|UINT32|0x0002a504
+
 [PcdsFeatureFlag.common]
   # MMCHSDxe
   gQcomTokenSpaceGuid.PcdMmcAdmSupport|FALSE|BOOLEAN|0x00010001

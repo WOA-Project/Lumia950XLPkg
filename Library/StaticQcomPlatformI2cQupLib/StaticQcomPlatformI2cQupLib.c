@@ -56,18 +56,18 @@ LibQcomPlatformI2cQupAddBusses(
 	while (I2cDevice->DeviceId > 0)
 	{
 		// Set Pins
-		gGpioTlmm->SetFunction(I2cDevice->EnablePin0, I2cDevice->EnablePinFunction);
-		gGpioTlmm->SetDriveStrength(I2cDevice->EnablePin0, I2cDevice->EnableDriveStrength);
+		gGpioTlmm->SetFunction(I2cDevice->SdaPin, I2cDevice->PinFunction);
+		gGpioTlmm->SetDriveStrength(I2cDevice->SdaPin, I2cDevice->DriveStrength);
 		if (I2cDevice->EnableSetPull)
 		{
-			gGpioTlmm->SetPull(I2cDevice->EnablePin0, I2cDevice->EnableDriveStrength);
+			gGpioTlmm->SetPull(I2cDevice->SdaPin, I2cDevice->DriveStrength);
 		}
 		
-		gGpioTlmm->SetFunction(I2cDevice->EnablePin1, I2cDevice->EnablePinFunction);
-		gGpioTlmm->SetDriveStrength(I2cDevice->EnablePin1, I2cDevice->EnableDriveStrength);
+		gGpioTlmm->SetFunction(I2cDevice->SclPin, I2cDevice->PinFunction);
+		gGpioTlmm->SetDriveStrength(I2cDevice->SclPin, I2cDevice->DriveStrength);
 		if (I2cDevice->EnableSetPull)
 		{
-			gGpioTlmm->SetPull(I2cDevice->EnablePin1, I2cDevice->EnableDriveStrength);
+			gGpioTlmm->SetPull(I2cDevice->SclPin, I2cDevice->DriveStrength);
 		}
 		
 		// Set Clock
