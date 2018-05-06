@@ -80,7 +80,6 @@
   gEfiEndOfDxeEventGroupGuid
   gEfiTtyTermGuid
   gUefiShellFileGuid
-  gEfiEventExitBootServicesGuid
 
 [Protocols]
   gEfiDevicePathProtocolGuid
