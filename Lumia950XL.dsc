@@ -167,7 +167,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
   # Enable Debug
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE
 
   # SoC Drivers I2C
   gQcomTokenSpaceGuid.PcdGicSpiStart|32
