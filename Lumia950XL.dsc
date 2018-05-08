@@ -277,6 +277,7 @@
   # RTC Private
   Pm8x41LibRtcPrivate|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
+  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
 
   # System Reset
   ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
@@ -314,8 +315,8 @@
   # SoC Drivers
   QcomDxeTimerLib|Lumia950XLPkg/Library/QTimerLib/QcomQTimerDxeTimerLib.inf
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
-  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
-  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
+  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
+  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
   ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
   I2cQupLib|Lumia950XLPkg/Driver/I2cQupDxe/I2cQupLib.inf
 
@@ -330,8 +331,8 @@
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
   # SoC Drivers
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
-  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
-  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
+  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
+  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
   ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER]
@@ -344,8 +345,8 @@
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
   # SoC Drivers
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
-  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiLib.inf
-  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Lib.inf
+  SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
+  Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
   ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]

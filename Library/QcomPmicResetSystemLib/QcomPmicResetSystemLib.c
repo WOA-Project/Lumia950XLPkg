@@ -29,50 +29,49 @@
 #include <Library/LKEnvLib.h>
 #include <Library/IoLib.h>
 #include <Library/dload_util.h>
-#include <Protocol/QcomPm8x41.h>
+#include <Library/QcomPm8x41Lib.h>
+
 #include <Platform/iomap.h>
 #include <Chipset/reboot.h>
 
-STATIC QCOM_PM8X41_PROTOCOL *mPm8x41 = NULL;
-
 STATIC VOID shutdown_device(VOID)
 {
-  /* Configure PMIC for shutdown. */
-  mPm8x41->pm8994_reset_configure(PON_PSHOLD_SHUTDOWN);
+	/* Configure PMIC for shutdown. */
+	gPm8x41->pm8994_reset_configure(PON_PSHOLD_SHUTDOWN);
 
-  /* Drop PS_HOLD for MSM */
-  writel(0x00, MPM2_MPM_PS_HOLD);
+	/* Drop PS_HOLD for MSM */
+	writel(0x00, MPM2_MPM_PS_HOLD);
 
-  mdelay(5000);
+	mdelay(5000);
 
-  DEBUG((EFI_D_ERROR, "Shutdown failed\n"));
+	DEBUG((EFI_D_ERROR, "Shutdown failed\n"));
 
-  ASSERT(0);
+	ASSERT(0);
 }
 
 STATIC VOID reboot_device(UINTN reboot_reason)
 {
-  UINT8 reset_type = 0;
-  UINT32 restart_reason_addr;
+	UINT8 reset_type = 0;
+	UINT32 restart_reason_addr;
 
-  restart_reason_addr = RESTART_REASON_ADDR;
+	restart_reason_addr = RESTART_REASON_ADDR;
 
-  /* Write the reboot reason */
-  writel(reboot_reason, restart_reason_addr);
+	/* Write the reboot reason */
+	writel(reboot_reason, restart_reason_addr);
 
-  if((reboot_reason == FASTBOOT_MODE) || (reboot_reason == DLOAD) || (reboot_reason == RECOVERY_MODE))
-    reset_type = PON_PSHOLD_WARM_RESET;
-  else
-    reset_type = PON_PSHOLD_HARD_RESET;
+	if((reboot_reason == FASTBOOT_MODE) || (reboot_reason == DLOAD) || (reboot_reason == RECOVERY_MODE))
+	reset_type = PON_PSHOLD_WARM_RESET;
+	else
+	reset_type = PON_PSHOLD_HARD_RESET;
 
-  mPm8x41->pm8994_reset_configure(reset_type);
+	gPm8x41->pm8994_reset_configure(reset_type);
 
-  /* Drop PS_HOLD for MSM */
-  writel(0x00, MPM2_MPM_PS_HOLD);
+	/* Drop PS_HOLD for MSM */
+	writel(0x00, MPM2_MPM_PS_HOLD);
 
-  mdelay(5000);
+	mdelay(5000);
 
-  DEBUG((EFI_D_ERROR, "Rebooting failed\n"));
+	DEBUG((EFI_D_ERROR, "Rebooting failed\n"));
 }
 
 /**
@@ -95,38 +94,27 @@ LibResetSystem (
   IN CHAR16           *ResetData OPTIONAL
   )
 {
-  EFI_STATUS Status;
+	switch (ResetType) {
+	case EfiResetPlatformSpecific:
+	// Map the platform specific reset as reboot
+	case EfiResetWarm:
+	// Issue cold reset
+	case EfiResetCold:
+	// Issue cold reset
+		reboot_device(0);
+		break;
+	case EfiResetShutdown:
+		shutdown_device();
+		break;
+	default:
+		ASSERT (FALSE);
+		return EFI_UNSUPPORTED;
+	}
 
-  if (mPm8x41 == NULL)
-  {
-    Status = gBS->LocateProtocol(
-      &gQcomPm8x41ProtocolGuid, 
-      NULL, 
-      (VOID **) &mPm8x41);
-    if (EFI_ERROR(Status)) return Status;
-  }
-
-  switch (ResetType) {
-  case EfiResetPlatformSpecific:
-    // Map the platform specific reset as reboot
-  case EfiResetWarm:
-    // Issue cold reset
-  case EfiResetCold:
-    // Issue cold reset
-    reboot_device(0);
-    break;
-  case EfiResetShutdown:
-    shutdown_device();
-    break;
-  default:
-    ASSERT (FALSE);
-    return EFI_UNSUPPORTED;
-  }
-
-  // We should never be here
-  DEBUG ((EFI_D_ERROR, "%a: PMIC Reset failed\n", __FUNCTION__));
-  CpuDeadLoop ();
-  return EFI_UNSUPPORTED;
+	// We should never be here
+	DEBUG ((EFI_D_ERROR, "%a: PMIC Reset failed\n", __FUNCTION__));
+	CpuDeadLoop ();
+	return EFI_UNSUPPORTED;
 }
 
 /**
@@ -145,5 +133,5 @@ LibInitializeResetSystem (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  return EFI_SUCCESS;
+	return EFI_SUCCESS;
 }

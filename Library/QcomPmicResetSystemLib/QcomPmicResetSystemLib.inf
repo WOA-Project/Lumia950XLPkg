@@ -40,6 +40,4 @@
   UefiBootServicesTableLib
   TimerLib
   DloadUtilLib
-  
-[Protocols]
-  gQcomPm8x41ProtocolGuid
+  Pm8x41Lib
