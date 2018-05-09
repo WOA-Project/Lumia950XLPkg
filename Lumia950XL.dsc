@@ -167,7 +167,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
   # Enable Debug
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
 
   # SoC Drivers I2C
   gQcomTokenSpaceGuid.PcdGicSpiStart|32
@@ -179,6 +179,28 @@
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice|1
   gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1440
   gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
+
+  # RPM
+  gQcomTokenSpaceGuid.PcdApcsAlias0IpcInterrupt|0xF900D008
+  gQcomTokenSpaceGuid.PcdSmdIrq|200
+
+  # SMEM
+  gQcomTokenSpaceGuid.PcdMsmSharedBase|0x06A00000
+  gQcomTokenSpaceGuid.PcdMsmSharedSize|0x00200000
+
+  # USB
+  gQcomTokenSpaceGuid.PcdUsb30Ee1Irq|163
+  gQcomTokenSpaceGuid.PcdUsb30Base|0xF9200000
+  gQcomTokenSpaceGuid.PcdUsb30ScratchBase|0xF92F8800
+  gQcomTokenSpaceGuid.PcdUsb30QmpPhyBase|0xF9B38000
+  gQcomTokenSpaceGuid.PcdUsb2PhyBase|0xF9B39000
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortPowerDownOffset|0x000000B4
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortUtmiCtrl2Offset|0x000000C4
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortTune1Offset|0x00000080
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortTune2Offset|0x00000084
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortTune3Offset|0x00000088
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortTune4Offset|0x0000008C
+  gQcomTokenSpaceGuid.PcdUsb2GccPhyBcr|0xFC4004B8
 
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
@@ -273,6 +295,15 @@
   MicroLibC|Lumia950XLPkg/Library/MicroLibC/MicroLibC.inf
   StrLib|Lumia950XLPkg/Library/StrLib/StrLib.inf
   QcomPlatformI2cQupLib|Lumia950XLPkg/Library/StaticQcomPlatformI2cQupLib/StaticQcomPlatformI2cQupLib.inf
+  SmemLib|Lumia950XLPkg/Driver/SmemDxe/SmemImplLib.inf
+  SmemPtableLib|Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableImplLib.inf
+  PTableLib|Lumia950XLPkg/Library/PTableLib/PTableLib.inf
+  SsbiLib|Lumia950XLPkg/Driver/SsbiDxe/SsbiImplLib.inf
+  BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
+  QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
+  PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
+  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
+  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
 
   # RTC Private
   Pm8x41LibRtcPrivate|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
@@ -294,6 +325,16 @@
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
   ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockImplLib.inf
+  SmemLib|Lumia950XLPkg/Driver/SmemDxe/SmemImplLib.inf
+  SmemPtableLib|Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableImplLib.inf
+  PTableLib|Lumia950XLPkg/Library/PTableLib/PTableLib.inf
+  RpmLib|Lumia950XLPkg/Driver/SmdRpmDxe/RpmLib.inf
+  SsbiLib|Lumia950XLPkg/Driver/SsbiDxe/SsbiImplLib.inf
+  BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
+  QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
+  PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
+  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
+  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
 
 [LibraryClasses.common.DXE_CORE]
   HobLib|MdePkg/Library/DxeCoreHobLib/DxeCoreHobLib.inf
@@ -319,6 +360,16 @@
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
   ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
   I2cQupLib|Lumia950XLPkg/Driver/I2cQupDxe/I2cQupLib.inf
+  SmemLib|Lumia950XLPkg/Driver/SmemDxe/SmemImplLib.inf
+  SmemPtableLib|Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableImplLib.inf
+  PTableLib|Lumia950XLPkg/Library/PTableLib/PTableLib.inf
+  RpmLib|Lumia950XLPkg/Driver/SmdRpmDxe/RpmLib.inf
+  SsbiLib|Lumia950XLPkg/Driver/SsbiDxe/SsbiImplLib.inf
+  BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
+  QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
+  PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
+  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
+  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
 
 [LibraryClasses.common.UEFI_APPLICATION]
   UefiDecompressLib|IntelFrameworkModulePkg/Library/BaseUefiTianoCustomDecompressLib/BaseUefiTianoCustomDecompressLib.inf
@@ -334,6 +385,16 @@
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
   ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
+  SmemLib|Lumia950XLPkg/Driver/SmemDxe/SmemImplLib.inf
+  SmemPtableLib|Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableImplLib.inf
+  PTableLib|Lumia950XLPkg/Library/PTableLib/PTableLib.inf
+  RpmLib|Lumia950XLPkg/Driver/SmdRpmDxe/RpmLib.inf
+  SsbiLib|Lumia950XLPkg/Driver/SsbiDxe/SsbiImplLib.inf
+  BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
+  QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
+  PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
+  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
+  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER]
   ReportStatusCodeLib|IntelFrameworkModulePkg/Library/DxeReportStatusCodeLibFramework/DxeReportStatusCodeLib.inf
@@ -348,6 +409,16 @@
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
   ClockLib|Lumia950XLPkg/Driver/ClockDxe/ClockLib.inf
+  SmemLib|Lumia950XLPkg/Driver/SmemDxe/SmemImplLib.inf
+  SmemPtableLib|Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableImplLib.inf
+  PTableLib|Lumia950XLPkg/Library/PTableLib/PTableLib.inf
+  RpmLib|Lumia950XLPkg/Driver/SmdRpmDxe/RpmLib.inf
+  SsbiLib|Lumia950XLPkg/Driver/SsbiDxe/SsbiImplLib.inf
+  BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
+  QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
+  PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
+  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
+  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
@@ -402,6 +473,13 @@
   Lumia950XLPkg/Driver/ClockDxe/ClockDxe.inf
   Lumia950XLPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
   Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
+  Lumia950XLPkg/Driver/SmemDxe/SmemDxe.inf
+  Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
+  Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
+  Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
+  Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
+  Lumia950XLPkg/Driver/UsbDxe/UsbDxe.inf
+  # Lumia950XLPkg/Driver/StubUsbAppDxe/StubUsbAppDxe.inf
 
   # Device Drivers
   Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf

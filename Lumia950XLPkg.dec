@@ -22,6 +22,12 @@
   gEFIDroidKeypadDeviceProtocolGuid = { 0xb27625b5, 0x0b6c, 0x4614, { 0xaa, 0x3c, 0x33, 0x13, 0xb5, 0x1d, 0x36, 0x46 } }
   gQcomScmProtocolGuid = { 0x231fddbd, 0xe8ff, 0x4df3, { 0x91, 0xb8, 0xe2, 0x12, 0xd7, 0x01, 0x70, 0xd6 } }
   gQcomI2cQupProtocolGuid = { 0x2c898318, 0x41c1, 0x4309, { 0x89, 0x8a, 0x2f, 0x55, 0xc8, 0xcf, 0x0b, 0x86 } }
+  gQcomSmemProtocolGuid = { 0xe738ff9d, 0x020f, 0x4ecd, { 0x87, 0xfc, 0xd5, 0x82, 0x50, 0x75, 0xaa, 0xcd } }
+  gQcomSmemPtableProtocolGuid = { 0x66075564, 0x7aac, 0x4c93, { 0xb4, 0x62, 0x40, 0xbf, 0xee, 0x1d, 0x59, 0x38 } }
+  gQcomRpmProtocolGuid = { 0x10c51490, 0xd3b6, 0x45de, { 0xb6, 0xfc, 0x8f, 0x46, 0xa2, 0xeb, 0x8e, 0x01 } }
+  gQcomSsbiProtocolGuid = { 0x659CFADB, 0xF14F, 0x4088, { 0x9F, 0x64, 0xB0, 0xE8, 0xA6, 0xAB, 0x66, 0x81 } }
+  gQcomBoardProtocolGuid = { 0x470d9ff7, 0x23d0, 0x4f25, { 0x91, 0xaf, 0xe4, 0x5f, 0x3f, 0x6f, 0xe6, 0xb4 } }
+  gEFIDroidUsbDeviceProtocolGuid = { 0x040e318f, 0x5388, 0x474c, { 0x9a, 0xc0, 0x1f, 0xa5, 0x03, 0xa4, 0x16, 0x89 } }
 
 [PcdsFixedAtBuild.common]
   # Simple FrameBuffer
@@ -140,6 +146,31 @@
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice|0|UINT32|0x0002a504
   gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|0|UINT64|0x0002a505
   gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|0|UINT64|0x0002a506
+
+  # RPM
+  gQcomTokenSpaceGuid.PcdApcsAlias0IpcInterrupt|0|UINT64|0x000000b0
+  gQcomTokenSpaceGuid.PcdSmdIrq|0|UINT64|0x000000b1
+
+  # SMEM
+  gQcomTokenSpaceGuid.PcdMsmSharedBase|0x0|UINT64|0x00000001
+  gQcomTokenSpaceGuid.PcdMsmSharedSize|0x0|UINT64|0x00000002
+  gQcomTokenSpaceGuid.PcdSmemTargetInfoAddress|0|UINT64|0x0000003
+
+  # UsbDxe
+  gQcomTokenSpaceGuid.PcdUsb30Ee1Irq|0|UINT64|0x00000300
+  gQcomTokenSpaceGuid.PcdUsb30Base|0|UINT64|0x00000301
+  gQcomTokenSpaceGuid.PcdUsb30ScratchBase|0|UINT64|0x00000302
+  gQcomTokenSpaceGuid.PcdUsb30QmpPhyBase|0|UINT64|0x00000303
+  gQcomTokenSpaceGuid.PcdUsb2PhyBase|0|UINT64|0x00000305
+  gQcomTokenSpaceGuid.PcdUsb2GccPhyBcr|0|UINT64|0x00000306
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortPowerDownOffset|0|UINT64|0x00000307
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortUtmiCtrl2Offset|0|UINT64|0x00000308
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortTune1Offset|0|UINT64|0x00000309
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortTune2Offset|0|UINT64|0x0000030a
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortTune3Offset|0|UINT64|0x0000030b
+  gQcomTokenSpaceGuid.PcdUsb2PhyPortTune4Offset|0|UINT64|0x0000030c
+  gQcomTokenSpaceGuid.PcdUsbHsBase|0|UINT64|0x0000030d
+  gQcomTokenSpaceGuid.PcdUsbHsIrq|0|UINT64|0x0000030e
 
 [PcdsFeatureFlag.common]
   # MMCHSDxe

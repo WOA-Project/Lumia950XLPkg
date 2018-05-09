@@ -1,0 +1,34 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = StubUsbAppDxe
+  FILE_GUID                      = cb724818-24ac-4080-806b-d3d0d61254ad
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = UsbAppEntryPoint
+
+[Sources.common]
+  UsbApp.c
+
+[LibraryClasses]
+  DebugLib
+  IoLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  MallocLib
+  TimerLib
+  CacheMaintenanceLib
+  UefiLib
+
+[Protocols]
+  gEFIDroidUsbDeviceProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  ArmPkg/ArmPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+
+[Depex]
+  gEFIDroidUsbDeviceProtocolGuid

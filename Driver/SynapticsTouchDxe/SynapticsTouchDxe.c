@@ -297,6 +297,8 @@ EFIAPI SyncPollCallback(
 				LastX = CurrentX;
 				LastY = CurrentY;
 			}
+
+			DEBUG((EFI_D_ERROR, "Touch: X: %d, Y: %d \n", LastX, LastY));
 		}
 	}
 
