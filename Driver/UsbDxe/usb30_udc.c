@@ -269,7 +269,7 @@ static void usb30_init(struct udc_device *dev_info)
 		vbus_override(udc_dev);
 
 	/* 15 - 20 */
-	dwc_device_init(dwc);
+	// dwc_device_init(dwc);
 }
 
 /* udc_init: creates and registers various usb descriptor */
@@ -304,6 +304,35 @@ int usb30_udc_init(struct udc_device *dev_info)
 	udc_register_device_desc_usb_20(udc_dev, dev_info);
 	udc_register_device_desc_usb_30(udc_dev, dev_info);
 	udc_register_bos_desc(udc_dev);
+
+	return 0;
+}
+
+int usb30_udc_init_reset_only(struct udc_device *dev_info)
+{
+	/* create and initialize udc instance */
+	udc_dev = (udc_t*)malloc(sizeof(udc_t));
+	ASSERT(udc_dev);
+
+	/* initialize everything to 0 */
+	memset(udc_dev, 0, sizeof(udc_t));
+
+	/* malloc control data buffers */
+	udc_dev->ctrl_rx_buf = memalign(CACHE_LINE, ROUNDUP(UDC_CONTROL_RX_BUF_SIZE, CACHE_LINE));
+	ASSERT(udc_dev->ctrl_rx_buf);
+
+	udc_dev->ctrl_tx_buf = memalign(CACHE_LINE, ROUNDUP(UDC_CONTROL_TX_BUF_SIZE, CACHE_LINE));
+	ASSERT(udc_dev->ctrl_tx_buf);
+
+	/* initialize string id */
+	udc_dev->next_string_id = 1;
+
+	/* Initialize ept data */
+	/* alloc table to assume EP0 In/OUT are already allocated.*/
+	udc_dev->ept_alloc_table = EPT_TX(0) | EPT_RX(0);
+	udc_dev->ept_list = NULL;
+
+	usb30_init(dev_info);
 
 	return 0;
 }

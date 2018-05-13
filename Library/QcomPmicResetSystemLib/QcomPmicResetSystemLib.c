@@ -133,5 +133,6 @@ LibInitializeResetSystem (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
+
 	return EFI_SUCCESS;
 }

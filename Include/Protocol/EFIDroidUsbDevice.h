@@ -163,12 +163,19 @@ EFI_STATUS
   IN VOID                   *Buffer
   );
 
+typedef
+EFI_STATUS
+(*USB_DEVICE_RESET_CONTROLLER) (
+	VOID
+  );
+
 struct _USB_DEVICE_PROTOCOL {
   USB_DEVICE_START     Start;
   USB_DEVICE_STOP      Stop;
   USB_DEVICE_TRANSFER  Transfer;
   USB_DEVICE_ALLOCATE_TRANSFER_BUFFER   AllocateTransferBuffer;
   USB_DEVICE_FREE_TRANSFER_BUFFER       FreeTransferBuffer;
+  USB_DEVICE_RESET_CONTROLLER Reset;
 };
 
 typedef struct _USB_DEVICE_PROTOCOL USB_DEVICE_PROTOCOL;

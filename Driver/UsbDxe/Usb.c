@@ -286,6 +286,74 @@ STATIC VOID gadget_notify(struct udc_gadget *gadget, unsigned event)
   }
 }
 
+STATIC EFI_STATUS usb_init_reset_only(VOID)
+{
+	EFI_STATUS               Status;
+	INTN                     rc;
+
+	memset(&mUdcDevice, 0, sizeof(mUdcDevice));
+	mUdcDevice.DeviceDescriptor = mDeviceDescriptor;
+
+	mUdcDevice.t_usb_if = AllocateZeroPool(sizeof(target_usb_iface_t));
+	if (!mUdcDevice.t_usb_if) {
+		return EFI_OUT_OF_RESOURCES;
+	}
+
+	Status = LibQcomPlatformUsbGetInterface(mUdcDevice.t_usb_if);
+	if (EFI_ERROR(Status)) {
+		goto exit;
+	}
+
+	if (!StrCmp(mUdcDevice.t_usb_if->controller, L"dwc"))
+	{
+		/* initialize udc functions to use dwc controller */
+		mUsbIf.udc_init = usb30_udc_init_reset_only;
+		mUsbIf.udc_register_gadget = usb30_udc_register_gadget;
+		mUsbIf.udc_start = usb30_udc_start;
+		mUsbIf.udc_stop = usb30_udc_stop;
+
+		mUsbIf.udc_endpoint_alloc = usb30_udc_endpoint_alloc;
+		mUsbIf.udc_endpoint_alloc_raw = usb30_udc_endpoint_alloc_raw;
+		mUsbIf.udc_request_alloc = usb30_udc_request_alloc;
+		mUsbIf.udc_request_free = usb30_udc_request_free;
+
+		mUsbIf.udc_request_queue = usb30_udc_request_queue;
+		mUsbIf.max_usb_bulk_size = MAX_USBSS_BULK_SIZE;
+	}
+	else if (!StrCmp(mUdcDevice.t_usb_if->controller, L"ci"))
+	{
+		/* initialize udc functions to use the default chipidea controller */
+		mUsbIf.udc_init = udc_init;
+		mUsbIf.udc_register_gadget = udc_register_gadget;
+		mUsbIf.udc_start = udc_start;
+		mUsbIf.udc_stop = udc_stop;
+
+		mUsbIf.udc_endpoint_alloc = udc_endpoint_alloc;
+		mUsbIf.udc_endpoint_alloc_raw = udc_endpoint_alloc_raw;
+		mUsbIf.udc_request_alloc = udc_request_alloc;
+		mUsbIf.udc_request_free = udc_request_free;
+
+		mUsbIf.udc_request_queue = udc_request_queue;
+		mUsbIf.max_usb_bulk_size = MAX_USBFS_BULK_SIZE;
+	}
+	else {
+		Status = EFI_UNSUPPORTED;
+		goto exit;
+	}
+
+	/* register udc device */
+	rc = mUsbIf.udc_init(&mUdcDevice);
+	if (rc) {
+		Status = EFI_DEVICE_ERROR;
+	}
+	else {
+		Status = EFI_SUCCESS;
+	}
+
+exit:
+	return Status;
+}
+
 STATIC EFI_STATUS usb_init(VOID)
 {
   EFI_STATUS               Status;
@@ -512,12 +580,21 @@ UsbDeviceFreeTransferBuffer (
   return EFI_SUCCESS;
 }
 
+EFI_STATUS
+Usb30Reset(
+	VOID
+)
+{
+	return usb_init_reset_only();
+}
+
 STATIC USB_DEVICE_PROTOCOL mUsbDevice = {
   Usb30PeriphStart,
   Usb30PeriphStop,
   Usb30PeriphTransfer,
   UsbDeviceAllocateTransferBuffer,
-  UsbDeviceFreeTransferBuffer
+  UsbDeviceFreeTransferBuffer,
+  Usb30Reset
 };
 
 STATIC

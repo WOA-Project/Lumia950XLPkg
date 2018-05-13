@@ -43,7 +43,7 @@
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [BuildOptions.AARCH64]
-  GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+  GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast -Wno-unused-function
 
 [Pcd]
   gQcomTokenSpaceGuid.PcdUsb30Ee1Irq

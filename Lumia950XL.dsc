@@ -167,7 +167,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
   # Enable Debug
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE
 
   # SoC Drivers I2C
   gQcomTokenSpaceGuid.PcdGicSpiStart|32
@@ -479,7 +479,6 @@
   Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   Lumia950XLPkg/Driver/UsbDxe/UsbDxe.inf
-  # Lumia950XLPkg/Driver/StubUsbAppDxe/StubUsbAppDxe.inf
 
   # Device Drivers
   Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
@@ -539,7 +538,7 @@
   MdeModulePkg/Universal/Network/IScsiDxe/IScsiDxe.inf
 
   # ACPI and SMBIOS
-  Lumia950XLPkg/AcpiTables/Lumia950XLAcpiTables.inf
+  # We use pre-built ACPI tables, so only core components are loaded
   Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
   MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
   MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf

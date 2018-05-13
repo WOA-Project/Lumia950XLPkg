@@ -102,6 +102,7 @@ int usb30_udc_request_queue(struct udc_endpoint *ept, struct udc_request *req);
 int usb30_udc_request_cancel(struct udc_endpoint *ept, struct udc_request *req);
 
 int usb30_udc_init(struct udc_device *devinfo);
+int usb30_udc_init_reset_only(struct udc_device *devinfo);
 int usb30_udc_register_gadget(struct udc_gadget *gadget);
 int usb30_udc_start(void);
 int usb30_udc_stop(void);

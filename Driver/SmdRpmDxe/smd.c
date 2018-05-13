@@ -42,6 +42,7 @@
 STATIC smd_channel_alloc_entry_t *smd_channel_alloc_entry;
 STATIC EFI_EVENT                 smd_closed = (EFI_EVENT)NULL;
 STATIC BOOLEAN					 smd_exit_bs_in_progress = FALSE;
+STATIC BOOLEAN					 smd_channel_alloc_freed = FALSE;
 
 static void smd_write_state(smd_channel_info_t *ch, uint32_t state)
 {
@@ -186,6 +187,16 @@ void smd_uninit_exit_bs(smd_channel_info_t *ch)
 
 	smd_set_state(ch, SMD_SS_CLOSING, 1);
 	smd_notify_rpm();
+
+	DEBUG((EFI_D_ERROR, "Wait for channel release \n"));
+
+	/* Wait for the SMD-RPM channel to be closed */
+	while (TRUE)
+	{
+		if (smd_channel_alloc_freed) break;
+	}
+
+	DEBUG((EFI_D_ERROR, "Channel released \n"));
 }
 
 bool is_channel_open(smd_channel_info_t *ch)
@@ -436,6 +447,8 @@ enum handler_return smd_irq_handler(void* data)
 			gBS->SignalEvent(smd_closed);
 		}
 
+		smd_channel_alloc_freed = TRUE;
+
 		return INT_NO_RESCHEDULE;
 	}
 
@@ -453,6 +466,7 @@ enum handler_return smd_irq_handler(void* data)
 		smd_set_state(ch, SMD_SS_CLOSED, 1);
 		smd_notify_rpm();
 		dprintf(CRITICAL,"Channel alloc freed\n");
+		smd_channel_alloc_freed = TRUE;
 	}
 
 	return INT_NO_RESCHEDULE;
