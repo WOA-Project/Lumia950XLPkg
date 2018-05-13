@@ -17,6 +17,7 @@ directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you 
 scripts.
 - Copy `rundbbuild.sh` in `Tools` directory to your EDK2 worktree root directory.
 - Export variable `GCC5_AARCH64_PREFIX` to your GCC directory with prefix (e.g. `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin/aarch64-elf-`)
+- Enable `-mfix-cortex-a53-835769 -mfix-cortex-a53-843419` flags in GCC will make you day better.
 - Start build: `. rundbbuild.sh --950xl --development`
 
 ## Run
@@ -44,11 +45,11 @@ PSCI commands instead of SMC call. It seems that Linux encounters some troubles 
 The ACPI tables are copied from stock Windows Phone FFU, hence these device IDs are likely not be recognized by Linux.
 A proper device tree is still required to boot Linux. If you are interested, you are welcome to contribute.
 
-# Acknowledgements
+## Acknowledgements
 
 - [EFIDroid Project](http://efidroid.org)
 
-# License
+## License
 
 All code except drivers in `GPLDriver` directory are licensed under BSD 2-Clause. 
 GPL Drivers are licensed under GPLv2 license.
