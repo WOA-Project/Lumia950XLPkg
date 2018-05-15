@@ -11,6 +11,7 @@ Booting Linux is also possible if seven cores are disabled in ACPI tables (due t
 If you are familar with EDK2, you don't need to use my build script.
 
 - Checkout a copy of [EDK2](https://github.com/tianocore/edk2), then checkout this repository under EDK2's worktree.
+- Commit `0e2a5749d89c96e3e17ea458365d2e5296c807e2` absoultely works for you.
 - Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
 script uses `gcc-linaro-7.2.1-2017.11`. Then untar them. I place everything under `/opt` directory, so I have 
 directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build
