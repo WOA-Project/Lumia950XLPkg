@@ -88,7 +88,9 @@ function SetupEnv()
 
 function FixPermission()
 {
-  chmod +x DragonboardPkg/Tools/*.ps1
+  if [ -d "DragonboardPkg" ]; then
+   chmod +x DragonboardPkg/Tools/*.ps1
+  fi
 }
 
 function SourceEnv()
