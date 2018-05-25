@@ -46,6 +46,7 @@
 #define edppll_270_mm_source_val 4
 #define edppll_350_mm_source_val 4
 #define hdmipll_mm_source_val 3
+#define pcie_pipe_source_val 2
 
 struct clk_freq_tbl rcg_dummy_freq = F_END;
 
@@ -805,15 +806,15 @@ static struct clk_freq_tbl ftbl_mdss_hdmi_clk[] = {
 };
 
 static struct rcg_clk hdmi_clk_src = {
-        .cmd_reg = (uint32_t *) HDMI_CMD_RCGR,
+    .cmd_reg = (uint32_t *) HDMI_CMD_RCGR,
 	.cfg_reg = (uint32_t *) HDMI_CFG_RCGR,
-        .set_rate = clock_lib2_rcg_set_rate_hid,
-        .freq_tbl = ftbl_mdss_hdmi_clk,
-        .current_freq = &rcg_dummy_freq,
-        .c = {
-                .dbg_name = "hdmi_clk_src",
-                .ops = &clk_ops_rcg,
-        },
+    .set_rate = clock_lib2_rcg_set_rate_hid,
+    .freq_tbl = ftbl_mdss_hdmi_clk,
+    .current_freq = &rcg_dummy_freq,
+    .c = {
+            .dbg_name = "hdmi_clk_src",
+            .ops = &clk_ops_rcg,
+    },
 };
 
 static struct branch_clk mdss_hdmi_clk = {
@@ -1013,6 +1014,7 @@ static struct clk_lookup msm_8994_clocks[] =
 	CLK_LOOKUP("hdmi_core_clk",        mdss_hdmi_clk.c),
 	CLK_LOOKUP("hdmi_extp_clk",        mdss_extpclk_clk.c),
 
+	/* I2C QUP Clocks */
 	CLK_LOOKUP("qupF9923000_ahb_iface_clk",        gcc_blsp1_ahb_clk.c),
 	CLK_LOOKUP("gcc_qupF9923000_i2c_apps_clk_src", gcc_blsp1_qup1_i2c_apps_clk_src.c),
 	CLK_LOOKUP("gcc_qupF9923000_i2c_apps_clk",     gcc_blsp1_qup1_i2c_apps_clk.c),
@@ -1028,6 +1030,9 @@ static struct clk_lookup msm_8994_clocks[] =
 	CLK_LOOKUP("qupF9963000_ahb_iface_clk",        gcc_blsp2_ahb_clk.c),
 	CLK_LOOKUP("gcc_qupF9963000_i2c_apps_clk_src", gcc_blsp2_qup1_i2c_apps_clk_src.c),
 	CLK_LOOKUP("gcc_qupF9963000_i2c_apps_clk",     gcc_blsp2_qup1_i2c_apps_clk.c),
+
+	/* PCI Express Clocks */
+
 };
 
 RETURN_STATUS
