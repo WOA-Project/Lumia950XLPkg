@@ -4,7 +4,16 @@
 
 This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 XL. 
 Currently it is able to boot Windows 10 ARM64 (with a minor patch).
-Booting Linux is also possible if seven cores are disabled in ACPI tables (due to the TZ implementation).
+Booting Linux is also possible (see the note).
+
+## What you can do?
+
+I am too busy to write an average-user instruction. So if you are interested in, you are welcome to
+contribute to an easy instruction for all Lumia 950 XL users.
+
+A MSM8992 variant is also possible. Send me a pull request if you've done it!
+
+Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 
 ## Build
 
@@ -56,11 +65,29 @@ PSCI commands instead of SMC call. It seems that Linux encounters some troubles 
 ## Linux Notes
 
 The ACPI tables are copied from stock Windows Phone FFU, hence these device IDs are likely not be recognized by Linux.
-A proper device tree is still required to boot Linux. If you are interested, you are welcome to contribute.
+
+To get started, starts with the device tree of Qualcomm MSM8994 MTP. The repository `devicetree-rebasing` with 
+DT content from Android Linux Kernel is sufficient for DT development. To boot with device tree, add it in your
+GRUB configuration:
+	
+	devicetree /lumia-950-xl.dtb
+	linux /vmlinuz ..... acpi=no
+
+PSCI is partially works. If you want to use PSCI for multi-processor startup, add the following code to your DT:
+
+	psci {
+		compatible	= "arm,psci-0.2";
+		method		= "hvc";
+	};
+
+And use `psci` for core-enable method. I think the MSM8994 Cortex ACC method works if you are working on a kernel
+for MSM8994, but I have not tested it yet.
 
 ## Acknowledgements
 
 - [EFIDroid Project](http://efidroid.org)
+- Andrei Warkentin and his [RaspberryPiPkg](https://github.com/andreiw/RaspberryPiPkg)
+- Sarah Purohit
 
 ## License
 
