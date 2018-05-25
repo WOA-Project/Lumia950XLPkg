@@ -43,12 +43,8 @@ To re-flash UEFI, press volume down until Fastboot device shows up (like flashin
 
 ## Patch for booting Windows ARM64
 
-Go to your EDK2 worktree, find `MdePkg/Include/AArch64/ProcessorBind.h`:
-
-	- #define RUNTIME_PAGE_ALLOCATION_GRANULARITY (0x10000)
-	+ #define RUNTIME_PAGE_ALLOCATION_GRANULARITY (0x1000)
-
-This issue will be addressed with improved memory allocation in the future.
+You don't need the patch anymore. If you have applied the patch, you should change it back in 
+`MdePkg/Include/AArch64/ProcessorBind.h`.
 
 ## TZ Implementation Notes
 

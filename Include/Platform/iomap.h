@@ -202,6 +202,28 @@
 #define SDCC3_N                     (CLK_CTL_BASE + 0x55C) /* n */
 #define SDCC3_D                     (CLK_CTL_BASE + 0x560) /* d */
 
+/* PCI Express */
+#define PCIE_0_SLV_AXI_CBCR         (CLK_CTL_BASE + 0x1AC8)
+#define PCIE_0_MSTR_AXI_CBCR        (CLK_CTL_BASE + 0x1ACC)
+#define PCIE_0_CFG_AHB_CBCR         (CLK_CTL_BASE + 0x1AD0)
+#define PCIE_0_AUX_CBCR				(CLK_CTL_BASE + 0x1AD4)
+#define PCIE_0_PIPE_CBCR            (CLK_CTL_BASE + 0x1AD8)
+#define PCIE_0_PIPE_CMD_RCGR        (CLK_CTL_BASE + 0x1ADC)
+#define PCIE_0_AUX_CMD_RCGR         (CLK_CTL_BASE + 0x1B00)
+#define PCIE_PHY_0_PHY_BCR          (CLK_CTL_BASE + 0x1B14)
+#define PCIE_PHY_0_BCR              (CLK_CTL_BASE + 0x1B18)
+#define PCIE_1_SLV_AXI_CBCR         (CLK_CTL_BASE + 0x1B48)
+#define PCIE_1_MSTR_AXI_CBCR        (CLK_CTL_BASE + 0x1B4C)
+#define PCIE_1_CFG_AHB_CBCR         (CLK_CTL_BASE + 0x1B50)
+#define PCIE_1_AUX_CBCR             (CLK_CTL_BASE + 0x1B54)
+#define PCIE_1_PIPE_CBCR            (CLK_CTL_BASE + 0x1B58)
+#define PCIE_1_PIPE_CMD_RCGR        (CLK_CTL_BASE + 0x1B5C)
+#define PCIE_1_AUX_CMD_RCGR         (CLK_CTL_BASE + 0x1B80)
+#define PCIE_PHY_1_PHY_BCR          (CLK_CTL_BASE + 0x1B94)
+#define PCIE_PHY_1_BCR              (CLK_CTL_BASE + 0x1B98)
+#define PCIE_0_PHY_LDO_EN           (CLK_CTL_BASE + 0x1E00)
+#define PCIE_1_PHY_LDO_EN           (CLK_CTL_BASE + 0x1E04)
+
 
 #define GCC_WDOG_DEBUG              (CLK_CTL_BASE +  0x00001780)
 
