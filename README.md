@@ -6,7 +6,7 @@ This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 XL
 Currently it is able to boot Windows 10 ARM64 (with a minor patch).
 Booting Linux is also possible (see the note).
 
-## What you can do?
+## What can you do?
 
 I am too busy to write an average-user instruction. So if you are interested in, you are welcome to
 contribute to an easy instruction for all Lumia 950 XL users.
@@ -73,7 +73,7 @@ GRUB configuration:
 	devicetree /lumia-950-xl.dtb
 	linux /vmlinuz ..... acpi=no
 
-PSCI is partially works. If you want to use PSCI for multi-processor startup, add the following code to your DT:
+PSCI partially works. If you want to use PSCI for multi-processor startup, add the following code to your DT:
 
 	psci {
 		compatible	= "arm,psci-0.2";
