@@ -1,4 +1,4 @@
-[FD.MSM8994_EFI]
+[FD.MSM8992_EFI]
 BaseAddress   = 0x00200000|gArmTokenSpaceGuid.PcdFdBaseAddress  #The base address of the FLASH Device.
 Size          = 0x00120000|gArmTokenSpaceGuid.PcdFdSize         #The size in bytes of the FLASH Device
 ErasePolarity = 1
@@ -130,13 +130,13 @@ READ_LOCK_STATUS   = TRUE
 
   # ACPI Tables
   FILE FREEFORM = 7E374E25-8E01-4FEE-87F2-390C23C606CD {
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/DBG2.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/DSDT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/FACS.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/FADT.acpi
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/GTDT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MADT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/SSDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/8992/DBG2.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/8992/DSDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/8992/FACS.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/8992/FADT.acpi
+    SECTION RAW = Lumia950XLPkg/AcpiTables/8992/GTDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/8992/MADT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/SSDT.aml
     SECTION UI = "AcpiTables"
   }
 
@@ -165,7 +165,7 @@ READ_LOCK_STATUS   = TRUE
 
   FILE FREEFORM = a4c429b1-046a-4e7d-afbc-c6988e8fe7cc {
     SECTION UI = "platform.json"
-    SECTION RAW = Lumia950XLPkg/Resources/Platform.8994.json
+    SECTION RAW = Lumia950XLPkg/Resources/Platform.8992.json
   }
 
   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
