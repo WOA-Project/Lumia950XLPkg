@@ -1,6 +1,10 @@
 #!/usr/bin/pwsh
+# Copyright 2018, Bingxing Wang <i@imbushuo.net>
+# All rights reserved.
+#
 # This script builds EDK2 content.
 # EDK2 setup script should be called before invoking this script.
+#
 
 Param
 (
@@ -66,6 +70,9 @@ if ($commit)
 	$releaseInfoContent = @(
 		"#ifndef __SMBIOS_RELEASE_INFO_H__",
 		"#define __SMBIOS_RELEASE_INFO_H__",
+		"#ifdef __IMPL_COMMIT_ID__",
+		"#undef __IMPL_COMMIT_ID__",
+		"#endif",
 		"#define __IMPL_COMMIT_ID__ `"$($commit)`"",
 		"#endif"
 	)

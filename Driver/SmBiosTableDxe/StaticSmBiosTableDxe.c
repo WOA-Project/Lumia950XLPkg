@@ -53,6 +53,8 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 
+/* Build-time generated ReleaseInfo.h will override the default one */
+#include <Resources/ReleaseStampStub.h>
 #include "ReleaseInfo.h"
 
 /***********************************************************************
