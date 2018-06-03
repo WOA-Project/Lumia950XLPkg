@@ -11,8 +11,6 @@ Booting Linux is also possible (see the note).
 I am too busy to write an average-user instruction. So if you are interested in, you are welcome to
 contribute to an easy instruction for all Lumia 950 XL users.
 
-A MSM8992 variant is also possible. Send me a pull request if you've done it!
-
 Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 
 ## Build
