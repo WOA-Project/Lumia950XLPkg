@@ -1,8 +1,8 @@
-# EDK2 Implementation for Lumia 950 XL
+# EDK2 Implementation for Lumia 950 & Lumia 950 XL
 
 ## What's this?
 
-This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 XL. 
+This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 and Lumia 950 XL. 
 Currently it is able to boot Windows 10 ARM64 (with a minor patch).
 Booting Linux is also possible (see the note).
 
@@ -10,8 +10,6 @@ Booting Linux is also possible (see the note).
 
 I am too busy to write an average-user instruction. So if you are interested in, you are welcome to
 contribute to an easy instruction for all Lumia 950 XL users.
-
-A MSM8992 variant is also possible. Send me a pull request if you've done it!
 
 Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 

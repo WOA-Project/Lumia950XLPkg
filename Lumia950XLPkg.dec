@@ -36,9 +36,10 @@
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920|UINT32|0x0000a402
   gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x0000a403
 
-  # Ramdisk
-  gLumia950XLPkgTokenSpaceGuid.PcdRamdiskAddress|0x00000000|UINT64|0x0001a501
-  gLumia950XLPkgTokenSpaceGuid.PcdRamdiskSize|0x00000000|UINT64|0x0001a502
+  # SMBIOS
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemModel|"Lumia 950 XL"|VOID*|0x0000a301
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Qualcomm Snapdragon 810 Processor (8994)"|VOID*|0x0000a302
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1085"|VOID*|0x0000a303
 
   # FD
   gLumia950XLPkgTokenSpaceGuid.PcdFdBaseAddress|0x00200000|UINT64|0x0000a103

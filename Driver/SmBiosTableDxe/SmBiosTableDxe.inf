@@ -15,6 +15,9 @@
   gArmTokenSpaceGuid.PcdSystemMemorySize
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemModel
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosProcessorModel
   
 [Packages]
   ArmPkg/ArmPkg.dec

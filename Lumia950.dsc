@@ -19,22 +19,22 @@
 #
 ################################################################################
 [Defines]
-  PLATFORM_NAME                  = Lumia950XL
+  PLATFORM_NAME                  = Lumia950
   PLATFORM_GUID                  = b6325ac2-9f3f-4b1d-b129-ac7b35ddde60
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005
-  OUTPUT_DIRECTORY               = Build/Lumia950XL-$(ARCH)
+  OUTPUT_DIRECTORY               = Build/Lumia950-$(ARCH)
   SUPPORTED_ARCHITECTURES        = AARCH64
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
-  FLASH_DEFINITION               = Lumia950XLPkg/Lumia950XL.fdf
-  
+  FLASH_DEFINITION               = Lumia950XLPkg/Lumia950.fdf
+
 [PcdsFixedAtBuild.common]
   # Platform-specific
-  gArmPlatformTokenSpaceGuid.PcdCoreCount|8
+  gArmPlatformTokenSpaceGuid.PcdCoreCount|6
   gArmPlatformTokenSpaceGuid.PcdClusterCount|2
-  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemModel|"Lumia 950 XL"
-  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Qualcomm Snapdragon 810 Processor (8994)"
-  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1085"
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemModel|"Lumia 950"
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Qualcomm Snapdragon 808 Processor (8994)"
+  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1104"
 
 !include Lumia950XLPkg/Shared.dsc.inc
