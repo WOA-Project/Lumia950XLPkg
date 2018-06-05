@@ -19,6 +19,6 @@ git pull
 cd ..
 
 # Set a link to EDK2 workspace
-ln -s Lumia950XLPkg edk2/Lumia950XLPkg
-ln -s Lumia950XLPkg/Tools/rundbbuild.sh edk2/rundbbuild.sh
+ln -s $(pwd)/Lumia950XLPkg $(pwd)/edk2/Lumia950XLPkg
+ln -s $(pwd)/Lumia950XLPkg/Tools/rundbbuild.sh $(pwd)/edk2/rundbbuild.sh
 chmod +x edk2/rundbbuild.sh
