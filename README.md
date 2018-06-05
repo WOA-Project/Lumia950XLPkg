@@ -1,4 +1,5 @@
 # EDK2 Implementation for Lumia 950 & Lumia 950 XL
+[![Build Status](https://travis-ci.com/imbushuo/Lumia950XLPkg.svg?branch=msm8994)](https://travis-ci.com/imbushuo/Lumia950XLPkg)
 
 ## What's this?
 
