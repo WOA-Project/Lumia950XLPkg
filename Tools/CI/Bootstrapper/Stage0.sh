@@ -36,9 +36,6 @@ cd /opt
 wget http://releases.linaro.org/components/toolchain/binaries/7.2-2017.11/aarch64-elf/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf.tar.xz
 tar xf gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf.tar.xz
 
-wget http://releases.linaro.org/components/toolchain/binaries/7.2-2017.11/arm-eabi/gcc-linaro-7.2.1-2017.11-x86_64_arm-eabi.tar.xz
-tar xf gcc-linaro-7.2.1-2017.11-x86_64_arm-eabi.tar.xz
-
 # Skip ACPI toolchain (prebuilt tables)
 
 echo "Build components are ready. If you would like to build ACPI tables, please install recent acpica tools."
