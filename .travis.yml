@@ -12,4 +12,5 @@ before_install:
   - ./Tools/CI/Bootstrapper/Stage1.sh
 
 script:
-  - echo only test for now
+  - ./Tools/CI/Builder/Build.sh
+
