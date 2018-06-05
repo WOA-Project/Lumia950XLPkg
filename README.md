@@ -25,7 +25,6 @@ directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you 
 scripts.
 - Copy `rundbbuild.sh` in `Tools` directory to your EDK2 worktree root directory.
 - Export variable `GCC5_AARCH64_PREFIX` to your GCC directory with prefix (e.g. `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin/aarch64-elf-`)
-- Enable `-mfix-cortex-a53-835769 -mfix-cortex-a53-843419` flags in GCC will make you day better.
 - Start build: `. rundbbuild.sh --950xl --development`
 
 ## Run
