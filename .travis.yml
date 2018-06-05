@@ -1,0 +1,14 @@
+language: c
+compiler: gcc
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+
+before_install:
+  - sudo ./Tools/CI/Bootstrapper/Stage0.sh
+
+script:
+  - echo only test for now
