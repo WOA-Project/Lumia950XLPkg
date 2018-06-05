@@ -20,4 +20,6 @@ addons:
     # Only FD files are required
     paths:
     - ../edk2/Build/Lumia950-AARCH64/DEBUG_GCC5/FV/MSM8992_EFI.fd
+    - ../edk2/Build/Lumia950-AARCH64/DEBUG_GCC5/FV/ELF/UEFI.elf
     - ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/MSM8994_EFI.fd
+    - ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/ELF/UEFI.elf
