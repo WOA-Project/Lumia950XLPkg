@@ -16,7 +16,7 @@ script:
 
 addons:
   artifacts:
-    s3_region: "us-west-1"
+    s3_region: "us-west-2"
     # Only FD files are required
     paths:
     - ../edk2/Build/Lumia950-AARCH64/DEBUG_GCC5/FV/MSM8992_EFI.fd
