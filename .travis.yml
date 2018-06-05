@@ -9,6 +9,7 @@ matrix:
 
 before_install:
   - sudo ./Tools/CI/Bootstrapper/Stage0.sh
+  - ./Tools/CI/Bootstrapper/Stage1.sh
 
 script:
   - echo only test for now

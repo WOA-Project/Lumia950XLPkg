@@ -6,6 +6,14 @@
 # All rights reserved.
 #
 
+# Permission check
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root." 
+   exit 1
+fi
+
+echo "Installing build components..."
+
 # Host utilities
 apt-get install git-core git
 apt-get install build-essential
@@ -32,3 +40,5 @@ wget http://releases.linaro.org/components/toolchain/binaries/7.2-2017.11/arm-ea
 tar xf gcc-linaro-7.2.1-2017.11-x86_64_arm-eabi.tar.xz
 
 # Skip ACPI toolchain (prebuilt tables)
+
+echo "Build components are ready. If you would like to build ACPI tables, please install recent acpica tools."
