@@ -1,0 +1,23 @@
+language: c
+compiler: gcc
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+
+before_install:
+  - sudo ./Tools/CI/Bootstrapper/Stage0.sh
+  - ./Tools/CI/Bootstrapper/Stage1.sh
+
+script:
+  - ./Tools/CI/Builder/Build.sh
+
+addons:
+  artifacts:
+    s3_region: "us-west-2"
+    # Only FD files are required
+    paths:
+    - ../edk2/Build/Lumia950-AARCH64/DEBUG_GCC5/FV/MSM8992_EFI.fd
+    - ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/MSM8994_EFI.fd
