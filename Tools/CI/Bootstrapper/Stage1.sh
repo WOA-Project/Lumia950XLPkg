@@ -22,3 +22,7 @@ cd ..
 ln -s $(pwd)/Lumia950XLPkg $(pwd)/edk2/Lumia950XLPkg
 ln -s $(pwd)/Lumia950XLPkg/Tools/rundbbuild.sh $(pwd)/edk2/rundbbuild.sh
 chmod +x edk2/rundbbuild.sh
+
+# Build EDK2 Tools
+cd edk2
+make -C BaseTools
