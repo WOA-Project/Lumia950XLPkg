@@ -184,7 +184,7 @@ do
     ;;
     --950xl|-950xl)
       # 950XL build
-      echo "[Builder] Run Lumia 950 XL Build."
+      echo "[Builder] Run Lumia 950 / Lumia 950 XL Build."
       LUMIA950XL=TRUE
       shift
     ;;
