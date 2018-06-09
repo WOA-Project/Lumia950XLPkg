@@ -67,7 +67,7 @@ AddHob
 )
 {
 	BuildResourceDescriptorHob(
-		EFI_RESOURCE_SYSTEM_MEMORY,
+		Desc->ResourceType,
 		Desc->ResourceAttribute,
 		Desc->Address,
 		Desc->Length

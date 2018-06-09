@@ -27,6 +27,10 @@ typedef UINTN paddr_t;
 
 #define UINT_MAX MAX_UINTN
 
+#define REG32(addr) ((volatile uint32_t *)(addr))
+#define writel_rt(v, a) (*REG32(a) = (v))
+#define readl_rt(a) (*REG32(a))
+
 #define writel(v, a) MmioWrite32((UINTN)(a), (UINT32)(v))
 #define readl(a) MmioRead32((UINTN)(a))
 #define writeb(v, a) MmioWrite8((UINTN)(a), (UINT8)(v))
@@ -115,5 +119,7 @@ typedef UINTN paddr_t;
 #define arch_invalidate_cache_range(start, len) InvalidateDataCacheRange ((VOID *)(UINTN)(start), (UINTN)(len));
 
 #define __ALWAYS_INLINE __attribute__ ((always_inline))
+
+#define ROUND_TO_PAGE(x) (x & (~(EFI_PAGE_SIZE - 1)))
 
 #endif

@@ -37,31 +37,32 @@ RpmDxeInitialize (
   IN EFI_SYSTEM_TABLE   *SystemTable
   )
 {
-  EFI_HANDLE Handle = NULL;
-  EFI_STATUS Status;
+	EFI_HANDLE Handle = NULL;
+	EFI_STATUS Status;
 
-  rpm_smd_init();
+	rpm_smd_init();
 
-  Status = gBS->InstallMultipleProtocolInterfaces(
-                  &Handle,
-                  &gQcomRpmProtocolGuid,      &mInternalRpm,
-                  NULL
-                  );
-  ASSERT_EFI_ERROR(Status);
+	Status = gBS->InstallMultipleProtocolInterfaces(
+		&Handle,
+		&gQcomRpmProtocolGuid,      
+		&mInternalRpm,
+		NULL
+	);
+	ASSERT_EFI_ERROR(Status);
 
-  // Register Exit BS event for RPM SMD uninit.
-  // Otherwise Windows will hang at startup.
+	// Register Exit BS event for RPM SMD uninit.
+	// Otherwise Windows will hang at startup.
 
-  Status = gBS->CreateEventEx(
-	  EVT_NOTIFY_SIGNAL,
-	  TPL_NOTIFY,
-	  RpmDxeDeInitialize,
-	  NULL,
-	  &gEfiEventExitBootServicesGuid,
-	  &mExitBootServicesEvent
-  );
+	Status = gBS->CreateEventEx(
+		EVT_NOTIFY_SIGNAL,
+		TPL_NOTIFY,
+		RpmDxeDeInitialize,
+		NULL,
+		&gEfiEventExitBootServicesGuid,
+		&mExitBootServicesEvent
+	);
 
-  ASSERT_EFI_ERROR(Status);
+	ASSERT_EFI_ERROR(Status);
 
-  return Status;
+	return Status;
 }

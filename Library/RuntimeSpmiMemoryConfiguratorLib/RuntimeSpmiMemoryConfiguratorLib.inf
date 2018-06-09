@@ -1,9 +1,7 @@
 #/** @file
-# Reset System lib using Qualcomm SPMI PMIC
+# Infrastructure library that supports runtime SPMI library
 #
-# Copyright (c) 2008, Apple Inc. All rights reserved.<BR>
-# Copyright (c) 2014, Linaro Ltd. All rights reserved.<BR>
-# Copyright (c) 2014, ARM Ltd. All rights reserved.<BR>
+# Copyright (c) 2018, Bingxing Wang. All rights reserved.<BR>
 #
 #  This program and the accompanying materials
 #  are licensed and made available under the terms and conditions of the BSD License
@@ -17,14 +15,14 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = QcomPmicResetSystemLib
-  FILE_GUID                      = A8F59B69-A105-41C7-8F5A-2C60DD7FD7AA
+  BASE_NAME                      = RuntimeSpmiMemoryConfiguratorLib
+  FILE_GUID                      = c71d754c-2137-4b9b-9b3f-1cdf8f95d7cc
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = EfiResetSystemLib
+  LIBRARY_CLASS                  = RuntimeSpmiMemoryConfiguratorLib
 
 [Sources]
-  QcomPmicResetSystemLib.c
+  RuntimeSpmiMemoryConfig.c
 
 [Packages]
   ArmPkg/ArmPkg.dec
@@ -32,20 +30,18 @@
   EmbeddedPkg/EmbeddedPkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
 
-[Guids]
-  gEfiEventVirtualAddressChangeGuid
-  gEfiEventExitBootServicesGuid
-
 [LibraryClasses]
   BaseLib
   IoLib
   ArmLib
-  ArmMmuLib
   DebugLib
   UefiBootServicesTableLib
-  UefiRuntimeServicesTableLib
+  DxeServicesTableLib
   TimerLib
-  DloadUtilLib
-  Pm8x41Lib
-  RuntimeSpmiLib
-  CompilerIntrinsicsLib
+  MallocLib
+
+[Pcd.common]
+  gQcomTokenSpaceGuid.PcdSpmiBaseAddress
+
+[Depex]
+  TRUE
