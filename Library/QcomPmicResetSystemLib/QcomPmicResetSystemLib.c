@@ -35,9 +35,7 @@
 #include <Chipset/reboot.h>
 
 EFI_EVENT mPmicShutdownVirtualAddressChangedEvent;
-EFI_EVENT mPmicShutdownExitBootServicesEvent;
 
-STATIC BOOLEAN bExitedBootServices;
 STATIC UINTN pPonPsHoldAddressVirtual;
 STATIC UINTN pResetReasonAddressVirtual;
 
@@ -201,16 +199,6 @@ LibRuntimeVirtualAddressChanged(
 
 }
 
-VOID
-EFIAPI
-LibRuntimeExitBootServices(
-	IN EFI_EVENT		Event,
-	IN VOID				*Context
-)
-{
-	bExitedBootServices = TRUE;
-}
-
 /**
   Initialize any infrastructure required for LibResetSystem () to function.
 
@@ -239,7 +227,6 @@ LibInitializeResetSystem (
 	}
 
 	// Set Address
-	bExitedBootServices = FALSE;
 	pPonPsHoldAddressVirtual = MPM2_MPM_PS_HOLD;
 	pResetReasonAddressVirtual = RESTART_REASON_ADDR;
 
@@ -251,15 +238,6 @@ LibInitializeResetSystem (
 		NULL,
 		&gEfiEventVirtualAddressChangeGuid,
 		&mPmicShutdownVirtualAddressChangedEvent
-	);
-
-	Status = gBS->CreateEventEx(
-		EVT_NOTIFY_SIGNAL,
-		TPL_NOTIFY,
-		LibRuntimeExitBootServices,
-		NULL,
-		&gEfiEventExitBootServicesGuid,
-		&mPmicShutdownExitBootServicesEvent
 	);
 
 	// Do not care

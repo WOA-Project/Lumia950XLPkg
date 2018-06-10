@@ -79,7 +79,7 @@ LibGetTime(
 	//
 
 	Time->Year = 2018;
-	Time->Month = 4;
+	Time->Month = 6;
 
 	const UINT64 SECONDS_PER_DAY = 24 * 60 * 60;
 	Time->Day = (ElapsedSeconds / SECONDS_PER_DAY);
