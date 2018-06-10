@@ -1,5 +1,5 @@
 /** @file
-  Static SMBIOS Table for ARM platform
+  SMBIOS Table for Qualcomm ARM platform
   Derived from EmulatorPkg package
 
   Note SMBIOS 2.7.1 Required structures:
@@ -53,9 +53,16 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 
+/* Used to read chip serial number */
+#include <Library/LKEnvLib.h>
+#include <Protocol/QcomBoard.h>
+
 /* Build-time generated ReleaseInfo.h will override the default one */
 #include <Resources/ReleaseStampStub.h>
 #include "ReleaseInfo.h"
+
+/* Protocol reference */
+QCOM_BOARD_PROTOCOL* mBoardProtocol = NULL;
 
 /***********************************************************************
 	SMBIOS data definition  TYPE0  BIOS Information
@@ -119,16 +126,16 @@ SMBIOS_TABLE_TYPE0 mBIOSInfoType0 = {
           //  VirtualMachineSupported              :1;
           //  ExtensionByte2Reserved               :3;
   },
-  0x00,                    // SystemBiosMajorRelease
-  0x01,                    // SystemBiosMinorRelease
+  0x01,                    // SystemBiosMajorRelease
+  0x05,                    // SystemBiosMinorRelease
   0xFF,                    // EmbeddedControllerFirmwareMajorRelease
   0xFF,                    // EmbeddedControllerFirmwareMinorRelease
 };
 
 CHAR8 *mBIOSInfoType0Strings[] = {
-  "Little Moe, LLC. Tech Support: https://github.com/imbushuo/Lumia950XLPkg",	// Vendor String
-  "Lumia 950/950 XL AArch64 UEFI Firmware, Build " __IMPL_COMMIT_ID__,			// BiosVersion String
-  __DATE__,																		// BiosReleaseDate String
+  "Little Moe, LLC.",					// Vendor String
+  "1.05 (" __IMPL_COMMIT_ID__ ")",		// BiosVersion String
+  __RELEASE_DATE__,						// BiosReleaseDate String
   NULL
 };
 
@@ -150,7 +157,7 @@ CHAR8  *mSysInfoType1Strings[] = {
   "Microsoft Mobile",
   "Lumia 950 XL",
   "RM-1085",
-  "0bc52bb9-9473-4875-be2a-3973076c20e2",
+  "Unknown",
   "RM-1085",
   "Phone",
   NULL
@@ -184,7 +191,7 @@ CHAR8  *mBoardInfoType2Strings[] = {
   "Microsoft Mobile",
   "Lumia 950 XL",
   "RM-1085",
-  "0bc52bb9-9473-4875-be2a-3973076c20e2",
+  "Unknown",
   "",
   "",
   NULL
@@ -214,7 +221,7 @@ SMBIOS_TABLE_TYPE3  mEnclosureInfoType3 = {
 CHAR8  *mEnclosureInfoType3Strings[] = {
   "Lumia 950 XL",
   "1",
-  "0bc52bb9-9473-4875-be2a-3973076c20e2",
+  "Unknown",
   "",
   NULL
 };
@@ -611,10 +618,19 @@ SysInfoUpdateSmbiosType1 (
   VOID
   )
 {
+	char serialNo[13];
+
 	// Update string table before proceeds
 	mSysInfoType1Strings[1] = (CHAR8*) FixedPcdGetPtr(PcdSmbiosSystemModel);
 	mSysInfoType1Strings[2] = (CHAR8*) FixedPcdGetPtr(PcdSmbiosSystemRetailModel);
-	mSysInfoType1Strings[4] = (CHAR8*)FixedPcdGetPtr(PcdSmbiosSystemRetailModel);
+	mSysInfoType1Strings[4] = (CHAR8*) FixedPcdGetPtr(PcdSmbiosSystemRetailModel);
+
+	// Update serial number from Board DXE
+	if (mBoardProtocol != NULL)
+	{
+		mBoardProtocol->board_chip_serial_char8(serialNo);
+		mSysInfoType1Strings[3] = serialNo;
+	}
 
 	LogSmbiosData ((EFI_SMBIOS_TABLE_HEADER *)&mSysInfoType1, mSysInfoType1Strings, NULL);
 }
@@ -627,9 +643,18 @@ BoardInfoUpdateSmbiosType2 (
   VOID
   )
 {
+	char serialNo[13];
+
 	// Update string table before proceeds
 	mBoardInfoType2Strings[1] = (CHAR8*) FixedPcdGetPtr(PcdSmbiosSystemModel);
 	mBoardInfoType2Strings[2] = (CHAR8*) FixedPcdGetPtr(PcdSmbiosSystemRetailModel);
+
+	// Update serial number from Board DXE
+	if (mBoardProtocol != NULL)
+	{
+		mBoardProtocol->board_chip_serial_char8(serialNo);
+		mBoardInfoType2Strings[3] = serialNo;
+	}
 
 	LogSmbiosData ((EFI_SMBIOS_TABLE_HEADER *)&mBoardInfoType2, mBoardInfoType2Strings, NULL);
 }
@@ -642,6 +667,15 @@ EnclosureInfoUpdateSmbiosType3 (
   VOID
   )
 {
+	char serialNo[13];
+
+	// Update serial number from Board DXE
+	if (mBoardProtocol != NULL)
+	{
+		mBoardProtocol->board_chip_serial_char8(serialNo);
+		mEnclosureInfoType3Strings[2] = serialNo;
+	}
+
 	LogSmbiosData ((EFI_SMBIOS_TABLE_HEADER *)&mEnclosureInfoType3, mEnclosureInfoType3Strings, NULL);
 }
 
@@ -746,6 +780,14 @@ SmBiosTableDxeInitialize (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
+	EFI_STATUS Status;
+
+	// Locate Qualcomm Board Protocol
+	Status = gBS->LocateProtocol(
+		&gQcomBoardProtocolGuid,
+		NULL,
+		(VOID *)&mBoardProtocol
+	);
 
 	BIOSInfoUpdateSmbiosType0();
 	SysInfoUpdateSmbiosType1();

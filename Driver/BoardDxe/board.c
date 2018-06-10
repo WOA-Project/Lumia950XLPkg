@@ -305,6 +305,17 @@ uint32_t board_chip_serial(void)
 	return board.chip_serial;
 }
 
+size_t board_chip_serial_char8(void *buf)
+{
+	uint32_t serialno = board_chip_serial();
+	UINTN len;
+
+	len = snprintf((char*) buf, 13, "%x", serialno);
+	ASSERT(len > 0 && len <= 13);
+
+	return len;
+}
+
 uint8_t board_pmic_info(struct board_pmic_data *info, uint8_t num_ent)
 {
 	uint8_t i;

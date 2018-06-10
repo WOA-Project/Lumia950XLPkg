@@ -15,6 +15,7 @@ STATIC QCOM_BOARD_PROTOCOL mInternalBoard = {
   board_hardware_subtype,
   board_foundry_id,
   board_chip_serial,
+  board_chip_serial_char8,
   board_pmic_info,
   board_pmic_target,
   board_soc_version,

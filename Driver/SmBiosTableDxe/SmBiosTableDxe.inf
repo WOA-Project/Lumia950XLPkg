@@ -7,7 +7,7 @@
   ENTRY_POINT                    = SmBiosTableDxeInitialize
 
 [Sources.common]
-  StaticSmBiosTableDxe.c
+  SmBiosTableDxe.c
 
 [FixedPcd]
   gArmPlatformTokenSpaceGuid.PcdCoreCount
@@ -42,9 +42,10 @@
   
 [Protocols]
   gEfiSmbiosProtocolGuid
+  gQcomBoardProtocolGuid
   
 [Depex]
-  gEfiSmbiosProtocolGuid
+  gEfiSmbiosProtocolGuid AND gQcomBoardProtocolGuid
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-missing-brace -Wno-error
