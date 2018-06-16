@@ -194,6 +194,7 @@ void smd_uninit_exit_bs(smd_channel_info_t *ch)
 	while (TRUE)
 	{
 		if (smd_channel_alloc_freed) break;
+		udelay(100);
 	}
 
 	DEBUG((EFI_D_ERROR, "Channel released \n"));
