@@ -32,10 +32,10 @@ READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
   APRIORI DXE {
-    # first, install the PCD driver and call DxeInit
+    # First, install the PCD driver and call DxeInit
     INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
 
-    # next, install cpu protocol and enable the interrupt controller
+    # Next, install cpu protocol and enable the interrupt controller
     INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
     INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
   }
@@ -66,9 +66,14 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
   INF Lumia950XLPkg/Driver/SmemDxe/SmemDxe.inf
   INF Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
+  INF Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
   INF Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   INF Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   INF Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
+
+  # PCI Express
+  # Defer one release.
+  # INF Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
 
   # Device Drivers
   INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
@@ -77,6 +82,8 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   INF MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
+
+  # Variable Services
   INF MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
 
   # Security Stub
@@ -135,7 +142,12 @@ READ_LOCK_STATUS   = TRUE
     SECTION RAW = Lumia950XLPkg/AcpiTables/8994/FADT.acpi
     SECTION RAW = Lumia950XLPkg/AcpiTables/8994/GTDT.aml
     SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MADT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/SSDT.aml
+	  SECTION RAW = Lumia950XLPkg/AcpiTables/8994/SSDT.aml
+    # We are not placing these tables in ACPI right now,
+    # since PCI Express is not fully configured (at least in public).
+    # Exposing these tables will cause the device to crash in boot
+	  # SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MCFG.aml
+	  # SECTION RAW = Lumia950XLPkg/AcpiTables/8994/CSRT.aml
     SECTION UI = "AcpiTables"
   }
 
