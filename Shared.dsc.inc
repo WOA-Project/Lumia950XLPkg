@@ -196,23 +196,23 @@
 
   # Variable Services
   # Each Size of 0xA0000
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase|0x80000000
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize|0x000A0000
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase|0x800A0000
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize|0x000A0000
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase|0x80140000 
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize|0x000A0000
-  gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVolatileStorageBase|0x801E0000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase|0x80000000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize|0x000A0000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase|0x800A0000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize|0x000A0000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase|0x80140000 
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize|0x000A0000
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVolatileStorageBase|0x801E0000
 
   # eMMC should have block size of 512 bytes. (Assert)
   # Allocate 640KB (less than provisioned) so 500 blocks
   # And times 3 for other regions
   # And it starts at the beginning of the logical partition of "uefi_vars"
   # Synchronize the change in LK when the size changes
-  gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockCount|3840
-  gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockSize|512
-  gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockLba|0
-  gLumia950XLPkgTokenSpaceGuid.PcdNvStorageScratchAddress|0x90000000
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockCount|3840
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockSize|512
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockLba|0
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageScratchAddress|0x90000000
 
   # PCI Express
   gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSupport|FALSE
