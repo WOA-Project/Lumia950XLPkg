@@ -586,7 +586,7 @@ void pm8x41_clear_pmic_watchdog(void)
 	pm8x41_reg_write(PMIC_WD_RESET_S2_CTL2, 0x0);
 }
 
-/* API to check for borken battery */
+/* API to check for broken battery */
 int pm8xxx_is_battery_broken(void)
 {
 	uint8_t trkl_default = 0;
