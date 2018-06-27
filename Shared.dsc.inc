@@ -463,8 +463,8 @@
   ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
   EfiResetSystemLib|Lumia950XLPkg/Library/QcomPmicResetSystemLib/QcomPmicResetSystemLib.inf
 
-  # Variable Services
-  BlockRamVariableLib|Lumia950XLPkg/Library/BlockRamVariableLib/BlockRamVariableLib.inf
+  # Defer: Variable Services
+  # BlockRamVariableLib|Lumia950XLPkg/Library/BlockRamVariableLib/BlockRamVariableLib.inf
 
 [Components.common]
   # PrePI
