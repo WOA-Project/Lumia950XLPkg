@@ -45,4 +45,10 @@ BuildMemoryTypeInformationHob(
   VOID
 );
 
+EFI_STATUS
+EFIAPI
+QGicPeim(
+	VOID
+);
+
 #endif /* _PREPI_H_ */

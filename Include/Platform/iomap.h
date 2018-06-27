@@ -50,6 +50,8 @@
 
 #define KPSS_BASE                   0xF9000000
 
+#define MSM_GIC_DIST_BASE           KPSS_BASE
+#define MSM_GIC_CPU_BASE            (KPSS_BASE + 0x00002000)
 #define APCS_KPSS_ACS_BASE          (KPSS_BASE + 0x00008000)
 #define APCS_APC_KPSS_PLL_BASE      (KPSS_BASE + 0x0000A000)
 #define APCS_KPSS_CFG_BASE          (KPSS_BASE + 0x00010000)
