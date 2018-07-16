@@ -1,0 +1,29 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TlmmShimDxe
+  FILE_GUID                      = b0e96ccf-ece4-484d-a56e-d60a2d5d4600
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = TlmmShimDxeInitialize
+
+[Sources.common]
+  Driver.c
+
+[BuildOptions.AARCH64]
+  # GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+  Lumia950XLPkg/Shim/ShimPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+
+[Protocols]
+  gEfiTLMMShimProtocolGuid
+  gQcomGpioTlmmProtocolGuid
+
+[Depex]
+  gQcomGpioTlmmProtocolGuid

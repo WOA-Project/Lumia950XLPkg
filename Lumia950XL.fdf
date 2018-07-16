@@ -72,8 +72,15 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
 
   # PCI Express
-  # Defer one release.
   # INF Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
+
+  # Shims for PCI Express Module
+  INF Lumia950XLPkg/Shim/Drivers/ChipInfoShimDxe/ChipInfoShimDxe.inf
+  INF Lumia950XLPkg/Shim/Drivers/PlatformInfoShimDxe/PlatformInfoShimDxe.inf
+  INF Lumia950XLPkg/Shim/Drivers/ClockShimDxe/ClockShimDxe.inf
+  INF Lumia950XLPkg/Shim/Drivers/PmicGpioShimDxe/PmicGpioShimDxe.inf
+  INF Lumia950XLPkg/Shim/Drivers/NpaShimDxe/NpaShimDxe.inf
+  INF Lumia950XLPkg/Shim/Drivers/TlmmShimDxe/TlmmShimDxe.inf
 
   # Device Drivers
   INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
@@ -142,12 +149,9 @@ READ_LOCK_STATUS   = TRUE
     SECTION RAW = Lumia950XLPkg/AcpiTables/8994/FADT.acpi
     SECTION RAW = Lumia950XLPkg/AcpiTables/8994/GTDT.aml
     SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MADT.aml
-	  SECTION RAW = Lumia950XLPkg/AcpiTables/8994/SSDT.aml
-    # We are not placing these tables in ACPI right now,
-    # since PCI Express is not fully configured (at least in public).
-    # Exposing these tables will cause the device to crash in boot
-	  # SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MCFG.aml
-	  # SECTION RAW = Lumia950XLPkg/AcpiTables/8994/CSRT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/SSDT.aml
+	# SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MCFG.aml
+	# SECTION RAW = Lumia950XLPkg/AcpiTables/8994/CSRT.aml
     SECTION UI = "AcpiTables"
   }
 

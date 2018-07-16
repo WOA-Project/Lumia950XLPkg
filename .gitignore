@@ -16,8 +16,6 @@ Driver/VariableRuntimeDxe
 Library/BlockRamVariableLib
 
 # PCI Express: Not release in public for now
-Driver/PCIExpressConfiguratorDxe
-Library/PCIExpress
 
 # USB: Defer
 Driver/UsbTypeCDxe
