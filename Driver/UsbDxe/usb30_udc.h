@@ -70,7 +70,6 @@ typedef struct
 	uint8_t                config_selected; /* keeps track of the selected configuration */
 
 	struct udc_request    *queued_req;      /* pointer to the currently queued request. NULL indicates no request is queued. */
-
 } udc_t;
 
 
