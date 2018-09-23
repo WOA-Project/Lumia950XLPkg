@@ -117,7 +117,6 @@
  * Generic frequency-definition structs and macros
  */
 struct clk_freq_tbl {
-
 	const uint32_t  freq_hz;
 	struct clk     *src_clk;
 	const uint32_t  div_src_val;
@@ -136,7 +135,6 @@ struct fixed_clk {
 
 /* Branch clock */
 struct branch_clk {
-
 	uint32_t *const bcr_reg;
 	uint32_t *const cbcr_reg;
 
@@ -153,7 +151,6 @@ struct branch_clk {
 
 /* Root Clock */
 struct rcg_clk {
-
 	/* RCG registers for this clock */
 
 	uint32_t *const cmd_reg; /* Command reg */
@@ -174,7 +171,6 @@ struct rcg_clk {
 
 /* Vote Clock */
 struct vote_clk {
-
 	uint32_t *const cbcr_reg;
 	uint32_t *const vote_reg;
 	uint32_t en_mask;
