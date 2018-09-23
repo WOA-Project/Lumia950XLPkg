@@ -37,7 +37,6 @@ typedef enum
 } EFI_CLOCK_RESET_TYPE;
 
 typedef enum {
-
 	EFI_CLOCK_LPM_LEVEL1 = 1,
 	EFI_CLOCK_LPM_LEVEL2 = 2,
 	EFI_CLOCK_LPM_LEVEL3 = 3,
