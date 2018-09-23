@@ -363,7 +363,6 @@ typedef struct
 	dwc_request_t       req;           /* transfer request that is currently queued on this ep. */
 
 	dwc_ep_state_t      state;         /* data transfer state of the ep. */
-
 } dwc_ep_t;
 
 
@@ -410,7 +409,6 @@ typedef struct
 	/* callback into client to process the setup msgs. */
 	void *setup_context;
 	int (*setup_handler)(void* context, uint8_t* data);
-
 } dwc_dev_t;
 
 
@@ -428,7 +426,6 @@ typedef struct
    /* callback for handling setup packets */
    void *setup_context;
    int (*setup_handler)(void *context, uint8_t *data);
-
 } dwc_config_t;
 
 /********************************* dwc global apis ****************************/

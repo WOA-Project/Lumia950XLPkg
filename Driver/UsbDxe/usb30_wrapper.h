@@ -37,13 +37,11 @@ typedef enum
 
 typedef struct {
 	void     *qscratch_base;
-
 } usb_wrapper_config_t;
 
 typedef struct
 {
    void      *base;
-
 } usb_wrapper_dev_t;
 
 
