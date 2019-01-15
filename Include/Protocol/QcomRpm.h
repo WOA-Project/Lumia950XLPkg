@@ -56,10 +56,12 @@ enum rpm_regulator_ldo_mode {
 
 typedef INTN (EFIAPI *rpm_send_data_t)(UINT32 *data, UINT32 len, msg_type type);
 typedef VOID (EFIAPI *rpm_clk_enable_t)(UINT32 *data, UINT32 len);
+typedef EFI_STATUS(EFIAPI *rpm_ldo_pipe_enable_t)();
 
 struct _QCOM_RPM_PROTOCOL {
   rpm_send_data_t    rpm_send_data;
   rpm_clk_enable_t   rpm_clk_enable;
+  rpm_ldo_pipe_enable_t   rpm_ldo_pipe_enable;
 };
 
 extern EFI_GUID gQcomRpmProtocolGuid;

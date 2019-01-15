@@ -1,0 +1,32 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = QcomPCIeLoaderDxe
+  FILE_GUID                      = fd37fd17-8577-4697-94bd-ad11b8257b6a
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = QcomPCIeLoaderDxeEntry
+
+[Sources.common]
+  Driver.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+  Lumia950XLPkg/Shim/ShimPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+
+[Protocols]
+  gQcomPcieInitProtocolGuid
+
+[Depex]
+  gQcomPmicGpioShimProtocolGuid AND
+  gEfiChipInfoShimProtocolGuid AND
+  gEfiClockShimProtocolGuid AND
+  gEfiNpaShimProtocolGuid AND
+  gEfiPlatformInfoShimProtocolGuid AND
+  gEfiTLMMShimProtocolGuid AND
+  gQcomMsmPCIExpressInitProtocolGuid AND
+  gQcomPcieInitProtocolGuid

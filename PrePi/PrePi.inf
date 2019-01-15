@@ -23,6 +23,7 @@
   ArmPkg/ArmPkg.dec
   IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
+  Lumia950XLPkg/Shim/ShimPkg.dec
 
 [LibraryClasses]
   ArmLib
@@ -45,6 +46,8 @@
   # Platform-specific libraries
   MemoryInitPeiLib
   PlatformPeiLib
+  # Shared Manager Shim
+  ShMgrShimLib
 
 [Guids]
   gEfiSystemNvDataFvGuid
@@ -66,13 +69,7 @@
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize
-  # Defer: Variable Services
-  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase                    ## CONSUMES
-  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize                    ## CONSUMES
-  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize                  ## CONSUMES
-  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize                    ## CONSUMES
-  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockCount					            ## CONSUMES
-  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockSize					            ## CONSUMES
-  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockLba						            ## CONSUMES
-  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageScratchAddress						              ## CONSUMES
-  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVolatileStorageBase                    ## CONSUMES
+  gLumia950XLPkgTokenSpaceGuid.PcdBootShimInfo1
+
+[FeaturePcd]
+  gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild

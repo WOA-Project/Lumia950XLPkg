@@ -72,15 +72,18 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
 
   # PCI Express
-  # INF Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
+  INF Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
+  # INF Lumia950XLPkg/Shim/Binaries/QcomPCIeConfigDxe/QcomPCIeConfigDxe.inf
+  # INF Lumia950XLPkg/Shim/Drivers/QcomPCIeLoaderDxe/QcomPCIeLoaderDxe.inf
+  # INF Lumia950XLPkg/Driver/PCIeExpressTrustZoneSecConfigDxe/PCIeExpressTrustZoneSecConfigDxe.inf
 
   # Shims for PCI Express Module
-  INF Lumia950XLPkg/Shim/Drivers/ChipInfoShimDxe/ChipInfoShimDxe.inf
-  INF Lumia950XLPkg/Shim/Drivers/PlatformInfoShimDxe/PlatformInfoShimDxe.inf
-  INF Lumia950XLPkg/Shim/Drivers/ClockShimDxe/ClockShimDxe.inf
-  INF Lumia950XLPkg/Shim/Drivers/PmicGpioShimDxe/PmicGpioShimDxe.inf
-  INF Lumia950XLPkg/Shim/Drivers/NpaShimDxe/NpaShimDxe.inf
-  INF Lumia950XLPkg/Shim/Drivers/TlmmShimDxe/TlmmShimDxe.inf
+  # INF Lumia950XLPkg/Shim/Drivers/ChipInfoShimDxe/ChipInfoShimDxe.inf
+  # INF Lumia950XLPkg/Shim/Drivers/PlatformInfoShimDxe/PlatformInfoShimDxe.inf
+  # INF Lumia950XLPkg/Shim/Drivers/ClockShimDxe/ClockShimDxe.inf
+  # INF Lumia950XLPkg/Shim/Drivers/PmicGpioShimDxe/PmicGpioShimDxe.inf
+  # INF Lumia950XLPkg/Shim/Drivers/NpaShimDxe/NpaShimDxe.inf
+  # INF Lumia950XLPkg/Shim/Drivers/TlmmShimDxe/TlmmShimDxe.inf
 
   # Device Drivers
   INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
@@ -151,7 +154,7 @@ READ_LOCK_STATUS   = TRUE
     SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MADT.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/SSDT.aml
 	# SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MCFG.aml
-	# SECTION RAW = Lumia950XLPkg/AcpiTables/8994/CSRT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/CSRT.aml
     SECTION UI = "AcpiTables"
   }
 

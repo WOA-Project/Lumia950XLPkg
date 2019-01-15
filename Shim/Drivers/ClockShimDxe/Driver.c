@@ -40,6 +40,8 @@ ClkShimDisableClock(
 	IN UINTN              ClockId
 )
 {
+	ASSERT(FALSE);
+
 	return EFI_SUCCESS;
 }
 

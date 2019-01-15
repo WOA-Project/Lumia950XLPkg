@@ -1,0 +1,35 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PCIeExpressTrustZoneSecConfigDxe
+  FILE_GUID                      = 058f0796-85a9-4cfa-8b84-04bd0d218ddb
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = PCIeExpressTrustZoneSecConfigDxeEntry
+
+[Sources.common]
+  TrustZoneConfig.c
+
+[Sources.AARCH64]
+  Smc.S
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  ArmLib
+  ArmSmcLib
+  DebugLib
+  DevicePathLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  DxeServicesTableLib
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-unused-function -Wno-unused-variable
+
+[Depex]
+  TRUE

@@ -41,6 +41,8 @@
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciBusHotplugDeviceSupport|FALSE
 
+  gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|FALSE
+
 [PcdsFixedAtBuild.common]
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x00000000         # Starting address
   gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
@@ -344,6 +346,7 @@
   # PciHostBridgeLib|Lumia950XLPkg/Library/PCIExpress/QcomPciHostBridgeLib/QcomPciHostBridgeLib.inf
   # PciSegmentLib|MdePkg/Library/BasePciSegmentLibPci/BasePciSegmentLibPci.inf
   # PciExpressLib|Lumia950XLPkg/Library/PCIExpress/QcomPciExpressLib/QcomPciExpressLib.inf
+  QcomPlatformClock2Lib|Lumia950XLPkg/Library/QcomPlatformClock2Lib/QcomPlatformClock2Lib.inf
 
 [LibraryClasses.common.SEC]
   HobLib|EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
@@ -366,6 +369,8 @@
   PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
   QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
   QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
+  # Shim Library
+  ShMgrShimLib|Lumia950XLPkg/Shim/Library/ShMgrShimLib/ShMgrShimLib.inf
 
 [LibraryClasses.common.DXE_CORE]
   HobLib|MdePkg/Library/DxeCoreHobLib/DxeCoreHobLib.inf
@@ -516,7 +521,8 @@
   Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
 
   # Defer: PCI Express
-  # Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
+  Lumia950XLPkg/Shim/Drivers/QcomPCIeLoaderDxe/QcomPCIeLoaderDxe.inf
+  Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
 
   # Shims for PCI Express Module
   Lumia950XLPkg/Shim/Drivers/ChipInfoShimDxe/ChipInfoShimDxe.inf

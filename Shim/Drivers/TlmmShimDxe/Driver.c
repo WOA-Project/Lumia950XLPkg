@@ -21,6 +21,9 @@ TlmmConfigGpio
 	UINTN GpioNumber = DAL_GPIO_NUMBER(Config);
 	UINTN GpioDirection = DAL_GPIO_DIRECTION(Config);
 
+	DEBUG((EFI_D_ERROR, "TlmmConfigGpio called on %d, Dir = %d, Enable = %d \n", 
+		GpioNumber, GpioDirection, Enable));
+
 	if (GpioDirection == GPIO_INPUT)
 	{
 		mTlmmProtocol->DirectionInput(GpioNumber);
@@ -79,6 +82,7 @@ TlmmConfigGpioGroup
 )
 {
 	UINT32* Config = ConfigGroup;
+	DEBUG((EFI_D_ERROR, "TlmmConfigGpioGroup called \n"));
 
 	if (Config == NULL) return EFI_INVALID_PARAMETER;
 	for (UINT32 i = 0; i < Size; i++)
@@ -98,6 +102,8 @@ TlmmGpioIn(
 )
 {
 	UINTN GpioNumber = DAL_GPIO_NUMBER(Config);
+	DEBUG((EFI_D_ERROR, "TlmmGpioIn called \n"));
+
 	if (mTlmmProtocol->GetDirection(GpioNumber) == GPIO_DIRECTION_IN)
 	{
 		*Value = mTlmmProtocol->Get(GpioNumber);
@@ -116,6 +122,9 @@ TlmmGpioOut(
 )
 {
 	UINTN GpioNumber = DAL_GPIO_NUMBER(Config);
+	DEBUG((EFI_D_ERROR, "TlmmGpioOut called on %d, Value = %d \n",
+		GpioNumber, Value));
+
 	if (mTlmmProtocol->GetDirection(GpioNumber) == GPIO_DIRECTION_OUT)
 	{
 		mTlmmProtocol->Set(GpioNumber, Value);
@@ -134,6 +143,8 @@ TlmmSetInactiveConfig
 	IN UINT32 config
 )
 {
+	DEBUG((EFI_D_ERROR, "TlmmSetInactiveConfig called \n"));
+
 	return EFI_SUCCESS;
 }
 

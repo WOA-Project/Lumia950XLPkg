@@ -966,6 +966,12 @@ static struct branch_clk gcc_blsp2_qup1_i2c_apps_clk = {
 	},
 };
 
+static struct clk_freq_tbl ftbl_pcie_0_aux_clk_src[] = {
+	F(1011000, cxo, 1, 1, 19),
+	F_END
+};
+
+
 /* Clock lookup table */
 static struct clk_lookup msm_8994_clocks[] =
 {
@@ -1031,7 +1037,7 @@ static struct clk_lookup msm_8994_clocks[] =
 	CLK_LOOKUP("gcc_qupF9963000_i2c_apps_clk_src", gcc_blsp2_qup1_i2c_apps_clk_src.c),
 	CLK_LOOKUP("gcc_qupF9963000_i2c_apps_clk",     gcc_blsp2_qup1_i2c_apps_clk.c),
 
-	/* PCI Express Clocks */
+	/* SMMU Clocks */
 
 };
 

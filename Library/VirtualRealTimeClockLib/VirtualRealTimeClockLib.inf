@@ -30,8 +30,14 @@
   ArmPkg/ArmPkg.dec
   MdePkg/MdePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
   IoLib
   DebugLib
   TimerLib
+  HobLib
+  PcdLib
+
+[FixedPcd]
+  gLumia950XLPkgTokenSpaceGuid.PcdBootShimInfo1

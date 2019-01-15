@@ -226,7 +226,6 @@
 #define PCIE_0_PHY_LDO_EN           (CLK_CTL_BASE + 0x1E00)
 #define PCIE_1_PHY_LDO_EN           (CLK_CTL_BASE + 0x1E04)
 
-
 #define GCC_WDOG_DEBUG              (CLK_CTL_BASE +  0x00001780)
 
 #define UFS_BASE                    (0xFC590000 + 0x00004000)
