@@ -438,14 +438,6 @@ SimpleFbDxeInitialize
         return EFI_DEVICE_ERROR;
     }
 
-    /* Check if we enabled FB serial */
-    if (FixedPcdGetBool(PcdEnableScreenSerial))
-    {
-        MipiFrameBufferHeight = FixedPcdGet32(PcdMipiFrameBufferHeight) / 2;
-        MipiFrameBufferAddr = MipiFrameBufferAddr + 
-            (MipiFrameBufferWidth * MipiFrameBufferHeight * VNBYTES(VIDEO_BPP32));
-    }
-
     /* Prepare struct */
     if (mDisplay.Mode == NULL)
     {

@@ -1,0 +1,29 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ClockShimDxe
+  FILE_GUID                      = c01d83ee-3958-45d7-81eb-2d9a6580eaad
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = ClockShimDxeInitialize
+
+[Sources.common]
+  Driver.c
+
+[BuildOptions.AARCH64]
+  # GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+  Lumia950XLPkg/Shim/ShimPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+
+[Protocols]
+  gEfiClockShimProtocolGuid
+
+[Depex]
+  TRUE

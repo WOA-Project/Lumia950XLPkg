@@ -1,3 +1,24 @@
+# Dynamic Generated
 Driver/SmBiosTableDxe/ReleaseInfo.h
+
+# Local
 .DS_Store
 .vs
+.vscode
+
+# ACPI: Until we are able to compile it on the fly
+*.dsl
+
+# Variable Services: Defer
+Driver/BlockRamVariableDxe
+Driver/FaultTolerantWriteDxe
+Driver/VariableRuntimeDxe
+Library/BlockRamVariableLib
+
+# PCI Express: Not release in public for now
+
+# USB: Defer
+Driver/UsbTypeCDxe
+
+# RTC: Defer
+Library/QcomPmicRealTimeClockLib

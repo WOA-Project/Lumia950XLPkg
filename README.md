@@ -30,23 +30,19 @@ scripts.
 
 ## Run
 
-Per UEFI specification, ARM32 UEFI cannot boot ARM64 binaries directly. 
+Per UEFI specification, ARM32 UEFI cannot boot ARM64 binaries directly. A recent engineering
+change removed the dependency of Little Kernel. LK can still boot it, but the path is untested.
+
 To run this UEFI build on Lumia 950 XL, the following procedure is required:
 
 - Check out [Boot Shim](https://github.com/imbushuo/boot-shim). This Boot Manager Application 
-implements a simple ELF loader for the kickstarter (LK).
-- Check out [LK](https://github.com/imbushuo/lk). You need `msm8994-test-2` branch. Build 
-MSM8994 target, then you will get a `emmc_appsboot.mbn` file.
-- Re-partition your Lumia 950XL, shrink `Data` partition, create a new partition with GPT name
-`boot`, and another `uefi_vars` (reserved for further use). 4MB for both partition is okay. Tools
-like `cgdisk` is recommended.
-- Place `emmc_appsboot.mbn` in the WP EFIESP root directory, copy Boot Shim EFI appliction
+implements a simple ELF loader for the kickstarter (LK) with Secure Monitor Call for EL1 transition.
+You will need branch `msm8994-aa64`.
+- Place `UEFI.elf` in the WP EFIESP root directory, copy Boot Shim EFI appliction
 to the EFIESP partition, create a new BCD entry for it.
-- Boot to this BCD entry, you should enter Android Fastboot mode.
-- Connect to your computer, flash the build: `fastboot flash boot UEFI.elf`
-- Continue to UEFI: `fastboot continue`
+- Select this boot entry to enter UEFI.
 
-To re-flash UEFI, press volume down until Fastboot device shows up (like flashing Android phones).
+To re-flash UEFI, simply place new `UEFI.elf` in WP EFIESP root directory.
 
 ## Patch for booting Windows ARM64
 
@@ -86,6 +82,7 @@ for MSM8994, but I have not tested it yet.
 - [EFIDroid Project](http://efidroid.org)
 - Andrei Warkentin and his [RaspberryPiPkg](https://github.com/andreiw/RaspberryPiPkg)
 - Sarah Purohit
+- [Googulator](https://github.com/Googulator/)
 
 ## License
 

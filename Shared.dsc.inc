@@ -39,6 +39,8 @@
 
   gEmbeddedTokenSpaceGuid.PcdPrePiProduceMemoryTypeInformationHob|TRUE
 
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciBusHotplugDeviceSupport|FALSE
+
 [PcdsFixedAtBuild.common]
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x00000000         # Starting address
   gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
@@ -56,7 +58,7 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1085"
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"Little Moe, LLC."
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"1.02"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"1.08"
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId|"LMNL  "
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId|0x324B44454D4F4351
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000001
@@ -156,8 +158,8 @@
   gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdShellFile|{ 0x83, 0xA5, 0x04, 0x7C, 0x3E, 0x9E, 0x1C, 0x4F, 0xAD, 0x65, 0xE0, 0x52, 0x68, 0xD0, 0xB4, 0xD1 }
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|5
 
-  # Disable Debug
-  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|FALSE
+  # Enable Debug
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial|TRUE
 
   # SoC Drivers I2C
   gQcomTokenSpaceGuid.PcdGicSpiStart|32
@@ -191,6 +193,34 @@
   gQcomTokenSpaceGuid.PcdUsb2PhyPortTune3Offset|0x00000088
   gQcomTokenSpaceGuid.PcdUsb2PhyPortTune4Offset|0x0000008C
   gQcomTokenSpaceGuid.PcdUsb2GccPhyBcr|0xFC4004B8
+
+  # Variable Services
+  # Each Size of 0xA0000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase|0x80000000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize|0x000A0000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase|0x800A0000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize|0x000A0000
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase|0x80140000 
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize|0x000A0000
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVolatileStorageBase|0x801E0000
+
+  # eMMC should have block size of 512 bytes. (Assert)
+  # Allocate 640KB (less than provisioned) so 500 blocks
+  # And times 3 for other regions
+  # And it starts at the beginning of the logical partition of "uefi_vars"
+  # Synchronize the change in LK when the size changes
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockCount|3840
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockSize|512
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockLba|0
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageScratchAddress|0x90000000
+
+  # PCI Express
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSupport|FALSE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAriSupport|FALSE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdMrIovSupport|FALSE
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress|0xf8800000
+  gArmTokenSpaceGuid.PcdPciBusMin|0x0
+  gArmTokenSpaceGuid.PcdPciBusMax|0xff
 
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
@@ -305,6 +335,15 @@
   EfiResetSystemLib|Lumia950XLPkg/Library/QcomPmicResetSystemLib/QcomPmicResetSystemLib.inf
   RuntimeSpmiLib|Lumia950XLPkg/Library/RuntimeSpmiLib/RuntimeSpmiLib.inf
   RuntimeSpmiMemoryConfiguratorLib|Lumia950XLPkg/Library/RuntimeSpmiMemoryConfiguratorLib/RuntimeSpmiMemoryConfiguratorLib.inf
+
+  # Defer: Variable Services
+  # BlockRamVariableLib|Lumia950XLPkg/Library/BlockRamVariableLib/BlockRamVariableLib.inf
+
+  # Defer: PCI Express
+  # PciLib|MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf
+  # PciHostBridgeLib|Lumia950XLPkg/Library/PCIExpress/QcomPciHostBridgeLib/QcomPciHostBridgeLib.inf
+  # PciSegmentLib|MdePkg/Library/BasePciSegmentLibPci/BasePciSegmentLibPci.inf
+  # PciExpressLib|Lumia950XLPkg/Library/PCIExpress/QcomPciExpressLib/QcomPciExpressLib.inf
 
 [LibraryClasses.common.SEC]
   HobLib|EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
@@ -424,6 +463,9 @@
   ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
   EfiResetSystemLib|Lumia950XLPkg/Library/QcomPmicResetSystemLib/QcomPmicResetSystemLib.inf
 
+  # Defer: Variable Services
+  # BlockRamVariableLib|Lumia950XLPkg/Library/BlockRamVariableLib/BlockRamVariableLib.inf
+
 [Components.common]
   # PrePI
   Lumia950XLPkg/PrePi/PrePi.inf
@@ -467,10 +509,22 @@
   Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
   Lumia950XLPkg/Driver/SmemDxe/SmemDxe.inf
   Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
+  Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
   Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   Lumia950XLPkg/Driver/UsbDxe/UsbDxe.inf
   Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
+
+  # Defer: PCI Express
+  # Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
+
+  # Shims for PCI Express Module
+  Lumia950XLPkg/Shim/Drivers/ChipInfoShimDxe/ChipInfoShimDxe.inf
+  Lumia950XLPkg/Shim/Drivers/PlatformInfoShimDxe/PlatformInfoShimDxe.inf
+  Lumia950XLPkg/Shim/Drivers/ClockShimDxe/ClockShimDxe.inf
+  Lumia950XLPkg/Shim/Drivers/PmicGpioShimDxe/PmicGpioShimDxe.inf
+  Lumia950XLPkg/Shim/Drivers/NpaShimDxe/NpaShimDxe.inf
+  Lumia950XLPkg/Shim/Drivers/TlmmShimDxe/TlmmShimDxe.inf
 
   # Device Drivers
   Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
@@ -479,7 +533,17 @@
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
-  # TODO: Replace with actual Variable Services
+  
+  # Defer: Variable Services
+  # Lumia950XLPkg/Driver/BlockRamVariableDxe/BlockRamVariableDxe.inf
+  # Lumia950XLPkg/Driver/VariableRuntimeDxe/VariableRuntimeDxe.inf {
+  #   <LibraryClasses>
+  #     AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
+  #     TpmMeasurementLib|MdeModulePkg/Library/TpmMeasurementLibNull/TpmMeasurementLibNull.inf
+  #     VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
+  #     NULL|MdeModulePkg/Library/VarCheckUefiLib/VarCheckUefiLib.inf
+  # }
+  # Lumia950XLPkg/Driver/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
   MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
 
   # Security Stub

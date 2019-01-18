@@ -7,6 +7,7 @@
 
 [Sources.common]
   Pi.c
+  EarlyQGic/EarlyQGic.c
 
 [Sources.AARCH64]
   ReleaseInfo.S | GCC
@@ -45,6 +46,10 @@
   MemoryInitPeiLib
   PlatformPeiLib
 
+[Guids]
+  gEfiSystemNvDataFvGuid
+  gEfiVariableGuid
+
 [FixedPcd]
   gArmTokenSpaceGuid.PcdSystemMemoryBase
   gArmTokenSpaceGuid.PcdSystemMemorySize
@@ -61,4 +66,13 @@
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize
-
+  # Defer: Variable Services
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase                    ## CONSUMES
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize                    ## CONSUMES
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize                  ## CONSUMES
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize                    ## CONSUMES
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockCount					            ## CONSUMES
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockSize					            ## CONSUMES
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVariableBlockLba						            ## CONSUMES
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageScratchAddress						              ## CONSUMES
+  # gLumia950XLPkgTokenSpaceGuid.PcdNvStorageVolatileStorageBase                    ## CONSUMES

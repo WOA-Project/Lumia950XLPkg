@@ -1,12 +1,12 @@
 [FD.MSM8992_EFI]
 BaseAddress   = 0x00200000|gArmTokenSpaceGuid.PcdFdBaseAddress  #The base address of the FLASH Device.
-Size          = 0x00120000|gArmTokenSpaceGuid.PcdFdSize         #The size in bytes of the FLASH Device
+Size          = 0x000FE000|gArmTokenSpaceGuid.PcdFdSize         #The size in bytes of the FLASH Device
 ErasePolarity = 1
 BlockSize     = 0x200
-NumBlocks     = 0x900
+NumBlocks     = 0x7F0
 
 # 512 bytes of configuration header & 8 bytes of image header
-0x00000000|0x00120000
+0x00000000|0x000FE000
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
 
@@ -69,6 +69,7 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   INF Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   INF Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
+  INF Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
 
   # Device Drivers
   INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
@@ -135,7 +136,12 @@ READ_LOCK_STATUS   = TRUE
     SECTION RAW = Lumia950XLPkg/AcpiTables/8992/FADT.acpi
     SECTION RAW = Lumia950XLPkg/AcpiTables/8992/GTDT.aml
     SECTION RAW = Lumia950XLPkg/AcpiTables/8992/MADT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/SSDT.aml
+	  SECTION RAW = Lumia950XLPkg/AcpiTables/8992/SSDT.aml
+	  # We are not placing these tables in ACPI right now,
+    # since PCI Express is not fully configured (at least in public).
+    # Exposing these tables will cause the device to crash in boot
+	  # SECTION RAW = Lumia950XLPkg/AcpiTables/8992/MCFG.aml
+	  # SECTION RAW = Lumia950XLPkg/AcpiTables/8992/CSRT.aml
     SECTION UI = "AcpiTables"
   }
 

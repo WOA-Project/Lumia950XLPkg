@@ -134,7 +134,7 @@ SMBIOS_TABLE_TYPE0 mBIOSInfoType0 = {
 
 CHAR8 *mBIOSInfoType0Strings[] = {
   "Little Moe, LLC.",					// Vendor String
-  "1.05 (" __IMPL_COMMIT_ID__ ")",		// BiosVersion String
+  "1.09 (" __IMPL_COMMIT_ID__ ")",		// BiosVersion String
   __RELEASE_DATE__,						// BiosReleaseDate String
   NULL
 };
