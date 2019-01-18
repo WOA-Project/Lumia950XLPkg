@@ -7,6 +7,7 @@
 
 #define GIC_DIST_CTRL               GIC_DIST_REG(0x000)
 #define GIC_DIST_CTR                GIC_DIST_REG(0x004)
+#define GIC_DIST_CGCR				GIC_DIST_REG(0X024)
 #define GIC_DIST_ENABLE_SET         GIC_DIST_REG(0x100)
 #define GIC_DIST_ENABLE_CLEAR       GIC_DIST_REG(0x180)
 #define GIC_DIST_PENDING_SET        GIC_DIST_REG(0x200)

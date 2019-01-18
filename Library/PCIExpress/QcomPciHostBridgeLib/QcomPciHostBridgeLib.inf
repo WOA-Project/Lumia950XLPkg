@@ -1,0 +1,57 @@
+## @file
+#  PCI Host Bridge Library instance for Qualcomm MSM8992/8994 SoC
+#
+#  Copyright (c) 2017, Linaro Ltd. All rights reserved.<BR>
+#  Copyright (c) 2018, Bingxing Wang. All rights reserved.<BR>
+#
+#  This program and the accompanying materials are licensed and made available
+#  under the terms and conditions of the BSD License which accompanies this
+#  distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR
+#  IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010019
+  BASE_NAME                      = QcomPciHostBridgeLib
+  FILE_GUID                      = 5b4b47f5-d527-4511-ac1c-56ff3647326b
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PciHostBridgeLib|DXE_DRIVER
+  CONSTRUCTOR                    = QcomPciHostBridgeLibConstructor
+
+#
+# The following information is for reference only and not required by the build
+# tools.
+#
+#  VALID_ARCHITECTURES           = AARCH64
+#
+
+[Sources]
+  QcomPciHostBridgeLibConstructor.c
+  QcomPciHostBridgeLib.c
+  BitOps.c
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+
+[LibraryClasses]
+  ArmLib
+  DebugLib
+  DevicePathLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  DxeServicesTableLib
+
+[Protocols]
+  gQcomGpioTlmmProtocolGuid
+
+[Depex]
+  gQcomGpioTlmmProtocolGuid
