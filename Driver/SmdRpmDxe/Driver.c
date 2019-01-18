@@ -1,18 +1,84 @@
 #include <PiDxe.h>
 #include <Library/LKEnvLib.h>
 
+#include <Chipset/regulator.h>
 #include <Protocol/QcomRpm.h>
 #include <Library/UefiBootServicesTableLib.h>
 
 #include "rpm-ipc.h"
 #include "rpm-smd.h"
 
+EFI_STATUS
+EFIAPI
+rpm_ldo_pipe_enable(
+	VOID
+);
+
+EFI_STATUS
+EFIAPI
+rpm_ldo30_enable(
+	VOID
+);
+
 STATIC QCOM_RPM_PROTOCOL mInternalRpm = {
   rpm_send_data,
   rpm_clk_enable,
+  rpm_ldo_pipe_enable,
+  rpm_ldo30_enable
 };
 
 EFI_EVENT mExitBootServicesEvent;
+
+static uint32_t ldo12[][11] =
+{
+	{
+		LDOA_RES_TYPE, 12,
+		KEY_SOFTWARE_ENABLE, 4, GENERIC_DISABLE,
+		KEY_MICRO_VOLT, 4, 0,
+		KEY_CURRENT, 4, 0,
+	},
+
+	{
+		LDOA_RES_TYPE, 12,
+		KEY_SOFTWARE_ENABLE, 4, GENERIC_ENABLE,
+		KEY_MICRO_VOLT, 4, 1800000,
+		KEY_CURRENT, 4, 11,
+	},
+};
+
+static uint32_t ldo28[][14] =
+{
+	{
+		LDOA_RES_TYPE, 28,
+		KEY_SOFTWARE_ENABLE, 4, GENERIC_DISABLE,
+		KEY_MICRO_VOLT, 4, 0,
+		KEY_CURRENT, 4, 0,
+	},
+
+	{
+		LDOA_RES_TYPE, 28,
+		KEY_SOFTWARE_ENABLE, 4, GENERIC_ENABLE,
+		KEY_MICRO_VOLT, 4, 1000000,
+		KEY_CURRENT, 4, 72,
+	},
+};
+
+static uint32_t ldo30[][14] =
+{
+	{
+		LDOA_RES_TYPE, 30,
+		KEY_SOFTWARE_ENABLE, 4, GENERIC_DISABLE,
+		KEY_MICRO_VOLT, 4, 0,
+		KEY_CURRENT, 4, 0,
+	},
+
+	{
+		LDOA_RES_TYPE, 30,
+		KEY_SOFTWARE_ENABLE, 4, GENERIC_ENABLE,
+		KEY_MICRO_VOLT, 4, 1800000,
+		KEY_CURRENT, 4, 0,
+	},
+};
 
 VOID
 EFIAPI
@@ -32,6 +98,38 @@ RpmDxeDeInitialize(
 
 EFI_STATUS
 EFIAPI
+rpm_ldo_pipe_enable(
+	VOID
+)
+{
+	// Also enable PM8994 LDO12, LDO28
+	ASSERT(rpm_send_data(&ldo12[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
+	gBS->Stall(100);
+	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LDO12 enabled \n"));
+
+	ASSERT(rpm_send_data(&ldo28[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
+	gBS->Stall(100);
+	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LDO28 enabled \n"));
+
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+rpm_ldo30_enable(
+	VOID
+)
+{
+	// LDO30
+	ASSERT(rpm_send_data(&ldo30[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
+	gBS->Stall(100);
+	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LDO30 enabled \n"));
+
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
 RpmDxeInitialize (
   IN EFI_HANDLE         ImageHandle,
   IN EFI_SYSTEM_TABLE   *SystemTable
@@ -41,7 +139,6 @@ RpmDxeInitialize (
 	EFI_STATUS Status;
 
 	rpm_smd_init();
-
 	Status = gBS->InstallMultipleProtocolInterfaces(
 		&Handle,
 		&gQcomRpmProtocolGuid,      
@@ -52,7 +149,6 @@ RpmDxeInitialize (
 
 	// Register Exit BS event for RPM SMD uninit.
 	// Otherwise Windows will hang at startup.
-
 	Status = gBS->CreateEventEx(
 		EVT_NOTIFY_SIGNAL,
 		TPL_NOTIFY,
@@ -63,6 +159,5 @@ RpmDxeInitialize (
 	);
 
 	ASSERT_EFI_ERROR(Status);
-
 	return Status;
 }

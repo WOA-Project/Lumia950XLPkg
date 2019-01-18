@@ -95,6 +95,48 @@ QGicDistConfig(
 }
 
 VOID
+QGicHardwareReset(
+	VOID
+)
+{
+	UINT32 n;
+
+	/* Disabling GIC */
+	MmioWrite32(GIC_DIST_CTRL, 0);
+	MmioWrite32(GIC_DIST_CGCR, 0);
+	MmioWrite32(GIC_CPU_CTRL, 0);
+	MmioWrite32(GIC_CPU_PRIMASK, 0);
+	MmioWrite32(GIC_CPU_BINPOINT, 0);
+
+	for (n = 0; n <= 11; n++)
+	{
+		MmioWrite32(GIC_DIST_REG(0x80 + 4 * n), 0);
+		MmioWrite32(GIC_DIST_REG(0x180 + 4 * n), 0xFFFFFFFF);
+		MmioWrite32(GIC_DIST_REG(0x280 + 4 * n), 0xFFFFFFFF);
+	}
+
+	for (n = 0; n <= 95; n++)
+	{
+		MmioWrite32(GIC_DIST_REG(0x400 + 4 * n), 0);
+		MmioWrite32(GIC_DIST_REG(0x800 + 4 * n), 0);
+	}
+
+	for (n = 0; n <= 23; n++)
+	{
+		MmioWrite32(GIC_DIST_REG(0xc00 + 4 * n), 0);
+	}
+}
+
+VOID
+QGicSetBinpoint(
+	VOID
+)
+{
+	/* No PREEMPT */
+	MmioWrite32(GIC_CPU_BINPOINT, 7);
+}
+
+VOID
 QGicDistInit(
 	VOID
 )
@@ -104,16 +146,10 @@ QGicDistInit(
 	UINT32 cpumask;
 
 	cpumask = QgicGetCpuMask();
-
 	cpumask |= cpumask << 8;
 	cpumask |= cpumask << 16;
 
-	/* Disabling GIC */
-	MmioWrite32(GIC_DIST_CTRL, 0);
-
-	/*
-	* Find out how many interrupts are supported.
-	*/
+	/* Find out how many interrupts are supported. */
 	num_irq = MmioRead32(GIC_DIST_CTR) & 0x1f;
 	num_irq = (num_irq + 1) * 32;
 
@@ -135,7 +171,7 @@ QGicCpuInit(
 	VOID
 )
 {
-	MmioWrite32(GIC_CPU_PRIMASK, 0xf0);
+	MmioWrite32(GIC_CPU_PRIMASK, 0xfe);
 	MmioWrite32(GIC_CPU_CTRL, 1);
 }
 
@@ -145,6 +181,8 @@ QGicPeim(
 	VOID
 )
 {
+	QGicHardwareReset();
+	QGicSetBinpoint();
 	QGicDistInit();
 	QGicCpuInit();
 

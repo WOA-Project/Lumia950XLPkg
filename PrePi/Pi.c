@@ -125,18 +125,21 @@ Main
     DEBUG((EFI_D_LOAD | EFI_D_INFO, "MMU configured from device config\n"));
 
 	// Initialize GIC
-	Status = QGicPeim();
-
-	if (EFI_ERROR(Status))
+	if (!FixedPcdGetBool(PcdIsLkBuild))
 	{
-		DEBUG((EFI_D_ERROR, "Failed to configure GIC\n"));
-		CpuDeadLoop();
-	}
+		Status = QGicPeim();
 
+		if (EFI_ERROR(Status))
+		{
+			DEBUG((EFI_D_ERROR, "Failed to configure GIC\n"));
+			CpuDeadLoop();
+		}
+	}
+	
     // Add HOBs
     BuildStackHob((UINTN) StackBase, StackSize);
 
-    //TODO: Call CpuPei as a library
+    // TODO: Call CpuPei as a library
     BuildCpuHob(PcdGet8(PcdPrePiCpuMemorySize), PcdGet8(PcdPrePiCpuIoSize));
 
     // Set the Boot Mode

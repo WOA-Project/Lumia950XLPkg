@@ -25,7 +25,13 @@ typedef BOOLEAN bool;
 typedef UINTN addr_t;
 typedef UINTN paddr_t;
 
+typedef UINT8 u8;
+typedef UINT16 u16;
+typedef UINT32 u32;
+typedef UINT64 u64;
+
 #define UINT_MAX MAX_UINTN
+#define ULONG_MAX (~0UL)
 
 #define REG32(addr) ((volatile uint32_t *)(addr))
 #define writel_rt(v, a) (*REG32(a) = (v))

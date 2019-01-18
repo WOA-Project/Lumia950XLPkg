@@ -54,6 +54,9 @@
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000|UINT64|0x00000a106
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x78000000|UINT32|0x00000a107
 
+  # RTC information
+  gLumia950XLPkgTokenSpaceGuid.PcdBootShimInfo1|0xb0000000|UINT64|0x00000a601
+
   # QTimer
   gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000|UINT64|0x00000050
 
@@ -185,3 +188,6 @@
 
   # ScmDxe
   gQcomTokenSpaceGuid.PcdTcsrBootMiscDetect|0|UINT64|0x000000a0
+
+  # LK Build
+  gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|TRUE|BOOLEAN|0x00000b101

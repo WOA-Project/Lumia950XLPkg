@@ -41,6 +41,8 @@
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciBusHotplugDeviceSupport|FALSE
 
+  gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|FALSE
+
 [PcdsFixedAtBuild.common]
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x00000000         # Starting address
   gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
@@ -344,6 +346,7 @@
   # PciHostBridgeLib|Lumia950XLPkg/Library/PCIExpress/QcomPciHostBridgeLib/QcomPciHostBridgeLib.inf
   # PciSegmentLib|MdePkg/Library/BasePciSegmentLibPci/BasePciSegmentLibPci.inf
   # PciExpressLib|Lumia950XLPkg/Library/PCIExpress/QcomPciExpressLib/QcomPciExpressLib.inf
+  QcomPlatformClock2Lib|Lumia950XLPkg/Library/QcomPlatformClock2Lib/QcomPlatformClock2Lib.inf
 
 [LibraryClasses.common.SEC]
   HobLib|EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
@@ -514,17 +517,7 @@
   Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   Lumia950XLPkg/Driver/UsbDxe/UsbDxe.inf
   Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
-
-  # Defer: PCI Express
-  # Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
-
-  # Shims for PCI Express Module
-  Lumia950XLPkg/Shim/Drivers/ChipInfoShimDxe/ChipInfoShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/PlatformInfoShimDxe/PlatformInfoShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/ClockShimDxe/ClockShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/PmicGpioShimDxe/PmicGpioShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/NpaShimDxe/NpaShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/TlmmShimDxe/TlmmShimDxe.inf
+  Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
 
   # Device Drivers
   Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf

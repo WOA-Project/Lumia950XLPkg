@@ -30,7 +30,7 @@
   InterruptsLib
 
 [BuildOptions.AARCH64]
-  GCC:*_*_*_CC_FLAGS = -Wno-incompatible-pointer-types
+  GCC:*_*_*_CC_FLAGS = -Wno-incompatible-pointer-types -Wno-unused-variable
 
 [Protocols]
   gQcomRpmProtocolGuid

@@ -146,7 +146,9 @@ MemoryPeim
     MemoryDescriptor[Index].Attributes = 0;
 
     // Build Memory Allocation Hob
+	DEBUG((EFI_D_INFO, "Configure MMU In \n"));
     InitMmu(MemoryDescriptor);
+	DEBUG((EFI_D_INFO, "Configure MMU Out \n"));
 
     if (FeaturePcdGet (PcdPrePiProduceMemoryTypeInformationHob)) 
     {

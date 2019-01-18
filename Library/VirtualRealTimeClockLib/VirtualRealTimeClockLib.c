@@ -19,9 +19,14 @@
 #include <Library/BaseLib.h>
 #include <Library/DebugLib.h>
 #include <Library/IoLib.h>
+#include <Library/PcdLib.h>
 #include <Library/RealTimeClockLib.h>
 #include <Library/TimerLib.h>
 #include <Library/ArmGenericTimerCounterLib.h>
+#include <Library/HobLib.h>
+#include <Configuration/Hob.h>
+
+STATIC EFI_TIME BaseTime;
 
 /**
 Returns the current time and date information, and the time-keeping capabilities
@@ -78,8 +83,8 @@ LibGetTime(
 	// measurement. e.g. Windows Boot Manager.
 	//
 
-	Time->Year = 2018;
-	Time->Month = 6;
+	Time->Year = BaseTime.Year;
+	Time->Month = BaseTime.Month;
 
 	const UINT64 SECONDS_PER_DAY = 24 * 60 * 60;
 	Time->Day = (ElapsedSeconds / SECONDS_PER_DAY);
@@ -195,6 +200,24 @@ LibRtcInitialize(
 	IN EFI_SYSTEM_TABLE                      *SystemTable
 )
 {
+	EFI_TIME* HandoffTime = (VOID*) (UINTN)FixedPcdGet64(PcdBootShimInfo1);
+	if (HandoffTime->Pad1 == HOB_TIME_PAD1 && HandoffTime->Pad2 == HOB_TIME_PAD2)
+	{
+		BaseTime.Year = HandoffTime->Year;
+		BaseTime.Month = HandoffTime->Month;
+		BaseTime.Day = HandoffTime->Day;
+		BaseTime.Hour = HandoffTime->Hour;
+		BaseTime.Minute = HandoffTime->Minute;
+		BaseTime.Second = HandoffTime->Second;
+		BaseTime.Daylight = HandoffTime->Daylight;
+		BaseTime.TimeZone = HandoffTime->TimeZone;
+	}
+	else
+	{
+		BaseTime.Year = 2019;
+		BaseTime.Month = 1;
+	}
+
 	return EFI_SUCCESS;
 }
 
