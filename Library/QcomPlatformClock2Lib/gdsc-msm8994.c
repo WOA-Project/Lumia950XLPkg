@@ -24,6 +24,7 @@
 #define TIMEOUT_US		100
 #define MAX_GDSCR_READS		100
 
+#define GDSC_PCIE0 (VOID*)(UINTN) 0xfc401ac4
 #define GDSC_PCIE1 (VOID*)(UINTN) 0xfc401b44
 #define ETIMEDOUT 110
 
@@ -62,6 +63,55 @@ static int poll_gdsc_status(void* gdscr, enum gdscr_status status)
 	}
 	return -ETIMEDOUT;
 }
+
+VOID
+EFIAPI
+gdsc_pcie0_enable(
+	VOID
+)
+{
+	uint32_t regval;
+	int ret;
+
+	regval = readl_relaxed(GDSC_PCIE0);
+	regval &= ~(HW_CONTROL_MASK | SW_OVERRIDE_MASK);
+
+	/* Configure wait time between states. */
+	regval &= ~(EN_REST_WAIT_MASK | EN_FEW_WAIT_MASK | CLK_DIS_WAIT_MASK);
+	regval |= EN_REST_WAIT_VAL | EN_FEW_WAIT_VAL | CLK_DIS_WAIT_VAL;
+	writel_relaxed(regval, GDSC_PCIE0);
+	MemoryFence();
+
+	/* Enable logic */
+	regval = readl_relaxed(GDSC_PCIE0);
+	if (regval & HW_CONTROL_MASK)
+	{
+		DEBUG((EFI_D_ERROR, "GDSC PCIE0 Under HW control \n"));
+		CpuDeadLoop();
+	}
+
+	regval &= ~SW_COLLAPSE_MASK;
+	writel_relaxed(regval, GDSC_PCIE0);
+	ret = poll_gdsc_status(GDSC_PCIE0, ENABLED);
+
+	if (ret)
+	{
+		DEBUG((EFI_D_ERROR, "GDSC PCIE0 enable timed out \n"));
+		udelay(TIMEOUT_US);
+		regval = readl_relaxed(GDSC_PCIE0);
+		DEBUG((EFI_D_ERROR, "GDSC PCIE0 final state: 0x%x (%d us after timeout)\n", regval, TIMEOUT_US));
+		CpuDeadLoop();
+	}
+
+	/*
+	 * If clocks to this power domain were already on, they will take an
+	 * additional 4 clock cycles to re-enable after the rail is enabled.
+	 * Delay to account for this. A delay is also needed to ensure clocks
+	 * are not enabled within 400ns of enabling power to the memories.
+	 */
+	udelay(1);
+}
+
 
 VOID
 EFIAPI

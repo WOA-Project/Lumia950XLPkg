@@ -176,4 +176,23 @@
 #define REFCLK_STABILIZATION_DELAY_US_MIN     1000
 #define REFCLK_STABILIZATION_DELAY_US_MAX     1005
 
+#define MSM_PCIE_MSI_PHY 0xa0000000
+#define PCIE20_MSI_CTRL_ADDR		(0x820)
+#define PCIE20_MSI_CTRL_UPPER_ADDR	(0x824)
+#define PCIE20_MSI_CTRL_INTR_EN	   (0x828)
+#define PCIE20_MSI_CTRL_INTR_MASK	 (0x82C)
+#define PCIE20_MSI_CTRL_INTR_STATUS     (0x830)
+#define PCIE20_MSI_CTRL_MAX 8
+
+#define PCI_IO_BASE_UPPER16	0x30	/* Upper half of I/O addresses */
+#define PCI_IO_LIMIT_UPPER16	0x32
+#define PCI_PRIMARY_BUS		0x18	/* Primary bus number */
+#define PCI_SECONDARY_BUS	0x19	/* Secondary bus number */
+#define PCI_SUBORDINATE_BUS	0x1a	/* Highest bus number behind the bridge */
+#define PCI_SEC_LATENCY_TIMER	0x1b	/* Latency timer for secondary interface */
+#define PCI_IO_BASE		0x1c	/* I/O range behind the bridge */
+
+#define PCI_MEMORY_BASE		0x20	/* Memory range behind */
+#define PCI_MEMORY_LIMIT	0x22
+
 #endif

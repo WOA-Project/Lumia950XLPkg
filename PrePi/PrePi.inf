@@ -23,7 +23,6 @@
   ArmPkg/ArmPkg.dec
   IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
-  Lumia950XLPkg/Shim/ShimPkg.dec
 
 [LibraryClasses]
   ArmLib
@@ -46,8 +45,6 @@
   # Platform-specific libraries
   MemoryInitPeiLib
   PlatformPeiLib
-  # Shared Manager Shim
-  ShMgrShimLib
 
 [Guids]
   gEfiSystemNvDataFvGuid

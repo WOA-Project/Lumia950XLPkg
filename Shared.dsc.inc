@@ -369,8 +369,6 @@
   PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
   QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
   QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
-  # Shim Library
-  ShMgrShimLib|Lumia950XLPkg/Shim/Library/ShMgrShimLib/ShMgrShimLib.inf
 
 [LibraryClasses.common.DXE_CORE]
   HobLib|MdePkg/Library/DxeCoreHobLib/DxeCoreHobLib.inf
@@ -519,18 +517,7 @@
   Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   Lumia950XLPkg/Driver/UsbDxe/UsbDxe.inf
   Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
-
-  # Defer: PCI Express
-  Lumia950XLPkg/Shim/Drivers/QcomPCIeLoaderDxe/QcomPCIeLoaderDxe.inf
   Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
-
-  # Shims for PCI Express Module
-  Lumia950XLPkg/Shim/Drivers/ChipInfoShimDxe/ChipInfoShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/PlatformInfoShimDxe/PlatformInfoShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/ClockShimDxe/ClockShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/PmicGpioShimDxe/PmicGpioShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/NpaShimDxe/NpaShimDxe.inf
-  Lumia950XLPkg/Shim/Drivers/TlmmShimDxe/TlmmShimDxe.inf
 
   # Device Drivers
   Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf

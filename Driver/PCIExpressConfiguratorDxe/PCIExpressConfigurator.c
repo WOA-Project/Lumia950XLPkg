@@ -12,326 +12,435 @@
 
 #include <Chipset/PCIExpress.h>
 #include <Platform/iomap.h>
+
 #include <Protocol/QcomGpioTlmm.h>
 #include <Protocol/QcomRpm.h>
-#include <Protocol/HardwareInterrupt.h>
+#include <Protocol/QcomPm8x41.h>
+#include <Protocol/QcomBoard.h>
 
 #include "BitOps.h"
-#include "TrustZone.h"
-#include "TzSyscall.h"
+#include "PCIeDefinition.h"
 
 QCOM_GPIO_TLMM_PROTOCOL *mTlmmProtocol;
 QCOM_RPM_PROTOCOL *mRpmProtocol;
-EFI_HARDWARE_INTERRUPT_PROTOCOL *gInterrupt = NULL;
+QCOM_PM8X41_PROTOCOL *mPmicProtocol;
+QCOM_BOARD_PROTOCOL *mBoardProtocol;
 
-STATIC UINT8 mCurrentBDF;
-
-static inline void WriteRegisterField(
-	void *base,
-	uint32_t offset,
-	const uint32_t mask,
-	uint32_t val
-)
-{
-	uint32_t shift = find_first_bit((void *)&mask, 32);
-	uint32_t tmp = readl_relaxed(base + offset);
-
-	tmp &= ~mask; /* clear written bits */
-	val = tmp | (val << shift);
-	writel_relaxed(val, base + offset);
-	MemoryFence();
-}
-
-static inline void WriteRegister(
-	void *base, 
-	UINT32 offset, 
-	UINT32 value
-)
-{
-	writel_relaxed(value, base + offset);
-	MemoryFence();
-}
-
-static void WriteMask(
-	void *addr,
-	uint32_t clear_mask,
-	uint32_t set_mask
-)
-{
-	uint32_t val;
-	val = (readl_relaxed(addr) & ~clear_mask) | set_mask;
-	writel_relaxed(val, addr);
-
-	/* ensure data is written to hardware register */
-	ArmDataMemoryBarrier();
-}
-
-static void PhyInit(
-	VOID
-)
-{
-	DEBUG((EFI_D_ERROR, "RC1: Initializing 20nm QMP phy - 19.2MHz \n"));
-
-	void* PhyAddress = (void*) MSM_PCIE_RES_PHY;
-
-	WriteRegister(PhyAddress, PCIE_PHY_POWER_DOWN_CONTROL, 0x03);
-
-	WriteRegister(PhyAddress, QSERDES_COM_SYSCLK_EN_SEL_TXBAND, 0x08);
-	WriteRegister(PhyAddress, QSERDES_COM_DEC_START1, 0x82);
-	WriteRegister(PhyAddress, QSERDES_COM_DEC_START2, 0x03);
-	WriteRegister(PhyAddress, QSERDES_COM_DIV_FRAC_START1, 0xD5);
-	WriteRegister(PhyAddress, QSERDES_COM_DIV_FRAC_START2, 0xAA);
-	WriteRegister(PhyAddress, QSERDES_COM_DIV_FRAC_START3, 0x4D);
-	WriteRegister(PhyAddress, QSERDES_COM_PLLLOCK_CMP_EN, 0x03);
-	WriteRegister(PhyAddress, QSERDES_COM_PLLLOCK_CMP1, 0x06);
-	WriteRegister(PhyAddress, QSERDES_COM_PLLLOCK_CMP2, 0x1A);
-	WriteRegister(PhyAddress, QSERDES_COM_PLL_CRCTRL, 0x7C);
-	WriteRegister(PhyAddress, QSERDES_COM_PLL_CP_SETI, 0x1F);
-	WriteRegister(PhyAddress, QSERDES_COM_PLL_IP_SETP, 0x12);
-	WriteRegister(PhyAddress, QSERDES_COM_PLL_CP_SETP, 0x0F);
-	WriteRegister(PhyAddress, QSERDES_COM_PLL_IP_SETI, 0x01);
-
-	WriteRegister(PhyAddress, QSERDES_COM_IE_TRIM, 0x0F);
-	WriteRegister(PhyAddress, QSERDES_COM_IP_TRIM, 0x0F);
-
-	WriteRegister(PhyAddress, QSERDES_COM_PLL_CNTRL, 0x46);
-
-	/* CDR Settings */
-	WriteRegister(PhyAddress, QSERDES_RX_CDR_CONTROL1, 0xF4);
-	WriteRegister(PhyAddress, QSERDES_RX_CDR_CONTROL_HALF, 0x2C);
-
-	WriteRegister(PhyAddress, QSERDES_COM_PLL_VCOTAIL_EN, 0xE1);
-
-	/* Calibration Settings */
-	WriteRegister(PhyAddress, QSERDES_COM_RESETSM_CNTRL, 0x91);
-	WriteRegister(PhyAddress, QSERDES_COM_RESETSM_CNTRL2, 0x07);
-
-	/* Additional writes */
-	WriteRegister(PhyAddress, QSERDES_COM_RES_CODE_START_SEG1, 0x20);
-	WriteRegister(PhyAddress, QSERDES_COM_RES_CODE_CAL_CSR, 0x77);
-	WriteRegister(PhyAddress, QSERDES_COM_RES_TRIM_CONTROL, 0x15);
-	WriteRegister(PhyAddress, QSERDES_TX_RCV_DETECT_LVL, 0x03);
-	WriteRegister(PhyAddress, QSERDES_RX_UCDR_FO_GAIN, 0x09);
-	WriteRegister(PhyAddress, QSERDES_RX_UCDR_SO_GAIN, 0x04);
-	WriteRegister(PhyAddress, QSERDES_RX_UCDR_SO_SATURATION_AND_ENABLE,
-		0x49);
-	WriteRegister(PhyAddress, QSERDES_RX_RX_EQ_GAIN1_LSB, 0xFF);
-	WriteRegister(PhyAddress, QSERDES_RX_RX_EQ_GAIN1_MSB, 0x1F);
-	WriteRegister(PhyAddress, QSERDES_RX_RX_EQ_GAIN2_LSB, 0xFF);
-	WriteRegister(PhyAddress, QSERDES_RX_RX_EQ_GAIN2_MSB, 0x00);
-	WriteRegister(PhyAddress, QSERDES_RX_RX_EQU_ADAPTOR_CNTRL2, 0x1E);
-	WriteRegister(PhyAddress, QSERDES_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1,
-		0x67);
-	WriteRegister(PhyAddress, QSERDES_RX_RX_OFFSET_ADAPTOR_CNTRL2, 0x80);
-	WriteRegister(PhyAddress, QSERDES_RX_SIGDET_ENABLES, 0x40);
-	WriteRegister(PhyAddress, QSERDES_RX_SIGDET_CNTRL, 0xB0);
-	WriteRegister(PhyAddress, QSERDES_RX_SIGDET_DEGLITCH_CNTRL, 0x06);
-	WriteRegister(PhyAddress, QSERDES_COM_PLL_RXTXEPCLK_EN, 0x10);
-	WriteRegister(PhyAddress, PCIE_PHY_ENDPOINT_REFCLK_DRIVE, 0x10);
-	WriteRegister(PhyAddress, PCIE_PHY_POWER_STATE_CONFIG1, 0xA3);
-	WriteRegister(PhyAddress, PCIE_PHY_POWER_STATE_CONFIG2, 0x4B);
-	WriteRegister(PhyAddress, PCIE_PHY_RX_IDLE_DTCT_CNTRL, 0x4D);
-
-	WriteRegister(PhyAddress, PCIE_PHY_SW_RESET, 0x00);
-	WriteRegister(PhyAddress, PCIE_PHY_START, 0x03);
-}
-
-static bool pcie_phy_is_ready()
-{
-	if (readl_relaxed(MSM_PCIE_RES_PHY + PCIE_PHY_PCS_STATUS) & BIT(6))
-		return false;
-	else
-		return true;
-}
-
-STATIC
-BOOLEAN
-ConfirmLinkUp(
-	BOOLEAN check_sw_stts,
-	BOOLEAN check_ep
-)
-{
-	uint32_t val;
-
-	if (!(readl_relaxed(MSM_PCIE_RES_DM_CORE + 0x80) & BIT(29)))
-	{
-		DEBUG((EFI_D_ERROR, "PCIe: The link of RC1 is not up.\n"));
-		return false;
-	}
-
-	val = readl_relaxed(MSM_PCIE_RES_DM_CORE);
-	DEBUG((EFI_D_ERROR, "PCIe: device ID and vender ID of RC1 are %x:%x \n", (UINT16) (val >> 16), (UINT16) val));
-
-	if (val == PCIE_LINK_DOWN)
-	{
-		DEBUG((EFI_D_ERROR, "PCIe: The link of RC1 is not really up; device ID and vender ID of RC1 are 0x%x.\n", val));
-		return false;
-	}
-
-	return true;
-}
-
-STATIC
 EFI_STATUS
 EFIAPI
-WaitForLink(
+AcquireEfiProtocols(
 	VOID
 )
 {
-	uint32_t link_check_count = 0;
-	uint32_t val = 0;
-
-	do {
-		DEBUG((EFI_D_ERROR, "Waiting for PCIe link to come up... %d \n", link_check_count));
-		gBS->Stall(LINK_UP_TIMEOUT_US_MAX);
-		val = readl_relaxed((void*) MSM_PCIE_RES_ELBI + PCIE20_ELBI_SYS_STTS);
-	} while ((!(val & XMLH_LINK_UP) || !ConfirmLinkUp(false, false))
-		&& (link_check_count++ < LINK_UP_CHECK_MAX_COUNT));
-
-	if ((val & XMLH_LINK_UP) && ConfirmLinkUp(false, false))
-	{
-		DEBUG((EFI_D_ERROR, "Link is up after %d checkings \n", link_check_count));
-		DEBUG((EFI_D_ERROR, "PCIe RC1 link initialized \n"));
-		return EFI_SUCCESS;
-	}
-	else
-	{
-		DEBUG((EFI_D_ERROR, "PCIe RC1 link initialization failed\n"));
-		ASSERT(FALSE);
-	}
-
-	return EFI_NOT_READY;
-}
-
-static void ConfigIATU(
-	int nr,
-	uint8_t type,
-	unsigned long host_addr,
-	uint32_t host_end,
-	unsigned long target_addr
-)
-{
-	void *pcie20 = (void*) MSM_PCIE_RES_DM_CORE;
-
-	/* select region */
-	writel_relaxed(nr, pcie20 + PCIE20_PLR_IATU_VIEWPORT);
-	/* ensure that hardware locks it */
-	ArmDataMemoryBarrier();
-
-	/* switch off region before changing it */
-	writel_relaxed(0, pcie20 + PCIE20_PLR_IATU_CTRL2);
-	/* and wait till it propagates to the hardware */
-	ArmDataMemoryBarrier();
-
-	writel_relaxed(type, pcie20 + PCIE20_PLR_IATU_CTRL1);
-	writel_relaxed(lower_32_bits(host_addr), pcie20 + PCIE20_PLR_IATU_LBAR);
-	writel_relaxed(upper_32_bits(host_addr), pcie20 + PCIE20_PLR_IATU_UBAR);
-	writel_relaxed(host_end, pcie20 + PCIE20_PLR_IATU_LAR);
-	writel_relaxed(lower_32_bits(target_addr), pcie20 + PCIE20_PLR_IATU_LTAR);
-	writel_relaxed(upper_32_bits(target_addr), pcie20 + PCIE20_PLR_IATU_UTAR);
-	ArmDataMemoryBarrier();
-	writel_relaxed(BIT(31), pcie20 + PCIE20_PLR_IATU_CTRL2);
-
-	/* ensure that changes propagated to the hardware */
-	ArmDataMemoryBarrier();
-}
-
-static void ConfigureBDF(
-	uint8_t bus,
-	uint8_t devfn
-)
-{
-	uint32_t bdf = BDF_OFFSET(bus, devfn);
-	uint8_t type = bus == 1 ? PCIE20_CTRL1_TYPE_CFG0 : PCIE20_CTRL1_TYPE_CFG1;
-	if (mCurrentBDF == bdf) return;
-
-	ConfigIATU(
-		0, type,
-		MSM_PCIE_RES_CONF,
-		MSM_PCIE_RES_CONF + SZ_4K - 1,
-		bdf
+	EFI_STATUS Status;
+	Status = gBS->LocateProtocol(
+		&gQcomGpioTlmmProtocolGuid,
+		NULL,
+		(VOID **) &mTlmmProtocol
 	);
+	if (EFI_ERROR(Status)) goto exit;
 
-	mCurrentBDF = bdf;
+	Status = gBS->LocateProtocol(
+		&gQcomRpmProtocolGuid,
+		NULL,
+		(VOID **) &mRpmProtocol
+	);
+	if (EFI_ERROR(Status)) goto exit;
+
+	Status = gBS->LocateProtocol(
+		&gQcomPm8x41ProtocolGuid,
+		NULL,
+		(VOID**) &mPmicProtocol
+	);
+	if (EFI_ERROR(Status)) goto exit;
+
+	Status = gBS->LocateProtocol(
+		&gQcomBoardProtocolGuid,
+		NULL,
+		(VOID**) &mBoardProtocol
+	);
+	if (EFI_ERROR(Status)) goto exit;
+
+exit:
+	return Status;
 }
 
-STATIC
-VOID
-ConfigureController(
+EFI_STATUS
+EFIAPI
+VerifyPlatform(
 	VOID
 )
 {
-	/*
-	* program and enable address translation region 0 (device config
-	* address space); region type config;
-	* axi config address range to device config address range
-	*/
-	ConfigureBDF(1, 0);
-
-	/* Configure N_FTS */
-	WriteMask((void*)MSM_PCIE_RES_DM_CORE + PCIE20_ACK_F_ASPM_CTRL_REG, 0, BIT(15));
-
-	/* Enable AER on RC */
-	WriteMask((void*)MSM_PCIE_RES_DM_CORE + PCIE20_BRIDGE_CTRL, 0, BIT(16) | BIT(17));
-	WriteMask((void*)MSM_PCIE_RES_DM_CORE + PCIE20_CAP_DEVCTRLSTATUS, 0,
-		BIT(3) | BIT(2) | BIT(1) | BIT(0)
-	);
-
-	DEBUG((EFI_D_ERROR, "RC1 PCIE20_CAP_DEVCTRLSTATUS:0x%x\n", readl_relaxed(MSM_PCIE_RES_DM_CORE + PCIE20_CAP_DEVCTRLSTATUS)));
-}
-
-static inline int CheckAlignment(
-	uint32_t offset
-)
-{
-	if (offset % 4)
+	if (mBoardProtocol->board_platform_id() != MSM8994)
 	{
-		DEBUG((EFI_D_ERROR, "PCIe: RC1: offset 0x%x is not correctly aligned\n", offset));
-		return MSM_PCIE_ERROR;
+		DEBUG((EFI_D_ERROR | EFI_D_WARN, "Target platform is not MSM8994. PCIe init skipped \n"));
+		return EFI_UNSUPPORTED;
 	}
 
-	return 0;
+	return EFI_SUCCESS;
 }
 
-STATIC
-VOID
-ConfigureLinkState(
+EFI_STATUS
+EFIAPI
+EnableClocksMsm8994(
 	VOID
 )
 {
-	uint32_t val;
-	uint32_t current_offset;
-	uint32_t ep_link_cap_offset = 0;
-	uint32_t ep_link_ctrlstts_offset = 0;
-	uint32_t ep_dev_ctrl2stts2_offset = 0;
+	EFI_STATUS Status;
 
-	/* Ignore: Enable the AUX Clock and the Core Clk to be synchronous for L1SS */
+	// HWIO_GCC_PCIE_1_PIPE_CBCR_ADDR
+	MmioWrite32(0xFC401B94, 0);
+	// HWIO_GCC_PCIE_1_PIPE_CMD_RCGR_ADDR
+	MmioWrite32(0xFC401B98, 0);
 
-	current_offset = readl_relaxed(MSM_PCIE_RES_CONF + PCIE_CAP_PTR_OFFSET) & 0xff;
-	while (current_offset)
+	// Clocks & LDOs
+	// Power and Clock
+	// GDSC & regulator
+	// LDO12 (1.8V), LDO28 (0.9V)
+	Status = mRpmProtocol->rpm_ldo_pipe_enable();
+	if (EFI_ERROR(Status)) goto exit;
+	gBS->Stall(1000);
+
+	// GDSC
+	gdsc_pcie0_enable();
+	gdsc_pcie1_enable();
+	// pcie_1_ref_clk_src
+	rpm_smd_ln_bb_clk_enable();
+	// pcie_1_aux_clk
+	pcie_0_aux_clk_set_rate_and_enable();
+	pcie_1_aux_clk_set_rate_and_enable();
+	// pcie_1_cfg_ahb_clk
+	pcie_0_cfg_ahb_clk_enable();
+	pcie_1_cfg_ahb_clk_enable();
+	// pcie_1_mstr_axi_clk
+	pcie_0_mstr_axi_clk_enable();
+	pcie_1_mstr_axi_clk_enable();
+	// pcie_1_slv_axi_clk
+	pcie_0_slv_axi_clk_enable();
+	pcie_1_slv_axi_clk_enable();
+	// pcie_1_phy_ldo
+	pcie_0_phy_ldo_enable();
+	pcie_1_phy_ldo_enable();
+	// pcie_phy_1_reset
+	pcie_phy_0_reset_enable();
+	pcie_phy_1_reset_enable();
+	// Memory fence
+	MemoryFence();
+
+exit:
+	return Status;
+}
+
+EFI_STATUS
+EFIAPI
+ConfigurePCIeAndCnssGpio(
+	VOID
+)
+{
+	// GPIO 35 PERST#, func Generic I/O (0), Dir Out, No Pull (0), Drive 2mA (0), assert -> deassert
+	mTlmmProtocol->SetFunction(35, 0);
+	mTlmmProtocol->SetDriveStrength(35, 2);
+	mTlmmProtocol->SetPull(35, GPIO_PULL_NONE);
+	mTlmmProtocol->DirectionOutput(35, 1);
+	mTlmmProtocol->Set(35, 0);
+
+	// GPIO 1, func Generic I/O, dir Out, No Pull, Drive 2mA, keep assert
+	mTlmmProtocol->SetFunction(1, 0);
+	mTlmmProtocol->SetDriveStrength(1, 2);
+	mTlmmProtocol->SetPull(1, GPIO_PULL_NONE);
+	mTlmmProtocol->DirectionOutput(1, 1);
+	mTlmmProtocol->Set(1, 1);
+
+	// GPIO 112 for CNSS bootstrap: generic I/O, dir out, pull up, drive 2mA, keep assert
+	mTlmmProtocol->SetFunction(112, 0);
+	mTlmmProtocol->SetDriveStrength(112, 2);
+	mTlmmProtocol->SetPull(112, GPIO_PULL_UP);
+	mTlmmProtocol->DirectionOutput(112, 1);
+	mTlmmProtocol->Set(112, 1);
+
+	// WLAN_LDO_3V_CTRL (PM8994 GPIO9) configure as out
+	// Skip?
+
+	// GPIO_19 BT (PM8994 GPIO19) configure as out
+	// Skip?
+
+	// GPIO 113 for WLAN_EN: generic I/O, dir out, no pull, drive 2mA, assert -> deassert
+	mTlmmProtocol->SetFunction(113, 0);
+	mTlmmProtocol->SetDriveStrength(113, 2);
+	mTlmmProtocol->SetPull(113, GPIO_PULL_NONE);
+	mTlmmProtocol->DirectionOutput(113, 1);
+	mTlmmProtocol->Set(113, 0);
+
+	// GPIO 50 Unknown: generic I/O, dir out, no pull, drive 2mA, assert -> deassert
+	mTlmmProtocol->SetFunction(50, 0);
+	mTlmmProtocol->SetDriveStrength(50, 2);
+	mTlmmProtocol->SetPull(50, GPIO_PULL_NONE);
+	mTlmmProtocol->DirectionOutput(50, 1);
+	mTlmmProtocol->Set(50, 0);
+
+	// Assert GPIO 113, hold short
+	mTlmmProtocol->Set(113, 1);
+	gBS->Stall(1000);
+
+	// Assert GPIO 35 PERST#
+	mTlmmProtocol->SetFunction(35, 0);
+	mTlmmProtocol->SetDriveStrength(35, 2);
+	mTlmmProtocol->SetPull(35, GPIO_PULL_NONE);
+	mTlmmProtocol->DirectionOutput(35, 1);
+	mTlmmProtocol->Set(35, 1);
+
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+InitializePciePHY(
+	VOID
+)
+{
+	// GCC clks
+	MmioWrite32(0xFC401B40, 0x1);
+	gBS->Stall(2000);
+	MmioWrite32(0xFC401B40, 0x0);
+
+	// Program PHY
+	// PCIE_PHY_POWER_DOWN_CONTROL
+	MmioWrite32(0xFC52E604, 0x3);
+	// QSERDES_COM_SYSCLK_EN_SEL_TXBAND
+	MmioWrite32(0xFC52E048, 0x8);
+	// QSERDES_COM_DEC_START1
+	MmioWrite32(0xFC52E0AC, 0x82);
+	// QSERDES_COM_DEC_START2
+	MmioWrite32(0xFC52E10C, 0x3);
+	// QSERDES_COM_DIV_FRAC_START1
+	MmioWrite32(0xFC52E100, 0x0D5);
+	// QSERDES_COM_DIV_FRAC_START2
+	MmioWrite32(0xFC52E104, 0x0AA);
+	// QSERDES_COM_DIV_FRAC_START3
+	MmioWrite32(0xFC52E108, 0x4D);
+	MmioWrite32(0xFC52E09C, 0x7);
+	MmioWrite32(0xFC52E090, 0x41);
+	MmioWrite32(0xFC52E094, 0x3);
+	MmioWrite32(0xFC52E114, 0x7C);
+	MmioWrite32(0xFC52E034, 0x7);
+	MmioWrite32(0xFC52E038, 0x1F);
+	MmioWrite32(0xFC52E03C, 0xF);
+	MmioWrite32(0xFC52E024, 0x1);
+	MmioWrite32(0xFC52E00C, 0xF);
+	MmioWrite32(0xFC52E010, 0xF);
+	MmioWrite32(0xFC52E014, 0x46);
+	MmioWrite32(0xFC52E400, 0xF5);
+	MmioWrite32(0xFC52E408, 0x2C);
+	MmioWrite32(0xFC52E04C, 0x91);
+	MmioWrite32(0xFC52E050, 0x7);
+	MmioWrite32(0xFC52E004, 0x0E1);
+	MmioWrite32(0xFC52E0E0, 0x24);
+	MmioWrite32(0xFC52E0E8, 0x77);
+	MmioWrite32(0xFC52E0F0, 0x15);
+	MmioWrite32(0xFC52E268, 0x3);
+	MmioWrite32(0xFC52E4A8, 0xFF);
+	MmioWrite32(0xFC52E4AC, 0x7);
+	MmioWrite32(0xFC52E4B0, 0xFF);
+	MmioWrite32(0xFC52E4B4, 0x0);
+	MmioWrite32(0xFC52E4BC, 0x1E);
+	MmioWrite32(0xFC52E4F0, 0x67);
+	MmioWrite32(0xFC52E4F4, 0x80);
+	MmioWrite32(0xFC52E4F8, 0x40);
+	MmioWrite32(0xFC52E500, 0x70);
+	MmioWrite32(0xFC52E504, 0x0C);
+	MmioWrite32(0xFC52E0B4, 0x1);
+	MmioWrite32(0xFC52E0B8, 0x2);
+	MmioWrite32(0xFC52E0C0, 0x31);
+	MmioWrite32(0xFC52E0C4, 0x1);
+	MmioWrite32(0xFC52E0C8, 0x19);
+	MmioWrite32(0xFC52E0CC, 0x19);
+	MmioWrite32(0xFC52E110, 0x10);
+	MmioWrite32(0xFC52E648, 0x10);
+	MmioWrite32(0xFC52E650, 0x23);
+	// PCIE_PHY_POWER_STATE_CONFIG2
+	MmioWrite32(0xFC52E654, 0x4B);
+	// PCIE_PHY_RX_IDLE_DTCT_CNTRL
+	MmioWrite32(0xFC52E64C, 0x4D);
+	// PCIE_PHY_SW_RESET
+	MmioWrite32(0xFC52E600, 0x0);
+	// PCIE_PHY_START
+	MmioWrite32(0xFC52E608, 0x3);
+
+	// Wait for PHY to get ready
+	while (MmioRead32(0xFC52E728) & 0x40) 
 	{
-		if (CheckAlignment(current_offset)) return;
+		gBS->Stall(5);
+	}
 
-		val = readl_relaxed(MSM_PCIE_RES_CONF + current_offset);
-		if ((val & 0xff) == PCIE20_CAP_ID)
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+RpmTurnOnLdo30(
+	VOID
+)
+{
+	return mRpmProtocol->rpm_ldo30_enable();
+}
+
+EFI_STATUS
+EFIAPI
+SetPipeClock(
+	VOID
+)
+{
+	// pcie_0_pipe_clk
+	pcie_0_pipe_clk_set_rate_enable();
+	MemoryFence();
+	gBS->Stall(REFCLK_STABILIZATION_DELAY_US_MIN);
+
+	// pcie_1_pipe_clk
+	pcie_1_pipe_clk_set_rate_enable();
+	MemoryFence();
+	gBS->Stall(REFCLK_STABILIZATION_DELAY_US_MIN);
+
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+EnableLink(
+	VOID
+)
+{
+	UINT32 Val = 0;
+
+	MmioWrite32(0xFC529000, 0x4);
+	MmioWrite32(0xF8800F24, 0x1);
+	MmioWrite32(0xF8800088, 0x1000000);
+	gBS->Stall(1000);
+
+	Val = MmioRead32(0xF8800004);
+	MmioWrite32(0xF8800004, Val | 0x46);
+
+	Val = MmioRead32(0xF88000A0);
+	MmioWrite32(0xF88000A0, (Val & 0xFFFFFFF0) + 1);
+	MmioWrite32(0xFC5281B0, 0x100);
+
+	// Check link (PCIE20_ELBI_SYS_STTS + 0x8)
+	while ((MmioRead32(0xF8800F28) & 0x400) != 0x400) gBS->Stall(1000);
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+ConfigDmCore(
+	VOID
+)
+{
+	UINT32 Val = 0;
+
+	MmioWrite32(0xF88008BC, 0x1);
+	Val = MmioRead32(0xF880007C);
+	MmioWrite32(0xF880007C, (Val & 0xFFFFFBFF) | 0x400800);
+	MmioWrite32(0xF88008BC, 0x0);
+	Val = MmioRead32(0xF8800154);
+	MmioWrite32(0xF8800154, Val | 0xF);
+	Val = MmioRead32(0xF8800158);
+	MmioWrite32(0xF8800158, Val | 0xF);
+	Val = MmioRead32(0xF8800098);
+	MmioWrite32(0xF8800098, 0x400);
+
+	// GPIO 36, in, function 2, 2mA drive, no pull (clkreq)
+	mTlmmProtocol->SetFunction(36, 2);
+	mTlmmProtocol->SetDriveStrength(36, 2);
+	mTlmmProtocol->SetPull(36, GPIO_PULL_NONE);
+	mTlmmProtocol->DirectionInput(36);
+
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+ConfigSpace(
+	VOID
+)
+{
+	UINT32 i = 1;
+	UINT32 j = 4;
+	UINT32 k = 0;
+	UINT32 Addr = 0;
+	UINT32 Val = 0;
+
+	while (TRUE)
+	{
+		// Base: 0xF8800000, DM_CORE
+		MmioWrite32(0xF8800900, i);
+		MmioWrite32(0xF8800904, j);
+		MmioWrite32(0xF8800908, 0x80000000);
+		Addr = 0xF8800900 + (k << 20) + 0x100000;
+		MmioWrite32(0xF880090C, Addr);
+		MmioWrite32(0xF8800910, 0);
+		MmioWrite32(0xF8800914, Addr);
+		MmioWrite32(0xF8800918, ((k + 1) << 24));
+		MmioWrite32(0xF880091C, 0);
+		MmioWrite32(0xF8800018, 0x30100);
+		Val = MmioRead32(Addr + 0x188);
+		MmioWrite32(Addr + 0x188, Val | 0xF);
+		Val = MmioRead32(Addr + 0x98);
+		MmioWrite32(Addr + 0x98, Val | 0x400);
+		// Three bars
+		++i;
+		if (++k < 2) break;
+		if (k) j = 5;
+	}
+
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+FinishingUp(
+	VOID
+)
+{
+	UINT32 i = 0;
+	UINT32 j = 0;
+	UINT32 Addr = 0xF8800000 + 0x100000;
+	UINT32 Adr1 = 0xF8800000 + 0x400000;
+	UINT32 k = 16;
+	UINT32 Val = 0;
+	BOOLEAN SetI = FALSE;
+
+	do
+	{
+		MmioWrite32(Addr + k, 0xFFFFFFFF);
+		Val = MmioRead32(Addr + k);
+		if (Val && !(Val << 31))
 		{
-			ep_link_cap_offset = current_offset + 0x0c;
-			ep_link_ctrlstts_offset = current_offset + 0x10;
-			ep_dev_ctrl2stts2_offset = current_offset + 0x28;
-			break;
-		}
-		current_offset = (val >> 8) & 0xff;
-	}
+			if (Val & 8)
+			{
+				SetI = TRUE;
+			}
+			else
+			{
+				SetI = FALSE;
+			}
 
-	if (!ep_link_cap_offset)
-	{
-		DEBUG((EFI_D_ERROR, "RC1 endpoint does not support PCIe capability registers\n"));
-		return;
-	}
-	else
-	{
-		DEBUG((EFI_D_ERROR, "RC1: ep_link_cap_offset: 0x%x\n", ep_link_cap_offset));
-	}
+			if (((Val >> 1) & 3) != 2 || (k += 4, MmioWrite32(Addr + k, 0xFFFFFFFF), MmioRead32(Addr + k) == -1))
+			{
+				if (SetI)
+				{
+					i = i - (Val & 0xFFFFFFF0);
+				}
+				else
+				{
+					j = j - (Val & 0xFFFFFFF0);
+				}
+			}
+		}
+		k += 4;
+	} while (k <= 0x24);
+
+	MmioWrite32(0xF8800020, (((Adr1 + j) >> 16) << 16) | (Adr1 >> 16));
+	MmioWrite32(0xF8800024, ((Adr1 + j + i) & 0xFFFF0000) | ((Adr1 + j + i) >> 16));
+	return EFI_SUCCESS;
 }
 
 EFI_STATUS
@@ -342,178 +451,39 @@ PCIExpressConfiguratorEntry(
 )
 {
 	EFI_STATUS Status;
-	UINT32 Retries = 0;
-	UINT64 Parameters[SCM_MAX_NUM_PARAMETERS] = { 0 };
-	UINT32 InternalTrustedOsId = 0;
-	UINT32 DirectParameters[NUM_DIRECT_REQUEST_PARAMETERS] = { 0 };
-	SmcErrnoType TzStatus = SMC_SUCCESS;
-	tz_restore_sec_cfg_req_t *pSysCallReq = (tz_restore_sec_cfg_req_t*) Parameters;
-
-	/* Get TLMM Protocol */
-	Status = gBS->LocateProtocol(
-		&gQcomGpioTlmmProtocolGuid,
-		NULL,
-		(VOID **)&mTlmmProtocol
-	);
-
-	if (EFI_ERROR(Status))
-	{
-		DEBUG((EFI_D_ERROR, "QCOM TLMM protocol is not ready \n"));
-		goto exit;
-	}
-
-	Status = gBS->LocateProtocol(
-		&gQcomRpmProtocolGuid,
-		NULL,
-		(VOID **)&mRpmProtocol
-	);
-
-	if (EFI_ERROR(Status))
-	{
-		DEBUG((EFI_D_ERROR, "QCOM RPM protocol is not ready \n"));
-		goto exit;
-	}
-
-	Status = gBS->LocateProtocol(
-		&gHardwareInterruptProtocolGuid,
-		NULL,
-		(VOID **) &gInterrupt
-	);
-
+	
+	Status = AcquireEfiProtocols();
 	if (EFI_ERROR(Status)) goto exit;
 
-	// WLAN_EN?
-	mTlmmProtocol->DirectionOutput(
-		113,
-		1
-	);
-
-	// Assert PCIe reset link to keep EP in reset
-	mTlmmProtocol->Set(
-		MSM_PCIE_GPIO_PERST_PIN,
-		MSM_PCIE_GPIO_PERST_PIN_ON
-	);
-
-	gBS->Stall(
-		PERST_PROPAGATION_DELAY_US_MAX
-	);
-
-	// Power and Clock
-	// GDSC & regulator
-	// LDO12 (1.8V), LDO28 (0.9V)
-	Status = mRpmProtocol->rpm_ldo_pipe_enable();
+	Status = VerifyPlatform();
 	if (EFI_ERROR(Status)) goto exit;
-	udelay(1000);
 
-	// GDSC
-	gdsc_pcie1_enable();
+	Status = EnableClocksMsm8994();
+	if (EFI_ERROR(Status)) goto exit;
 
-	// pcie_1_ref_clk_src
-	rpm_smd_ln_bb_clk_enable();
-	// pcie_1_aux_clk
-	pcie_1_aux_clk_set_rate_and_enable();
-	// pcie_1_cfg_ahb_clk
-	pcie_1_cfg_ahb_clk_enable();
-	// pcie_1_mstr_axi_clk
-	pcie_1_mstr_axi_clk_enable();
-	// pcie_1_slv_axi_clk
-	pcie_1_slv_axi_clk_enable();
-	// pcie_1_phy_ldo
-	pcie_1_phy_ldo_enable();
-	// pcie_phy_1_reset
-	pcie_phy_1_reset_enable();
-	// Memory fence
-	MemoryFence();
+	Status = ConfigurePCIeAndCnssGpio();
+	if (EFI_ERROR(Status)) goto exit;
 
-	// Restore security config
-	pSysCallReq->device = TZ_DEVICE_PCIE_1;
-	pSysCallReq->spare = 0;
+	Status = InitializePciePHY();
+	if (EFI_ERROR(Status)) goto exit;
 
-	DirectParameters[0] = Parameters[0];
-	DirectParameters[1] = Parameters[1];
+	Status = RpmTurnOnLdo30();
+	if (EFI_ERROR(Status)) goto exit;
 
-	TzStatus = tz_armv8_smc_call(
-		TZ_RESTORE_SEC_CFG,
-		TZ_RESTORE_SEC_CFG_PARAM_ID,
-		DirectParameters,
-		&InternalTrustedOsId
-	);
+	Status = SetPipeClock();
+	if (EFI_ERROR(Status)) goto exit;
 
-	ASSERT(TzStatus == SMC_SUCCESS);
+	Status = EnableLink();
+	if (EFI_ERROR(Status)) goto exit;
 
-	// Enable PCIe clocks and resets
-	WriteMask((void*)MSM_PCIE_RES_PARF + PCIE20_PARF_PHY_CTRL, BIT(0), 0);
+	Status = ConfigDmCore();
+	if (EFI_ERROR(Status)) goto exit;
 
-	// 5. Change DBI base address
-	writel_relaxed(0, MSM_PCIE_RES_PARF + PCIE20_PARF_DBI_BASE_ADDR);
-	writel_relaxed(0x365E, MSM_PCIE_RES_PARF + PCIE20_PARF_SYS_CTRL);
+	Status = ConfigSpace();
+	if (EFI_ERROR(Status)) goto exit;
 
-	// 5.5 MSI is used
-	WriteMask((void*)MSM_PCIE_RES_PARF + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT, 0, BIT(31));
-
-	// 6. Initialize PHY
-	PhyInit();
-
-	// 6.5 Pipe clock
-	gBS->Stall(REFCLK_STABILIZATION_DELAY_US_MAX);
-	// pcie_1_pipe_clk
-	pcie_1_pipe_clk_set_rate_enable();
-	MemoryFence();
-
-	// 7. Check
-	DEBUG((EFI_D_ERROR, "RC1: waiting for phy ready...\n"));
-
-	do {
-		if (pcie_phy_is_ready()) break;
-		Retries++;
-		gBS->Stall(REFCLK_STABILIZATION_DELAY_US_MAX);
-	} while (Retries < PHY_READY_TIMEOUT_COUNT);
-
-	if (pcie_phy_is_ready())
-	{
-		DEBUG((EFI_D_ERROR, "PCIe: RC1 PHY is ready after %d tries! \n", Retries));
-	}
-	else
-	{
-		DEBUG((EFI_D_ERROR, " PCIe: RC1 PHY failed to come up! \n"));
-		CpuDeadLoop();
-	}
-
-	// Wait for EP
-	gBS->Stall(10000);
-
-	// 8. De-assert PCIe reset link to bring EP out of reset
-	DEBUG((EFI_D_ERROR, "PCIe: RC1 PERST# de-asserted. \n"));
-	mTlmmProtocol->Set(
-		MSM_PCIE_GPIO_PERST_PIN,
-		1 - MSM_PCIE_GPIO_PERST_PIN_ON
-	);
-
-	gBS->Stall(
-		PERST_PROPAGATION_DELAY_US_MAX
-	);
-
-	/* set max tlp read size */
-	WriteRegisterField(
-		(void*) MSM_PCIE_RES_DM_CORE, 
-		PCIE20_DEVICE_CONTROL_STATUS,
-		0x7000, 
-		PCIE_TLP_RD_SIZE
-	);
-
-	// 9. Enable link training
-	DEBUG((EFI_D_ERROR, "PCIe: Enable link training.\n"));
-	WriteMask(
-		(void*)MSM_PCIE_RES_PARF + PCIE20_PARF_LTSSM,
-		0,
-		BIT(8)
-	);
-
-	// 10. Wait for link to come up
-	Status = WaitForLink();
-	ASSERT_EFI_ERROR(Status);
-
-	// 11. Configure controller
+	Status = FinishingUp();
+	if (EFI_ERROR(Status)) goto exit;
 
 	Status = gBS->InstallProtocolInterface(
 		&ImageHandle,

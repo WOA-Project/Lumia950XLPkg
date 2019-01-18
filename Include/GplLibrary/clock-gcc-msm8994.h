@@ -43,4 +43,46 @@ pcie_phy_1_reset_enable(
 	VOID
 );
 
+VOID
+EFIAPI
+pcie_0_pipe_clk_set_rate_enable(
+	VOID
+);
+
+VOID
+EFIAPI
+pcie_0_aux_clk_set_rate_and_enable(
+	VOID
+);
+
+VOID
+EFIAPI
+pcie_0_cfg_ahb_clk_enable(
+	VOID
+);
+
+VOID
+EFIAPI
+pcie_0_mstr_axi_clk_enable(
+	VOID
+);
+
+VOID
+EFIAPI
+pcie_0_slv_axi_clk_enable(
+	VOID
+);
+
+VOID
+EFIAPI
+pcie_0_phy_ldo_enable(
+	VOID
+);
+
+VOID
+EFIAPI
+pcie_phy_0_reset_enable(
+	VOID
+);
+
 #endif

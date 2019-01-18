@@ -3,6 +3,12 @@
 
 VOID
 EFIAPI
+gdsc_pcie0_enable(
+	VOID
+);
+
+VOID
+EFIAPI
 gdsc_pcie1_enable(
 	VOID
 );

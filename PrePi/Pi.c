@@ -21,7 +21,6 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/FrameBufferSerialPortLib.h>
-#include <Library/SharedLibInstall.h>
 
 #include <PiDxe.h>
 #include "Pi.h"
@@ -149,11 +148,6 @@ Main
     // Initialize Platform HOBs (CpuHob and FvHob)
     Status = PlatformPeim();
     ASSERT_EFI_ERROR(Status);
-
-	// Initialize Shared Library component
-	DEBUG((EFI_D_ERROR | EFI_D_INFO, "Initialize Shared Library Manager \n"));
-	ShLibMgrPeim();
-	DEBUG((EFI_D_ERROR | EFI_D_INFO, "Shared Library Manager initialized \n"));
 
     // Now, the HOB List has been initialized, we can register performance information
     // PERF_START (NULL, "PEI", NULL, StartTimeStamp);

@@ -288,6 +288,33 @@ rcg_update_config(
 	CpuDeadLoop();
 }
 
+VOID
+EFIAPI
+pcie_0_pipe_clk_set_rate_enable(
+	VOID
+)
+{
+	EFI_TPL OldTpl;
+	u32 cfg_regval;
+
+	// 0. TPL
+	OldTpl = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+
+	// 1. Parent clock: __clk_pre_reparent, ignore
+
+	// 2. Set rate
+	cfg_regval = readl_relaxed(CFG_RCGR_REG(PCIE_0_PIPE_CMD_RCGR));
+	cfg_regval &= ~(CFG_RCGR_DIV_MASK | CFG_RCGR_SRC_SEL_MASK);
+	cfg_regval |= BVAL(4, 0, (int)FIXDIV(1)) | BVAL(10, 8, pcie_pipe_source_val);
+	writel_relaxed(cfg_regval, CFG_RCGR_REG(PCIE_0_PIPE_CMD_RCGR));
+
+	// 3. Update RCG config
+	rcg_update_config(PCIE_0_PIPE_CMD_RCGR);
+
+	// 4. TPL
+	gBS->RestoreTPL(OldTpl);
+}
+
 VOID 
 EFIAPI 
 pcie_1_pipe_clk_set_rate_enable(
@@ -310,6 +337,43 @@ pcie_1_pipe_clk_set_rate_enable(
 
 	// 3. Update RCG config
 	rcg_update_config(PCIE_1_PIPE_CMD_RCGR);
+
+	// 4. TPL
+	gBS->RestoreTPL(OldTpl);
+}
+
+VOID
+EFIAPI
+pcie_0_aux_clk_set_rate_and_enable(
+	VOID
+)
+{
+	EFI_TPL OldTpl;
+	u32 cfg_regval;
+	u32 n_val = ~(19 - 1) * !!(19);
+
+	// 0. TPL
+	OldTpl = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+
+	// 1. Parent clock: __clk_pre_reparent, ignore
+
+	// 2. Set rate
+	cfg_regval = readl_relaxed(CFG_RCGR_REG(PCIE_0_AUX_CMD_RCGR));
+	writel_relaxed(1, M_REG(PCIE_0_AUX_CMD_RCGR));
+	writel_relaxed(n_val, N_REG(PCIE_0_AUX_CMD_RCGR));
+	writel_relaxed(~19, D_REG(PCIE_0_AUX_CMD_RCGR));
+
+	cfg_regval = readl_relaxed(CFG_RCGR_REG(PCIE_0_AUX_CMD_RCGR));
+	cfg_regval &= ~(CFG_RCGR_DIV_MASK | CFG_RCGR_SRC_SEL_MASK);
+	cfg_regval |= BVAL(4, 0, (int)FIXDIV(1)) | BVAL(10, 8, gcc_xo_source_val);
+
+	/* Activate or disable the M/N:D divider as necessary */
+	cfg_regval &= ~MND_MODE_MASK;
+	if (n_val != 0) cfg_regval |= MND_DUAL_EDGE_MODE_BVAL;
+	writel_relaxed(cfg_regval, CFG_RCGR_REG(PCIE_0_AUX_CMD_RCGR));
+
+	// 3. Update RCG config
+	rcg_update_config(PCIE_0_AUX_CMD_RCGR);
 
 	// 4. TPL
 	gBS->RestoreTPL(OldTpl);
@@ -397,6 +461,30 @@ branch_clk_halt_check(
 
 VOID
 EFIAPI
+pcie_0_cfg_ahb_clk_enable(
+	VOID
+)
+{
+	EFI_TPL OldTpl;
+	u32 cbcr_val;
+
+	// 0. TPL
+	OldTpl = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+
+	// 1. Enable
+	cbcr_val = readl_relaxed(CBCR_REG(PCIE_0_CFG_AHB_CBCR));
+	cbcr_val |= CBCR_BRANCH_ENABLE_BIT;
+	writel_relaxed(cbcr_val, CBCR_REG(PCIE_0_CFG_AHB_CBCR));
+
+	// 2. Wait for clock to enable before continuing.
+	branch_clk_halt_check(HALT, CBCR_REG(PCIE_0_CFG_AHB_CBCR), BRANCH_ON);
+
+	// 3. TPL
+	gBS->RestoreTPL(OldTpl);
+}
+
+VOID
+EFIAPI
 pcie_1_cfg_ahb_clk_enable(
 	VOID
 )
@@ -414,6 +502,30 @@ pcie_1_cfg_ahb_clk_enable(
 
 	// 2. Wait for clock to enable before continuing.
 	branch_clk_halt_check(HALT, CBCR_REG(PCIE_1_CFG_AHB_CBCR), BRANCH_ON);
+
+	// 3. TPL
+	gBS->RestoreTPL(OldTpl);
+}
+
+VOID
+EFIAPI
+pcie_0_mstr_axi_clk_enable(
+	VOID
+)
+{
+	EFI_TPL OldTpl;
+	u32 cbcr_val;
+
+	// 0. TPL
+	OldTpl = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+
+	// 1. Enable
+	cbcr_val = readl_relaxed(CBCR_REG(PCIE_0_MSTR_AXI_CBCR));
+	cbcr_val |= CBCR_BRANCH_ENABLE_BIT;
+	writel_relaxed(cbcr_val, CBCR_REG(PCIE_0_MSTR_AXI_CBCR));
+
+	// 2. Wait for clock to enable before continuing.
+	branch_clk_halt_check(HALT, CBCR_REG(PCIE_0_MSTR_AXI_CBCR), BRANCH_ON);
 
 	// 3. TPL
 	gBS->RestoreTPL(OldTpl);
@@ -445,6 +557,30 @@ pcie_1_mstr_axi_clk_enable(
 
 VOID
 EFIAPI
+pcie_0_slv_axi_clk_enable(
+	VOID
+)
+{
+	EFI_TPL OldTpl;
+	u32 cbcr_val;
+
+	// 0. TPL
+	OldTpl = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+
+	// 1. Enable
+	cbcr_val = readl_relaxed(CBCR_REG(PCIE_0_SLV_AXI_CBCR));
+	cbcr_val |= CBCR_BRANCH_ENABLE_BIT;
+	writel_relaxed(cbcr_val, CBCR_REG(PCIE_0_SLV_AXI_CBCR));
+
+	// 2. Wait for clock to enable before continuing.
+	branch_clk_halt_check(HALT, CBCR_REG(PCIE_0_SLV_AXI_CBCR), BRANCH_ON);
+
+	// 3. TPL
+	gBS->RestoreTPL(OldTpl);
+}
+
+VOID
+EFIAPI
 pcie_1_slv_axi_clk_enable(
 	VOID
 )
@@ -462,6 +598,31 @@ pcie_1_slv_axi_clk_enable(
 
 	// 2. Wait for clock to enable before continuing.
 	branch_clk_halt_check(HALT, CBCR_REG(PCIE_1_SLV_AXI_CBCR), BRANCH_ON);
+
+	// 3. TPL
+	gBS->RestoreTPL(OldTpl);
+}
+
+VOID
+EFIAPI
+pcie_0_phy_ldo_enable(
+	VOID
+)
+{
+	EFI_TPL OldTpl;
+	unsigned long flags;
+	u32 regval;
+
+	// 0. TPL
+	OldTpl = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+
+	// 1. Enable
+	regval = readl_relaxed(GATE_EN_REG(PCIE_0_PHY_LDO_EN));
+	regval |= BIT(0);
+	writel_relaxed(regval, GATE_EN_REG(PCIE_0_PHY_LDO_EN));
+
+	// 2. Wait
+	udelay(100);
 
 	// 3. TPL
 	gBS->RestoreTPL(OldTpl);
@@ -490,6 +651,32 @@ pcie_1_phy_ldo_enable(
 
 	// 3. TPL
 	gBS->RestoreTPL(OldTpl);
+}
+
+VOID
+EFIAPI
+pcie_phy_0_reset_enable(
+	VOID
+)
+{
+	EFI_TPL OldTpl;
+	unsigned long flags;
+	u32 reg_val;
+
+	// 0. TPL
+	OldTpl = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+
+	// 1. Reset
+	reg_val = readl_relaxed(BCR_REG(PCIE_PHY_0_BCR));
+	// CLK_RESET_DEASSERT
+	reg_val &= ~BCR_BLK_ARES_BIT;
+	writel_relaxed(reg_val, BCR_REG(PCIE_PHY_0_BCR));
+
+	// 2. TPL
+	gBS->RestoreTPL(OldTpl);
+
+	// 3. MB
+	MemoryFence();
 }
 
 VOID

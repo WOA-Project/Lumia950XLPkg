@@ -14,10 +14,17 @@ rpm_ldo_pipe_enable(
 	VOID
 );
 
+EFI_STATUS
+EFIAPI
+rpm_ldo30_enable(
+	VOID
+);
+
 STATIC QCOM_RPM_PROTOCOL mInternalRpm = {
   rpm_send_data,
   rpm_clk_enable,
-  rpm_ldo_pipe_enable
+  rpm_ldo_pipe_enable,
+  rpm_ldo30_enable
 };
 
 EFI_EVENT mExitBootServicesEvent;
@@ -54,7 +61,23 @@ static uint32_t ldo28[][14] =
 		KEY_MICRO_VOLT, 4, 1000000,
 		KEY_CURRENT, 4, 72,
 	},
+};
 
+static uint32_t ldo30[][14] =
+{
+	{
+		LDOA_RES_TYPE, 30,
+		KEY_SOFTWARE_ENABLE, 4, GENERIC_DISABLE,
+		KEY_MICRO_VOLT, 4, 0,
+		KEY_CURRENT, 4, 0,
+	},
+
+	{
+		LDOA_RES_TYPE, 30,
+		KEY_SOFTWARE_ENABLE, 4, GENERIC_ENABLE,
+		KEY_MICRO_VOLT, 4, 1800000,
+		KEY_CURRENT, 4, 0,
+	},
 };
 
 VOID
@@ -87,6 +110,20 @@ rpm_ldo_pipe_enable(
 	ASSERT(rpm_send_data(&ldo28[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
 	gBS->Stall(100);
 	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LDO28 enabled \n"));
+
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+rpm_ldo30_enable(
+	VOID
+)
+{
+	// LDO30
+	ASSERT(rpm_send_data(&ldo30[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
+	gBS->Stall(100);
+	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LDO30 enabled \n"));
 
 	return EFI_SUCCESS;
 }

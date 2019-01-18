@@ -11,9 +11,6 @@
   PCIExpressConfigurator.c
   BitOps.c
 
-[Sources.AARCH64]
-  Smc.S
-
 [Packages]
   ArmPkg/ArmPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
@@ -39,9 +36,11 @@
   gQcomGpioTlmmProtocolGuid
   gQcomMsmPCIExpressInitProtocolGuid
   gQcomRpmProtocolGuid
-  gHardwareInterruptProtocolGuid
+  gQcomPm8x41ProtocolGuid
+  gQcomBoardProtocolGuid
 
 [Depex]
   gQcomGpioTlmmProtocolGuid AND 
   gQcomRpmProtocolGuid AND 
-  gHardwareInterruptProtocolGuid
+  gQcomPm8x41ProtocolGuid AND 
+  gQcomBoardProtocolGuid
