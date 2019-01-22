@@ -13,7 +13,7 @@ cd ..
 git clone https://github.com/tianocore/edk2
 
 cd edk2
-git checkout 0e2a5749d89c96e3e17ea458365d2e5296c807e2
+git checkout UDK2018
 git pull
 
 cd ..
