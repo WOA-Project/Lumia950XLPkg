@@ -60,7 +60,7 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1085"
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"Little Moe, LLC."
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"1.08"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"1.20"
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId|"LMNL  "
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId|0x324B44454D4F4351
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000001
