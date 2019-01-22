@@ -22,10 +22,11 @@ If you are familar with EDK2, you don't need to use my build script.
 - Commit `0e2a5749d89c96e3e17ea458365d2e5296c807e2` absoultely works for you.
 - Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
 script uses `gcc-linaro-7.2.1-2017.11`. Then untar them. I place everything under `/opt` directory, so I have 
-directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build
-scripts.
+directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts.
+- Run EDK2 BaseTools setup.
 - Copy `rundbbuild.sh` in `Tools` directory to your EDK2 worktree root directory.
 - Export variable `GCC5_AARCH64_PREFIX` to your GCC directory with prefix (e.g. `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin/aarch64-elf-`)
+- Do the same for `aa64gccpath`.
 - Start build: `. rundbbuild.sh --950xl --development`
 
 ## Run

@@ -30,7 +30,16 @@ if ((Test-Path -Path "Lumia950XLPkg") -eq $null)
 # Set environment again.
 Write-Output "[EDK2Build] Set environment."
 $env:PATH="/opt/db-boot-tools:/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin:/opt/gcc-linaro-7.2.1-2017.11-x86_64_arm-eabi/bin:$($env:PATH)"
-$env:GCC5_AARCH64_PREFIX="/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin/aarch64-elf-"
+if ($null -ne $env:aa64gccpath)
+{
+	Write-Output "[EDK2Build] Inherit environment settings."
+	$env:GCC5_AARCH64_PREFIX = $env:aa64gccpath
+}
+else
+{
+	Write-Output "[EDK2Build] Use default Linux Linaro GCC 7.2.1 Path settings."
+	$env:GCC5_AARCH64_PREFIX = "/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin/aarch64-elf-"
+}
 
 # Build base tools if not exist (dev).
 if (((Test-Path -Path "BaseTools") -eq $false) -or ($Clean -eq $true))
