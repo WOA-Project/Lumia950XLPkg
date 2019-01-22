@@ -3,9 +3,9 @@
 
 ## What's this?
 
-This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 and Lumia 950 XL. 
-Currently it is able to boot Windows 10 ARM64 (with a minor patch).
-Booting Linux is also possible (see the note).
+This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 and Lumia 950 XL. Currently, it is able to boot Windows 10 ARM64, as well as Linux. See notes below for more details.
+
+**Please be aware that MSM8992 is likely less supported due to lack of testing device.**
 
 ## What can you do?
 
@@ -18,16 +18,23 @@ Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 
 If you are familar with EDK2, you don't need to use my build script.
 
-- Checkout a copy of [EDK2](https://github.com/tianocore/edk2), then checkout this repository under EDK2's worktree.
-- Commit `0e2a5749d89c96e3e17ea458365d2e5296c807e2` absoultely works for you.
+- Checkout a copy of [EDK2](https://github.com/tianocore/edk2). Switch to `UDK2018` branch. Commit `49fa59e82e4c6ea798f65fc4e5948eae63ad6e07` absoultely works for you.
+- Checkout this repository under EDK2's worktree.
 - Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
 script uses `gcc-linaro-7.2.1-2017.11`. Then untar them. I place everything under `/opt` directory, so I have 
 directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts.
-- Run EDK2 BaseTools setup.
+- Run EDK2 BaseTools setup (`make -C BaseTools`).
 - Copy `rundbbuild.sh` in `Tools` directory to your EDK2 worktree root directory.
-- Export variable `GCC5_AARCH64_PREFIX` to your GCC directory with prefix (e.g. `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin/aarch64-elf-`)
-- Do the same for `aa64gccpath`.
+- By default only MSM8994 target is built. To build all, set environment variable `BUILDALL`.
 - Start build: `. rundbbuild.sh --950xl --development`
+
+## WSL Build Notes
+
+If you checked out the EDK2 repository under Windows and build it using WSL, you will have trouble locating BaseTools Python classes due to [file case sensitive behavior changes](https://blogs.msdn.microsoft.com/commandline/2018/02/28/per-directory-case-sensitivity-and-wsl/) in WSL. Run the following PowerShell script under EDK2 directory prior to build:
+
+	Get-ChildItem .\BaseTools\ -Directory -Recurse | Foreach-Object { fsutil.exe file setCaseSensitiveInfo $_.FullName }
+
+You only need to run it once.
 
 ## Run
 
@@ -44,11 +51,6 @@ to the EFIESP partition, create a new BCD entry for it.
 - Select this boot entry to enter UEFI.
 
 To re-flash UEFI, simply place new `UEFI.elf` in WP EFIESP root directory.
-
-## Patch for booting Windows ARM64
-
-You don't need the patch anymore. If you have applied the patch, you should change it back in 
-`MdePkg/Include/AArch64/ProcessorBind.h`.
 
 ## TZ Implementation Notes
 
@@ -75,8 +77,9 @@ PSCI partially works. If you want to use PSCI for multi-processor startup, add t
 		method		= "hvc";
 	};
 
-And use `psci` for core-enable method. I think the MSM8994 Cortex ACC method works if you are working on a kernel
-for MSM8994, but I have not tested it yet.
+And use `psci` for core-enable method.
+
+For MSM8994, PCI Express Root Port 1 is **firmware-initialized**. Hence it is not necessary to supply `qcom,pcie` in device tree. Instead, supply a firmware-initialized PCI bus device `pci-host-cam-generic`. ACPI MCFG table is supplied for your reference.
 
 ## Acknowledgements
 

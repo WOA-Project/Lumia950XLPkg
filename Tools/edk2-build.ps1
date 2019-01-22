@@ -15,13 +15,23 @@ Param
 Write-Host "Task: EDK2 build"
 
 # Targets. Ensure corresponding DSC/FDF files exist
-$availableTargets = @(
-	"Lumia950",
-	"Lumia950XL"
-)
+if ($null -ne $env:BUILDALL)
+{
+	$availableTargets = @(
+		"Lumia950",
+		"Lumia950XL",
+		"Hapanero"
+	)
+}
+else
+{
+	$availableTargets = @(
+		"Lumia950XL"
+	)
+}
 
 # Check package path.
-if ((Test-Path -Path "Lumia950XLPkg") -eq $null)
+if ($null -eq (Test-Path -Path "Lumia950XLPkg"))
 {
     Write-Error "Lumia950XLPkg is not found."
     return -1
