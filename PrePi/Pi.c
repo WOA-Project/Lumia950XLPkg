@@ -59,7 +59,7 @@ Main
 {
 
     EFI_HOB_HANDOFF_INFO_TABLE*     HobList;
-	PRELOADER_ENVIRONMENT*			PreEnv = (VOID*) HOB_TIME_ADDR;
+	PRELOADER_ENVIRONMENT*			PreEnv = (VOID*) PRELOADER_ENV_ADDR;
 	UINT32                          Crc32 = 0;
     EFI_STATUS                      Status;
 
