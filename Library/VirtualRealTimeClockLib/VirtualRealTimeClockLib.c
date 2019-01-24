@@ -200,23 +200,8 @@ LibRtcInitialize(
 	IN EFI_SYSTEM_TABLE                      *SystemTable
 )
 {
-	EFI_TIME* HandoffTime = (VOID*) (UINTN)FixedPcdGet64(PcdBootShimInfo1);
-	if (HandoffTime->Pad1 == HOB_TIME_PAD1 && HandoffTime->Pad2 == HOB_TIME_PAD2)
-	{
-		BaseTime.Year = HandoffTime->Year;
-		BaseTime.Month = HandoffTime->Month;
-		BaseTime.Day = HandoffTime->Day;
-		BaseTime.Hour = HandoffTime->Hour;
-		BaseTime.Minute = HandoffTime->Minute;
-		BaseTime.Second = HandoffTime->Second;
-		BaseTime.Daylight = HandoffTime->Daylight;
-		BaseTime.TimeZone = HandoffTime->TimeZone;
-	}
-	else
-	{
-		BaseTime.Year = 2019;
-		BaseTime.Month = 1;
-	}
+	BaseTime.Year = 2019;
+	BaseTime.Month = 1;
 
 	return EFI_SUCCESS;
 }
