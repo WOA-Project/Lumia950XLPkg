@@ -106,6 +106,7 @@ if ($commit)
 	)
 
 	Set-Content -Path Lumia950XLPkg/Driver/SmBiosTableDxe/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
+	Set-Content -Path Lumia950XLPkg/Application/BdsMenuApp/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
 }
 
 foreach ($target in $availableTargets)

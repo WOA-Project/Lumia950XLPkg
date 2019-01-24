@@ -134,7 +134,7 @@ SMBIOS_TABLE_TYPE0 mBIOSInfoType0 = {
 
 CHAR8 *mBIOSInfoType0Strings[] = {
   "Little Moe, LLC.",					// Vendor String
-  "1.09 (" __IMPL_COMMIT_ID__ ")",		// BiosVersion String
+  "1.20 (" __IMPL_COMMIT_ID__ ")",		// BiosVersion String
   __RELEASE_DATE__,						// BiosReleaseDate String
   NULL
 };
@@ -301,9 +301,9 @@ SMBIOS_TABLE_TYPE4 mProcessorInfoType4 = {
   0,                      // SerialNumber;
   0,                      // AssetTag;
   4,                      // PartNumber;
-  1,                      // CoreCount;
-  1,                      // EnabledCoreCount;
-  0,                      // ThreadCount;
+  FixedPcdGet32(PcdCoreCount), // CoreCount;
+  FixedPcdGet32(PcdCoreCount), // EnabledCoreCount;
+  FixedPcdGet32(PcdCoreCount), // ThreadCount;
   0x8,                   // ProcessorCharacteristics;
   ProcessorFamilyARM,     // ARM Processor Family;
 };

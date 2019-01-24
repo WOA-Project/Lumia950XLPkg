@@ -1,12 +1,12 @@
 [FD.MSM8994_EFI]
 BaseAddress   = 0x00200000|gArmTokenSpaceGuid.PcdFdBaseAddress  #The base address of the FLASH Device.
-Size          = 0x000FE000|gArmTokenSpaceGuid.PcdFdSize         #The size in bytes of the FLASH Device
+Size          = 0x00100000|gArmTokenSpaceGuid.PcdFdSize         #The size in bytes of the FLASH Device
 ErasePolarity = 1
 BlockSize     = 0x200
-NumBlocks     = 0x7F0
+NumBlocks     = 0x800
 
 # 512 bytes of configuration header & 8 bytes of image header
-0x00000000|0x000FE000
+0x00000000|0x00100000
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
 

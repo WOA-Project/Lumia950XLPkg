@@ -16,6 +16,7 @@ QCOM_GPIO_TLMM_PROTOCOL *GpioTlmmProtocol;
 QCOM_I2C_QUP_PROTOCOL *I2cQupProtocol;
 
 BOOLEAN m_DeviceInitialized = FALSE;
+BOOLEAN m_StateChanged = FALSE;
 struct qup_i2c_dev *m_Controller;
 
 UINT8 PageF12 = 0;
@@ -23,6 +24,7 @@ UINT32 TouchDataAddress = 0;
 UINT32 FailureCount = 0;
 
 EFI_EVENT m_CallbackTimer;
+EFI_EVENT m_TouchEvent;
 
 UINT64 LastX = 0;
 UINT64 LastY = 0;
@@ -42,6 +44,7 @@ EFI_STATUS AbsPReset(
 {
 	LastX = 0;
 	LastY = 0;
+	m_StateChanged = FALSE;
 
 	return EFI_SUCCESS;
 }
@@ -63,9 +66,21 @@ EFI_STATUS AbsPGetState(
 	State->CurrentY = LastY;
 	State->CurrentZ = 0;
 	State->ActiveButtons = 0;
+	m_StateChanged = FALSE;
 
 exit:
 	return Status;
+}
+
+VOID EFIAPI AbsPWaitForInput(
+	IN EFI_EVENT Event,
+	IN VOID *Context
+)
+{
+	if (m_StateChanged) 
+	{
+		gBS->SignalEvent(Event);
+	}
 }
 
 //Absolute Pointer Protocol
@@ -73,7 +88,7 @@ EFI_ABSOLUTE_POINTER_PROTOCOL m_AbsPointerProtImpl =
 {
 	AbsPReset,
 	AbsPGetState,
-	(EFI_EVENT)NULL,
+	(EFI_EVENT) NULL,
 	(EFI_ABSOLUTE_POINTER_MODE *) &m_AbsPointerModeInfo
 };
 
@@ -286,19 +301,11 @@ EFIAPI SyncPollCallback(
 		{
 			CurrentX = TouchPointerData.TouchX;
 			CurrentY = TouchPointerData.TouchY;
+			LastX = CurrentX;
+			LastY = CurrentY;
+			m_StateChanged = TRUE;
 
-			if (FixedPcdGetBool(PcdEnableScreenSerial) && CurrentY >= m_AbsPointerModeInfo.AbsoluteMaxY)
-			{
-				LastX = CurrentX;
-				LastY = CurrentY - m_AbsPointerModeInfo.AbsoluteMaxY;
-			}
-			else if (!FixedPcdGetBool(PcdEnableScreenSerial))
-			{
-				LastX = CurrentX;
-				LastY = CurrentY;
-			}
-
-			DEBUG((EFI_D_ERROR, "Touch: X: %d, Y: %d \n", LastX, LastY));
+			DEBUG((EFI_D_INFO, "Touch: X: %d, Y: %d \n", LastX, LastY));
 		}
 	}
 
@@ -337,13 +344,6 @@ SynaInitialize(
 		DEBUG((EFI_D_ERROR, "Invalid I2C Address \n"));
 		Status = EFI_INVALID_PARAMETER;
 		goto exit;
-	}
-
-	// Position
-	if (FixedPcdGetBool(PcdEnableScreenSerial))
-	{
-		// First part is ignored
-		m_AbsPointerModeInfo.AbsoluteMaxY = m_AbsPointerModeInfo.AbsoluteMaxY / 2;
 	}
 
 	// Locate protocol
@@ -459,6 +459,18 @@ SynaInitialize(
 
 		// Flag device as initialized
 		m_DeviceInitialized = TRUE;
+		m_StateChanged = FALSE;
+
+		// Set touch event
+		m_AbsPointerProtImpl.WaitForInput = m_TouchEvent;
+		Status = gBS->CreateEvent(
+			EVT_NOTIFY_WAIT,
+			TPL_NOTIFY,
+			AbsPWaitForInput,
+			NULL,
+			&m_AbsPointerProtImpl.WaitForInput
+		);
+		ASSERT_EFI_ERROR(Status);
 
 		// Set event routines
 		gBS->CreateEvent(
@@ -468,6 +480,7 @@ SynaInitialize(
 			NULL,
 			&m_CallbackTimer
 		);
+		ASSERT_EFI_ERROR(Status);
 
 		gBS->SetTimer(
 			m_CallbackTimer,
@@ -497,5 +510,6 @@ SynaInitialize(
 	}
 
 exit:
+	ASSERT_EFI_ERROR(Status);
 	return Status;
 }

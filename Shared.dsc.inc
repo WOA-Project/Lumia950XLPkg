@@ -244,7 +244,7 @@
   BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
   BaseSynchronizationLib|MdePkg/Library/BaseSynchronizationLib/BaseSynchronizationLib.inf
   BootLogoLib|MdeModulePkg/Library/BootLogoLib/BootLogoLib.inf
-  BmpSupportLib|Lumia950XLPkg/Library/BaseBmpSupportLib/BaseBmpSupportLib.inf
+  BmpSupportLib|MdeModulePkg/Library/BaseBmpSupportLib/BaseBmpSupportLib.inf
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   CacheMaintenanceLib|ArmPkg/Library/ArmCacheMaintenanceLib/ArmCacheMaintenanceLib.inf
   CompilerIntrinsicsLib|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
@@ -341,12 +341,12 @@
   # Defer: Variable Services
   # BlockRamVariableLib|Lumia950XLPkg/Library/BlockRamVariableLib/BlockRamVariableLib.inf
 
-  # Defer: PCI Express
-  # PciLib|MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf
-  # PciHostBridgeLib|Lumia950XLPkg/Library/PCIExpress/QcomPciHostBridgeLib/QcomPciHostBridgeLib.inf
-  # PciSegmentLib|MdePkg/Library/BasePciSegmentLibPci/BasePciSegmentLibPci.inf
-  # PciExpressLib|Lumia950XLPkg/Library/PCIExpress/QcomPciExpressLib/QcomPciExpressLib.inf
+  # PCI Express Dependencies
   QcomPlatformClock2Lib|Lumia950XLPkg/Library/QcomPlatformClock2Lib/QcomPlatformClock2Lib.inf
+
+  # UI Llbrary and apps
+  LittleVglLib|Lumia950XLPkg/Library/LittleVglLib/LittleVglLib.inf
+  LodePngLib|Lumia950XLPkg/Library/LodePngLib/LodePngLib.inf
 
 [LibraryClasses.common.SEC]
   HobLib|EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
@@ -519,6 +519,9 @@
   Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
   Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
 
+  # PreLoader checker
+  Lumia950XLPkg/Driver/PreLoaderDxe/PreLoaderDxe.inf
+
   # Device Drivers
   Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
 
@@ -557,7 +560,7 @@
   MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
   MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
   MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
-  MdeModulePkg/Application/UiApp/UiApp.inf {
+  Lumia950XLPkg/Application/BdsMenuApp/BdsMenuApp.inf {
     <LibraryClasses>
       NULL|MdeModulePkg/Library/DeviceManagerUiLib/DeviceManagerUiLib.inf
       NULL|MdeModulePkg/Library/BootManagerUiLib/BootManagerUiLib.inf
