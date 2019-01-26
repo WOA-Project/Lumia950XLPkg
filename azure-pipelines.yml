@@ -1,0 +1,18 @@
+# Lumia950XLPkg CI build on VSTS
+
+trigger:
+- msm8994
+- pciexpress
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: sudo ./Tools/CI/Bootstrapper/Stage0.sh
+  displayName: 'Prepare pre-build environment, phase 0'
+
+- script: ./Tools/CI/Bootstrapper/Stage1.sh
+  displayName: 'Prepare pre-build environment, phase 1'
+
+- script: ./Tools/CI/Builder/Build.sh
+  displayName: 'Invoke UEFI build'
