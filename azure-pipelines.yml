@@ -12,7 +12,10 @@ steps:
   displayName: 'Update APT sources'
 
 - script: sudo apt install uuid-dev
-  displayName: 'Install VSTS deps'
+  displayName: 'Install VSTS dependencies'
+
+- script: sudo ln -sfn $(pwd) ../Lumia950XLPkg
+  displayName: 'Fix-up directory links'
 
 - script: sudo ./Tools/CI/Bootstrapper/Stage0.sh
   displayName: 'Prepare pre-build environment, phase 0'
