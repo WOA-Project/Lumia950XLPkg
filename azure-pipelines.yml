@@ -11,9 +11,11 @@ steps:
 - script: sudo apt update 
   displayName: 'Update APT sources'
 
+# Travis have this by default, because we preinstalled build-essentials
 - script: sudo apt install uuid-dev
   displayName: 'Install VSTS dependencies'
 
+# Fix-up directory link for VSTS, force replace current reference
 - script: sudo ln -sfn $(pwd) ../Lumia950XLPkg
   displayName: 'Fix-up directory links'
 
@@ -25,3 +27,9 @@ steps:
 
 - script: ./Tools/CI/Builder/Build.sh
   displayName: 'Invoke UEFI build'
+
+# Publish UEFI
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/
+    artifactName: MSM8994 UEFI
