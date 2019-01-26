@@ -8,6 +8,12 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
+- script: sudo apt update 
+  displayName: 'Update APT sources'
+
+- script: sudo apt install uuid-dev
+  displayName: 'Install VSTS deps'
+
 - script: sudo ./Tools/CI/Bootstrapper/Stage0.sh
   displayName: 'Prepare pre-build environment, phase 0'
 
