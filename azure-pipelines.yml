@@ -17,7 +17,7 @@ steps:
 
 # Fix-up directory link for VSTS, force replace current reference
 - script: sudo ln -sfn $(pwd) ../Lumia950XLPkg
-  displayName: 'Fix-up directory links'
+  displayName: 'Fix directory links'
 
 - script: sudo ./Tools/CI/Bootstrapper/Stage0.sh
   displayName: 'Prepare pre-build environment, phase 0'
@@ -26,10 +26,11 @@ steps:
   displayName: 'Prepare pre-build environment, phase 1'
 
 - script: ./Tools/CI/Builder/Build.sh
-  displayName: 'Invoke UEFI build'
+  displayName: 'UEFI build'
 
 # Publish UEFI
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish UEFI build'
   inputs:
     pathtoPublish: ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/
     artifactName: MSM8994 UEFI
