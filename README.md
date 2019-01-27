@@ -1,15 +1,15 @@
-# EDK2 Implementation for Lumia 950 & Lumia 950 XL
+# EDK2 Implementation for Lumia 950, Lumia 950 XL and Hapanero
 
 ## For final users
 
-You can download the latest UEFI build (currently 950 XL only) by clicking the Azure Pipelines icon below. Click Artifacts button in Azure Pipelines, then download UEFI.elf in ELF directory.
+You can download the latest UEFI build by clicking the Azure Pipelines icon below. Click Artifacts button in Azure Pipelines, then download UEFI.elf in ELF directory.
 
 [![Build Status (Visual Studio Team Services)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_apis/build/status/Lumia950XLPkg%20CI%20build?branchName=msm8994)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_build/latest?definitionId=1&branchName=msm8994)
 
 
 ## What's this?
 
-This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 and Lumia 950 XL. Currently, it is able to boot Windows 10 ARM64, as well as Linux. See notes below for more details.
+This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, Lumia 950 XL and Hapanero. Currently, it is able to boot Windows 10 ARM64, as well as Linux. See notes below for more details.
 
 **Please be aware that MSM8992 is likely less supported due to lack of testing device.**
 

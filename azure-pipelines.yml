@@ -1,8 +1,14 @@
 # Lumia950XLPkg CI build on VSTS
 
 trigger:
-- msm8994
-- pciexpress
+  branches:
+    include:
+    - msm8994
+    - pciexpress
+  paths:
+    exclude:
+    - README.md
+    - LICENSE
 
 pool:
   vmImage: 'Ubuntu-16.04'
