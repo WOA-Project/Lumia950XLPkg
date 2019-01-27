@@ -1,5 +1,12 @@
 # EDK2 Implementation for Lumia 950 & Lumia 950 XL
-[![Build Status](https://travis-ci.com/imbushuo/Lumia950XLPkg.svg?branch=msm8994)](https://travis-ci.com/imbushuo/Lumia950XLPkg)
+
+## For final users
+
+You can download the latest UEFI build (currently 950 XL only) by clicking the Azure Pipelines icon below. Click Artifacts button in Azure Pipelines, then download UEFI.elf in ELF directory.
+
+[![Build Status (Travis)](https://travis-ci.com/imbushuo/Lumia950XLPkg.svg?branch=msm8994)](https://travis-ci.com/imbushuo/Lumia950XLPkg)
+[![Build Status (Visual Studio Team Services)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_apis/build/status/Lumia950XLPkg%20CI%20build?branchName=msm8994)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_build/latest?definitionId=1&branchName=msm8994)
+
 
 ## What's this?
 

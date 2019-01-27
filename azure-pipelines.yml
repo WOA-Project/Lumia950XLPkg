@@ -1,0 +1,36 @@
+# Lumia950XLPkg CI build on VSTS
+
+trigger:
+- msm8994
+- pciexpress
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: sudo apt update 
+  displayName: 'Update APT sources'
+
+# Travis have this by default, because we preinstalled build-essentials
+- script: sudo apt install uuid-dev
+  displayName: 'Install VSTS dependencies'
+
+# Fix-up directory link for VSTS, force replace current reference
+- script: sudo ln -sfn $(pwd) ../Lumia950XLPkg
+  displayName: 'Fix directory links'
+
+- script: sudo ./Tools/CI/Bootstrapper/Stage0.sh
+  displayName: 'Prepare pre-build environment, phase 0'
+
+- script: ./Tools/CI/Bootstrapper/Stage1.sh
+  displayName: 'Prepare pre-build environment, phase 1'
+
+- script: ./Tools/CI/Builder/Build.sh
+  displayName: 'UEFI build'
+
+# Publish UEFI
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish UEFI build'
+  inputs:
+    pathtoPublish: ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/
+    artifactName: MSM8994 UEFI
