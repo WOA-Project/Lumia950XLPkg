@@ -66,7 +66,6 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
   INF Lumia950XLPkg/Driver/SmemDxe/SmemDxe.inf
   INF Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
-  INF Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
   INF Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   INF Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   INF Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
@@ -102,7 +101,7 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
   INF MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
-  INF MdeModulePkg/Application/UiApp/UiApp.inf
+  INF Lumia950XLPkg/Application/BdsMenuApp/BdsMenuApp.inf
   INF Lumia950XLPkg/Driver/LogoDxe/LogoDxe.inf
 
   # Disk IO
