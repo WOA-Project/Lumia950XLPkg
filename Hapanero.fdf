@@ -71,19 +71,7 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   INF Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
 
-  # PCI Express
-  # INF Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
-  # INF Lumia950XLPkg/Shim/Binaries/QcomPCIeConfigDxe/QcomPCIeConfigDxe.inf
-  # INF Lumia950XLPkg/Shim/Drivers/QcomPCIeLoaderDxe/QcomPCIeLoaderDxe.inf
-  # INF Lumia950XLPkg/Driver/PCIeExpressTrustZoneSecConfigDxe/PCIeExpressTrustZoneSecConfigDxe.inf
-
-  # Shims for PCI Express Module
-  # INF Lumia950XLPkg/Shim/Drivers/ChipInfoShimDxe/ChipInfoShimDxe.inf
-  # INF Lumia950XLPkg/Shim/Drivers/PlatformInfoShimDxe/PlatformInfoShimDxe.inf
-  # INF Lumia950XLPkg/Shim/Drivers/ClockShimDxe/ClockShimDxe.inf
-  # INF Lumia950XLPkg/Shim/Drivers/PmicGpioShimDxe/PmicGpioShimDxe.inf
-  # INF Lumia950XLPkg/Shim/Drivers/NpaShimDxe/NpaShimDxe.inf
-  # INF Lumia950XLPkg/Shim/Drivers/TlmmShimDxe/TlmmShimDxe.inf
+  # PCI Express: On Hapanero this is pre-initialized.
 
   # Device Drivers
   INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
@@ -146,15 +134,15 @@ READ_LOCK_STATUS   = TRUE
 
   # ACPI Tables
   FILE FREEFORM = 7E374E25-8E01-4FEE-87F2-390C23C606CD {
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/DBG2.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/DSDT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/FACS.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/FADT.acpi
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/GTDT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MADT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/SSDT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/MCFG.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/CSRT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/DBG2.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/DSDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/FACS.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/FADT.acpi
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/GTDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/MADT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/SSDT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/MCFG.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/CSRT.aml
     SECTION UI = "AcpiTables"
   }
 
