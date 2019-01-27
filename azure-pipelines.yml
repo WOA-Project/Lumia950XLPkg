@@ -28,9 +28,21 @@ steps:
 - script: ./Tools/CI/Builder/Build.sh
   displayName: 'UEFI build'
 
-# Publish UEFI
+# Publish UEFI (3 targets)
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish UEFI build'
+  displayName: 'Publish UEFI build (Lumia 950)'
   inputs:
     pathtoPublish: ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/
-    artifactName: MSM8994 UEFI
+    artifactName: MSM8992 UEFI (Lumia 950)
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish UEFI build (Lumia 950 XL)'
+  inputs:
+    pathtoPublish: ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/
+    artifactName: MSM8994 UEFI (Lumia 950 XL)
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish UEFI build (Hapanero)'
+  inputs:
+    pathtoPublish: ../edk2/Build/LumiaHapanero-AARCH64/DEBUG_GCC5/FV/
+    artifactName: MSM8994 UEFI (Hapanero)
