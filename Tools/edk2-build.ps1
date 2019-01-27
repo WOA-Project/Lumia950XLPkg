@@ -15,8 +15,10 @@ Param
 Write-Host "Task: EDK2 build"
 
 # Targets. Ensure corresponding DSC/FDF files exist
+# Build all targets on VSTS (phasing out Travis right now) or if user asks to do so
 if ($null -ne $env:BUILDALL)
 {
+	Write-Output "[EDK2Build] User requested build all available targets."
 	$availableTargets = @(
 		"Lumia950",
 		"Lumia950XL",
@@ -105,6 +107,7 @@ if ($commit)
 		"#endif"
 	)
 
+	# TODO: Merge into single
 	Set-Content -Path Lumia950XLPkg/Driver/SmBiosTableDxe/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
 	Set-Content -Path Lumia950XLPkg/Application/BdsMenuApp/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
 }
