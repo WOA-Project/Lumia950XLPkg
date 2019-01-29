@@ -37,5 +37,7 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemModel|"Lumia 950"
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Qualcomm Snapdragon 808 Processor (8994)"
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1104"
+  gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1440
+  gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
 
 !include Lumia950XLPkg/Shared.dsc.inc

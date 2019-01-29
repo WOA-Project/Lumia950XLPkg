@@ -54,11 +54,6 @@
   gArmTokenSpaceGuid.PcdGicDistributorBase|0xf9000000
   gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0xf9002000
 
-  # Platform-specific
-  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemModel|"Lumia 950 XL"
-  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Qualcomm Snapdragon 810 Processor (8994)"
-  gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1085"
-
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"Little Moe, LLC."
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"1.20"
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId|"LMNL  "
@@ -171,8 +166,6 @@
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrResetPin|38
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrIntPin|77
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice|1
-  gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1440
-  gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
 
   # RPM
   gQcomTokenSpaceGuid.PcdApcsAlias0IpcInterrupt|0xF900D008
