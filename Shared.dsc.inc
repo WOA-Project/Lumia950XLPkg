@@ -45,9 +45,7 @@
 
 [PcdsFixedAtBuild.common]
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x00000000         # Starting address
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
   gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x00C40000
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
   gArmTokenSpaceGuid.PcdArmArchTimerFreqInHz|19200000
   gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|18
   gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|19

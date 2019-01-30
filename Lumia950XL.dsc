@@ -32,6 +32,8 @@
   
 [PcdsFixedAtBuild.common]
   # Platform-specific
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8
   gArmPlatformTokenSpaceGuid.PcdClusterCount|2
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemModel|"Lumia 950 XL"

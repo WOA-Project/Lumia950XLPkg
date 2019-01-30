@@ -32,8 +32,10 @@
   
 [PcdsFixedAtBuild.common]
   # Platform-specific
-  # gArmTokenSpaceGuid.PcdSystemMemorySize|0xF8000000         # 3.875GB
-  # gArmTokenSpaceGuid.PcdSystemMemorySize|0xF8000000         # 3.875GB
+  # gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
+  # gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0xF8000000         # 3.875GB
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0xF8000000         # 3.875GB
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8
   gArmPlatformTokenSpaceGuid.PcdClusterCount|2
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemModel|"Hapanero"
