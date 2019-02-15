@@ -282,6 +282,13 @@ MMCHSWriteBlocks (
   if (BufferSize == 0) {
     return EFI_SUCCESS;
   }
+  
+  // Here goes a fail-safe design (see issue #5)
+  // Assume the partition layout before partition 36 is identical on our target devices
+  // TODO: Once SD card support is added, check for eMMC/SD
+  if (0<= Lba && Lba <= 253951) {
+    return EFI_UNSUPPORTED;
+  }
 
   RC = mmc_write (Instance, (UINT64) Lba * BlockSize, BufferSize, Buffer);
   if (RC == 0)
