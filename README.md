@@ -6,7 +6,6 @@ You can download the latest UEFI build by clicking the Azure Pipelines icon belo
 
 [![Build Status (Visual Studio Team Services)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_apis/build/status/Lumia950XLPkg%20CI%20build?branchName=msm8994)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_build/latest?definitionId=1&branchName=msm8994)
 
-
 ## What's this?
 
 This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, Lumia 950 XL and Hapanero. Currently, it is able to boot Windows 10 ARM64, as well as Linux. See notes below for more details.
@@ -15,16 +14,16 @@ This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, L
 
 ## What can you do?
 
-I am too busy to write an average-user instruction. So if you are interested in, you are welcome to
+I am too busy to write an average-user instruction. So, if you are interested in, you are welcome to
 contribute to an easy instruction for all Lumia 950 XL users.
 
 Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 
 ## Build
 
-If you are familar with EDK2, you don't need to use my build script.
+If you are familiar with EDK2, you don't need to use my build script.
 
-- Checkout a copy of [EDK2](https://github.com/tianocore/edk2). Switch to `UDK2018` branch. Commit `49fa59e82e4c6ea798f65fc4e5948eae63ad6e07` absoultely works for you.
+- Checkout a copy of [EDK2](https://github.com/tianocore/edk2). Switch to `UDK2018` branch. Commit `49fa59e82e4c6ea798f65fc4e5948eae63ad6e07` absolutely works for you.
 - Checkout this repository under EDK2's worktree.
 - Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
 script uses `gcc-linaro-7.2.1-2017.11`. Then untar them. I place everything under `/opt` directory, so I have 
@@ -52,7 +51,7 @@ To run this UEFI build on Lumia 950 XL, the following procedure is required:
 - Check out [Boot Shim](https://github.com/imbushuo/boot-shim). This Boot Manager Application 
 implements a simple ELF loader for the kickstarter (LK) with Secure Monitor Call for EL1 transition.
 You will need branch `msm8994-aa64`.
-- Place `UEFI.elf` in the WP EFIESP root directory, copy Boot Shim EFI appliction
+- Place `UEFI.elf` in the WP EFIESP root directory, copy Boot Shim EFI application
 to the EFIESP partition, create a new BCD entry for it.
 - Select this boot entry to enter UEFI.
 
