@@ -38,7 +38,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish UEFI build (Lumia 950)'
   inputs:
-    pathtoPublish: ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/
+    pathtoPublish: ../edk2/Build/Lumia950-AARCH64/DEBUG_GCC5/FV/
     artifactName: MSM8992 UEFI (Lumia 950)
 
 - task: PublishBuildArtifacts@1
