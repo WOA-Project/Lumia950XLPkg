@@ -177,7 +177,7 @@ LibResetSystem (
 	// We should never be here
 	DEBUG ((EFI_D_ERROR, "%a: PMIC Reset failed\n", __FUNCTION__));
 	CpuDeadLoop ();
-	return EFI_UNSUPPORTED;
+	return EFI_DEVICE_ERROR;
 }
 
 VOID

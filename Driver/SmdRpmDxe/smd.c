@@ -34,6 +34,7 @@
 #include <Library/MallocLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Protocol/HardwareInterrupt.h>
+#include <Library/EfiResetSystemLib.h>
 
 #include "smd.h"
 
@@ -181,6 +182,7 @@ void smd_uninit_exit_bs(smd_channel_info_t *ch)
 	// Slightly different from previous one:
 	// No event, no memory ops
 	// Windows OS load time is enough for all ops
+	UINTN TimeoutCount = 0;
 
 	// Mark as exiting boot services
 	smd_exit_bs_in_progress = TRUE;
@@ -188,16 +190,23 @@ void smd_uninit_exit_bs(smd_channel_info_t *ch)
 	smd_set_state(ch, SMD_SS_CLOSING, 1);
 	smd_notify_rpm();
 
-	DEBUG((EFI_D_ERROR, "Wait for channel release \n"));
+	DEBUG((EFI_D_INFO, "Wait for RPM SMD channel release \n"));
 
 	/* Wait for the SMD-RPM channel to be closed */
 	while (TRUE)
 	{
 		if (smd_channel_alloc_freed) break;
+		// 10s timeout
+		if (TimeoutCount > 100000)
+		{
+			DEBUG((EFI_D_ERROR, "ERROR: RPM channel release timed out \n"));
+			LibResetSystem(EfiResetCold, EFI_TIMEOUT, 0, NULL);
+		}
 		udelay(100);
+		TimeoutCount++;
 	}
 
-	DEBUG((EFI_D_ERROR, "Channel released \n"));
+	DEBUG((EFI_D_INFO, "RPM SMD Channel released \n"));
 }
 
 bool is_channel_open(smd_channel_info_t *ch)
