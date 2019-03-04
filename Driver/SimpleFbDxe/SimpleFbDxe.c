@@ -9,6 +9,8 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/DxeServicesTableLib.h>
 #include <Protocol/GraphicsOutput.h>
+#include <Library/FrameBufferBltLib.h>
+#include <Library/CacheMaintenanceLib.h>
 #include <Library/BaseLib.h>
 
 /// Defines
@@ -77,6 +79,9 @@ DISPLAY_DEVICE_PATH mDisplayDevicePath =
 
 /// Declares
 
+STATIC FRAME_BUFFER_CONFIGURE        *mFrameBufferBltLibConfigure;
+STATIC UINTN                         mFrameBufferBltLibConfigureSize;
+
 STATIC
 EFI_STATUS
 EFIAPI
@@ -114,66 +119,12 @@ DisplayBlt
     IN  UINTN                                   Delta         OPTIONAL
 );
 
-/* Display Blit function */
-static void DisplayDxeBltInternal 
-(
-  UINT8   *pSrc,
-  UINT8   *pDst,
-  UINTN    uSrcX,
-  UINTN    uSrcY,
-  UINTN    uSrcWidth,
-  UINTN    uSrcHeight,
-  UINTN    uSrcStride,
-  UINTN    uDstX,
-  UINTN    uDstY,
-  UINTN    uDstStride,
-  UINTN    uBytesPerPixel
-);
-
 STATIC EFI_GRAPHICS_OUTPUT_PROTOCOL mDisplay = {
   DisplayQueryMode,
   DisplaySetMode,
   DisplayBlt,
   NULL
 };
-
-static void DisplayDxeBltInternal 
-(
-  UINT8   *pSrc,
-  UINT8   *pDst,
-  UINTN    uSrcX,
-  UINTN    uSrcY,
-  UINTN    uSrcWidth,
-  UINTN    uSrcHeight,
-  UINTN    uSrcStride,
-  UINTN    uDstX,
-  UINTN    uDstY,
-  UINTN    uDstStride,
-  UINTN    uBytesPerPixel
-  )
-{
-  UINT32 uI = 0;
-  UINT32 uSrcWidthBytes = uSrcWidth * uBytesPerPixel;  
-  
-  /* move src pointer to start of src rectangle */
-  pSrc += (uSrcY * uSrcStride) + (uSrcX * uBytesPerPixel);
-
-  /* move dest pointer to start of dest rectangle */
-  pDst += (uDstY * uDstStride) + (uDstX * uBytesPerPixel); 
-
-  /* Blit Operation 
-   *
-   *  We use MDP_OSAL_MEMCPY which invokes Neon memcpy (kr_memcpy.asm) 
-   *  This memcpy supports overlapped src and dst buffers but copying may not be optimal in the overlap case 
-   */  
-  for (uI = 0; uI < uSrcHeight; ++uI)
-  {
-    gBS->CopyMem((VOID*) pDst, (VOID*) pSrc, uSrcWidthBytes);
-
-    pDst += uDstStride;
-    pSrc += uSrcStride;
-  }
-}
 
 STATIC
 EFI_STATUS
@@ -233,184 +184,25 @@ DisplayBlt
     IN  UINTN                             Delta         OPTIONAL
 )
 {
-    EFI_STATUS Status = EFI_SUCCESS;
+    RETURN_STATUS                         Status;
+    EFI_TPL                               Tpl;
+    //
+    // We have to raise to TPL_NOTIFY, so we make an atomic write to the frame buffer.
+    // We would not want a timer based event (Cursor, ...) to come in while we are
+    // doing this operation.
+    //
+    Tpl = gBS->RaiseTPL(TPL_NOTIFY);
+    Status = FrameBufferBlt(
+        mFrameBufferBltLibConfigure,
+        BltBuffer,
+        BltOperation,
+        SourceX, SourceY,
+        DestinationX, DestinationY, Width, Height,
+        Delta
+    );
+    gBS->RestoreTPL (Tpl);
 
-    if (NULL == This)
-    {
-        Status = EFI_INVALID_PARAMETER;
-    }
-    else
-    {
-        switch (BltOperation)
-        {
-        case EfiBltBufferToVideo:
-        {
-            UINT8 *pSrcBuffer = (UINT8*) BltBuffer;
-            UINT8 *pDstBuffer = (UINT8*) DISPLAYDXE_PHYSICALADDRESS32(mDisplay.Mode->FrameBufferBase);
-            UINTN SrcStride, DstStride, CopyWidth, CopyHeight;
-
-            if (((DestinationX + Width) > mDisplay.Mode->Info->HorizontalResolution) ||
-                ((DestinationY + Height) > mDisplay.Mode->Info->VerticalResolution))
-            {
-                return EFI_INVALID_PARAMETER;
-            }
-
-            CopyWidth  = Width;
-            CopyHeight = Height;
-
-            /* Video buffer stride in bytes, consider padding as well */
-            DstStride = mDisplay.Mode->Info->PixelsPerScanLine * FB_BYTES_PER_PIXEL;
-
-            /* Src buffer stride in bytes. Delta is valid when X or Y is not 0 */
-            SrcStride = Width * FB_BYTES_PER_PIXEL;
-            if (Delta != 0)
-            {  
-                SrcStride = Delta;
-            }
-
-            DisplayDxeBltInternal(pSrcBuffer,
-                pDstBuffer,
-                SourceX, 
-                SourceY, 
-                CopyWidth, 
-                CopyHeight,
-                SrcStride,
-                DestinationX,
-                DestinationY,
-                DstStride,
-                FB_BYTES_PER_PIXEL);
-          
-            Status = EFI_SUCCESS;
-        }
-        break;
-
-        case EfiBltVideoToBltBuffer:
-        {  
-            UINT8 *pSrcBuffer = (UINT8*) BltBuffer;
-            UINT8 *pDstBuffer = (UINT8*) DISPLAYDXE_PHYSICALADDRESS32(mDisplay.Mode->FrameBufferBase);
-            UINTN SrcStride, DstStride, CopyWidth, CopyHeight;
-
-            if (((SourceX + Width) > mDisplay.Mode->Info->HorizontalResolution) ||
-                ((SourceY + Height) > mDisplay.Mode->Info->VerticalResolution))
-            {
-                return EFI_INVALID_PARAMETER;
-            }
-
-            CopyWidth  = Width;
-            CopyHeight = Height;
-
-            /* Video buffer stride in bytes, consider padding as well */
-            SrcStride = mDisplay.Mode->Info->PixelsPerScanLine * FB_BYTES_PER_PIXEL;
-
-            /* Buffer stride in bytes. Delta is valid when X or Y is not 0 */
-            DstStride = Width * FB_BYTES_PER_PIXEL;
-            if (Delta != 0)
-            {
-                DstStride = Delta;
-            }
-
-            DisplayDxeBltInternal(pSrcBuffer,
-                pDstBuffer,
-                SourceX, 
-                SourceY, 
-                CopyWidth, 
-                CopyHeight,
-                SrcStride,
-                DestinationX,
-                DestinationY,
-                DstStride,
-                FB_BYTES_PER_PIXEL);
-
-            Status = EFI_SUCCESS;
-        }
-        break; 
-
-        case EfiBltVideoFill:
-        {
-            UINT32 SrcPixel = *(UINT32*) BltBuffer;
-            UINT32 *pDstBuffer = (UINT32*) DISPLAYDXE_PHYSICALADDRESS32(mDisplay.Mode->FrameBufferBase);
-            UINTN  DstStride, CopyWidth, CopyHeight;
-            UINT32 x,y;
-
-            if (((DestinationX + Width) > mDisplay.Mode->Info->HorizontalResolution) ||
-                ((DestinationY + Height) > mDisplay.Mode->Info->VerticalResolution))
-            {
-                return EFI_INVALID_PARAMETER;
-            }
-
-            CopyWidth  = Width;
-            CopyHeight = Height;
-
-            /* Video buffer stride in bytes, consider padding as well */
-            DstStride = mDisplay.Mode->Info->PixelsPerScanLine * FB_BYTES_PER_PIXEL;
-
-            /* Adjust Destination location */
-            pDstBuffer = (UINT32*)(((UINT8*)pDstBuffer) + (DestinationY * DstStride) + DestinationX * FB_BYTES_PER_PIXEL); 
-
-            /* Do the actual blitting */
-            for (y = 0; y < CopyHeight; y++)
-            {
-                for (x = 0; x < CopyWidth; x++)
-                {
-                    pDstBuffer[x] = SrcPixel;
-                }
-
-                /* Increment by stride number of bytes */
-                pDstBuffer = (UINT32*)((UINT8*)pDstBuffer + DstStride);
-            }
-            Status = EFI_SUCCESS;
-        }
-        break;
-
-        case EfiBltVideoToVideo:
-        {
-            UINT8 *pSrcBuffer = (UINT8*) DISPLAYDXE_PHYSICALADDRESS32(mDisplay.Mode->FrameBufferBase);
-            UINT8 *pDstBuffer = (UINT8*) DISPLAYDXE_PHYSICALADDRESS32(mDisplay.Mode->FrameBufferBase);
-            UINTN  Stride, CopyWidth, CopyHeight;
-
-            if (((SourceX + Width) > mDisplay.Mode->Info->HorizontalResolution))
-                Width = mDisplay.Mode->Info->HorizontalResolution - SourceX;
-
-            if (((SourceY + Height) > mDisplay.Mode->Info->VerticalResolution))
-                Height = mDisplay.Mode->Info->VerticalResolution - SourceY;
-
-            if (((DestinationX + Width) > mDisplay.Mode->Info->HorizontalResolution))
-                Width = mDisplay.Mode->Info->HorizontalResolution - DestinationX;
-
-            if (((DestinationY + Height) > mDisplay.Mode->Info->VerticalResolution))
-                Height = mDisplay.Mode->Info->VerticalResolution - DestinationY;
-
-            CopyWidth  = Width;
-            CopyHeight = Height;
-
-            /* Video buffer stride in bytes, consider padding as well */
-            Stride = mDisplay.Mode->Info->PixelsPerScanLine * FB_BYTES_PER_PIXEL;
-
-            DisplayDxeBltInternal(pSrcBuffer,
-                pDstBuffer,
-                SourceX, 
-                SourceY, 
-                CopyWidth, 
-                CopyHeight,
-                Stride,
-                DestinationX,
-                DestinationY,
-                Stride,
-                FB_BYTES_PER_PIXEL);
-
-            Status = EFI_SUCCESS;
-
-        }
-        break;
-
-        default:
-            DEBUG ((EFI_D_ERROR, "SimpleFbDxe: BltOperation not supported\n"));
-            Status = RETURN_INVALID_PARAMETER;
-            break;
-        }    
-    }
-
-    return Status;    
+    return RETURN_ERROR (Status) ? EFI_INVALID_PARAMETER : EFI_SUCCESS;
 }
 
 EFI_STATUS
@@ -475,7 +267,7 @@ SimpleFbDxeInitialize
     mDisplay.Mode->Info->HorizontalResolution = MipiFrameBufferWidth;
     mDisplay.Mode->Info->VerticalResolution = MipiFrameBufferHeight;
 
-    /* SimpleFB runs on a8r8g8b8 (VIDEO_BPP32) for DB410c */
+    /* SimpleFB runs on a8r8g8b8 (VIDEO_BPP32) for WoA devices */
     UINT32 LineLength = MipiFrameBufferWidth * VNBYTES(VIDEO_BPP32);
     UINT32 FrameBufferSize = LineLength * MipiFrameBufferHeight;
     EFI_PHYSICAL_ADDRESS FrameBufferAddress = MipiFrameBufferAddr;
@@ -485,6 +277,31 @@ SimpleFbDxeInitialize
     mDisplay.Mode->SizeOfInfo = sizeof(EFI_GRAPHICS_OUTPUT_MODE_INFORMATION);
     mDisplay.Mode->FrameBufferBase = FrameBufferAddress;
     mDisplay.Mode->FrameBufferSize = FrameBufferSize;
+
+    /* Create the FrameBufferBltLib configuration. */
+    Status = FrameBufferBltConfigure (
+        (VOID *) (UINTN) mDisplay.Mode->FrameBufferBase,
+        mDisplay.Mode->Info,
+        mFrameBufferBltLibConfigure,
+        &mFrameBufferBltLibConfigureSize
+    );
+
+    if (Status == RETURN_BUFFER_TOO_SMALL) 
+    {
+        mFrameBufferBltLibConfigure = AllocatePool (mFrameBufferBltLibConfigureSize);
+        if (mFrameBufferBltLibConfigure != NULL) 
+        {
+            Status = FrameBufferBltConfigure (
+                (VOID *) (UINTN) mDisplay.Mode->FrameBufferBase,
+                mDisplay.Mode->Info,
+                mFrameBufferBltLibConfigure,
+                &mFrameBufferBltLibConfigureSize
+            );
+        }
+    }
+
+    ASSERT_EFI_ERROR (Status);
+    ZeroMem((VOID *) FrameBufferAddress, FrameBufferSize);
 
     /* Register handle */
     Status = gBS->InstallMultipleProtocolInterfaces(
