@@ -112,28 +112,28 @@ EnableClocksMsm8994(
 	gBS->Stall(1000);
 
 	// GDSC
-	gdsc_pcie0_enable();
-	gdsc_pcie1_enable();
+	gdsc_pcie0_enable(); 
+	if (mBoardProtocol->board_platform_id() == MSM8994) gdsc_pcie1_enable();
 	// pcie_1_ref_clk_src
 	rpm_smd_ln_bb_clk_enable();
 	// pcie_1_aux_clk
 	pcie_0_aux_clk_set_rate_and_enable();
-	pcie_1_aux_clk_set_rate_and_enable();
+	if (mBoardProtocol->board_platform_id() == MSM8994) pcie_1_aux_clk_set_rate_and_enable();
 	// pcie_1_cfg_ahb_clk
 	pcie_0_cfg_ahb_clk_enable();
-	pcie_1_cfg_ahb_clk_enable();
+	if (mBoardProtocol->board_platform_id() == MSM8994) pcie_1_cfg_ahb_clk_enable();
 	// pcie_1_mstr_axi_clk
 	pcie_0_mstr_axi_clk_enable();
-	pcie_1_mstr_axi_clk_enable();
+	if (mBoardProtocol->board_platform_id() == MSM8994) pcie_1_mstr_axi_clk_enable();
 	// pcie_1_slv_axi_clk
 	pcie_0_slv_axi_clk_enable();
-	pcie_1_slv_axi_clk_enable();
+	if (mBoardProtocol->board_platform_id() == MSM8994) pcie_1_slv_axi_clk_enable();
 	// pcie_1_phy_ldo
 	pcie_0_phy_ldo_enable();
-	pcie_1_phy_ldo_enable();
+	if (mBoardProtocol->board_platform_id() == MSM8994) pcie_1_phy_ldo_enable();
 	// pcie_phy_1_reset
 	pcie_phy_0_reset_enable();
-	pcie_phy_1_reset_enable();
+	if (mBoardProtocol->board_platform_id() == MSM8994) pcie_phy_1_reset_enable();
 	// Memory fence
 	MemoryFence();
 
