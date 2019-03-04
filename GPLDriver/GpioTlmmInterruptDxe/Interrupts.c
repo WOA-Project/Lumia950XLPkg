@@ -120,12 +120,12 @@ VOID msm_gpio_irq_ack(UINTN id) {
 }
 
 STATIC VOID handle_level_irq(UINTN id) {
-  DEBUG((EFI_D_ERROR, "%a gpio=%u\n", __func__, id));
+  DEBUG((EFI_D_INFO, "%a gpio=%u\n", __func__, id));
   ASSERT(FALSE);
 }
 
 STATIC VOID handle_edge_irq(UINTN id) {
-  DEBUG((EFI_D_ERROR, "%a gpio=%u\n", __func__, id));
+  DEBUG((EFI_D_INFO, "%a gpio=%u\n", __func__, id));
   ASSERT(FALSE);
 }
 

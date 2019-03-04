@@ -297,14 +297,14 @@ AddOutput (
 
   Status = EfiBootManagerUpdateConsoleVariable (ConOut, DevicePath, NULL);
   if (EFI_ERROR (Status)) {
-    DEBUG ((EFI_D_ERROR, "%a: %s: adding to ConOut: %r\n", __FUNCTION__,
+    DEBUG ((EFI_D_INFO, "%a: %s: adding to ConOut: %r\n", __FUNCTION__,
       ReportText, Status));
     return;
   }
 
   Status = EfiBootManagerUpdateConsoleVariable (ErrOut, DevicePath, NULL);
   if (EFI_ERROR (Status)) {
-    DEBUG ((EFI_D_ERROR, "%a: %s: adding to ErrOut: %r\n", __FUNCTION__,
+    DEBUG ((EFI_D_INFO, "%a: %s: adding to ErrOut: %r\n", __FUNCTION__,
       ReportText, Status));
     return;
   }
@@ -333,7 +333,7 @@ AddInput (
 
   Status = EfiBootManagerUpdateConsoleVariable (ConIn, DevicePath, NULL);
   if (EFI_ERROR (Status)) {
-    DEBUG ((EFI_D_ERROR, "%a: %s: adding to ConIn: %r\n", __FUNCTION__,
+    DEBUG ((EFI_D_INFO, "%a: %s: adding to ConIn: %r\n", __FUNCTION__,
       ReportText, Status));
     return;
   }

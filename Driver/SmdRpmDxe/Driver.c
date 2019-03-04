@@ -105,11 +105,11 @@ rpm_ldo_pipe_enable(
 	// Also enable PM8994 LDO12, LDO28
 	ASSERT(rpm_send_data(&ldo12[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
 	gBS->Stall(100);
-	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LDO12 enabled \n"));
+	DEBUG((EFI_D_INFO, "LDO12 enabled \n"));
 
 	ASSERT(rpm_send_data(&ldo28[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
 	gBS->Stall(100);
-	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LDO28 enabled \n"));
+	DEBUG((EFI_D_INFO, "LDO28 enabled \n"));
 
 	return EFI_SUCCESS;
 }
@@ -123,7 +123,7 @@ rpm_ldo30_enable(
 	// LDO30
 	ASSERT(rpm_send_data(&ldo30[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
 	gBS->Stall(100);
-	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LDO30 enabled \n"));
+	DEBUG((EFI_D_INFO, "LDO30 enabled \n"));
 
 	return EFI_SUCCESS;
 }

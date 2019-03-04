@@ -97,7 +97,7 @@ LibQcomPlatformI2cQupAddBusses(
 			goto nextDevice;
 		}
 
-		DEBUG((EFI_D_ERROR, "Registered i2c device 0x%08x with ID %u\n", dev->qup_base, dev->id));
+		DEBUG((EFI_D_INFO, "Registered i2c device 0x%08x with ID %u\n", dev->qup_base, dev->id));
 
 	nextDevice:
 		I2cDevice++;

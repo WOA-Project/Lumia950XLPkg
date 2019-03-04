@@ -41,8 +41,8 @@ UartInit
 {
     SerialPortInitialize();
 
-    DEBUG((EFI_D_ERROR, "\nTianoCore on 950XL (AArch64)\n"));
-    DEBUG((EFI_D_ERROR, "Firmware version %s built %a %a\n\n", 
+    DEBUG((EFI_D_INFO, "\nTianoCore on 950XL (AArch64)\n"));
+    DEBUG((EFI_D_INFO, "Firmware version %s built %a %a\n\n", 
         (CHAR16*) PcdGetPtr(PcdFirmwareVersionString), 
         __TIME__, 
         __DATE__
@@ -160,7 +160,7 @@ Main
 		if (CalculateCrc32(PreEnv, sizeof(PRELOADER_ENVIRONMENT)) == Crc32)
 		{
 			PreEnv->Crc32 = Crc32;
-			DEBUG((EFI_D_ERROR, "CRC32 check succeeded \n"));
+			DEBUG((EFI_D_INFO, "CRC32 check succeeded \n"));
 		}
 		else
 		{

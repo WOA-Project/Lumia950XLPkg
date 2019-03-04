@@ -105,5 +105,5 @@ rpm_smd_ln_bb_clk_enable(
 
 	RpmProtocol->rpm_clk_enable(&ln_bb_clk[GENERIC_ENABLE][0], 24);
 	gBS->Stall(1000);
-	DEBUG((EFI_D_INFO | EFI_D_ERROR, "LN_BB_CLK enabled \n"));
+	DEBUG((EFI_D_INFO, "LN_BB_CLK enabled \n"));
 }
