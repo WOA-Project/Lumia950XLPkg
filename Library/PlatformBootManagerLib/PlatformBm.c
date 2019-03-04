@@ -627,7 +627,7 @@ PlatformBootManagerWaitCallback (
   Status = BootLogoUpdateProgress (
              White.Pixel,
              Black.Pixel,
-             L"Press Power Button for Setup Utility\n",
+             L"Hello from San Francisco\n",
              White.Pixel,
              (Timeout - TimeoutRemain) * 100 / Timeout,
              0
