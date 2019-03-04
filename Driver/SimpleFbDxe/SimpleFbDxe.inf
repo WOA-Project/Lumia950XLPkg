@@ -27,6 +27,8 @@
   BaseMemoryLib
   DebugLib
   CompilerIntrinsicsLib
+  CacheMaintenanceLib
+  FrameBufferBltLib
   PcdLib
 
 [Protocols]
