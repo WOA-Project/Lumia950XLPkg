@@ -521,16 +521,7 @@
   MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
   
-  # Defer: Variable Services
-  # Lumia950XLPkg/Driver/BlockRamVariableDxe/BlockRamVariableDxe.inf
-  # Lumia950XLPkg/Driver/VariableRuntimeDxe/VariableRuntimeDxe.inf {
-  #   <LibraryClasses>
-  #     AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
-  #     TpmMeasurementLib|MdeModulePkg/Library/TpmMeasurementLibNull/TpmMeasurementLibNull.inf
-  #     VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
-  #     NULL|MdeModulePkg/Library/VarCheckUefiLib/VarCheckUefiLib.inf
-  # }
-  # Lumia950XLPkg/Driver/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
+  # Fake Variable Services
   MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
 
   # Security Stub

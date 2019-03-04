@@ -18,7 +18,6 @@
 #include <Protocol/QcomPm8x41.h>
 #include <Protocol/QcomBoard.h>
 
-#include "BitOps.h"
 #include "PCIeDefinition.h"
 
 QCOM_GPIO_TLMM_PROTOCOL *mTlmmProtocol;
@@ -71,9 +70,10 @@ VerifyPlatform(
 	VOID
 )
 {
-	if (mBoardProtocol->board_platform_id() != MSM8994)
+	if (mBoardProtocol->board_platform_id() != MSM8994 && 
+		mBoardProtocol->board_platform_id() != MSM8992)
 	{
-		DEBUG((EFI_D_ERROR | EFI_D_WARN, "Target platform is not MSM8994. PCIe init skipped \n"));
+		DEBUG((EFI_D_ERROR | EFI_D_WARN, "Target platform is not MSM8992 or MSM8994. PCIe init skipped \n"));
 		return EFI_UNSUPPORTED;
 	}
 
@@ -88,10 +88,20 @@ EnableClocksMsm8994(
 {
 	EFI_STATUS Status;
 
-	// HWIO_GCC_PCIE_1_PIPE_CBCR_ADDR
-	MmioWrite32(0xFC401B94, 0);
-	// HWIO_GCC_PCIE_1_PIPE_CMD_RCGR_ADDR
-	MmioWrite32(0xFC401B98, 0);
+	if (mBoardProtocol->board_platform_id() == MSM8992)
+	{
+		// HWIO_GCC_PCIE_0_PIPE_CBCR_ADDR
+		MmioWrite32(0xFC401B14, 0);
+		// HWIO_GCC_PCIE_0_PIPE_CMD_RCGR_ADDR
+		MmioWrite32(0xFC401B18, 0);
+	}
+	else
+	{
+		// HWIO_GCC_PCIE_1_PIPE_CBCR_ADDR
+		MmioWrite32(0xFC401B94, 0);
+		// HWIO_GCC_PCIE_1_PIPE_CMD_RCGR_ADDR
+		MmioWrite32(0xFC401B98, 0);
+	}
 
 	// Clocks & LDOs
 	// Power and Clock
@@ -198,79 +208,80 @@ InitializePciePHY(
 	VOID
 )
 {
-	// GCC clks
-	MmioWrite32(0xFC401B40, 0x1);
-	gBS->Stall(2000);
-	MmioWrite32(0xFC401B40, 0x0);
+	UINTN MsmPciePhyBase = 0;
 
-	// Program PHY
-	// PCIE_PHY_POWER_DOWN_CONTROL
-	MmioWrite32(0xFC52E604, 0x3);
-	// QSERDES_COM_SYSCLK_EN_SEL_TXBAND
-	MmioWrite32(0xFC52E048, 0x8);
-	// QSERDES_COM_DEC_START1
-	MmioWrite32(0xFC52E0AC, 0x82);
-	// QSERDES_COM_DEC_START2
-	MmioWrite32(0xFC52E10C, 0x3);
-	// QSERDES_COM_DIV_FRAC_START1
-	MmioWrite32(0xFC52E100, 0x0D5);
-	// QSERDES_COM_DIV_FRAC_START2
-	MmioWrite32(0xFC52E104, 0x0AA);
-	// QSERDES_COM_DIV_FRAC_START3
-	MmioWrite32(0xFC52E108, 0x4D);
-	MmioWrite32(0xFC52E09C, 0x7);
-	MmioWrite32(0xFC52E090, 0x41);
-	MmioWrite32(0xFC52E094, 0x3);
-	MmioWrite32(0xFC52E114, 0x7C);
-	MmioWrite32(0xFC52E034, 0x7);
-	MmioWrite32(0xFC52E038, 0x1F);
-	MmioWrite32(0xFC52E03C, 0xF);
-	MmioWrite32(0xFC52E024, 0x1);
-	MmioWrite32(0xFC52E00C, 0xF);
-	MmioWrite32(0xFC52E010, 0xF);
-	MmioWrite32(0xFC52E014, 0x46);
-	MmioWrite32(0xFC52E400, 0xF5);
-	MmioWrite32(0xFC52E408, 0x2C);
-	MmioWrite32(0xFC52E04C, 0x91);
-	MmioWrite32(0xFC52E050, 0x7);
-	MmioWrite32(0xFC52E004, 0x0E1);
-	MmioWrite32(0xFC52E0E0, 0x24);
-	MmioWrite32(0xFC52E0E8, 0x77);
-	MmioWrite32(0xFC52E0F0, 0x15);
-	MmioWrite32(0xFC52E268, 0x3);
-	MmioWrite32(0xFC52E4A8, 0xFF);
-	MmioWrite32(0xFC52E4AC, 0x7);
-	MmioWrite32(0xFC52E4B0, 0xFF);
-	MmioWrite32(0xFC52E4B4, 0x0);
-	MmioWrite32(0xFC52E4BC, 0x1E);
-	MmioWrite32(0xFC52E4F0, 0x67);
-	MmioWrite32(0xFC52E4F4, 0x80);
-	MmioWrite32(0xFC52E4F8, 0x40);
-	MmioWrite32(0xFC52E500, 0x70);
-	MmioWrite32(0xFC52E504, 0x0C);
-	MmioWrite32(0xFC52E0B4, 0x1);
-	MmioWrite32(0xFC52E0B8, 0x2);
-	MmioWrite32(0xFC52E0C0, 0x31);
-	MmioWrite32(0xFC52E0C4, 0x1);
-	MmioWrite32(0xFC52E0C8, 0x19);
-	MmioWrite32(0xFC52E0CC, 0x19);
-	MmioWrite32(0xFC52E110, 0x10);
-	MmioWrite32(0xFC52E648, 0x10);
-	MmioWrite32(0xFC52E650, 0x23);
-	// PCIE_PHY_POWER_STATE_CONFIG2
-	MmioWrite32(0xFC52E654, 0x4B);
-	// PCIE_PHY_RX_IDLE_DTCT_CNTRL
-	MmioWrite32(0xFC52E64C, 0x4D);
-	// PCIE_PHY_SW_RESET
-	MmioWrite32(0xFC52E600, 0x0);
-	// PCIE_PHY_START
-	MmioWrite32(0xFC52E608, 0x3);
+	if (mBoardProtocol->board_platform_id() == MSM8992)
+	{
+		// GCC clks (GCC_PCIE_0_BCR)
+		MmioWrite32(0xFC401AC0, 0x1);
+		gBS->Stall(2000);
+		MmioWrite32(0xFC401AC0, 0x0);
+		// PHY base
+		MsmPciePhyBase = 0xfc526000;
+	}
+	else
+	{
+		// GCC clks (GCC_PCIE_1_BCR)
+		MmioWrite32(0xFC401B40, 0x1);
+		gBS->Stall(2000);
+		MmioWrite32(0xFC401B40, 0x0);
+		// PHY base
+		MsmPciePhyBase = 0xfc52e000;
+	}
+
+	MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_DOWN_CONTROL, 0x3);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_SYSCLK_EN_SEL_TXBAND, 0x8);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_DEC_START1, 0x82);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_DEC_START2, 0x3);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_DIV_FRAC_START1, 0x0D5);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_DIV_FRAC_START2, 0x0AA);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_DIV_FRAC_START3, 0x4D);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLLLOCK_CMP_EN, 0x7);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLLLOCK_CMP1, 0x41);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLLLOCK_CMP2, 0x3);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CRCTRL, 0x7c);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CP_SETI, 0x7);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_IP_SETP, 0x1F);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CP_SETP, 0xF);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_IP_SETI, 0x1);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_IE_TRIM, 0xF);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_IP_TRIM, 0xF);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CNTRL, 0x46);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_CDR_CONTROL1, 0xF5);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_CDR_CONTROL_HALF, 0x2C);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_RESETSM_CNTRL, 0x91);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_RESETSM_CNTRL2, 0x7);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_VCOTAIL_EN, 0x0E1);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_CODE_START_SEG1, 0x24);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_CODE_CAL_CSR, 0x77);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_TRIM_CONTROL, 0x15);
+	MmioWrite32(MsmPciePhyBase + QSERDES_TX_RCV_DETECT_LVL, 0x3);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN1_LSB, 0xFF);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN1_MSB, 0x7);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN2_LSB, 0xFF);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN2_MSB, 0x0);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQU_ADAPTOR_CNTRL2, 0x1E);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x67);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_OFFSET_ADAPTOR_CNTRL2, 0x80);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_ENABLES, 0x40);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_CNTRL, 0x70);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_DEGLITCH_CNTRL, 0x0C);
+	MmioWrite32(MsmPciePhyBase + 0xb4, 0x1);
+	MmioWrite32(MsmPciePhyBase + 0xb8, 0x2);
+	MmioWrite32(MsmPciePhyBase + 0xc0, 0x31);
+	MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNTRL1, 0x1);
+	MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNTRL2, 0x19);
+	MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNT_VAL_L, 0x19);
+	MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_RXTXEPCLK_EN, 0x10);
+	MmioWrite32(MsmPciePhyBase + PCIE_PHY_ENDPOINT_REFCLK_DRIVE, 0x10);
+	MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_STATE_CONFIG1, 0x23);
+	MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_STATE_CONFIG2, 0x4B);
+	MmioWrite32(MsmPciePhyBase + PCIE_PHY_RX_IDLE_DTCT_CNTRL, 0x4D);
+	MmioWrite32(MsmPciePhyBase + PCIE_PHY_SW_RESET, 0x0);
+	MmioWrite32(MsmPciePhyBase + PCIE_PHY_START, 0x3);
 
 	// Wait for PHY to get ready
-	while (MmioRead32(0xFC52E728) & 0x40) 
-	{
-		gBS->Stall(5);
-	}
+	while (MmioRead32(MsmPciePhyBase + PCIE_PHY_PCS_STATUS) & 0x40) gBS->Stall(5);
 
 	return EFI_SUCCESS;
 }
@@ -310,21 +321,37 @@ EnableLink(
 )
 {
 	UINT32 Val = 0;
+	UINTN ParfBase = 0;
+	UINTN DmCoreBase = 0;
 
-	MmioWrite32(0xFC529000, 0x4);
-	MmioWrite32(0xF8800F24, 0x1);
-	MmioWrite32(0xF8800088, 0x1000000);
+	if (mBoardProtocol->board_platform_id() == MSM8992)
+	{
+		// PARF: 0xfc520000, DM Core: 0xff000000
+		ParfBase = 0xfc520000;
+		DmCoreBase = 0xff000000;
+	}
+	else
+	{
+		// PARF: 0xfc528000, DM Core: 0xf8800000
+		ParfBase = 0xfc528000;
+		DmCoreBase = 0xf8800000;
+	}
+
+	MmioWrite32(ParfBase + 0x1000, 0x4);
+	MmioWrite32(DmCoreBase + 0xf24, 0x1);
+	MmioWrite32(DmCoreBase + 0x88, 0x1000000);
 	gBS->Stall(1000);
 
-	Val = MmioRead32(0xF8800004);
-	MmioWrite32(0xF8800004, Val | 0x46);
+	Val = MmioRead32(DmCoreBase + 0x4);
+	MmioWrite32(DmCoreBase + 0x4, Val | 0x46);
 
-	Val = MmioRead32(0xF88000A0);
-	MmioWrite32(0xF88000A0, (Val & 0xFFFFFFF0) + 1);
-	MmioWrite32(0xFC5281B0, 0x100);
+	Val = MmioRead32(DmCoreBase + 0xa0);
+	MmioWrite32(DmCoreBase + 0xa0, (Val & 0xFFFFFFF0) + 1);
+	MmioWrite32(ParfBase + PCIE20_PARF_LTSSM, 0x100);
 
 	// Check link (PCIE20_ELBI_SYS_STTS + 0x8)
-	while ((MmioRead32(0xF8800F28) & 0x400) != 0x400) gBS->Stall(1000);
+	while ((MmioRead32(DmCoreBase + 0xf28) & 0x400) != 0x400) gBS->Stall(1000);
+
 	return EFI_SUCCESS;
 }
 
@@ -335,17 +362,29 @@ ConfigDmCore(
 )
 {
 	UINT32 Val = 0;
+	UINTN DmCoreBase = 0;
 
-	MmioWrite32(0xF88008BC, 0x1);
-	Val = MmioRead32(0xF880007C);
-	MmioWrite32(0xF880007C, (Val & 0xFFFFFBFF) | 0x400800);
-	MmioWrite32(0xF88008BC, 0x0);
-	Val = MmioRead32(0xF8800154);
-	MmioWrite32(0xF8800154, Val | 0xF);
-	Val = MmioRead32(0xF8800158);
-	MmioWrite32(0xF8800158, Val | 0xF);
-	Val = MmioRead32(0xF8800098);
-	MmioWrite32(0xF8800098, 0x400);
+	if (mBoardProtocol->board_platform_id() == MSM8992)
+	{
+		// DM Core: 0xff000000
+		DmCoreBase = 0xff000000;
+	}
+	else
+	{
+		// DM Core: 0xf8800000
+		DmCoreBase = 0xf8800000;
+	}
+
+	MmioWrite32(DmCoreBase + 0x8bc, 0x1);
+	Val = MmioRead32(DmCoreBase + 0x7c);
+	MmioWrite32(DmCoreBase + 0x7c, (Val & 0xFFFFFBFF) | 0x400800);
+	MmioWrite32(DmCoreBase + 0x8bc, 0x0);
+	Val = MmioRead32(DmCoreBase + 0x154);
+	MmioWrite32(DmCoreBase + 0x154, Val | 0xF);
+	Val = MmioRead32(DmCoreBase + 0x158);
+	MmioWrite32(DmCoreBase + 0x158, Val | 0xF);
+	Val = MmioRead32(DmCoreBase + 0x98);
+	MmioWrite32(DmCoreBase + 0x98, 0x400);
 
 	// GPIO 36, in, function 2, 2mA drive, no pull (clkreq)
 	mTlmmProtocol->SetFunction(36, 2);
@@ -367,20 +406,32 @@ ConfigSpace(
 	UINT32 k = 0;
 	UINT32 Addr = 0;
 	UINT32 Val = 0;
+	UINTN DmCoreBase = 0;
+
+	if (mBoardProtocol->board_platform_id() == MSM8992)
+	{
+		// DM Core: 0xff000000
+		DmCoreBase = 0xff000000;
+	}
+	else
+	{
+		// DM Core: 0xf8800000
+		DmCoreBase = 0xf8800000;
+	}
 
 	while (TRUE)
 	{
-		// Base: 0xF8800000, DM_CORE
-		MmioWrite32(0xF8800900, i);
-		MmioWrite32(0xF8800904, j);
-		MmioWrite32(0xF8800908, 0x80000000);
-		Addr = 0xF8800900 + (k << 20) + 0x100000;
-		MmioWrite32(0xF880090C, Addr);
-		MmioWrite32(0xF8800910, 0);
-		MmioWrite32(0xF8800914, Addr);
-		MmioWrite32(0xF8800918, ((k + 1) << 24));
-		MmioWrite32(0xF880091C, 0);
-		MmioWrite32(0xF8800018, 0x30100);
+		// DM_CORE, base varies
+		MmioWrite32(DmCoreBase + 0x900, i);
+		MmioWrite32(DmCoreBase + 0x904, j);
+		MmioWrite32(DmCoreBase + 0x908, 0x80000000);
+		Addr = DmCoreBase + 0x900 + (k << 20) + 0x100000;
+		MmioWrite32(DmCoreBase + 0x90c, Addr);
+		MmioWrite32(DmCoreBase + 0x910, 0);
+		MmioWrite32(DmCoreBase + 0x914, Addr);
+		MmioWrite32(DmCoreBase + 0x918, ((k + 1) << 24));
+		MmioWrite32(DmCoreBase + 0x91c, 0);
+		MmioWrite32(DmCoreBase + 0x18, 0x30100);
 		Val = MmioRead32(Addr + 0x188);
 		MmioWrite32(Addr + 0x188, Val | 0xF);
 		Val = MmioRead32(Addr + 0x98);
@@ -402,12 +453,25 @@ FinishingUp(
 {
 	UINT32 i = 0;
 	UINT32 j = 0;
-	UINT32 Addr = 0xF8800000 + 0x100000;
-	UINT32 Adr1 = 0xF8800000 + 0x400000;
+	UINTN DmCoreBase = 0;
 	UINT32 k = 16;
 	UINT32 Val = 0;
 	BOOLEAN SetI = FALSE;
 
+	if (mBoardProtocol->board_platform_id() == MSM8992)
+	{
+		// DM Core: 0xff000000
+		DmCoreBase = 0xff000000;
+	}
+	else
+	{
+		// DM Core: 0xf8800000
+		DmCoreBase = 0xf8800000;
+	}
+
+	UINT32 Addr = DmCoreBase + 0x100000;
+	UINT32 Adr1 = DmCoreBase + 0x400000;
+	
 	do
 	{
 		MmioWrite32(Addr + k, 0xFFFFFFFF);
@@ -438,8 +502,8 @@ FinishingUp(
 		k += 4;
 	} while (k <= 0x24);
 
-	MmioWrite32(0xF8800020, (((Adr1 + j) >> 16) << 16) | (Adr1 >> 16));
-	MmioWrite32(0xF8800024, ((Adr1 + j + i) & 0xFFFF0000) | ((Adr1 + j + i) >> 16));
+	MmioWrite32(DmCoreBase + 0x20, (((Adr1 + j) >> 16) << 16) | (Adr1 >> 16));
+	MmioWrite32(DmCoreBase + 0x24, ((Adr1 + j + i) & 0xFFFF0000) | ((Adr1 + j + i) >> 16));
 	return EFI_SUCCESS;
 }
 
