@@ -18,7 +18,6 @@
 #include <Protocol/QcomPm8x41.h>
 #include <Protocol/QcomBoard.h>
 
-#include "BitOps.h"
 #include "PCIeDefinition.h"
 
 QCOM_GPIO_TLMM_PROTOCOL *mTlmmProtocol;
@@ -265,7 +264,7 @@ InitializePciePHY(
 	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x67);
 	MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_OFFSET_ADAPTOR_CNTRL2, 0x80);
 	MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_ENABLES, 0x40);
-	MmioWrite32(MsmPciePhyBase + SERDES_RX_SIGDET_CNTRL, 0x70);
+	MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_CNTRL, 0x70);
 	MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_DEGLITCH_CNTRL, 0x0C);
 	MmioWrite32(MsmPciePhyBase + 0xb4, 0x1);
 	MmioWrite32(MsmPciePhyBase + 0xb8, 0x2);
