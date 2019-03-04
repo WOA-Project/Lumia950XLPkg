@@ -1,12 +1,12 @@
 [FD.MSM8992_EFI]
 BaseAddress   = 0x00200000|gArmTokenSpaceGuid.PcdFdBaseAddress  #The base address of the FLASH Device.
-Size          = 0x00120000|gArmTokenSpaceGuid.PcdFdSize         #The size in bytes of the FLASH Device
+Size          = 0x00100000|gArmTokenSpaceGuid.PcdFdSize         #The size in bytes of the FLASH Device
 ErasePolarity = 1
 BlockSize     = 0x200
-NumBlocks     = 0x900
+NumBlocks     = 0x800
 
 # 512 bytes of configuration header & 8 bytes of image header
-0x00000000|0x00120000
+0x00000000|0x00100000
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
 
@@ -114,19 +114,6 @@ READ_LOCK_STATUS   = TRUE
   INF FatPkg/EnhancedFatDxe/Fat.inf
   INF MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
   INF MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
-
-  # Networking
-  INF MdeModulePkg/Universal/Network/DpcDxe/DpcDxe.inf
-  INF MdeModulePkg/Universal/Network/ArpDxe/ArpDxe.inf
-  INF MdeModulePkg/Universal/Network/Dhcp4Dxe/Dhcp4Dxe.inf
-  INF MdeModulePkg/Universal/Network/Ip4Dxe/Ip4Dxe.inf
-  INF MdeModulePkg/Universal/Network/MnpDxe/MnpDxe.inf
-  INF MdeModulePkg/Universal/Network/VlanConfigDxe/VlanConfigDxe.inf
-  INF MdeModulePkg/Universal/Network/Mtftp4Dxe/Mtftp4Dxe.inf
-  INF MdeModulePkg/Universal/Network/Tcp4Dxe/Tcp4Dxe.inf
-  INF MdeModulePkg/Universal/Network/Udp4Dxe/Udp4Dxe.inf
-  INF MdeModulePkg/Universal/Network/UefiPxeBcDxe/UefiPxeBcDxe.inf
-  INF MdeModulePkg/Universal/Network/IScsiDxe/IScsiDxe.inf
 
   # ACPI and SMBIOS
   INF MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
