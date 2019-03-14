@@ -1,5 +1,7 @@
 # Dynamic Generated
 Driver/SmBiosTableDxe/ReleaseInfo.h
+Application/BdsMenuApp/ReleaseInfo.h
+Include/Resources/ReleaseInfo.h
 
 # Local
 .DS_Store
@@ -14,8 +16,6 @@ Driver/BlockRamVariableDxe
 Driver/FaultTolerantWriteDxe
 Driver/VariableRuntimeDxe
 Library/BlockRamVariableLib
-
-# PCI Express: Not release in public for now
 
 # USB: Defer
 Driver/UsbTypeCDxe
