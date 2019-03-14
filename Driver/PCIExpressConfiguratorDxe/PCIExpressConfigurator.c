@@ -21,7 +21,9 @@
 #include "PCIeDefinition.h"
 
 QCOM_GPIO_TLMM_PROTOCOL *mTlmmProtocol;
+#ifdef ENABLE_QCOM_RPM
 QCOM_RPM_PROTOCOL *mRpmProtocol;
+#endif
 QCOM_PM8X41_PROTOCOL *mPmicProtocol;
 QCOM_BOARD_PROTOCOL *mBoardProtocol;
 
@@ -39,12 +41,14 @@ AcquireEfiProtocols(
 	);
 	if (EFI_ERROR(Status)) goto exit;
 
-	Status = gBS->LocateProtocol(
+#ifdef ENABLE_QCOM_RPM
+	 Status = gBS->LocateProtocol(
 		&gQcomRpmProtocolGuid,
 		NULL,
 		(VOID **) &mRpmProtocol
-	);
-	if (EFI_ERROR(Status)) goto exit;
+	 );
+	 if (EFI_ERROR(Status)) goto exit;
+#endif
 
 	Status = gBS->LocateProtocol(
 		&gQcomPm8x41ProtocolGuid,
@@ -86,7 +90,7 @@ EnableClocksMsm8994(
 	VOID
 )
 {
-	EFI_STATUS Status;
+	EFI_STATUS Status = EFI_SUCCESS;
 
 	if (mBoardProtocol->board_platform_id() == MSM8992)
 	{
@@ -107,15 +111,19 @@ EnableClocksMsm8994(
 	// Power and Clock
 	// GDSC & regulator
 	// LDO12 (1.8V), LDO28 (0.9V)
+#ifdef ENABLE_QCOM_RPM
 	Status = mRpmProtocol->rpm_ldo_pipe_enable();
 	if (EFI_ERROR(Status)) goto exit;
 	gBS->Stall(1000);
+#endif
 
 	// GDSC
 	gdsc_pcie0_enable(); 
 	if (mBoardProtocol->board_platform_id() == MSM8994) gdsc_pcie1_enable();
 	// pcie_1_ref_clk_src
+#ifdef ENABLE_QCOM_RPM
 	rpm_smd_ln_bb_clk_enable();
+#endif
 	// pcie_1_aux_clk
 	pcie_0_aux_clk_set_rate_and_enable();
 	if (mBoardProtocol->board_platform_id() == MSM8994) pcie_1_aux_clk_set_rate_and_enable();
@@ -137,7 +145,7 @@ EnableClocksMsm8994(
 	// Memory fence
 	MemoryFence();
 
-exit:
+// exit:
 	return Status;
 }
 
@@ -292,7 +300,11 @@ RpmTurnOnLdo30(
 	VOID
 )
 {
+#ifdef ENABLE_QCOM_RPM
 	return mRpmProtocol->rpm_ldo30_enable();
+#else
+	return EFI_SUCCESS;
+#endif
 }
 
 EFI_STATUS
@@ -531,8 +543,10 @@ PCIExpressConfiguratorEntry(
 	Status = InitializePciePHY();
 	if (EFI_ERROR(Status)) goto exit;
 
+#ifdef ENABLE_QCOM_RPM
 	Status = RpmTurnOnLdo30();
 	if (EFI_ERROR(Status)) goto exit;
+#endif
 
 	Status = SetPipeClock();
 	if (EFI_ERROR(Status)) goto exit;

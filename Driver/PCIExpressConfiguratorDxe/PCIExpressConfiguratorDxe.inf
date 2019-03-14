@@ -34,12 +34,14 @@
 [Protocols]
   gQcomGpioTlmmProtocolGuid
   gQcomMsmPCIExpressInitProtocolGuid
-  gQcomRpmProtocolGuid
+  # Wont enable RPM until future use
+  # gQcomRpmProtocolGuid
   gQcomPm8x41ProtocolGuid
   gQcomBoardProtocolGuid
 
 [Depex]
   gQcomGpioTlmmProtocolGuid AND 
-  gQcomRpmProtocolGuid AND 
+  # Wont enable RPM until future use
+  # gQcomRpmProtocolGuid AND 
   gQcomPm8x41ProtocolGuid AND 
   gQcomBoardProtocolGuid
