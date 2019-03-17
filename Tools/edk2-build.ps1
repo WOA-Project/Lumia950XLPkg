@@ -1,5 +1,5 @@
 #!/usr/bin/pwsh
-# Copyright 2018, Bingxing Wang <i@imbushuo.net>
+# Copyright 2018, Bingxing Wang <uefi-oss-projects@imbushuo.net>
 # All rights reserved.
 #
 # This script builds EDK2 content.

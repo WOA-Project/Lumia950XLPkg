@@ -17,7 +17,7 @@
 
 
   Copyright (c), 2017, Andrey Warkentin <andrey.warkentin@gmail.com>
-  Copyright (c), 2018, Bingxing Wang <i@imbushuo.net>
+  Copyright (c), 2018, Bingxing Wang <uefi-oss-projects@imbushuo.net>
   Copyright (c), Microsoft Corporation. All rights reserved.
 
   This program and the accompanying materials
