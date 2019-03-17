@@ -1,5 +1,5 @@
 #!/usr/bin/pwsh
-# Copyright 2018, Bingxing Wang <i@imbushuo.net>
+# Copyright 2018, Bingxing Wang <uefi-oss-projects@imbushuo.net>
 # All rights reserved.
 #
 # This script builds EDK2 content.
@@ -87,11 +87,22 @@ if ($Clean -eq $true)
 # Check current date and write it into file for SMBIOS reference too. (MM/dd/yyyy)
 
 Write-Output "[EDK2Build] Stamp build."
+# This one is EDK2 base commit
+$edk2Commit = git rev-parse HEAD
+# This is Lumia950XLPkg package commit
+cd Lumia950XLPkg
 $commit = git rev-parse HEAD
+cd ..
 $date = (Get-Date).Date.ToString("MM/dd/yyyy")
+$user = (whoami)
+$machine = [System.Net.Dns]::GetHostByName((hostname)).HostName
+$owner = "$($user)@$($machine)"
+if ($null -eq $machine) { $owner = $user }
+
 if ($commit)
 {
 	$commit = $commit.Substring(0,8)
+	$edk2Commit = $edk2Commit.Substring(0,8)
 
 	$releaseInfoContent = @(
 		"#ifndef __SMBIOS_RELEASE_INFO_H__",
@@ -104,12 +115,18 @@ if ($commit)
 		"#undef __RELEASE_DATE__",
 		"#endif",
 		"#define __RELEASE_DATE__ `"$($date)`"",
+		"#ifdef __BUILD_OWNER__",
+		"#undef __BUILD_OWNER__",
+		"#endif",
+		"#define __BUILD_OWNER__ `"$($owner)`"",
+		"#ifdef __EDK2_RELEASE__",
+		"#undef __EDK2_RELEASE__",
+		"#endif",
+		"#define __EDK2_RELEASE__ `"$($edk2Commit)`"",
 		"#endif"
 	)
 
-	# TODO: Merge into single
-	Set-Content -Path Lumia950XLPkg/Driver/SmBiosTableDxe/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
-	Set-Content -Path Lumia950XLPkg/Application/BdsMenuApp/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
+	Set-Content -Path Lumia950XLPkg/Include/Resources/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
 }
 
 foreach ($target in $availableTargets)

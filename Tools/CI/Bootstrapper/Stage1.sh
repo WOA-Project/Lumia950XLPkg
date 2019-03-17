@@ -2,7 +2,7 @@
 # Travis CI environment bootstrapper
 # Stage 1
 #
-# Copyright 2018, Bingxing Wang. <i@imbushuo.net>
+# Copyright 2018, Bingxing Wang. <uefi-oss-projects@imbushuo.net>
 # All rights reserved.
 #
 

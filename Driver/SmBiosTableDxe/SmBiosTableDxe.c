@@ -17,7 +17,7 @@
 
 
   Copyright (c), 2017, Andrey Warkentin <andrey.warkentin@gmail.com>
-  Copyright (c), 2018, Bingxing Wang <i@imbushuo.net>
+  Copyright (c), 2018, Bingxing Wang <uefi-oss-projects@imbushuo.net>
   Copyright (c), Microsoft Corporation. All rights reserved.
 
   This program and the accompanying materials
@@ -59,7 +59,7 @@
 
 /* Build-time generated ReleaseInfo.h will override the default one */
 #include <Resources/ReleaseStampStub.h>
-#include "ReleaseInfo.h"
+#include <Resources/ReleaseInfo.h>
 
 /* Protocol reference */
 QCOM_BOARD_PROTOCOL* mBoardProtocol = NULL;
@@ -133,9 +133,9 @@ SMBIOS_TABLE_TYPE0 mBIOSInfoType0 = {
 };
 
 CHAR8 *mBIOSInfoType0Strings[] = {
-  "Little Moe, LLC.",					// Vendor String
-  "1.20 (" __IMPL_COMMIT_ID__ ")",		// BiosVersion String
-  __RELEASE_DATE__,						// BiosReleaseDate String
+  "LumiaWoA authors",									// Vendor String
+  __IMPL_COMMIT_ID__" (EDK2 "__EDK2_RELEASE__")",		// BiosVersion String
+  __RELEASE_DATE__,										// BiosReleaseDate String
   NULL
 };
 

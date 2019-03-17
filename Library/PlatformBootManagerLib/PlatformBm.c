@@ -581,6 +581,13 @@ PlatformBootManagerAfterConsole (
   Status = BootLogoEnableLogo ();
 
   //
+  // Show version information.
+  //
+  Print(L"Lumia AArch64 Bootstrap, version %a \n", __IMPL_COMMIT_ID__);
+  Print(L"EDK2 base %a \n", __EDK2_RELEASE__);
+  Print(L"Built by %a on %a \n", __BUILD_OWNER__, __RELEASE_DATE__);
+
+  //
   // Connect the rest of the devices.
   //
   EfiBootManagerConnectAll ();
@@ -629,7 +636,11 @@ PlatformBootManagerWaitCallback (
              Black.Pixel,
              L"Hello from San Francisco\n",
              White.Pixel,
+#if REQUIRE_PROGRESSBAR
              (Timeout - TimeoutRemain) * 100 / Timeout,
+#else
+			 0,
+#endif
              0
              );
   if (EFI_ERROR (Status)) {
