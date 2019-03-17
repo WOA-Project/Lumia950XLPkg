@@ -1,5 +1,5 @@
 #!/usr/bin/pwsh
-# Copyright 2018, Bingxing Wang <i@imbushuo.net>
+# Copyright 2018-2019, Bingxing Wang <uefi-oss-projects@imbushuo.net>
 # All rights reserved.
 #
 # This script builds EDK2 content.
@@ -8,17 +8,18 @@
 
 Param
 (
-    [switch] $Clean,
-    [switch] $UseNewerGcc
+    [switch] $Clean
 )
 
+Import-Module $PSScriptRoot/PsModules/redirector.psm1
+Import-Module $PSScriptRoot/PsModules/elf.psm1
 Write-Host "Task: EDK2 build"
 
 # Targets. Ensure corresponding DSC/FDF files exist
 # Build all targets on VSTS (phasing out Travis right now) or if user asks to do so
 if ($null -ne $env:BUILDALL)
 {
-	Write-Output "[EDK2Build] User requested build all available targets."
+	Write-Output "User requested build all available targets."
 	$availableTargets = @(
 		"Lumia950",
 		"Lumia950XL",
@@ -39,28 +40,27 @@ if ($null -eq (Test-Path -Path "Lumia950XLPkg"))
     return -1
 }
 
-# Set environment again.
-Write-Output "[EDK2Build] Set environment."
-$env:PATH="/opt/db-boot-tools:/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin:/opt/gcc-linaro-7.2.1-2017.11-x86_64_arm-eabi/bin:$($env:PATH)"
-if ($null -ne $env:aa64gccpath)
-{
-	Write-Output "[EDK2Build] Inherit environment settings."
-	$env:GCC5_AARCH64_PREFIX = $env:aa64gccpath
-}
-else
-{
-	Write-Output "[EDK2Build] Use default Linux Linaro GCC 7.2.1 Path settings."
-	$env:GCC5_AARCH64_PREFIX = "/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin/aarch64-elf-"
-}
+# Set environment again for legacy compatibility. On newer systems, GCC should be used from package source.
+Write-Output "Set legacy environment."
+$env:PATH="/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin:/opt/gcc-linaro-7.2.1-2017.11-x86_64_arm-eabi/bin:$($env:PATH)"
+
+# Probe GCC
+# Probe GCC. Use the most suitable one
+$ccprefix = Get-GnuAarch64CrossCollectionPath -AllowFallback
+if ($null -eq $ccprefix) { return -1 }
+if ($false -eq (Test-GnuAarch64CrossCollectionVersionRequirements)) { return -1 }
+$env:GCC5_AARCH64_PREFIX = $ccprefix
+
+Write-Output "Use GCC at $($ccprefix) to run builds."
 
 # Build base tools if not exist (dev).
 if (((Test-Path -Path "BaseTools") -eq $false) -or ($Clean -eq $true))
 {
-    Write-Output "[EDK2Build] Build base tools."
+    Write-Output "Build base tools."
     make -C BaseTools
     if (-not $?)
     {
-        Write-Error "[EDK2Build] Base tools target failed."
+        Write-Error "Base tools target failed."
         return $?
     }
 }
@@ -69,12 +69,12 @@ if ($Clean -eq $true)
 {
 	foreach ($target in $availableTargets)
 	{
-		Write-Output "[EDK2Build] Clean target $($target)."
+		Write-Output "Clean target $($target)."
 		build -a AARCH64 -p Lumia950XLPkg/$($target).dsc -t GCC5 clean
 
 		if (-not $?)
 		{
-			Write-Error "[EDK2Build] Clean target $($target) failed."
+			Write-Error "Clean target $($target) failed."
 			return $?
 		}
 	}
@@ -85,13 +85,23 @@ if ($Clean -eq $true)
 
 # Check current commit ID and write it into file for SMBIOS reference. (Trim it)
 # Check current date and write it into file for SMBIOS reference too. (MM/dd/yyyy)
-
-Write-Output "[EDK2Build] Stamp build."
+Write-Output "Stamp build."
+# This one is EDK2 base commit
+$edk2Commit = git rev-parse HEAD
+# This is Lumia950XLPkg package commit
+cd Lumia950XLPkg
 $commit = git rev-parse HEAD
+cd ..
 $date = (Get-Date).Date.ToString("MM/dd/yyyy")
+$user = (whoami)
+$machine = [System.Net.Dns]::GetHostByName((hostname)).HostName
+$owner = "$($user)@$($machine)"
+if ($null -eq $machine) { $owner = $user }
+
 if ($commit)
 {
 	$commit = $commit.Substring(0,8)
+	$edk2Commit = $edk2Commit.Substring(0,8)
 
 	$releaseInfoContent = @(
 		"#ifndef __SMBIOS_RELEASE_INFO_H__",
@@ -104,22 +114,31 @@ if ($commit)
 		"#undef __RELEASE_DATE__",
 		"#endif",
 		"#define __RELEASE_DATE__ `"$($date)`"",
+		"#ifdef __BUILD_OWNER__",
+		"#undef __BUILD_OWNER__",
+		"#endif",
+		"#define __BUILD_OWNER__ `"$($owner)`"",
+		"#ifdef __EDK2_RELEASE__",
+		"#undef __EDK2_RELEASE__",
+		"#endif",
+		"#define __EDK2_RELEASE__ `"$($edk2Commit)`"",
 		"#endif"
 	)
 
-	# TODO: Merge into single
-	Set-Content -Path Lumia950XLPkg/Driver/SmBiosTableDxe/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
-	Set-Content -Path Lumia950XLPkg/Application/BdsMenuApp/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
+	Set-Content -Path Lumia950XLPkg/Include/Resources/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
 }
 
 foreach ($target in $availableTargets)
 {
-	Write-Output "[EDK2Build] Build Lumia950XLPkg for $($target) (DEBUG)."
+	Write-Output "Build Lumia950XLPkg for $($target) (DEBUG)."
 	build -a AARCH64 -p Lumia950XLPkg/$($target).dsc -t GCC5
 
 	if (-not $?)
 	{
-		Write-Error "[EDK2Build] Build target $($target) failed."
+		Write-Error "Build target $($target) failed."
 		return $?
 	}
 }
+
+# Invoke ELF build.
+Copy-ElfImages
