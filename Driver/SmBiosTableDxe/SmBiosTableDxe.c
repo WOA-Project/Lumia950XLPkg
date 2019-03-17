@@ -134,7 +134,7 @@ SMBIOS_TABLE_TYPE0 mBIOSInfoType0 = {
 
 CHAR8 *mBIOSInfoType0Strings[] = {
   "LumiaWoA authors",									// Vendor String
-  __IMPL_COMMIT_ID__"(EDK2 "__EDK2_RELEASE__")",		// BiosVersion String
+  __IMPL_COMMIT_ID__" (EDK2 "__EDK2_RELEASE__")",		// BiosVersion String
   __RELEASE_DATE__,										// BiosReleaseDate String
   NULL
 };
