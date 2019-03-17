@@ -12,6 +12,15 @@ This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, L
 
 **Please be aware that MSM8992 is likely less supported due to lack of testing device.**
 
+## Support Status
+Applicable to all supported targets unless noted.
+
+- Low-speed I/O: I2C, GPIO, SPMI and Pinmux(TLMM).
+- Power Management: PMIC and RPM.
+- High-speed I/O for firmware and HLOS use: eMMC (HS200), PCI Express (Firmware-configured, HLOS Only, x2 Lane)
+- Peripherals: Touchscreen (I2C), side-band buttons (TLMM GPIO and PMIC GPIO)
+- Display FrameBuffer
+
 ## What can you do?
 
 I am too busy to write an average-user instruction. So, if you are interested in, you are welcome to
