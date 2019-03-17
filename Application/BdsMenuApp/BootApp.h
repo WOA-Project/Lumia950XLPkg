@@ -31,6 +31,6 @@
 #include <LittleVgl/core/lv_core/lv_refr.h>
 
 #include <Resources/ReleaseStampStub.h>
-#include "ReleaseInfo.h"
+#include <Resources/ReleaseInfo.h>
 
 #endif

@@ -59,7 +59,7 @@
 
 /* Build-time generated ReleaseInfo.h will override the default one */
 #include <Resources/ReleaseStampStub.h>
-#include "ReleaseInfo.h"
+#include <Resources/ReleaseInfo.h>
 
 /* Protocol reference */
 QCOM_BOARD_PROTOCOL* mBoardProtocol = NULL;
@@ -133,9 +133,9 @@ SMBIOS_TABLE_TYPE0 mBIOSInfoType0 = {
 };
 
 CHAR8 *mBIOSInfoType0Strings[] = {
-  "Little Moe, LLC.",					// Vendor String
-  "1.20 (" __IMPL_COMMIT_ID__ ")",		// BiosVersion String
-  __RELEASE_DATE__,						// BiosReleaseDate String
+  "LumiaWoA authors",									// Vendor String
+  __IMPL_COMMIT_ID__"(EDK2 "__EDK2_RELEASE__")",		// BiosVersion String
+  __RELEASE_DATE__,										// BiosReleaseDate String
   NULL
 };
 
