@@ -28,6 +28,10 @@
 #include <Library/UefiLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
 
+/* Build-time generated ReleaseInfo.h will override the default one */
+#include <Resources/ReleaseStampStub.h>
+#include <Resources/ReleaseInfo.h>
+
 /**
   Use SystemTable Conout to stop video based Simple Text Out consoles from
   going to the video device. Put up LogoFile on every video device that is a
