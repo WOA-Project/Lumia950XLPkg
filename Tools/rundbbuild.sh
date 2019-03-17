@@ -88,8 +88,9 @@ function SetupEnv()
 
 function FixPermission()
 {
-  if [ -d "DragonboardPkg" ]; then
-   chmod +x DragonboardPkg/Tools/*.ps1
+  if [ -d "Lumia950XLPkg" ]; then
+   chmod +x Lumia950XLPkg/Tools/*.ps1
+   chmod +x Lumia950XLPkg/Tools/PsModules/*.psm1
   fi
 }
 
@@ -105,7 +106,7 @@ function DevelopmentBuild()
   if [ "$DB820C" = TRUE ]; then
     ./Dragonboard820cPkg/Tools/edk2-build.ps1
   elif [ "$LUMIA950XL" = TRUE ]; then
-    ./Lumia950XLPkg/Tools/edk2-build.ps1 -UseNewerGcc
+    ./Lumia950XLPkg/Tools/edk2-build.ps1
   else
     ./DragonboardPkg/Tools/edk2-build.ps1
   fi
@@ -113,14 +114,6 @@ function DevelopmentBuild()
   if [ ! $? -eq 0 ]; then
       echo "[Builder] Build failed."
       return $?
-  fi
-
-  if [ "$DB820C" = TRUE ]; then
-    ./Dragonboard820cPkg/Tools/build-lkimage.ps1
-  elif [ "$LUMIA950XL" = TRUE ]; then
-    ./Lumia950XLPkg/Tools/build-lkimage.ps1
-  else
-    ./DragonboardPkg/Tools/build-lkimage.ps1
   fi
   
 }
@@ -130,7 +123,7 @@ function CIBuild()
   if [ "$DB820C" = TRUE ]; then
     ./Dragonboard820cPkg/Tools/edk2-build.ps1 -Clean
   elif [ "$LUMIA950XL" = TRUE ]; then
-    ./Lumia950XLPkg/Tools/edk2-build.ps1 -Clean -UseNewerGcc
+    ./Lumia950XLPkg/Tools/edk2-build.ps1 -Clean
   else
     ./DragonboardPkg/Tools/edk2-build.ps1 -Clean
   fi
@@ -138,14 +131,6 @@ function CIBuild()
   if [ ! $? -eq 0 ]; then
       echo "[Builder] Build failed."
       return $?
-  fi
-
-  if [ "$DB820C" = TRUE ]; then
-    ./Dragonboard820cPkg/Tools/build-lkimage.ps1
-  elif [ "$LUMIA950XL" = TRUE ]; then
-    ./Lumia950XLPkg/Tools/build-lkimage.ps1
-  else
-    ./DragonboardPkg/Tools/build-lkimage.ps1
   fi
   
 }
