@@ -636,7 +636,11 @@ PlatformBootManagerWaitCallback (
              Black.Pixel,
              L"Hello from San Francisco\n",
              White.Pixel,
+#if REQUIRE_PROGRESSBAR
              (Timeout - TimeoutRemain) * 100 / Timeout,
+#else
+			 0,
+#endif
              0
              );
   if (EFI_ERROR (Status)) {
