@@ -1,20 +1,18 @@
 #include <Base.h>
+
 #include <Library/LKEnvLib.h>
+
 #include <Library/QcomDxeTimerLib.h>
 
-#include "qtimer_p.h"
 #include "qtimer_mmap_hw.h"
+#include "qtimer_p.h"
 
-#define QTMR_TIMER_CTRL_ENABLE          (1 << 0)
-#define QTMR_TIMER_CTRL_INT_MASK        (1 << 1)
+#define QTMR_TIMER_CTRL_ENABLE (1 << 0)
+#define QTMR_TIMER_CTRL_INT_MASK (1 << 1)
 
 STATIC UINT64 mTimerTicks;
 
-VOID
-EFIAPI
-LibQcomDxeTimerEnable (
-  UINT64 TimerTicks
-  )
+VOID EFIAPI LibQcomDxeTimerEnable(UINT64 TimerTicks)
 {
   UINT32 ctrl;
 
@@ -34,11 +32,7 @@ LibQcomDxeTimerEnable (
   mTimerTicks = TimerTicks;
 }
 
-VOID
-EFIAPI
-LibQcomDxeTimerDisable (
-  VOID
-  )
+VOID EFIAPI LibQcomDxeTimerDisable(VOID)
 {
   UINT32 ctrl;
 
@@ -54,20 +48,12 @@ LibQcomDxeTimerDisable (
 
 UINTN
 EFIAPI
-LibQcomDxeTimerGetFreq (
-  VOID
-  )
-{
-  return qtimer_get_frequency();
-}
+LibQcomDxeTimerGetFreq(VOID) { return qtimer_get_frequency(); }
 
-VOID
-EFIAPI
-LibQcomDxeTimerFinishIrq (
-  VOID
-  )
+VOID EFIAPI LibQcomDxeTimerFinishIrq(VOID)
 {
-  // Program the down counter again to get an interrupt after timer_interval msecs
+  // Program the down counter again to get an interrupt after timer_interval
+  // msecs
   writel(mTimerTicks, QTMR_V1_CNTP_TVAL);
   dsb();
 }

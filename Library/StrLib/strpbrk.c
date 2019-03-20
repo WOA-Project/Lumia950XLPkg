@@ -25,20 +25,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <Base.h>
+
 #include <Library/StrLib.h>
 
-CHAR8 *
-strpbrk(CHAR8 CONST *cs, CHAR8 CONST *ct)
+CHAR8 *strpbrk(CHAR8 CONST *cs, CHAR8 CONST *ct)
 {
-    CONST CHAR8 *sc1;
-    CONST CHAR8 *sc2;
+  CONST CHAR8 *sc1;
+  CONST CHAR8 *sc2;
 
-    for (sc1 = cs; *sc1 != '\0'; ++sc1) {
-        for (sc2 = ct; *sc2 != '\0'; ++sc2) {
-            if (*sc1 == *sc2)
-                return (CHAR8 *)sc1;
-        }
+  for (sc1 = cs; *sc1 != '\0'; ++sc1) {
+    for (sc2 = ct; *sc2 != '\0'; ++sc2) {
+      if (*sc1 == *sc2)
+        return (CHAR8 *)sc1;
     }
+  }
 
-    return NULL;
+  return NULL;
 }

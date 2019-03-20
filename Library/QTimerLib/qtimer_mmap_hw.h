@@ -30,13 +30,13 @@
 #ifndef __PLATFORM_MSM_SHARED_QTMR_MMAP_H
 #define __PLATFORM_MSM_SHARED_QRMR_MMAP_H
 
-#define QTMR_BASE                        ((UINTN)PcdGet64(PcdQTimerBase))
-#define QTMR_V1_CNTPCT_LO                (0x00000000 + QTMR_BASE)
-#define QTMR_V1_CNTPCT_HI                (0x00000004 + QTMR_BASE)
-#define QTMR_V1_CNTFRQ                   (0x00000010 + QTMR_BASE)
-#define QTMR_V1_CNTP_CVAL_LO             (0x00000020 + QTMR_BASE)
-#define QTMR_V1_CNTP_CVAL_HI             (0x00000024 + QTMR_BASE)
-#define QTMR_V1_CNTP_TVAL                (0x00000028 + QTMR_BASE)
-#define QTMR_V1_CNTP_CTL                 (0x0000002C + QTMR_BASE)
+#define QTMR_BASE ((UINTN)PcdGet64(PcdQTimerBase))
+#define QTMR_V1_CNTPCT_LO (0x00000000 + QTMR_BASE)
+#define QTMR_V1_CNTPCT_HI (0x00000004 + QTMR_BASE)
+#define QTMR_V1_CNTFRQ (0x00000010 + QTMR_BASE)
+#define QTMR_V1_CNTP_CVAL_LO (0x00000020 + QTMR_BASE)
+#define QTMR_V1_CNTP_CVAL_HI (0x00000024 + QTMR_BASE)
+#define QTMR_V1_CNTP_TVAL (0x00000028 + QTMR_BASE)
+#define QTMR_V1_CNTP_CTL (0x0000002C + QTMR_BASE)
 
 #endif

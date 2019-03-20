@@ -29,196 +29,206 @@
 #ifndef __UART_DM_H__
 #define __UART_DM_H__
 
-#define MSM_BOOT_UART_DM_EXTR_BITS(value, start_pos, end_pos) \
-                                             ((value << (32 - end_pos))\
-                                              >> (32 - (end_pos - start_pos)))
+#define MSM_BOOT_UART_DM_EXTR_BITS(value, start_pos, end_pos)                  \
+  ((value << (32 - end_pos)) >> (32 - (end_pos - start_pos)))
 
 /* UART Parity Mode */
 enum MSM_BOOT_UART_DM_PARITY_MODE {
-	MSM_BOOT_UART_DM_NO_PARITY,
-	MSM_BOOT_UART_DM_ODD_PARITY,
-	MSM_BOOT_UART_DM_EVEN_PARITY,
-	MSM_BOOT_UART_DM_SPACE_PARITY
+  MSM_BOOT_UART_DM_NO_PARITY,
+  MSM_BOOT_UART_DM_ODD_PARITY,
+  MSM_BOOT_UART_DM_EVEN_PARITY,
+  MSM_BOOT_UART_DM_SPACE_PARITY
 };
 
 /* UART Stop Bit Length */
 enum MSM_BOOT_UART_DM_STOP_BIT_LEN {
-	MSM_BOOT_UART_DM_SBL_9_16,
-	MSM_BOOT_UART_DM_SBL_1,
-	MSM_BOOT_UART_DM_SBL_1_9_16,
-	MSM_BOOT_UART_DM_SBL_2
+  MSM_BOOT_UART_DM_SBL_9_16,
+  MSM_BOOT_UART_DM_SBL_1,
+  MSM_BOOT_UART_DM_SBL_1_9_16,
+  MSM_BOOT_UART_DM_SBL_2
 };
 
 /* UART Bits per Char */
 enum MSM_BOOT_UART_DM_BITS_PER_CHAR {
-	MSM_BOOT_UART_DM_5_BPS,
-	MSM_BOOT_UART_DM_6_BPS,
-	MSM_BOOT_UART_DM_7_BPS,
-	MSM_BOOT_UART_DM_8_BPS
+  MSM_BOOT_UART_DM_5_BPS,
+  MSM_BOOT_UART_DM_6_BPS,
+  MSM_BOOT_UART_DM_7_BPS,
+  MSM_BOOT_UART_DM_8_BPS
 };
 
 /* 8-N-1 Configuration */
-#define MSM_BOOT_UART_DM_8_N_1_MODE          (MSM_BOOT_UART_DM_NO_PARITY | \
-                                             (MSM_BOOT_UART_DM_SBL_1 << 2) | \
-                                             (MSM_BOOT_UART_DM_8_BPS << 4))
+#define MSM_BOOT_UART_DM_8_N_1_MODE                                            \
+  (MSM_BOOT_UART_DM_NO_PARITY | (MSM_BOOT_UART_DM_SBL_1 << 2) |                \
+   (MSM_BOOT_UART_DM_8_BPS << 4))
 
 /* UART_DM Registers */
 
 /* UART Operational Mode Register */
-#define MSM_BOOT_UART_DM_MR1(base)             ((base) + 0x00)
-#define MSM_BOOT_UART_DM_MR2(base)             ((base) + 0x04)
+#define MSM_BOOT_UART_DM_MR1(base) ((base) + 0x00)
+#define MSM_BOOT_UART_DM_MR2(base) ((base) + 0x04)
 #define MSM_BOOT_UART_DM_RXBRK_ZERO_CHAR_OFF (1 << 8)
-#define MSM_BOOT_UART_DM_LOOPBACK            (1 << 7)
+#define MSM_BOOT_UART_DM_LOOPBACK (1 << 7)
 
 /* UART Clock Selection Register */
-#define MSM_BOOT_UART_DM_CSR(base)             ((base) + ((UINTN)PcdGet64(PcdUartDmCsrOffset)))
+#define MSM_BOOT_UART_DM_CSR(base)                                             \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmCsrOffset)))
 
 /* UART DM TX FIFO Registers - 4 */
-#define MSM_BOOT_UART_DM_TF(base, x)         ((base) + ((UINTN)PcdGet64(PcdUartDmTfOffset))+(4*(x)))
+#define MSM_BOOT_UART_DM_TF(base, x)                                           \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmTfOffset)) + (4 * (x)))
 
 /* UART Command Register */
-#define MSM_BOOT_UART_DM_CR(base)              ((base) + ((UINTN)PcdGet64(PcdUartDmCrOffset)))
-#define MSM_BOOT_UART_DM_CR_RX_ENABLE        (1 << 0)
-#define MSM_BOOT_UART_DM_CR_RX_DISABLE       (1 << 1)
-#define MSM_BOOT_UART_DM_CR_TX_ENABLE        (1 << 2)
-#define MSM_BOOT_UART_DM_CR_TX_DISABLE       (1 << 3)
+#define MSM_BOOT_UART_DM_CR(base)                                              \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmCrOffset)))
+#define MSM_BOOT_UART_DM_CR_RX_ENABLE (1 << 0)
+#define MSM_BOOT_UART_DM_CR_RX_DISABLE (1 << 1)
+#define MSM_BOOT_UART_DM_CR_TX_ENABLE (1 << 2)
+#define MSM_BOOT_UART_DM_CR_TX_DISABLE (1 << 3)
 
 /* UART Channel Command */
-#define MSM_BOOT_UART_DM_CR_CH_CMD_LSB(x)    ((x & 0x0f) << 4)
-#define MSM_BOOT_UART_DM_CR_CH_CMD_MSB(x)    ((x >> 4 ) << 11 )
-#define MSM_BOOT_UART_DM_CR_CH_CMD(x)        (MSM_BOOT_UART_DM_CR_CH_CMD_LSB(x)\
-                                             | MSM_BOOT_UART_DM_CR_CH_CMD_MSB(x))
-#define MSM_BOOT_UART_DM_CMD_NULL            MSM_BOOT_UART_DM_CR_CH_CMD(0)
-#define MSM_BOOT_UART_DM_CMD_RESET_RX        MSM_BOOT_UART_DM_CR_CH_CMD(1)
-#define MSM_BOOT_UART_DM_CMD_RESET_TX        MSM_BOOT_UART_DM_CR_CH_CMD(2)
-#define MSM_BOOT_UART_DM_CMD_RESET_ERR_STAT  MSM_BOOT_UART_DM_CR_CH_CMD(3)
+#define MSM_BOOT_UART_DM_CR_CH_CMD_LSB(x) ((x & 0x0f) << 4)
+#define MSM_BOOT_UART_DM_CR_CH_CMD_MSB(x) ((x >> 4) << 11)
+#define MSM_BOOT_UART_DM_CR_CH_CMD(x)                                          \
+  (MSM_BOOT_UART_DM_CR_CH_CMD_LSB(x) | MSM_BOOT_UART_DM_CR_CH_CMD_MSB(x))
+#define MSM_BOOT_UART_DM_CMD_NULL MSM_BOOT_UART_DM_CR_CH_CMD(0)
+#define MSM_BOOT_UART_DM_CMD_RESET_RX MSM_BOOT_UART_DM_CR_CH_CMD(1)
+#define MSM_BOOT_UART_DM_CMD_RESET_TX MSM_BOOT_UART_DM_CR_CH_CMD(2)
+#define MSM_BOOT_UART_DM_CMD_RESET_ERR_STAT MSM_BOOT_UART_DM_CR_CH_CMD(3)
 #define MSM_BOOT_UART_DM_CMD_RES_BRK_CHG_INT MSM_BOOT_UART_DM_CR_CH_CMD(4)
-#define MSM_BOOT_UART_DM_CMD_START_BRK       MSM_BOOT_UART_DM_CR_CH_CMD(5)
-#define MSM_BOOT_UART_DM_CMD_STOP_BRK        MSM_BOOT_UART_DM_CR_CH_CMD(6)
-#define MSM_BOOT_UART_DM_CMD_RES_CTS_N       MSM_BOOT_UART_DM_CR_CH_CMD(7)
-#define MSM_BOOT_UART_DM_CMD_RES_STALE_INT   MSM_BOOT_UART_DM_CR_CH_CMD(8)
-#define MSM_BOOT_UART_DM_CMD_PACKET_MODE     MSM_BOOT_UART_DM_CR_CH_CMD(9)
-#define MSM_BOOT_UART_DM_CMD_MODE_RESET      MSM_BOOT_UART_DM_CR_CH_CMD(C)
-#define MSM_BOOT_UART_DM_CMD_SET_RFR_N       MSM_BOOT_UART_DM_CR_CH_CMD(D)
-#define MSM_BOOT_UART_DM_CMD_RES_RFR_N       MSM_BOOT_UART_DM_CR_CH_CMD(E)
-#define MSM_BOOT_UART_DM_CMD_RES_TX_ERR      MSM_BOOT_UART_DM_CR_CH_CMD(10)
-#define MSM_BOOT_UART_DM_CMD_CLR_TX_DONE     MSM_BOOT_UART_DM_CR_CH_CMD(11)
+#define MSM_BOOT_UART_DM_CMD_START_BRK MSM_BOOT_UART_DM_CR_CH_CMD(5)
+#define MSM_BOOT_UART_DM_CMD_STOP_BRK MSM_BOOT_UART_DM_CR_CH_CMD(6)
+#define MSM_BOOT_UART_DM_CMD_RES_CTS_N MSM_BOOT_UART_DM_CR_CH_CMD(7)
+#define MSM_BOOT_UART_DM_CMD_RES_STALE_INT MSM_BOOT_UART_DM_CR_CH_CMD(8)
+#define MSM_BOOT_UART_DM_CMD_PACKET_MODE MSM_BOOT_UART_DM_CR_CH_CMD(9)
+#define MSM_BOOT_UART_DM_CMD_MODE_RESET MSM_BOOT_UART_DM_CR_CH_CMD(C)
+#define MSM_BOOT_UART_DM_CMD_SET_RFR_N MSM_BOOT_UART_DM_CR_CH_CMD(D)
+#define MSM_BOOT_UART_DM_CMD_RES_RFR_N MSM_BOOT_UART_DM_CR_CH_CMD(E)
+#define MSM_BOOT_UART_DM_CMD_RES_TX_ERR MSM_BOOT_UART_DM_CR_CH_CMD(10)
+#define MSM_BOOT_UART_DM_CMD_CLR_TX_DONE MSM_BOOT_UART_DM_CR_CH_CMD(11)
 #define MSM_BOOT_UART_DM_CMD_RES_BRKSTRT_INT MSM_BOOT_UART_DM_CR_CH_CMD(12)
-#define MSM_BOOT_UART_DM_CMD_RES_BRKEND_INT  MSM_BOOT_UART_DM_CR_CH_CMD(13)
+#define MSM_BOOT_UART_DM_CMD_RES_BRKEND_INT MSM_BOOT_UART_DM_CR_CH_CMD(13)
 #define MSM_BOOT_UART_DM_CMD_RES_PER_FRM_INT MSM_BOOT_UART_DM_CR_CH_CMD(14)
 
 /*UART General Command */
-#define MSM_BOOT_UART_DM_CR_GENERAL_CMD(x)   ((x) << 8)
+#define MSM_BOOT_UART_DM_CR_GENERAL_CMD(x) ((x) << 8)
 
-#define MSM_BOOT_UART_DM_GCMD_NULL            MSM_BOOT_UART_DM_CR_GENERAL_CMD(0)
-#define MSM_BOOT_UART_DM_GCMD_CR_PROT_EN      MSM_BOOT_UART_DM_CR_GENERAL_CMD(1)
-#define MSM_BOOT_UART_DM_GCMD_CR_PROT_DIS     MSM_BOOT_UART_DM_CR_GENERAL_CMD(2)
-#define MSM_BOOT_UART_DM_GCMD_RES_TX_RDY_INT  MSM_BOOT_UART_DM_CR_GENERAL_CMD(3)
-#define MSM_BOOT_UART_DM_GCMD_SW_FORCE_STALE  MSM_BOOT_UART_DM_CR_GENERAL_CMD(4)
-#define MSM_BOOT_UART_DM_GCMD_ENA_STALE_EVT   MSM_BOOT_UART_DM_CR_GENERAL_CMD(5)
-#define MSM_BOOT_UART_DM_GCMD_DIS_STALE_EVT   MSM_BOOT_UART_DM_CR_GENERAL_CMD(6)
+#define MSM_BOOT_UART_DM_GCMD_NULL MSM_BOOT_UART_DM_CR_GENERAL_CMD(0)
+#define MSM_BOOT_UART_DM_GCMD_CR_PROT_EN MSM_BOOT_UART_DM_CR_GENERAL_CMD(1)
+#define MSM_BOOT_UART_DM_GCMD_CR_PROT_DIS MSM_BOOT_UART_DM_CR_GENERAL_CMD(2)
+#define MSM_BOOT_UART_DM_GCMD_RES_TX_RDY_INT MSM_BOOT_UART_DM_CR_GENERAL_CMD(3)
+#define MSM_BOOT_UART_DM_GCMD_SW_FORCE_STALE MSM_BOOT_UART_DM_CR_GENERAL_CMD(4)
+#define MSM_BOOT_UART_DM_GCMD_ENA_STALE_EVT MSM_BOOT_UART_DM_CR_GENERAL_CMD(5)
+#define MSM_BOOT_UART_DM_GCMD_DIS_STALE_EVT MSM_BOOT_UART_DM_CR_GENERAL_CMD(6)
 
 /* UART Interrupt Mask Register */
-#define MSM_BOOT_UART_DM_IMR(base)             ((base) + ((UINTN)PcdGet64(PcdUartDmImrOffset)))
+#define MSM_BOOT_UART_DM_IMR(base)                                             \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmImrOffset)))
 
-#define MSM_BOOT_UART_DM_TXLEV               (1 << 0)
-#define MSM_BOOT_UART_DM_RXHUNT              (1 << 1)
-#define MSM_BOOT_UART_DM_RXBRK_CHNG          (1 << 2)
-#define MSM_BOOT_UART_DM_RXSTALE             (1 << 3)
-#define MSM_BOOT_UART_DM_RXLEV               (1 << 4)
-#define MSM_BOOT_UART_DM_DELTA_CTS           (1 << 5)
-#define MSM_BOOT_UART_DM_CURRENT_CTS         (1 << 6)
-#define MSM_BOOT_UART_DM_TX_READY            (1 << 7)
-#define MSM_BOOT_UART_DM_TX_ERROR            (1 << 8)
-#define MSM_BOOT_UART_DM_TX_DONE             (1 << 9)
-#define MSM_BOOT_UART_DM_RXBREAK_START       (1 << 10)
-#define MSM_BOOT_UART_DM_RXBREAK_END         (1 << 11)
-#define MSM_BOOT_UART_DM_PAR_FRAME_ERR_IRQ   (1 << 12)
+#define MSM_BOOT_UART_DM_TXLEV (1 << 0)
+#define MSM_BOOT_UART_DM_RXHUNT (1 << 1)
+#define MSM_BOOT_UART_DM_RXBRK_CHNG (1 << 2)
+#define MSM_BOOT_UART_DM_RXSTALE (1 << 3)
+#define MSM_BOOT_UART_DM_RXLEV (1 << 4)
+#define MSM_BOOT_UART_DM_DELTA_CTS (1 << 5)
+#define MSM_BOOT_UART_DM_CURRENT_CTS (1 << 6)
+#define MSM_BOOT_UART_DM_TX_READY (1 << 7)
+#define MSM_BOOT_UART_DM_TX_ERROR (1 << 8)
+#define MSM_BOOT_UART_DM_TX_DONE (1 << 9)
+#define MSM_BOOT_UART_DM_RXBREAK_START (1 << 10)
+#define MSM_BOOT_UART_DM_RXBREAK_END (1 << 11)
+#define MSM_BOOT_UART_DM_PAR_FRAME_ERR_IRQ (1 << 12)
 
-#define MSM_BOOT_UART_DM_IMR_ENABLED         (MSM_BOOT_UART_DM_TX_READY | \
-                                              MSM_BOOT_UART_DM_TXLEV    | \
-                                              MSM_BOOT_UART_DM_RXLEV    | \
-                                              MSM_BOOT_UART_DM_RXSTALE)
+#define MSM_BOOT_UART_DM_IMR_ENABLED                                           \
+  (MSM_BOOT_UART_DM_TX_READY | MSM_BOOT_UART_DM_TXLEV |                        \
+   MSM_BOOT_UART_DM_RXLEV | MSM_BOOT_UART_DM_RXSTALE)
 
 /* UART Interrupt Programming Register */
-#define MSM_BOOT_UART_DM_IPR(base)             ((base) + 0x18)
-#define MSM_BOOT_UART_DM_STALE_TIMEOUT_LSB   0x0f
-#define MSM_BOOT_UART_DM_STALE_TIMEOUT_MSB   0	/* Not used currently */
+#define MSM_BOOT_UART_DM_IPR(base) ((base) + 0x18)
+#define MSM_BOOT_UART_DM_STALE_TIMEOUT_LSB 0x0f
+#define MSM_BOOT_UART_DM_STALE_TIMEOUT_MSB 0 /* Not used currently */
 
 /* UART Transmit/Receive FIFO Watermark Register */
-#define MSM_BOOT_UART_DM_TFWR(base)            ((base) + 0x1C)
+#define MSM_BOOT_UART_DM_TFWR(base) ((base) + 0x1C)
 /* Interrupt is generated when FIFO level is less than or equal to this value */
-#define MSM_BOOT_UART_DM_TFW_VALUE           0
+#define MSM_BOOT_UART_DM_TFW_VALUE 0
 
-#define MSM_BOOT_UART_DM_RFWR(base)            ((base) + 0x20)
+#define MSM_BOOT_UART_DM_RFWR(base) ((base) + 0x20)
 /*Interrupt generated when no of words in RX FIFO is greater than this value */
-#define MSM_BOOT_UART_DM_RFW_VALUE           0
+#define MSM_BOOT_UART_DM_RFW_VALUE 0
 
 /* UART Hunt Character Register */
-#define MSM_BOOT_UART_DM_HCR(base)             ((base) + 0x24)
+#define MSM_BOOT_UART_DM_HCR(base) ((base) + 0x24)
 
 /* Used for RX transfer initialization */
-#define MSM_BOOT_UART_DM_DMRX(base)            ((base) + 0x34)
+#define MSM_BOOT_UART_DM_DMRX(base) ((base) + 0x34)
 
 /* Default DMRX value - any value bigger than FIFO size would be fine */
-#define MSM_BOOT_UART_DM_DMRX_DEF_VALUE    0x220
+#define MSM_BOOT_UART_DM_DMRX_DEF_VALUE 0x220
 
 /* Register to enable IRDA function */
-#define MSM_BOOT_UART_DM_IRDA(base)            ((base) + ((UINTN)PcdGet64(PcdUartDmIrdaOffset)))
+#define MSM_BOOT_UART_DM_IRDA(base)                                            \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmIrdaOffset)))
 
 /* UART Data Mover Enable Register */
-#define MSM_BOOT_UART_DM_DMEN(base)            ((base) + 0x3C)
+#define MSM_BOOT_UART_DM_DMEN(base) ((base) + 0x3C)
 
 /* Number of characters for Transmission */
 #define MSM_BOOT_UART_DM_NO_CHARS_FOR_TX(base) ((base) + 0x040)
 
 /* UART RX FIFO Base Address */
-#define MSM_BOOT_UART_DM_BADR(base)            ((base) + 0x44)
+#define MSM_BOOT_UART_DM_BADR(base) ((base) + 0x44)
 
 /* UART Status Register */
-#define MSM_BOOT_UART_DM_SR(base)              ((base) + ((UINTN)PcdGet64(PcdUartDmSrOffset)))
-#define MSM_BOOT_UART_DM_SR_RXRDY            (1 << 0)
-#define MSM_BOOT_UART_DM_SR_RXFULL           (1 << 1)
-#define MSM_BOOT_UART_DM_SR_TXRDY            (1 << 2)
-#define MSM_BOOT_UART_DM_SR_TXEMT            (1 << 3)
-#define MSM_BOOT_UART_DM_SR_UART_OVERRUN     (1 << 4)
-#define MSM_BOOT_UART_DM_SR_PAR_FRAME_ERR    (1 << 5)
-#define MSM_BOOT_UART_DM_RX_BREAK            (1 << 6)
-#define MSM_BOOT_UART_DM_HUNT_CHAR           (1 << 7)
-#define MSM_BOOT_UART_DM_RX_BRK_START_LAST   (1 << 8)
+#define MSM_BOOT_UART_DM_SR(base)                                              \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmSrOffset)))
+#define MSM_BOOT_UART_DM_SR_RXRDY (1 << 0)
+#define MSM_BOOT_UART_DM_SR_RXFULL (1 << 1)
+#define MSM_BOOT_UART_DM_SR_TXRDY (1 << 2)
+#define MSM_BOOT_UART_DM_SR_TXEMT (1 << 3)
+#define MSM_BOOT_UART_DM_SR_UART_OVERRUN (1 << 4)
+#define MSM_BOOT_UART_DM_SR_PAR_FRAME_ERR (1 << 5)
+#define MSM_BOOT_UART_DM_RX_BREAK (1 << 6)
+#define MSM_BOOT_UART_DM_HUNT_CHAR (1 << 7)
+#define MSM_BOOT_UART_DM_RX_BRK_START_LAST (1 << 8)
 
 /* UART Receive FIFO Registers - 4 in numbers */
-#define MSM_BOOT_UART_DM_RF(base, x)      ((base) + ((UINTN)PcdGet64(PcdUartDmRfOffset)) + (4*(x)))
+#define MSM_BOOT_UART_DM_RF(base, x)                                           \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmRfOffset)) + (4 * (x)))
 
 /* UART Masked Interrupt Status Register */
-#define MSM_BOOT_UART_DM_MISR(base)         ((base) + ((UINTN)PcdGet64(PcdUartDmMisrOffset)))
+#define MSM_BOOT_UART_DM_MISR(base)                                            \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmMisrOffset)))
 
 /* UART Interrupt Status Register */
-#define MSM_BOOT_UART_DM_ISR(base)          ((base) + ((UINTN)PcdGet64(PcdUartDmIsrOffset)))
+#define MSM_BOOT_UART_DM_ISR(base)                                             \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmIsrOffset)))
 
 /* Number of characters received since the end of last RX transfer */
-#define MSM_BOOT_UART_DM_RX_TOTAL_SNAP(base)  ((base) + ((UINTN)PcdGet64(PcdUartDmRxTotalSnapOffset)))
+#define MSM_BOOT_UART_DM_RX_TOTAL_SNAP(base)                                   \
+  ((base) + ((UINTN)PcdGet64(PcdUartDmRxTotalSnapOffset)))
 
 /* UART TX FIFO Status Register */
-#define MSM_BOOT_UART_DM_TXFS(base)           ((base) + 0x4C)
-#define MSM_BOOT_UART_DM_TXFS_STATE_LSB(x)   MSM_BOOT_UART_DM_EXTR_BITS(x,0,6)
-#define MSM_BOOT_UART_DM_TXFS_STATE_MSB(x)   MSM_BOOT_UART_DM_EXTR_BITS(x,14,31)
-#define MSM_BOOT_UART_DM_TXFS_BUF_STATE(x)   MSM_BOOT_UART_DM_EXTR_BITS(x,7,9)
-#define MSM_BOOT_UART_DM_TXFS_ASYNC_STATE(x) MSM_BOOT_UART_DM_EXTR_BITS(x,10,13)
+#define MSM_BOOT_UART_DM_TXFS(base) ((base) + 0x4C)
+#define MSM_BOOT_UART_DM_TXFS_STATE_LSB(x) MSM_BOOT_UART_DM_EXTR_BITS(x, 0, 6)
+#define MSM_BOOT_UART_DM_TXFS_STATE_MSB(x) MSM_BOOT_UART_DM_EXTR_BITS(x, 14, 31)
+#define MSM_BOOT_UART_DM_TXFS_BUF_STATE(x) MSM_BOOT_UART_DM_EXTR_BITS(x, 7, 9)
+#define MSM_BOOT_UART_DM_TXFS_ASYNC_STATE(x)                                   \
+  MSM_BOOT_UART_DM_EXTR_BITS(x, 10, 13)
 
 /* UART RX FIFO Status Register */
-#define MSM_BOOT_UART_DM_RXFS(base)           ((base) + 0x50)
-#define MSM_BOOT_UART_DM_RXFS_STATE_LSB(x)   MSM_BOOT_UART_DM_EXTR_BITS(x,0,6)
-#define MSM_BOOT_UART_DM_RXFS_STATE_MSB(x)   MSM_BOOT_UART_DM_EXTR_BITS(x,14,31)
-#define MSM_BOOT_UART_DM_RXFS_BUF_STATE(x)   MSM_BOOT_UART_DM_EXTR_BITS(x,7,9)
-#define MSM_BOOT_UART_DM_RXFS_ASYNC_STATE(x) MSM_BOOT_UART_DM_EXTR_BITS(x,10,13)
+#define MSM_BOOT_UART_DM_RXFS(base) ((base) + 0x50)
+#define MSM_BOOT_UART_DM_RXFS_STATE_LSB(x) MSM_BOOT_UART_DM_EXTR_BITS(x, 0, 6)
+#define MSM_BOOT_UART_DM_RXFS_STATE_MSB(x) MSM_BOOT_UART_DM_EXTR_BITS(x, 14, 31)
+#define MSM_BOOT_UART_DM_RXFS_BUF_STATE(x) MSM_BOOT_UART_DM_EXTR_BITS(x, 7, 9)
+#define MSM_BOOT_UART_DM_RXFS_ASYNC_STATE(x)                                   \
+  MSM_BOOT_UART_DM_EXTR_BITS(x, 10, 13)
 
 /* Macros for Common Errors */
-#define MSM_BOOT_UART_DM_E_SUCCESS           0
-#define MSM_BOOT_UART_DM_E_FAILURE           1
-#define MSM_BOOT_UART_DM_E_TIMEOUT           2
-#define MSM_BOOT_UART_DM_E_INVAL             3
-#define MSM_BOOT_UART_DM_E_MALLOC_FAIL       4
-#define MSM_BOOT_UART_DM_E_RX_NOT_READY      5
+#define MSM_BOOT_UART_DM_E_SUCCESS 0
+#define MSM_BOOT_UART_DM_E_FAILURE 1
+#define MSM_BOOT_UART_DM_E_TIMEOUT 2
+#define MSM_BOOT_UART_DM_E_INVAL 3
+#define MSM_BOOT_UART_DM_E_MALLOC_FAIL 4
+#define MSM_BOOT_UART_DM_E_RX_NOT_READY 5
 
-#endif				/* __UART_DM_H__ */
+#endif /* __UART_DM_H__ */
