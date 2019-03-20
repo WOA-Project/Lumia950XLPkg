@@ -5,9 +5,7 @@
 
 RETURN_STATUS
 EFIAPI
-Pm8x41ImplLibInitialize (
-  VOID
-  );
+Pm8x41ImplLibInitialize(VOID);
 
 extern QCOM_PM8X41_PROTOCOL *gPm8x41;
 

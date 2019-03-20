@@ -26,7 +26,6 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #ifndef __IRQS_MSM8994_H
 #define __IRQS_MSM8994_H
 
@@ -37,36 +36,35 @@
  * 32+:   SPI (shared peripheral interrupts)
  */
 
-#define GIC_PPI_START                          16
-#define GIC_SPI_START                          32
+#define GIC_PPI_START 16
+#define GIC_SPI_START 32
 
-#define INT_QTMR_NON_SECURE_PHY_TIMER_EXP      (GIC_PPI_START + 3)
-#define INT_QTMR_VIRTUAL_TIMER_EXP             (GIC_PPI_START + 4)
+#define INT_QTMR_NON_SECURE_PHY_TIMER_EXP (GIC_PPI_START + 3)
+#define INT_QTMR_VIRTUAL_TIMER_EXP (GIC_PPI_START + 4)
 
-#define INT_QTMR_FRM_0_PHYSICAL_TIMER_EXP      (GIC_SPI_START + 9)
+#define INT_QTMR_FRM_0_PHYSICAL_TIMER_EXP (GIC_SPI_START + 9)
 
-#define USB30_EE1_IRQ                          (GIC_SPI_START + 131)
-#define USB1_HS_IRQ                            (GIC_SPI_START + 134)
+#define USB30_EE1_IRQ (GIC_SPI_START + 131)
+#define USB1_HS_IRQ (GIC_SPI_START + 134)
 
-#define SDCC1_PWRCTL_IRQ                       (GIC_SPI_START + 138)
-#define SDCC2_PWRCTL_IRQ                       (GIC_SPI_START + 221)
-#define SDCC3_PWRCTL_IRQ                       (GIC_SPI_START + 224)
-#define SDCC4_PWRCTL_IRQ                       (GIC_SPI_START + 227)
+#define SDCC1_PWRCTL_IRQ (GIC_SPI_START + 138)
+#define SDCC2_PWRCTL_IRQ (GIC_SPI_START + 221)
+#define SDCC3_PWRCTL_IRQ (GIC_SPI_START + 224)
+#define SDCC4_PWRCTL_IRQ (GIC_SPI_START + 227)
 
-#define UFS_IRQ                                (GIC_SPI_START + 265)
+#define UFS_IRQ (GIC_SPI_START + 265)
 
-#define SMD_IRQ                                (GIC_SPI_START + 168)
+#define SMD_IRQ (GIC_SPI_START + 168)
 
 /* Retrofit universal macro names */
-#define INT_USB_HS                             USB1_HS_IRQ
+#define INT_USB_HS USB1_HS_IRQ
 
-#define EE0_KRAIT_HLOS_SPMI_PERIPH_IRQ         (GIC_SPI_START + 190)
+#define EE0_KRAIT_HLOS_SPMI_PERIPH_IRQ (GIC_SPI_START + 190)
 
-#define NR_MSM_IRQS                            256
-#define NR_GPIO_IRQS                           173
-#define NR_BOARD_IRQS                          0
+#define NR_MSM_IRQS 256
+#define NR_GPIO_IRQS 173
+#define NR_BOARD_IRQS 0
 
-#define NR_IRQS                                (NR_MSM_IRQS + NR_GPIO_IRQS + \
-                                               NR_BOARD_IRQS)
+#define NR_IRQS (NR_MSM_IRQS + NR_GPIO_IRQS + NR_BOARD_IRQS)
 
-#endif	/* __IRQS_MSM8994_H */
+#endif /* __IRQS_MSM8994_H */

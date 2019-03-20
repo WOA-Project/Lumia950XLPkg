@@ -3,8 +3,6 @@
 
 EFI_STATUS
 EFIAPI
-RtSpmiConfigMemory(
-	VOID
-);
+RtSpmiConfigMemory(VOID);
 
 #endif

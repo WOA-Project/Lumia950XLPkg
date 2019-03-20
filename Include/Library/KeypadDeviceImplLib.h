@@ -3,7 +3,9 @@
 
 #include <Protocol/KeypadDevice.h>
 
-EFI_STATUS EFIAPI KeypadDeviceImplReset (KEYPAD_DEVICE_PROTOCOL *This);
-EFI_STATUS KeypadDeviceImplGetKeys (KEYPAD_DEVICE_PROTOCOL *This, KEYPAD_RETURN_API *KeypadReturnApi, UINT64 Delta);
+EFI_STATUS EFIAPI KeypadDeviceImplReset(KEYPAD_DEVICE_PROTOCOL *This);
+EFI_STATUS        KeypadDeviceImplGetKeys(
+           KEYPAD_DEVICE_PROTOCOL *This, KEYPAD_RETURN_API *KeypadReturnApi,
+           UINT64 Delta);
 
 #endif

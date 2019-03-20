@@ -5,9 +5,7 @@
 
 RETURN_STATUS
 EFIAPI
-RpmImplLibInitialize (
-  VOID
-  );
+RpmImplLibInitialize(VOID);
 
 extern QCOM_RPM_PROTOCOL *gRpm;
 

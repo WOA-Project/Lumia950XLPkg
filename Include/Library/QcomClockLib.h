@@ -5,9 +5,7 @@
 
 RETURN_STATUS
 EFIAPI
-ClockImplLibInitialize (
-  VOID
-  );
+ClockImplLibInitialize(VOID);
 
 extern QCOM_CLOCK_PROTOCOL *gClock;
 

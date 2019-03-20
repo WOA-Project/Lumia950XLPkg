@@ -5,9 +5,7 @@
 
 RETURN_STATUS
 EFIAPI
-GpioTlmmImplLibInitialize (
-  VOID
-  );
+GpioTlmmImplLibInitialize(VOID);
 
 extern QCOM_GPIO_TLMM_PROTOCOL *gGpioTlmm;
 

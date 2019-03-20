@@ -28,19 +28,18 @@
 #ifndef CLOCK_PLL_H
 #define CLOCK_PLL_H
 
-
 /*
  * Bit manipulation macros
  */
-#define BM(msb, lsb)	(((((uint32_t)-1) << (31-msb)) >> (31-msb+lsb)) << lsb)
-#define BVAL(msb, lsb, val)	(((val) << lsb) & BM(msb, lsb))
+#define BM(msb, lsb)                                                           \
+  (((((uint32_t)-1) << (31 - msb)) >> (31 - msb + lsb)) << lsb)
+#define BVAL(msb, lsb, val) (((val) << lsb) & BM(msb, lsb))
 
 struct clk;
 struct clk_ops;
 
-#define container_of(ptr, type, member) \
-	((type *)((addr_t)(ptr) - offsetof(type, member)))
-
+#define container_of(ptr, type, member)                                        \
+  ((type *)((addr_t)(ptr)-offsetof(type, member)))
 
 /**
  * struct pll_vote_clk - phase locked loop (HW voteable)
@@ -52,21 +51,21 @@ struct clk_ops;
  * @c: clk
  */
 struct pll_vote_clk {
-	unsigned long rate;
+  unsigned long rate;
 
-	void *const en_reg;
-	const uint32_t en_mask;
+  void *const    en_reg;
+  const uint32_t en_mask;
 
-	void *const status_reg;
-	const uint32_t status_mask;
+  void *const    status_reg;
+  const uint32_t status_mask;
 
-	struct clk *parent;
-	struct clk c;
+  struct clk *parent;
+  struct clk  c;
 };
 
 static inline struct pll_vote_clk *to_pll_vote_clk(struct clk *clk)
 {
-	return container_of(clk, struct pll_vote_clk, c);
+  return container_of(clk, struct pll_vote_clk, c);
 }
 
 /**
@@ -77,28 +76,27 @@ static inline struct pll_vote_clk *to_pll_vote_clk(struct clk *clk)
  * @c: clk
  */
 struct pll_clk {
-	unsigned long rate;
+  unsigned long rate;
 
-	void *const mode_reg;
+  void *const mode_reg;
 
-	struct clk *parent;
-	struct clk c;
+  struct clk *parent;
+  struct clk  c;
 };
 
 static inline struct pll_clk *to_pll_clk(struct clk *clk)
 {
-	return container_of(clk, struct pll_clk, c);
+  return container_of(clk, struct pll_clk, c);
 }
 
-int pll_vote_clk_enable(struct clk *clk);
-void pll_vote_clk_disable(struct clk *clk);
-unsigned pll_vote_clk_get_rate(struct clk *clk);
+int         pll_vote_clk_enable(struct clk *clk);
+void        pll_vote_clk_disable(struct clk *clk);
+unsigned    pll_vote_clk_get_rate(struct clk *clk);
 struct clk *pll_vote_clk_get_parent(struct clk *clk);
-int pll_vote_clk_is_enabled(struct clk *clk);
+int         pll_vote_clk_is_enabled(struct clk *clk);
 
-
-int pll_clk_enable(struct clk *clk);
-void pll_clk_disable(struct clk *clk);
-unsigned pll_clk_get_rate(struct clk *clk);
+int         pll_clk_enable(struct clk *clk);
+void        pll_clk_disable(struct clk *clk);
+unsigned    pll_clk_get_rate(struct clk *clk);
 struct clk *pll_clk_get_parent(struct clk *clk);
 #endif

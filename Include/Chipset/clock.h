@@ -29,28 +29,25 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
-enum clk_reset_action {
-	CLK_RESET_DEASSERT	= 0,
-	CLK_RESET_ASSERT	= 1
-};
+enum clk_reset_action { CLK_RESET_DEASSERT = 0, CLK_RESET_ASSERT = 1 };
 
 struct clk;
 struct clk_ops {
-	int (*enable)(struct clk *clk);
-	void (*disable)(struct clk *clk);
-	void (*auto_off)(struct clk *clk);
-	int (*reset)(struct clk *clk, enum clk_reset_action action);
-	int (*set_rate)(struct clk *clk, unsigned rate);
-	int (*set_min_rate)(struct clk *clk, unsigned rate);
-	int (*set_max_rate)(struct clk *clk, unsigned rate);
-	int (*set_flags)(struct clk *clk, unsigned flags);
-	unsigned (*get_rate)(struct clk *clk);
-	int (*list_rate)(struct clk *clk, unsigned n);
-	int (*is_enabled)(struct clk *clk);
-	long (*round_rate)(struct clk *clk, unsigned rate);
-	int (*set_parent)(struct clk *clk, struct clk *parent);
-	struct clk *(*get_parent)(struct clk *clk);
-	bool (*is_local)(struct clk *clk);
+  int (*enable)(struct clk *clk);
+  void (*disable)(struct clk *clk);
+  void (*auto_off)(struct clk *clk);
+  int (*reset)(struct clk *clk, enum clk_reset_action action);
+  int (*set_rate)(struct clk *clk, unsigned rate);
+  int (*set_min_rate)(struct clk *clk, unsigned rate);
+  int (*set_max_rate)(struct clk *clk, unsigned rate);
+  int (*set_flags)(struct clk *clk, unsigned flags);
+  unsigned (*get_rate)(struct clk *clk);
+  int (*list_rate)(struct clk *clk, unsigned n);
+  int (*is_enabled)(struct clk *clk);
+  long (*round_rate)(struct clk *clk, unsigned rate);
+  int (*set_parent)(struct clk *clk, struct clk *parent);
+  struct clk *(*get_parent)(struct clk *clk);
+  bool (*is_local)(struct clk *clk);
 };
 
 /**
@@ -59,23 +56,26 @@ struct clk_ops {
  * @lock: protects clk_enable()/clk_disable() path and @count
  */
 struct clk {
-	uint32_t flags;
-	uint32_t rate;
-	struct clk_ops *ops;
-	const char *dbg_name;
-	unsigned count;
+  uint32_t        flags;
+  uint32_t        rate;
+  struct clk_ops *ops;
+  const char *    dbg_name;
+  unsigned        count;
 };
 
 struct clk_lookup {
-	const char		*con_id;
-	struct clk		*clk;
+  const char *con_id;
+  struct clk *clk;
 };
 
 struct clk_list {
-	struct clk_lookup *clist;
-	unsigned num;
+  struct clk_lookup *clist;
+  unsigned           num;
 };
 
-#define CLK_LOOKUP(con, c) { .con_id = con, .clk = &c }
+#define CLK_LOOKUP(con, c)                                                     \
+  {                                                                            \
+    .con_id = con, .clk = &c                                                   \
+  }
 
 #endif

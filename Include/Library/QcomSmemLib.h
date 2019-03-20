@@ -5,9 +5,7 @@
 
 RETURN_STATUS
 EFIAPI
-SmemImplLibInitialize (
-  VOID
-  );
+SmemImplLibInitialize(VOID);
 
 extern QCOM_SMEM_PROTOCOL *gSMEM;
 

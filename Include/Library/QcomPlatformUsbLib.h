@@ -6,15 +6,15 @@ typedef struct target_usb_iface target_usb_iface_t;
 struct target_usb_iface {
   CONST CHAR16 *controller;
 
-  VOID (*usb_init) (target_usb_iface_t *iface);
-  VOID (*usb_stop) (target_usb_iface_t *iface);
-  VOID (*mux_config) (target_usb_iface_t *iface);
-  VOID (*phy_reset) (target_usb_iface_t *iface);
-  VOID (*phy_init) (target_usb_iface_t *iface);
-  VOID (*clock_init) (target_usb_iface_t *iface);
-  VOID (*clock_bumpup_pipe3_clk) (target_usb_iface_t *iface);
+  VOID (*usb_init)(target_usb_iface_t *iface);
+  VOID (*usb_stop)(target_usb_iface_t *iface);
+  VOID (*mux_config)(target_usb_iface_t *iface);
+  VOID (*phy_reset)(target_usb_iface_t *iface);
+  VOID (*phy_init)(target_usb_iface_t *iface);
+  VOID (*clock_init)(target_usb_iface_t *iface);
+  VOID (*clock_bumpup_pipe3_clk)(target_usb_iface_t *iface);
 
-  UINT32 (*get_qmp_rev) (target_usb_iface_t *iface);
+  UINT32 (*get_qmp_rev)(target_usb_iface_t *iface);
 
   BOOLEAN vbus_override;
   BOOLEAN pll_override;
