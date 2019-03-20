@@ -25,35 +25,35 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 #include <Library/LKEnvLib.h>
+
 #include <Chipset/gpio.h>
 
 static void tlmm_set_pins(struct tlmm_cfgs *cfg)
 {
-	uint32_t reg_val;
+  uint32_t reg_val;
 
-	reg_val = readl(cfg->reg);
+  reg_val = readl(cfg->reg);
 
-	reg_val &= ~(cfg->mask << cfg->off);
+  reg_val &= ~(cfg->mask << cfg->off);
 
-	reg_val |= (cfg->val << cfg->off);
+  reg_val |= (cfg->val << cfg->off);
 
-	writel(reg_val, cfg->reg);
+  writel(reg_val, cfg->reg);
 }
 
 void tlmm_set_hdrive_ctrl(struct tlmm_cfgs *hdrv_cfgs, uint8_t sz)
 {
-	uint8_t i;
+  uint8_t i;
 
-	for (i = 0; i < sz; i++)
-		tlmm_set_pins(&hdrv_cfgs[i]);
+  for (i = 0; i < sz; i++)
+    tlmm_set_pins(&hdrv_cfgs[i]);
 }
 
 void tlmm_set_pull_ctrl(struct tlmm_cfgs *pull_cfgs, uint8_t sz)
 {
-	uint8_t i;
+  uint8_t i;
 
-	for (i = 0; i < sz; i++)
-		tlmm_set_pins(&pull_cfgs[i]);
+  for (i = 0; i < sz; i++)
+    tlmm_set_pins(&pull_cfgs[i]);
 }
