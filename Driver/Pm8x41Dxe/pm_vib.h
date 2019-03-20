@@ -28,9 +28,9 @@
 #ifndef __DEV_PMIC_VIB_VIBRATOR_H
 #define __DEV_PMIC_VIB_VIBRATOR_H
 
-#define QPNP_VIB_EN_CTL             0x1c046
-#define QPNP_VIB_VTG_CTL            0x1c041
-#define QPNP_VIB_VTG_SET_MASK       0x1F
-#define QPNP_VIB_DEFAULT_VTG_LVL    22
+#define QPNP_VIB_EN_CTL 0x1c046
+#define QPNP_VIB_VTG_CTL 0x1c041
+#define QPNP_VIB_VTG_SET_MASK 0x1F
+#define QPNP_VIB_DEFAULT_VTG_LVL 22
 
-#endif/* __DEV_PMIC_VIB_VIBRATOR_H */
+#endif /* __DEV_PMIC_VIB_VIBRATOR_H */

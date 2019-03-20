@@ -27,6 +27,7 @@
  */
 
 #include <Library/LKEnvLib.h>
+
 #include <Chipset/clock.h>
 
 #include "clock_p.h"
@@ -35,29 +36,29 @@ static struct clk_list msm_clk_list;
 
 int clk_set_parent(struct clk *clk, struct clk *parent)
 {
-	if (!clk->ops->set_parent)
-		return 0;
+  if (!clk->ops->set_parent)
+    return 0;
 
-	return clk->ops->set_parent(clk, parent);
+  return clk->ops->set_parent(clk, parent);
 }
 
 struct clk *clk_get_parent(struct clk *clk)
 {
-	if (!clk->ops->get_parent)
-		return NULL;
+  if (!clk->ops->get_parent)
+    return NULL;
 
-	return clk->ops->get_parent(clk);
+  return clk->ops->get_parent(clk);
 }
 
 int clk_reset(struct clk *clk, enum clk_reset_action action)
 {
-	if (!clk)
-		return 0;
+  if (!clk)
+    return 0;
 
-	if (!clk->ops->reset)
-		return 0;
+  if (!clk->ops->reset)
+    return 0;
 
-	return clk->ops->reset(clk, action);
+  return clk->ops->reset(clk, action);
 }
 
 /*
@@ -65,140 +66,128 @@ int clk_reset(struct clk *clk, enum clk_reset_action action)
  */
 int clk_enable(struct clk *clk)
 {
-	int ret = 0;
-	struct clk *parent;
+  int         ret = 0;
+  struct clk *parent;
 
-	if (!clk)
-		return 0;
+  if (!clk)
+    return 0;
 
-	if (clk->count == 0) {
-		parent = clk_get_parent(clk);
-		ret = clk_enable(parent);
-		if (ret)
-			goto out;
+  if (clk->count == 0) {
+    parent = clk_get_parent(clk);
+    ret    = clk_enable(parent);
+    if (ret)
+      goto out;
 
-		if (clk->ops->enable)
-			ret = clk->ops->enable(clk);
-		if (ret) {
-			clk_disable(parent);
-			goto out;
-		}
-	}
-	clk->count++;
+    if (clk->ops->enable)
+      ret = clk->ops->enable(clk);
+    if (ret) {
+      clk_disable(parent);
+      goto out;
+    }
+  }
+  clk->count++;
 out:
-	return ret;
+  return ret;
 }
 
 void clk_disable(struct clk *clk)
 {
-	struct clk *parent;
+  struct clk *parent;
 
-	if (!clk)
-		return;
+  if (!clk)
+    return;
 
-	if (clk->count == 0)
-		goto out;
-	if (clk->count == 1) {
-		if (clk->ops->disable)
-			clk->ops->disable(clk);
-		parent = clk_get_parent(clk);
-		clk_disable(parent);
-	}
-	clk->count--;
+  if (clk->count == 0)
+    goto out;
+  if (clk->count == 1) {
+    if (clk->ops->disable)
+      clk->ops->disable(clk);
+    parent = clk_get_parent(clk);
+    clk_disable(parent);
+  }
+  clk->count--;
 out:
-	return;
+  return;
 }
 
 unsigned long clk_get_rate(struct clk *clk)
 {
-	if (!clk->ops->get_rate)
-		return 0;
+  if (!clk->ops->get_rate)
+    return 0;
 
-	return clk->ops->get_rate(clk);
+  return clk->ops->get_rate(clk);
 }
 
 int clk_set_rate(struct clk *clk, unsigned long rate)
 {
-	if (!clk->ops->set_rate)
-		return ERR_NOT_VALID;
+  if (!clk->ops->set_rate)
+    return ERR_NOT_VALID;
 
-	return clk->ops->set_rate(clk, rate);
+  return clk->ops->set_rate(clk, rate);
 }
 
 void clk_init(struct clk_lookup *clist, unsigned num)
 {
-	if(clist && num)
-	{
-		msm_clk_list.clist = (struct clk_lookup *)clist;
-		msm_clk_list.num = num;
-	}
+  if (clist && num) {
+    msm_clk_list.clist = (struct clk_lookup *)clist;
+    msm_clk_list.num   = num;
+  }
 }
 
-struct clk *clk_get (const char * cid)
+struct clk *clk_get(const char *cid)
 {
-	unsigned i;
-	struct clk_lookup *cl= msm_clk_list.clist;
-	unsigned num = msm_clk_list.num;
+  unsigned           i;
+  struct clk_lookup *cl  = msm_clk_list.clist;
+  unsigned           num = msm_clk_list.num;
 
-	if(!cl || !num)
-	{
-		dprintf (CRITICAL, "Alert!! clock list not defined!\n");
-		return NULL;
-	}
-	for(i=0; i < num; i++, cl++)
-	{
-		if(!strcmp(cl->con_id, cid))
-		{
-			return cl->clk;
-		}
-	}
+  if (!cl || !num) {
+    dprintf(CRITICAL, "Alert!! clock list not defined!\n");
+    return NULL;
+  }
+  for (i = 0; i < num; i++, cl++) {
+    if (!strcmp(cl->con_id, cid)) {
+      return cl->clk;
+    }
+  }
 
-	dprintf(CRITICAL, "Alert!! Requested clock \"%s\" is not supported!\n", cid);
-	return NULL;
+  dprintf(CRITICAL, "Alert!! Requested clock \"%s\" is not supported!\n", cid);
+  return NULL;
 }
 
 int clk_get_set_enable(char *id, unsigned long rate, bool enable)
 {
-	int ret = NO_ERROR;
-	struct clk *cp;
+  int         ret = NO_ERROR;
+  struct clk *cp;
 
-	/* Get clk */
-	cp = clk_get(id);
-	if(!cp)
-	{
-		dprintf(CRITICAL, "Can't find clock with id: %s\n", id);
-		ret = ERR_NOT_VALID;
-		goto get_set_enable_error;
-	}
+  /* Get clk */
+  cp = clk_get(id);
+  if (!cp) {
+    dprintf(CRITICAL, "Can't find clock with id: %s\n", id);
+    ret = ERR_NOT_VALID;
+    goto get_set_enable_error;
+  }
 
-	/* Set rate */
-	if(rate)
-	{
-		ret = clk_set_rate(cp, rate);
-		if(ret)
-		{
-			dprintf(CRITICAL, "Clock set rate failed.\n");
-			goto get_set_enable_error;
-		}
-	}
+  /* Set rate */
+  if (rate) {
+    ret = clk_set_rate(cp, rate);
+    if (ret) {
+      dprintf(CRITICAL, "Clock set rate failed.\n");
+      goto get_set_enable_error;
+    }
+  }
 
-	/* Enable clock */
-	if(enable)
-	{
-		ret = clk_enable(cp);
-		if(ret)
-		{
-			dprintf(CRITICAL, "Clock enable failed.\n");
-		}
-	}
+  /* Enable clock */
+  if (enable) {
+    ret = clk_enable(cp);
+    if (ret) {
+      dprintf(CRITICAL, "Clock enable failed.\n");
+    }
+  }
 
 get_set_enable_error:
-	return ret;
+  return ret;
 }
 
 #ifdef DEBUG_CLOCK
-struct clk_list *clk_get_list()
-{
-	return &msm_clk_list;
-}
+struct clk_list *clk_get_list() { return &msm_clk_list; }
 #endif

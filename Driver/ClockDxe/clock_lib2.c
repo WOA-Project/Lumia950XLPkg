@@ -26,81 +26,83 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <Library/LKEnvLib.h>
+
 #include <Chipset/clock.h>
-#include <Chipset/clock_pll.h>
+// Must come in order
 #include <Chipset/clock_lib2.h>
+#include <Chipset/clock_pll.h>
 
 #include "clock_p.h"
 
 /*=============== CXO clock ops =============*/
 int cxo_clk_enable(struct clk *clk)
 {
-	/* Nothing to do. */
-	return 0;
+  /* Nothing to do. */
+  return 0;
 }
 
 void cxo_clk_disable(struct clk *clk)
 {
-	/* Nothing to do. */
-	return;
+  /* Nothing to do. */
+  return;
 }
-
 
 /*=============== Branch clock ops =============*/
 
 /* Branch clock enable */
 int clock_lib2_branch_clk_enable(struct clk *clk)
 {
-	int rc = 0;
-	uint32_t cbcr_val;
-	struct branch_clk *bclk = to_branch_clk(clk);
+  int                rc = 0;
+  uint32_t           cbcr_val;
+  struct branch_clk *bclk = to_branch_clk(clk);
 
-	cbcr_val  = readl(bclk->cbcr_reg);
-	cbcr_val |= CBCR_BRANCH_ENABLE_BIT;
-	writel(cbcr_val, bclk->cbcr_reg);
+  cbcr_val = readl(bclk->cbcr_reg);
+  cbcr_val |= CBCR_BRANCH_ENABLE_BIT;
+  writel(cbcr_val, bclk->cbcr_reg);
 
-	/* wait until status shows it is enabled */
-	while(readl(bclk->cbcr_reg) & CBCR_BRANCH_OFF_BIT);
+  /* wait until status shows it is enabled */
+  while (readl(bclk->cbcr_reg) & CBCR_BRANCH_OFF_BIT)
+    ;
 
-	return rc;
+  return rc;
 }
 
 /* Branch clock disable */
 void clock_lib2_branch_clk_disable(struct clk *clk)
 {
-	uint32_t cbcr_val;
-	struct branch_clk *bclk = to_branch_clk(clk);
+  uint32_t           cbcr_val;
+  struct branch_clk *bclk = to_branch_clk(clk);
 
-	cbcr_val  = readl(bclk->cbcr_reg);
-	cbcr_val &= ~CBCR_BRANCH_ENABLE_BIT;
-	writel(cbcr_val, bclk->cbcr_reg);
+  cbcr_val = readl(bclk->cbcr_reg);
+  cbcr_val &= ~CBCR_BRANCH_ENABLE_BIT;
+  writel(cbcr_val, bclk->cbcr_reg);
 
-	/* wait until status shows it is disabled */
-	while(!(readl(bclk->cbcr_reg) & CBCR_BRANCH_OFF_BIT));
+  /* wait until status shows it is disabled */
+  while (!(readl(bclk->cbcr_reg) & CBCR_BRANCH_OFF_BIT))
+    ;
 }
 
 /* Branch clock set rate */
 int clock_lib2_branch_set_rate(struct clk *c, unsigned rate)
 {
-	struct branch_clk *branch = to_branch_clk(c);
+  struct branch_clk *branch = to_branch_clk(c);
 
-	if (!branch->has_sibling)
-		return clk_set_rate(branch->parent, rate);
+  if (!branch->has_sibling)
+    return clk_set_rate(branch->parent, rate);
 
-	return -1;
+  return -1;
 }
-
 
 /*=============== Root clock ops =============*/
 
 /* Root enable */
 int clock_lib2_rcg_enable(struct clk *c)
 {
-	/* Hardware feedback from branch enable results in root being enabled.
-	 * Nothing to do here.
-	 */
+  /* Hardware feedback from branch enable results in root being enabled.
+   * Nothing to do here.
+   */
 
-	return 0;
+  return 0;
 }
 
 /* Root set rate:
@@ -110,85 +112,87 @@ int clock_lib2_rcg_enable(struct clk *c)
  */
 int clock_lib2_rcg_set_rate(struct clk *c, unsigned rate)
 {
-	struct rcg_clk *rclk = to_rcg_clk(c);
-	struct clk_freq_tbl *nf; /* new freq */
-	int rc = 0;
+  struct rcg_clk *     rclk = to_rcg_clk(c);
+  struct clk_freq_tbl *nf; /* new freq */
+  int                  rc = 0;
 
-	/* ck if new freq is in table */
-	for (nf = rclk->freq_tbl; nf->freq_hz != FREQ_END
-			&& nf->freq_hz != rate; nf++)
-		;
+  /* ck if new freq is in table */
+  for (nf = rclk->freq_tbl; nf->freq_hz != FREQ_END && nf->freq_hz != rate;
+       nf++)
+    ;
 
-	/* Frequency not found in the table */
-	if (nf->freq_hz == FREQ_END)
-		return ERR_INVALID_ARGS;
+  /* Frequency not found in the table */
+  if (nf->freq_hz == FREQ_END)
+    return ERR_INVALID_ARGS;
 
-	/* Check if frequency is actually changed. */
-	if (nf == rclk->current_freq)
-		return rc;
+  /* Check if frequency is actually changed. */
+  if (nf == rclk->current_freq)
+    return rc;
 
-	/* First enable the source clock for this freq. */
-	clk_enable(nf->src_clk);
+  /* First enable the source clock for this freq. */
+  clk_enable(nf->src_clk);
 
-	/* Perform clock-specific frequency switch operations. */
-	ASSERT(rclk->set_rate);
-	rclk->set_rate(rclk, nf);
+  /* Perform clock-specific frequency switch operations. */
+  ASSERT(rclk->set_rate);
+  rclk->set_rate(rclk, nf);
 
-	/* update current freq */
-	rclk->current_freq = nf;
+  /* update current freq */
+  rclk->current_freq = nf;
 
-	return rc;
+  return rc;
 }
 
 /* root update config: informs h/w to start using the new config values */
 static void clock_lib2_rcg_update_config(struct rcg_clk *rclk)
 {
-	uint32_t cmd;
+  uint32_t cmd;
 
-	cmd  = readl(rclk->cmd_reg);
-	cmd |= CMD_UPDATE_BIT;
-	writel(cmd, rclk->cmd_reg);
+  cmd = readl(rclk->cmd_reg);
+  cmd |= CMD_UPDATE_BIT;
+  writel(cmd, rclk->cmd_reg);
 
-	/* Wait for frequency to be updated. */
-	while(readl(rclk->cmd_reg) & CMD_UPDATE_MASK);
+  /* Wait for frequency to be updated. */
+  while (readl(rclk->cmd_reg) & CMD_UPDATE_MASK)
+    ;
 }
 
 /* root set rate for clocks with half integer and MND divider */
-void clock_lib2_rcg_set_rate_mnd(struct rcg_clk *rclk, struct clk_freq_tbl *freq)
+void clock_lib2_rcg_set_rate_mnd(
+    struct rcg_clk *rclk, struct clk_freq_tbl *freq)
 {
-	uint32_t cfg;
+  uint32_t cfg;
 
-	/* Program MND values */
-	writel(freq->m_val, rclk->m_reg);
-	writel(freq->n_val, rclk->n_reg);
-	writel(freq->d_val, rclk->d_reg);
+  /* Program MND values */
+  writel(freq->m_val, rclk->m_reg);
+  writel(freq->n_val, rclk->n_reg);
+  writel(freq->d_val, rclk->d_reg);
 
-	/* setup src select and divider */
-	cfg  = readl(rclk->cfg_reg);
-	cfg &= ~(CFG_SRC_SEL_MASK | CFG_SRC_DIV_MASK | CFG_MODE_MASK);
-	cfg |= freq->div_src_val;
-	if(freq->n_val !=0)
-	{
-		cfg |= (CFG_MODE_DUAL_EDGE << CFG_MODE_OFFSET);
-	}
-	writel(cfg, rclk->cfg_reg);
+  /* setup src select and divider */
+  cfg = readl(rclk->cfg_reg);
+  cfg &= ~(CFG_SRC_SEL_MASK | CFG_SRC_DIV_MASK | CFG_MODE_MASK);
+  cfg |= freq->div_src_val;
+  if (freq->n_val != 0) {
+    cfg |= (CFG_MODE_DUAL_EDGE << CFG_MODE_OFFSET);
+  }
+  writel(cfg, rclk->cfg_reg);
 
-	/* Inform h/w to start using the new config. */
-	clock_lib2_rcg_update_config(rclk);
+  /* Inform h/w to start using the new config. */
+  clock_lib2_rcg_update_config(rclk);
 }
 
 /* root set rate for clocks with half integer divider */
-void clock_lib2_rcg_set_rate_hid(struct rcg_clk *rclk, struct clk_freq_tbl *freq)
+void clock_lib2_rcg_set_rate_hid(
+    struct rcg_clk *rclk, struct clk_freq_tbl *freq)
 {
-	uint32_t cfg;
+  uint32_t cfg;
 
-	/* setup src select and divider */
-	cfg  = readl(rclk->cfg_reg);
-	cfg &= ~(CFG_SRC_SEL_MASK | CFG_SRC_DIV_MASK);
-	cfg |= freq->div_src_val;
-	writel(cfg, rclk->cfg_reg);
+  /* setup src select and divider */
+  cfg = readl(rclk->cfg_reg);
+  cfg &= ~(CFG_SRC_SEL_MASK | CFG_SRC_DIV_MASK);
+  cfg |= freq->div_src_val;
+  writel(cfg, rclk->cfg_reg);
 
-	clock_lib2_rcg_update_config(rclk);
+  clock_lib2_rcg_update_config(rclk);
 }
 
 /*=============== Vote clock ops =============*/
@@ -196,77 +200,78 @@ void clock_lib2_rcg_set_rate_hid(struct rcg_clk *rclk, struct clk_freq_tbl *freq
 /* Vote clock enable */
 int clock_lib2_vote_clk_enable(struct clk *c)
 {
-	uint32_t vote_regval;
-	uint32_t val;
-	struct vote_clk *vclk = to_local_vote_clk(c);
+  uint32_t         vote_regval;
+  uint32_t         val;
+  struct vote_clk *vclk = to_local_vote_clk(c);
 
-	vote_regval = readl(vclk->vote_reg);
-	vote_regval |= vclk->en_mask;
-	writel_relaxed(vote_regval, vclk->vote_reg);
-	do {
-		val = readl(vclk->cbcr_reg);
-		val &= BRANCH_CHECK_MASK;
-	}
-	/*  wait until status shows it is enabled */
-	while((val != BRANCH_ON_VAL) && (val != BRANCH_NOC_FSM_ON_VAL));
+  vote_regval = readl(vclk->vote_reg);
+  vote_regval |= vclk->en_mask;
+  writel_relaxed(vote_regval, vclk->vote_reg);
+  do {
+    val = readl(vclk->cbcr_reg);
+    val &= BRANCH_CHECK_MASK;
+  }
+  /*  wait until status shows it is enabled */
+  while ((val != BRANCH_ON_VAL) && (val != BRANCH_NOC_FSM_ON_VAL));
 
-	return 0;
+  return 0;
 }
 
 /* Vote clock disable */
 void clock_lib2_vote_clk_disable(struct clk *c)
 {
-	uint32_t vote_regval;
-	struct vote_clk *vclk = to_local_vote_clk(c);
+  uint32_t         vote_regval;
+  struct vote_clk *vclk = to_local_vote_clk(c);
 
-	vote_regval = readl(vclk->vote_reg);
-	vote_regval &= ~vclk->en_mask;
-    writel_relaxed(vote_regval, vclk->vote_reg);
+  vote_regval = readl(vclk->vote_reg);
+  vote_regval &= ~vclk->en_mask;
+  writel_relaxed(vote_regval, vclk->vote_reg);
 }
 
 /* Reset clock */
-static int __clock_lib2_branch_clk_reset(uint32_t bcr_reg, enum clk_reset_action action)
+static int
+__clock_lib2_branch_clk_reset(uint32_t bcr_reg, enum clk_reset_action action)
 {
-	uint32_t reg;
-	int ret = 0;
+  uint32_t reg;
+  int      ret = 0;
 
-	reg = readl(bcr_reg);
+  reg = readl(bcr_reg);
 
-	switch (action) {
-	case CLK_RESET_ASSERT:
-		reg |= BIT(0);
-		break;
-	case CLK_RESET_DEASSERT:
-		reg &= ~BIT(0);
-		break;
-	default:
-		ret = 1;
-	}
+  switch (action) {
+  case CLK_RESET_ASSERT:
+    reg |= BIT(0);
+    break;
+  case CLK_RESET_DEASSERT:
+    reg &= ~BIT(0);
+    break;
+  default:
+    ret = 1;
+  }
 
-	writel(reg, bcr_reg);
+  writel(reg, bcr_reg);
 
-	/* Wait for writes to go through */
-	dmb();
+  /* Wait for writes to go through */
+  dmb();
 
-	return ret;
+  return ret;
 }
 
 int clock_lib2_reset_clk_reset(struct clk *c, enum clk_reset_action action)
 {
-	struct reset_clk *rst = to_reset_clk(c);
+  struct reset_clk *rst = to_reset_clk(c);
 
-	if (!rst)
-		return 0;
+  if (!rst)
+    return 0;
 
-	return __clock_lib2_branch_clk_reset(rst->bcr_reg, action);
+  return __clock_lib2_branch_clk_reset(rst->bcr_reg, action);
 }
 
 int clock_lib2_branch_clk_reset(struct clk *c, enum clk_reset_action action)
 {
-	struct branch_clk *bclk = to_branch_clk(c);
+  struct branch_clk *bclk = to_branch_clk(c);
 
-	if (!bclk)
-		return 0;
+  if (!bclk)
+    return 0;
 
-	return __clock_lib2_branch_clk_reset((uint32_t)bclk->bcr_reg, action);
+  return __clock_lib2_branch_clk_reset((uint32_t)bclk->bcr_reg, action);
 }
