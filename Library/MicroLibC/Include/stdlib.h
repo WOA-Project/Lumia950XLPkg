@@ -2,18 +2,18 @@
 #define _STDLIB_H
 
 #include <stdint.h>
+// Must come in order
 #include <Library/MallocLib.h>
 
-int atoi(const char *num);
-unsigned int atoui(const char *num);
-long atol(const char *num);
-unsigned long atoul(const char *num);
+int                atoi(const char *num);
+unsigned int       atoui(const char *num);
+long               atol(const char *num);
+unsigned long      atoul(const char *num);
 unsigned long long atoull(const char *num);
-unsigned long strtoul(const char *nptr, char **endptr, int base);
+unsigned long      strtoul(const char *nptr, char **endptr, int base);
 
 void *bsearch(
     const void *key, const void *base, size_t nmemb, size_t size,
-    int (*compar)(const void *, const void *)
-);
+    int (*compar)(const void *, const void *));
 
 #endif

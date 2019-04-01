@@ -27,35 +27,38 @@
  */
 
 #include <Library/LKEnvLib.h>
+
 #include <Device/pm8x41.h>
+
 #include <Library/QcomPm8x41Lib.h>
 
 #include "pm8x41_p.h"
+// Must come in order
 #include "pm_vib.h"
 
-#define QPNP_VIB_EN    BIT(7)
+#define QPNP_VIB_EN BIT(7)
 
 /* Turn on vibrator */
 void pm_vib_turn_on(void)
 {
-	uint8_t val;
+  uint8_t val;
 
-	val = gPm8x41->pm8x41_reg_read(QPNP_VIB_VTG_CTL);
-	val &= ~QPNP_VIB_VTG_SET_MASK;
-	val |= (QPNP_VIB_DEFAULT_VTG_LVL & QPNP_VIB_VTG_SET_MASK);
-	gPm8x41->pm8x41_reg_write(QPNP_VIB_VTG_CTL, val);
+  val = gPm8x41->pm8x41_reg_read(QPNP_VIB_VTG_CTL);
+  val &= ~QPNP_VIB_VTG_SET_MASK;
+  val |= (QPNP_VIB_DEFAULT_VTG_LVL & QPNP_VIB_VTG_SET_MASK);
+  gPm8x41->pm8x41_reg_write(QPNP_VIB_VTG_CTL, val);
 
-	val = gPm8x41->pm8x41_reg_read(QPNP_VIB_EN_CTL);
-	val |= QPNP_VIB_EN;
-	gPm8x41->pm8x41_reg_write(QPNP_VIB_EN_CTL, val);
+  val = gPm8x41->pm8x41_reg_read(QPNP_VIB_EN_CTL);
+  val |= QPNP_VIB_EN;
+  gPm8x41->pm8x41_reg_write(QPNP_VIB_EN_CTL, val);
 }
 
 /* Turn off vibrator */
 void pm_vib_turn_off(void)
 {
-	uint8_t val;
+  uint8_t val;
 
-	val = gPm8x41->pm8x41_reg_read(QPNP_VIB_EN_CTL);
-	val &= ~QPNP_VIB_EN;
-	gPm8x41->pm8x41_reg_write(QPNP_VIB_EN_CTL, val);
+  val = gPm8x41->pm8x41_reg_read(QPNP_VIB_EN_CTL);
+  val &= ~QPNP_VIB_EN;
+  gPm8x41->pm8x41_reg_write(QPNP_VIB_EN_CTL, val);
 }

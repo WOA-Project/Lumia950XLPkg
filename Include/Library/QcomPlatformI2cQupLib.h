@@ -3,12 +3,11 @@
 
 #include <Chipset/i2c_qup.h>
 
-typedef EFI_STATUS (EFIAPI *REGISTER_I2C_DEVICE)(struct qup_i2c_dev *device, UINTN clk_freq, UINTN src_clk_rate);
+typedef EFI_STATUS(EFIAPI *REGISTER_I2C_DEVICE)(
+    struct qup_i2c_dev *device, UINTN clk_freq, UINTN src_clk_rate);
 
 EFI_STATUS
 EFIAPI
-LibQcomPlatformI2cQupAddBusses (
-  REGISTER_I2C_DEVICE RegisterI2cDevice
-  );
+LibQcomPlatformI2cQupAddBusses(REGISTER_I2C_DEVICE RegisterI2cDevice);
 
 #endif

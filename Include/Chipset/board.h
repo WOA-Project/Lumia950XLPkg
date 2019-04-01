@@ -33,25 +33,25 @@
 #include <Chipset/smem.h>
 
 #define LINUX_MACHTYPE_UNKNOWN 0
-#define BOARD_SOC_VERSION2     0x20000
-#define MAX_PMIC_DEVICES       SMEM_MAX_PMIC_DEVICES
+#define BOARD_SOC_VERSION2 0x20000
+#define MAX_PMIC_DEVICES SMEM_MAX_PMIC_DEVICES
 
 struct board_pmic_data {
-	uint32_t pmic_type;
-	uint32_t pmic_version;
-	uint32_t pmic_target;
+  uint32_t pmic_type;
+  uint32_t pmic_version;
+  uint32_t pmic_target;
 };
 
 struct board_data {
-	uint32_t platform;
-	uint32_t foundry_id;
-	uint32_t chip_serial;
-	uint32_t platform_version;
-	uint32_t platform_hw;
-	uint32_t platform_subtype;
-	uint32_t target;
-	uint32_t baseband;
-	struct board_pmic_data pmic_info[MAX_PMIC_DEVICES];
+  uint32_t               platform;
+  uint32_t               foundry_id;
+  uint32_t               chip_serial;
+  uint32_t               platform_version;
+  uint32_t               platform_hw;
+  uint32_t               platform_subtype;
+  uint32_t               target;
+  uint32_t               baseband;
+  struct board_pmic_data pmic_info[MAX_PMIC_DEVICES];
 };
 
 #endif

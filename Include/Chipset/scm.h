@@ -30,48 +30,42 @@
 #define __SCM_H__
 
 /* SCM Status */
-#define SCM_ENOMEM			-5
-#define SCM_EOPNOTSUPP		-4
-#define SCM_EINVAL_ADDR		-3
-#define SCM_EINVAL_ARG		-2
-#define SCM_ERROR			-1
-#define SCM_INTERRUPTED		1
-#define SCM_SUCCESS			0
-#define SCM_EBUSY			-55
+#define SCM_ENOMEM -5
+#define SCM_EOPNOTSUPP -4
+#define SCM_EINVAL_ADDR -3
+#define SCM_EINVAL_ARG -2
+#define SCM_ERROR -1
+#define SCM_INTERRUPTED 1
+#define SCM_SUCCESS 0
+#define SCM_EBUSY -55
 
-#define SCM_CLASS_REGISTER	(0x2 << 8)
-#define SCM_MASK_IRQS		BIT(5)
-#define SCM_ATOMIC(svc, cmd, n) (((((svc) << 10)|((cmd) & 0x3ff)) << 12) | \
-				SCM_CLASS_REGISTER | \
-				SCM_MASK_IRQS | \
-				(n & 0xf))
+#define SCM_CLASS_REGISTER (0x2 << 8)
+#define SCM_MASK_IRQS BIT(5)
+#define SCM_ATOMIC(svc, cmd, n)                                                \
+  (((((svc) << 10) | ((cmd)&0x3ff)) << 12) | SCM_CLASS_REGISTER |              \
+   SCM_MASK_IRQS | (n & 0xf))
 
 /* ARM SCM format support related flags */
-#define SIP_SVC_CALLS                          0x02000000
-#define MAKE_SIP_SCM_CMD(svc_id, cmd_id)       ((((svc_id << 8) | (cmd_id)) & 0xFFFF) | SIP_SVC_CALLS)
-#define MAKE_SCM_VAR_ARGS(num_args, t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, ...) (\
-						  (((t0) & 0xff) << 4) | \
-						  (((t1) & 0xff) << 6) | \
-						  (((t2) & 0xff) << 8) | \
-						  (((t3) & 0xff) << 10) | \
-						  (((t4) & 0xff) << 12) | \
-						  (((t5) & 0xff) << 14) | \
-						  (((t6) & 0xff) << 16) | \
-						  (((t7) & 0xff) << 18) | \
-						  (((t8) & 0xff) << 20) | \
-						  (((t9) & 0xff) << 22) | \
-						  (num_args & 0xffff))
-#define MAKE_SCM_ARGS(...)                     MAKE_SCM_VAR_ARGS(__VA_ARGS__, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-#define SCM_ATOMIC_BIT                         BIT(31)
-#define SCM_MAX_ARG_LEN                        5
-#define SCM_INDIR_MAX_LEN                      10
+#define SIP_SVC_CALLS 0x02000000
+#define MAKE_SIP_SCM_CMD(svc_id, cmd_id)                                       \
+  ((((svc_id << 8) | (cmd_id)) & 0xFFFF) | SIP_SVC_CALLS)
+#define MAKE_SCM_VAR_ARGS(                                                     \
+    num_args, t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, ...)                     \
+  ((((t0)&0xff) << 4) | (((t1)&0xff) << 6) | (((t2)&0xff) << 8) |              \
+   (((t3)&0xff) << 10) | (((t4)&0xff) << 12) | (((t5)&0xff) << 14) |           \
+   (((t6)&0xff) << 16) | (((t7)&0xff) << 18) | (((t8)&0xff) << 20) |           \
+   (((t9)&0xff) << 22) | (num_args & 0xffff))
+#define MAKE_SCM_ARGS(...)                                                     \
+  MAKE_SCM_VAR_ARGS(__VA_ARGS__, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+#define SCM_ATOMIC_BIT BIT(31)
+#define SCM_MAX_ARG_LEN 5
+#define SCM_INDIR_MAX_LEN 10
 
-typedef enum
-{
-	SMC_PARAM_TYPE_VALUE = 0,
-	SMC_PARAM_TYPE_BUFFER_READ,
-	SMC_PARAM_TYPE_BUFFER_READWRITE,
-	SMC_PARAM_TYPE_BUFFER_VALIDATION,
+typedef enum {
+  SMC_PARAM_TYPE_VALUE = 0,
+  SMC_PARAM_TYPE_BUFFER_READ,
+  SMC_PARAM_TYPE_BUFFER_READWRITE,
+  SMC_PARAM_TYPE_BUFFER_VALIDATION,
 } scm_arg_type;
 
 /* 8 Byte SSD magic number (LE) */
@@ -79,45 +73,45 @@ typedef enum
 #define DECRYPT_MAGIC_1 0x676D6964
 #define ENCRYPT_MAGIC_0 0x6B647373
 #define ENCRYPT_MAGIC_1 0x676D6973
-#define SSD_HEADER_MAGIC_SIZE  8
-#define SSD_HEADER_XML_SIZE    2048
-#define SSD_HEADER_MIN_SIZE    128
-#define MULTIPLICATION_FACTOR  2
+#define SSD_HEADER_MAGIC_SIZE 8
+#define SSD_HEADER_XML_SIZE 2048
+#define SSD_HEADER_MIN_SIZE 128
+#define MULTIPLICATION_FACTOR 2
 
 typedef unsigned int uint32;
 
 typedef struct {
-	uint32 len;
-	uint32 buf_offset;
-	uint32 resp_hdr_offset;
-	uint32 id;
+  uint32 len;
+  uint32 buf_offset;
+  uint32 resp_hdr_offset;
+  uint32 id;
 } scm_command;
 
 typedef struct {
-	uint32 len;
-	uint32 buf_offset;
-	uint32 is_complete;
+  uint32 len;
+  uint32 buf_offset;
+  uint32 is_complete;
 } scm_response;
 
 typedef struct {
-	uint32 *img_ptr;
-	uint32 *img_len_ptr;
+  uint32 *img_ptr;
+  uint32 *img_len_ptr;
 } img_req;
 
 typedef struct {
-	uint32 id;
-	uint32 spare;
+  uint32 id;
+  uint32 spare;
 } tz_secure_cfg;
 
 typedef struct {
   uint32  md_len;
-  uint32* md;
+  uint32 *md;
 } ssd_parse_md_req;
 
 typedef struct {
   uint32  status;
   uint32  md_ctx_id;
-  uint32* md_end_ptr;
+  uint32 *md_end_ptr;
 } ssd_parse_md_rsp;
 
 typedef struct {
@@ -131,69 +125,69 @@ typedef struct {
   uint32 status;
 } ssd_decrypt_img_frag_rsp;
 
-typedef struct{
+typedef struct {
   uint32 feature_id;
 } feature_version_req;
 
-typedef struct{
+typedef struct {
   uint32 version;
 } feature_version_rsp;
 
-typedef struct{
-	uint32 *status_ptr;
-	uint32 status_len;
+typedef struct {
+  uint32 *status_ptr;
+  uint32  status_len;
 } get_secure_state_req;
 
-typedef struct{
-	uint32 status_low;
-	uint32 status_high;
+typedef struct {
+  uint32 status_low;
+  uint32 status_high;
 } get_secure_state_rsp;
 
-typedef struct{
-	uint32 row_address;
-	uint32 addr_type;
-	uint32 *row_data;
-	uint32 *qfprom_api_status;
+typedef struct {
+  uint32  row_address;
+  uint32  addr_type;
+  uint32 *row_data;
+  uint32 *qfprom_api_status;
 } qfprom_read_row_req;
 
-typedef struct{
+typedef struct {
   uint32 *keystore_ptr;
   uint32  keystore_len;
 } ssd_protect_keystore_req;
 
-typedef struct{
+typedef struct {
   uint32 status;
 } ssd_protect_keystore_rsp;
 
 typedef struct {
-	uint32_t config;
-	uint32_t spare;
+  uint32_t config;
+  uint32_t spare;
 } tz_xpu_prot_cmd;
 
 typedef struct {
-	uint64_t el1_x0;
-	uint64_t el1_x1;
-	uint64_t el1_x2;
-	uint64_t el1_x3;
-	uint64_t el1_x4;
-	uint64_t el1_x5;
-	uint64_t el1_x6;
-	uint64_t el1_x7;
-	uint64_t el1_x8;
-	uint64_t el1_elr;
+  uint64_t el1_x0;
+  uint64_t el1_x1;
+  uint64_t el1_x2;
+  uint64_t el1_x3;
+  uint64_t el1_x4;
+  uint64_t el1_x5;
+  uint64_t el1_x6;
+  uint64_t el1_x7;
+  uint64_t el1_x8;
+  uint64_t el1_elr;
 } el1_system_param;
 
 struct tz_prng_data {
-	uint8_t *out_buf;
-	uint32_t out_buf_size;
-}__PACKED;
+  uint8_t *out_buf;
+  uint32_t out_buf_size;
+} __PACKED;
 
 typedef struct {
-	uint8_t *in_buf;
-	uint32_t in_buf_size;
-	uint8_t *out_buf;
-	uint32_t out_buf_size;
-	uint32_t direction;
+  uint8_t *in_buf;
+  uint32_t in_buf_size;
+  uint8_t *out_buf;
+  uint32_t out_buf_size;
+  uint32_t direction;
 } mdtp_cipher_dip_req;
 
 /* SCM support as per ARM spec */
@@ -212,25 +206,25 @@ typedef struct {
  *       : list can be passed here.
  */
 typedef struct {
-	uint32_t x0;/* command ID details as per ARMv8 spec :
-					0:7 command, 8:15 service id
-					0x02000000: SIP calls
-					30: SMC32 or SMC64
-					31: Standard or fast calls*/
-	uint32_t x1; /* # of args and attributes for buffers
-				  * 0-3: arg #
-				  * 4-5: type of arg1
-				  * 6-7: type of arg2
-				  * :
-				  * :
-				  * 20-21: type of arg8
-				  * 22-23: type of arg9
-				  */
-	uint32_t x2; /* Param1 */
-	uint32_t x3; /* Param2 */
-	uint32_t x4; /* Param3 */
-	uint32_t x5[10]; /* Indirect parameter list */
-	uint32_t atomic; /* To indicate if its standard or fast call */
+  uint32_t x0;     /* command ID details as per ARMv8 spec :
+                                       0:7 command, 8:15 service id
+                                       0x02000000: SIP calls
+                                       30: SMC32 or SMC64
+                                       31: Standard or fast calls*/
+  uint32_t x1;     /* # of args and attributes for buffers
+                    * 0-3: arg #
+                    * 4-5: type of arg1
+                    * 6-7: type of arg2
+                    * :
+                    * :
+                    * 20-21: type of arg8
+                    * 22-23: type of arg9
+                    */
+  uint32_t x2;     /* Param1 */
+  uint32_t x3;     /* Param2 */
+  uint32_t x4;     /* Param3 */
+  uint32_t x5[10]; /* Indirect parameter list */
+  uint32_t atomic; /* To indicate if its standard or fast call */
 } scmcall_arg;
 
 /* Return value for the SCM call:
@@ -238,117 +232,115 @@ typedef struct {
  * 12 bytes, anything greater need to be input buffer + input len
  * arguments
  */
-typedef struct
-{
-	uint32_t x1;
-	uint32_t x2;
-	uint32_t x3;
+typedef struct {
+  uint32_t x1;
+  uint32_t x2;
+  uint32_t x3;
 } scmcall_ret;
 
 /* Service IDs */
-#define SCM_SVC_BOOT                0x01
-#define TZBSP_SVC_INFO              0x06
-#define SCM_SVC_SSD                 0x07
-#define SVC_MEMORY_PROTECTION       0x0C
-#define TZ_SVC_CRYPTO               0x0A
-#define SCM_SVC_INFO                0x06
+#define SCM_SVC_BOOT 0x01
+#define TZBSP_SVC_INFO 0x06
+#define SCM_SVC_SSD 0x07
+#define SVC_MEMORY_PROTECTION 0x0C
+#define TZ_SVC_CRYPTO 0x0A
+#define SCM_SVC_INFO 0x06
 
 /*Service specific command IDs */
-#define ERR_FATAL_ENABLE            0x0
-#define SSD_DECRYPT_ID              0x01
-#define SSD_ENCRYPT_ID              0x02
-#define SSD_PROTECT_KEYSTORE_ID     0x05
-#define SSD_PARSE_MD_ID             0x06
-#define SSD_DECRYPT_IMG_FRAG_ID     0x07
-#define WDOG_DEBUG_DISABLE          0x09
-#define SCM_DLOAD_CMD               0x10
-#define XPU_ERR_FATAL               0xe
+#define ERR_FATAL_ENABLE 0x0
+#define SSD_DECRYPT_ID 0x01
+#define SSD_ENCRYPT_ID 0x02
+#define SSD_PROTECT_KEYSTORE_ID 0x05
+#define SSD_PARSE_MD_ID 0x06
+#define SSD_DECRYPT_IMG_FRAG_ID 0x07
+#define WDOG_DEBUG_DISABLE 0x09
+#define SCM_DLOAD_CMD 0x10
+#define XPU_ERR_FATAL 0xe
 
-#define SECURE_DEVICE_MDSS          0x01
+#define SECURE_DEVICE_MDSS 0x01
 
-#define IOMMU_SECURE_CFG            0x02
+#define IOMMU_SECURE_CFG 0x02
 
-#define TZ_INFO_GET_FEATURE_ID      0x03
-#define TZ_INFO_GET_SECURE_STATE    0x04
+#define TZ_INFO_GET_FEATURE_ID 0x03
+#define TZ_INFO_GET_SECURE_STATE 0x04
 
-#define PRNG_CMD_ID                 0x01
-#define IS_CALL_AVAIL_CMD           0x01
-#define IS_SECURE_BOOT_ENABLED      0x04
+#define PRNG_CMD_ID 0x01
+#define IS_CALL_AVAIL_CMD 0x01
+#define IS_SECURE_BOOT_ENABLED 0x04
 
 /* Download Mode specific arguments to be passed to TZ */
 #define SCM_EDLOAD_MODE 0x01
-#define SCM_DLOAD_MODE  0x10
+#define SCM_DLOAD_MODE 0x10
 
 /* SSD parsing status messages from TZ */
-#define SSD_PMD_ENCRYPTED           0
-#define SSD_PMD_NOT_ENCRYPTED       1
-#define SSD_PMD_NO_MD_FOUND         3
-#define SSD_PMD_BUSY                4
-#define SSD_PMD_BAD_MD_PTR_OR_LEN   5
-#define SSD_PMD_PARSING_INCOMPLETE  6
-#define SSD_PMD_PARSING_FAILED      7
+#define SSD_PMD_ENCRYPTED 0
+#define SSD_PMD_NOT_ENCRYPTED 1
+#define SSD_PMD_NO_MD_FOUND 3
+#define SSD_PMD_BUSY 4
+#define SSD_PMD_BAD_MD_PTR_OR_LEN 5
+#define SSD_PMD_PARSING_INCOMPLETE 6
+#define SSD_PMD_PARSING_FAILED 7
 #define SSD_PMD_SETUP_CIPHER_FAILED 8
 
 /* Keystore status messages */
-#define TZBSP_SSD_PKS_SUCCESS            0 /**< Successful return. */
-#define TZBSP_SSD_PKS_INVALID_PTR        1 /**< Keystore pointer invalid. */
-#define TZBSP_SSD_PKS_INVALID_LEN        2 /**< Keystore length incorrect. */
-#define TZBSP_SSD_PKS_UNALIGNED_PTR      3 /**< Keystore pointer not word
-                                             aligned. */
-#define TZBSP_SSD_PKS_PROTECT_MEM_FAILED 4 /**< Failure when protecting
-                                             the keystore memory.*/
-#define TZBSP_SSD_PKS_INVALID_NUM_KEYS   5 /**< Unsupported number of
-                                             keys passed.  If a valid
-                                             pointer to non-secure
-                                             memory is passed that
-                                             isn't a keystore, this is
-                                             a likely return code. */
-#define TZBSP_SSD_PKS_DECRYPT_FAILED     6  /**< The keystore could not be
-                                             decrypted. */
+#define TZBSP_SSD_PKS_SUCCESS 0     /**< Successful return. */
+#define TZBSP_SSD_PKS_INVALID_PTR 1 /**< Keystore pointer invalid. */
+#define TZBSP_SSD_PKS_INVALID_LEN 2 /**< Keystore length incorrect. */
+#define TZBSP_SSD_PKS_UNALIGNED_PTR                                            \
+  3 /**< Keystore pointer not word                                             \
+      aligned. */
+#define TZBSP_SSD_PKS_PROTECT_MEM_FAILED                                       \
+  4 /**< Failure when protecting                                               \
+      the keystore memory.*/
+#define TZBSP_SSD_PKS_INVALID_NUM_KEYS                                         \
+  5 /**< Unsupported number of                                                 \
+      keys passed.  If a valid                                                 \
+      pointer to non-secure                                                    \
+      memory is passed that                                                    \
+      isn't a keystore, this is                                                \
+      a likely return code. */
+#define TZBSP_SSD_PKS_DECRYPT_FAILED                                           \
+  6 /**< The keystore could not be                                             \
+     decrypted. */
 
 /* Features in TZ */
-#define TZBSP_FVER_SSD              5
+#define TZBSP_FVER_SSD 5
 
-#define TZBSP_GET_FEATURE_VERSION(major) ((major >> 22)& 0x3FF)
+#define TZBSP_GET_FEATURE_VERSION(major) ((major >> 22) & 0x3FF)
 
+#define SCM_SVC_FUSE 0x08
+#define SCM_BLOW_SW_FUSE_ID 0x01
+#define SCM_IS_SW_FUSE_BLOWN_ID 0x02
+#define SCM_QFPROM_READ_ROW_ID 0x05
 
-#define SCM_SVC_FUSE                0x08
-#define SCM_BLOW_SW_FUSE_ID         0x01
-#define SCM_IS_SW_FUSE_BLOWN_ID     0x02
-#define SCM_QFPROM_READ_ROW_ID      0x05
+#define HLOS_IMG_TAMPER_FUSE 0
 
-#define HLOS_IMG_TAMPER_FUSE        0
+#define SCM_SVC_CE_CHN_SWITCH_ID 0x04
+#define SCM_CE_CHN_SWITCH_ID 0x02
 
+#define SCM_SVC_ES 0x10
+#define SCM_SAVE_PARTITION_HASH_ID 0x01
 
-#define SCM_SVC_CE_CHN_SWITCH_ID    0x04
-#define SCM_CE_CHN_SWITCH_ID        0x02
+#define SCM_SVC_MDTP 0x12
+#define SCM_MDTP_CIPHER_DIP 0x01
 
-#define SCM_SVC_ES                      0x10
-#define SCM_SAVE_PARTITION_HASH_ID      0x01
+#define SCM_SVC_PWR 0x9
+#define SCM_IO_DISABLE_PMIC_ARBITER 0x1
+#define SCM_IO_DISABLE_PMIC_ARBITER1 0x2
 
-#define SCM_SVC_MDTP                    0x12
-#define SCM_MDTP_CIPHER_DIP             0x01
+#define SCM_SVC_MILESTONE_32_64_ID 0x1
+#define SCM_SVC_MILESTONE_CMD_ID 0xf
+#define SCM_SVC_TZSCHEDULER 0xFC
 
-#define SCM_SVC_PWR                     0x9
-#define SCM_IO_DISABLE_PMIC_ARBITER     0x1
-#define SCM_IO_DISABLE_PMIC_ARBITER1    0x2
-
-#define SCM_SVC_MILESTONE_32_64_ID      0x1
-#define SCM_SVC_MILESTONE_CMD_ID        0xf
-#define SCM_SVC_TZSCHEDULER             0xFC
-
-enum ap_ce_channel_type {
-AP_CE_REGISTER_USE = 0,
-AP_CE_ADM_USE = 1
-};
+enum ap_ce_channel_type { AP_CE_REGISTER_USE = 0, AP_CE_ADM_USE = 1 };
 
 /* Apps CE resource. */
-#define TZ_RESOURCE_CE_AP  2
+#define TZ_RESOURCE_CE_AP 2
 
 /* Secure IO Service IDs */
-#define SCM_IO_READ     0x1
-#define SCM_IO_WRITE    0x2
-#define SCM_SVC_IO      0x5
+#define SCM_IO_READ 0x1
+#define SCM_IO_WRITE 0x2
+#define SCM_SVC_IO 0x5
 
 /**
  * struct scm_command - one SCM command buffer
@@ -375,11 +367,11 @@ AP_CE_ADM_USE = 1
  * to access the buffers in a safe manner.
  */
 struct scm_command {
-	uint32_t len;
-	uint32_t buf_offset;
-	uint32_t resp_hdr_offset;
-	uint32_t id;
-	uint32_t buf[0];
+  uint32_t len;
+  uint32_t buf_offset;
+  uint32_t resp_hdr_offset;
+  uint32_t id;
+  uint32_t buf[0];
 };
 
 /**
@@ -389,9 +381,9 @@ struct scm_command {
  * @is_complete: indicates if the command has finished processing
  */
 struct scm_response {
-	uint32_t len;
-	uint32_t buf_offset;
-	uint32_t is_complete;
+  uint32_t len;
+  uint32_t buf_offset;
+  uint32_t is_complete;
 };
 
 #endif

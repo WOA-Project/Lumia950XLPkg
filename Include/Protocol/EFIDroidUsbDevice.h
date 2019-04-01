@@ -3,9 +3,9 @@
   Copyright (c) 2013-2014, ARM Ltd. All rights reserved.<BR>
 
   This program and the accompanying materials
-  are licensed and made available under the terms and conditions of the BSD License
-  which accompanies this distribution.  The full text of the license may be found at
-  http://opensource.org/licenses/bsd-license.php
+  are licensed and made available under the terms and conditions of the BSD
+License which accompanies this distribution.  The full text of the license may
+be found at http://opensource.org/licenses/bsd-license.php
 
   THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
   WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
@@ -36,29 +36,25 @@ typedef enum {
   UsbDeviceTransferStatusAborted,
 } USB_DEVICE_TRANSFER_STATUS;
 
-typedef enum { 
+typedef enum {
   UsbDeviceStateConnected,
   UsbDeviceStateDisconnected
 } USB_DEVICE_STATE;
 
 typedef struct {
-  USB_DEVICE_TRANSFER_STATUS    Status;
-  UINT8                         EndpointIndex;
-  UINTN                         Size;
-  VOID                          *Buffer;
+  USB_DEVICE_TRANSFER_STATUS Status;
+  UINT8                      EndpointIndex;
+  UINTN                      Size;
+  VOID *                     Buffer;
 } USB_DEVICE_TRANSFER_OUTCOME;
 
 typedef union {
-  USB_DEVICE_STATE              DeviceState;
-  USB_DEVICE_TRANSFER_OUTCOME   TransferOutcome;
+  USB_DEVICE_STATE            DeviceState;
+  USB_DEVICE_TRANSFER_OUTCOME TransferOutcome;
 } USB_DEVICE_EVENT_DATA;
 
-typedef
-VOID
-(*USB_DEVICE_EVENT_CALLBACK) (
-  IN USB_DEVICE_EVENT         Event,
-  IN USB_DEVICE_EVENT_DATA    *EventData
-  );
+typedef VOID (*USB_DEVICE_EVENT_CALLBACK)(
+    IN USB_DEVICE_EVENT Event, IN USB_DEVICE_EVENT_DATA *EventData);
 
 /*
   Put data in the Tx buffer to be sent on the next IN token.
@@ -72,13 +68,8 @@ VOID
   @retval EFI_SUCCESS           The data was queued successfully.
   @retval EFI_INVALID_PARAMETER There was an error sending the data.
 */
-typedef
-EFI_STATUS
-(*USB_DEVICE_TRANSFER) (
-  IN       UINT8       EndpointIndex,
-  IN       UINTN       Size,
-  IN OUT   VOID        *Buffer
-  );
+typedef EFI_STATUS (*USB_DEVICE_TRANSFER)(
+    IN UINT8 EndpointIndex, IN UINTN Size, IN OUT VOID *Buffer);
 
 /*
   Restart the USB peripheral controller and respond to enumeration.
@@ -104,26 +95,19 @@ EFI_STATUS
   @param[in]RxCallback          See USB_DEVICE_RX_CALLBACK
   @param[in]TxCallback          See USB_DEVICE_TX_CALLBACK
 */
-typedef
-EFI_STATUS
-(*USB_DEVICE_START) (
-  IN USB_DEVICE_DESCRIPTOR     *DeviceDescriptor,
-  IN VOID                     **Descriptors,
-  IN USB_DEVICE_EVENT_CALLBACK  EventCallback
-  );
+typedef EFI_STATUS (*USB_DEVICE_START)(
+    IN USB_DEVICE_DESCRIPTOR *DeviceDescriptor, IN VOID **Descriptors,
+    IN USB_DEVICE_EVENT_CALLBACK EventCallback);
 
 /*
   Stop the USB controller and clean up the resources allocated.
-  After calling the function, no more access to the USB Device Protocol is allowed.
+  After calling the function, no more access to the USB Device Protocol is
+  allowed.
 
   @retval     EFI_SUCCESS           Function completed successfully.
   @retval     Others                Operation failed.
 */
-typedef
-EFI_STATUS
-(*USB_DEVICE_STOP) (
-  VOID
-  );
+typedef EFI_STATUS (*USB_DEVICE_STOP)(VOID);
 
 /*
   Allocates a memory region of Size bytes and returns the address of the
@@ -139,14 +123,11 @@ EFI_STATUS
 
   @retval     EFI_SUCCESS           Function completed successfully.
   @retval     EFI_INVALID_PARAMETER Parameter is invalid.
-  @retval     EFI_OUT_OF_RESOURCES  Requested transfer buffer could not be allocated.
+  @retval     EFI_OUT_OF_RESOURCES  Requested transfer buffer could not be
+  allocated.
 */
-typedef
-EFI_STATUS
-(EFIAPI *USB_DEVICE_ALLOCATE_TRANSFER_BUFFER) (
-  IN   UINTN                  Size,
-  OUT  VOID                 **Buffer
-  );
+typedef EFI_STATUS(EFIAPI *USB_DEVICE_ALLOCATE_TRANSFER_BUFFER)(
+    IN UINTN Size, OUT VOID **Buffer);
 
 /*
   Deallocates the memory specified by Buffer. The buffer that is freed
@@ -157,27 +138,19 @@ EFI_STATUS
   @retval EFI_SUCCESS           Function completed successfully.
   @retval EFI_INVALID_PARAMETER Parameter is invalid.
 */
-typedef
-EFI_STATUS
-(EFIAPI *USB_DEVICE_FREE_TRANSFER_BUFFER) (
-  IN VOID                   *Buffer
-  );
+typedef EFI_STATUS(EFIAPI *USB_DEVICE_FREE_TRANSFER_BUFFER)(IN VOID *Buffer);
 
-typedef
-EFI_STATUS
-(*USB_DEVICE_RESET_CONTROLLER) (
-	VOID
-  );
+typedef EFI_STATUS (*USB_DEVICE_RESET_CONTROLLER)(VOID);
 
 struct _USB_DEVICE_PROTOCOL {
-  USB_DEVICE_START     Start;
-  USB_DEVICE_STOP      Stop;
-  USB_DEVICE_TRANSFER  Transfer;
-  USB_DEVICE_ALLOCATE_TRANSFER_BUFFER   AllocateTransferBuffer;
-  USB_DEVICE_FREE_TRANSFER_BUFFER       FreeTransferBuffer;
-  USB_DEVICE_RESET_CONTROLLER Reset;
+  USB_DEVICE_START                    Start;
+  USB_DEVICE_STOP                     Stop;
+  USB_DEVICE_TRANSFER                 Transfer;
+  USB_DEVICE_ALLOCATE_TRANSFER_BUFFER AllocateTransferBuffer;
+  USB_DEVICE_FREE_TRANSFER_BUFFER     FreeTransferBuffer;
+  USB_DEVICE_RESET_CONTROLLER         Reset;
 };
 
 typedef struct _USB_DEVICE_PROTOCOL USB_DEVICE_PROTOCOL;
 
-#endif //ifndef __EFIDROID_USB_DEVICE_PROTOCOL_H__
+#endif // ifndef __EFIDROID_USB_DEVICE_PROTOCOL_H__

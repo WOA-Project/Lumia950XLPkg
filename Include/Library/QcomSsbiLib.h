@@ -5,9 +5,7 @@
 
 RETURN_STATUS
 EFIAPI
-SsbiImplLibInitialize (
-  VOID
-  );
+SsbiImplLibInitialize(VOID);
 
 extern QCOM_SSBI_PROTOCOL *gSSBI;
 

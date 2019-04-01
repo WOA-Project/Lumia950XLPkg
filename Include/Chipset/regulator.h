@@ -31,36 +31,38 @@
 #define __REGULATOR_H
 
 #define GENERIC_DISABLE 0
-#define GENERIC_ENABLE  1
+#define GENERIC_ENABLE 1
 #define SW_MODE_LDO_IPEAK 1
-#define LDOA_RES_TYPE 0x616F646C //aodl
-#define SMPS_RES_TYPE 0x61706D73 //apms
+#define LDOA_RES_TYPE 0x616F646C // aodl
+#define SMPS_RES_TYPE 0x61706D73 // apms
 
-#define KEY_SOFTWARE_ENABLE                0x6E657773 // swen - software enable
-#define KEY_LDO_SOFTWARE_MODE              0X646D736C // lsmd - LDO software mode
-#define KEY_SMPS_SOFTWARE_MODE             0X646D7373 // ssmd - SMPS software mode
-#define KEY_PIN_CTRL_ENABLE                0x6E656370 //pcen - pin control enable
-#define KEY_PIN_CTRL_POWER_MODE            0x646d6370 // pcmd - pin control mode
-#define KEY_CURRENT                        0x616D //ma
-#define KEY_MICRO_VOLT                     0x7675 //uv
-#define KEY_FREQUENCY                      0x71657266 //freq
-#define KEY_FREQUENCY_REASON               0x6E736572 //resn
-#define KEY_FOLLOW_QUIET_MODE              0x6D71 //qm
-#define KEY_HEAD_ROOM                      0x7268 // hr
-#define KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY 0x62636370 // pccb - clk buffer pin control
-#define KEY_BYPASS_ALLOWED_KEY             0x61707962 //bypa - bypass allowed
-#define KEY_CORNER_LEVEL_KEY               0x6E726F63 // corn - coner voltage
-#define KEY_ACTIVE_FLOOR                   0x636676
+#define KEY_SOFTWARE_ENABLE 0x6E657773     // swen - software enable
+#define KEY_LDO_SOFTWARE_MODE 0X646D736C   // lsmd - LDO software mode
+#define KEY_SMPS_SOFTWARE_MODE 0X646D7373  // ssmd - SMPS software mode
+#define KEY_PIN_CTRL_ENABLE 0x6E656370     // pcen - pin control enable
+#define KEY_PIN_CTRL_POWER_MODE 0x646d6370 // pcmd - pin control mode
+#define KEY_CURRENT 0x616D                 // ma
+#define KEY_MICRO_VOLT 0x7675              // uv
+#define KEY_FREQUENCY 0x71657266           // freq
+#define KEY_FREQUENCY_REASON 0x6E736572    // resn
+#define KEY_FOLLOW_QUIET_MODE 0x6D71       // qm
+#define KEY_HEAD_ROOM 0x7268               // hr
+#define KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY                                     \
+  0x62636370                              // pccb - clk buffer pin control
+#define KEY_BYPASS_ALLOWED_KEY 0x61707962 // bypa - bypass allowed
+#define KEY_CORNER_LEVEL_KEY 0x6E726F63   // corn - coner voltage
+#define KEY_ACTIVE_FLOOR 0x636676
 #define GENERIC_DISABLE 0
-#define GENERIC_ENABLE  1
+#define GENERIC_ENABLE 1
 #define SW_MODE_LDO_IPEAK 1
-#define LDOA_RES_TYPE 0x616F646C //aodl
-#define SMPS_RES_TYPE 0x61706D73 //apms
+#define LDOA_RES_TYPE 0x616F646C // aodl
+#define SMPS_RES_TYPE 0x61706D73 // apms
 
 /* RPM clock helper macros */
-#define RPM_CLK_BUFFER_A_REQ                   0x616B6C63 //aklc
-#define RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY 0x62636370 //pccb - clk buffer pin control
-#define LNBB_CLK_ID                            0x8
+#define RPM_CLK_BUFFER_A_REQ 0x616B6C63 // aklc
+#define RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY                                 \
+  0x62636370 // pccb - clk buffer pin control
+#define LNBB_CLK_ID 0x8
 #define RPM_CLK_BUFFER_PIN_CONTROL_ENABLE_NONE 0x0
 
 void regulator_enable(void);

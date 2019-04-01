@@ -28,24 +28,17 @@
 #ifndef _USB30_WRAPPER_H
 #define _USB30_WRAPPER_H
 
-typedef enum
-{
-	DBM_MODE_BYPASS = 0,
-	DBM_MODE_ENABLED
-} dbm_mode_t;
-
+typedef enum { DBM_MODE_BYPASS = 0, DBM_MODE_ENABLED } dbm_mode_t;
 
 typedef struct {
-	void     *qscratch_base;
+  void *qscratch_base;
 
 } usb_wrapper_config_t;
 
-typedef struct
-{
-   void      *base;
+typedef struct {
+  void *base;
 
 } usb_wrapper_dev_t;
-
 
 usb_wrapper_dev_t *usb_wrapper_init(usb_wrapper_config_t *config);
 

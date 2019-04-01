@@ -4,35 +4,21 @@
 STATIC
 EFIAPI
 UINTN
-SmInternalCall
-(
-	UINTN CommandAddr
-);
+SmInternalCall(UINTN CommandAddr);
 
 STATIC
 EFIAPI
 EFI_STATUS
-SmInternalCallAtomic
-(
-	uint32_t Service,
-	uint32_t Command,
-	uint32_t Arg1
-);
+SmInternalCallAtomic(uint32_t Service, uint32_t Command, uint32_t Arg1);
 
 STATIC
 EFIAPI
 EFI_STATUS
-SmInternalCallCommand
-(
-	const struct scm_command *cmd
-);
+SmInternalCallCommand(const struct scm_command *cmd);
 
 STATIC
 EFIAPI
 EFI_STATUS
-SmRemapError
-(
-	int ScmError
-);
+SmRemapError(int ScmError);
 
 #endif

@@ -26,36 +26,37 @@
 
 #include <Library/UefiBootServicesTableLib.h>
 
-STATIC inline INTN AtomicAnd(volatile INTN *Address, INTN Value) {
-  EFI_TPL  OriginalTPL;
-  INTN     OldValue;
+STATIC inline INTN AtomicAnd(volatile INTN *Address, INTN Value)
+{
+  EFI_TPL OriginalTPL;
+  INTN    OldValue;
 
-  OriginalTPL = gBS->RaiseTPL (TPL_HIGH_LEVEL);
-  OldValue = *Address;
+  OriginalTPL = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+  OldValue    = *Address;
   *Address &= Value;
-  gBS->RestoreTPL (OriginalTPL);
+  gBS->RestoreTPL(OriginalTPL);
 
   return OldValue;
 }
 
-STATIC inline INTN AtomicOr(volatile INTN *Address, INTN Value) {
-  EFI_TPL  OriginalTPL;
-  INTN     OldValue;
+STATIC inline INTN AtomicOr(volatile INTN *Address, INTN Value)
+{
+  EFI_TPL OriginalTPL;
+  INTN    OldValue;
 
-  OriginalTPL = gBS->RaiseTPL (TPL_HIGH_LEVEL);
-  OldValue = *Address;
+  OriginalTPL = gBS->RaiseTPL(TPL_HIGH_LEVEL);
+  OldValue    = *Address;
   *Address |= Value;
-  gBS->RestoreTPL (OriginalTPL);
+  gBS->RestoreTPL(OriginalTPL);
 
   return OldValue;
 }
 
-STATIC inline INTN AtomicRead(volatile INTN *Address) {
-    return *Address;
-}
+STATIC inline INTN AtomicRead(volatile INTN *Address) { return *Address; }
 
-STATIC inline VOID AtomicSet(volatile INTN *Address, INTN Value) {
-    *Address = Value;
+STATIC inline VOID AtomicSet(volatile INTN *Address, INTN Value)
+{
+  *Address = Value;
 }
 
 #endif

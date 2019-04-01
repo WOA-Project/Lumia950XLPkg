@@ -25,13 +25,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <Base.h>
+
 #include <Library/StrLib.h>
 
-CHAR8 *
-strchr(CONST CHAR8 *s, INTN c)
+CHAR8 *strchr(CONST CHAR8 *s, INTN c)
 {
-    for (; *s != (CHAR8) c; ++s)
-        if (*s == '\0')
-            return NULL;
-    return (CHAR8 *) s;
+  for (; *s != (CHAR8)c; ++s)
+    if (*s == '\0')
+      return NULL;
+  return (CHAR8 *)s;
 }

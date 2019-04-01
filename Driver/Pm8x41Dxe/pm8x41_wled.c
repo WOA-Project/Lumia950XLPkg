@@ -27,133 +27,141 @@
  */
 
 #include <Library/LKEnvLib.h>
+
 #include <Device/pm8x41_wled.h>
 
 #include "pm8x41_p.h"
+// Must come in order
 #include "pm8x41_hw.h"
 
 static uint8_t wled_slave_id;
 
 void pm8x41_wled_reg_write(uint32_t addr, uint8_t val)
 {
-	uint32_t new_addr;
-	if (wled_slave_id) {
-		new_addr = addr + (wled_slave_id << 16);
-		REG_WRITE(new_addr, val);
-	} else {
-		new_addr = addr + (DEFAULT_SLAVE_ID << 16);
-		REG_WRITE(new_addr, val);
-	}
+  uint32_t new_addr;
+  if (wled_slave_id) {
+    new_addr = addr + (wled_slave_id << 16);
+    REG_WRITE(new_addr, val);
+  }
+  else {
+    new_addr = addr + (DEFAULT_SLAVE_ID << 16);
+    REG_WRITE(new_addr, val);
+  }
 }
 
 uint8_t pm8x41_wled_reg_read(uint32_t addr)
 {
-	uint32_t new_addr;
-	uint8_t val;
+  uint32_t new_addr;
+  uint8_t  val;
 
-	if (wled_slave_id) {
-		new_addr = addr + (wled_slave_id << 16);
-		val = REG_READ(new_addr);
-	} else {
-		new_addr = addr + (DEFAULT_SLAVE_ID << 16);
-		val = REG_READ(new_addr);
-	}
-	return val;
+  if (wled_slave_id) {
+    new_addr = addr + (wled_slave_id << 16);
+    val      = REG_READ(new_addr);
+  }
+  else {
+    new_addr = addr + (DEFAULT_SLAVE_ID << 16);
+    val      = REG_READ(new_addr);
+  }
+  return val;
 }
 
-void pm8x41_wled_config_slave_id(uint8_t slave_id)
+void pm8x41_wled_config_slave_id(uint8_t slave_id) { wled_slave_id = slave_id; }
+
+void pm8x41_wled_config(struct pm8x41_wled_data *wled_ctrl)
 {
-	wled_slave_id = slave_id;
+
+  if (!wled_ctrl) {
+    dprintf(CRITICAL, "Error: Invalid WLED data.\n");
+    return;
+  }
+
+  pm8x41_wled_reg_write(PM_WLED_MODULATION_SCHEME, wled_ctrl->mod_scheme);
+
+  pm8x41_wled_reg_write(
+      PM_WLED_LED1_BRIGHTNESS_LSB, (wled_ctrl->led1_brightness & 0xFF));
+  pm8x41_wled_reg_write(
+      PM_WLED_LED1_BRIGHTNESS_MSB, ((wled_ctrl->led1_brightness >> 8) & 0xFF));
+  pm8x41_wled_reg_write(
+      PM_WLED_LED2_BRIGHTNESS_LSB, (wled_ctrl->led2_brightness & 0xFF));
+  pm8x41_wled_reg_write(
+      PM_WLED_LED2_BRIGHTNESS_MSB, ((wled_ctrl->led2_brightness >> 8) & 0xFF));
+  pm8x41_wled_reg_write(
+      PM_WLED_LED3_BRIGHTNESS_LSB, (wled_ctrl->led3_brightness & 0xFF));
+  pm8x41_wled_reg_write(
+      PM_WLED_LED3_BRIGHTNESS_MSB, ((wled_ctrl->led3_brightness >> 8) & 0xFF));
+
+  pm8x41_wled_reg_write(PM_WLED_MAX_DUTY_CYCLE, wled_ctrl->max_duty_cycle);
+  pm8x41_wled_reg_write(PM_WLED_OVP, wled_ctrl->ovp);
+  pm8x41_wled_reg_write(
+      LEDn_FULL_SCALE_CURRENT(1), wled_ctrl->full_current_scale);
+  pm8x41_wled_reg_write(
+      LEDn_FULL_SCALE_CURRENT(2), wled_ctrl->full_current_scale);
+  pm8x41_wled_reg_write(
+      LEDn_FULL_SCALE_CURRENT(3), wled_ctrl->full_current_scale);
+
+  pm8x41_wled_reg_write(PM_WLED_FDBCK_CONTROL, wled_ctrl->fdbck);
+
+  // Override default values for ISENSE and PS Threshold
+  pm8x41_wled_reg_write(PM_LAB_CURRENT_SENSE, 0x0A);
+  pm8x41_wled_reg_write(PM_LAB_PS_CTL, 0x80);
+
+  dprintf(SPEW, "WLED Configuration Success.\n");
 }
 
-void pm8x41_wled_config(struct pm8x41_wled_data *wled_ctrl) {
+void pm8x41_wled_sink_control(uint8_t enable)
+{
 
-	if (!wled_ctrl) {
-		dprintf(CRITICAL, "Error: Invalid WLED data.\n");
-		return;
-	}
+  uint8_t value = 0x0;
 
-	pm8x41_wled_reg_write(PM_WLED_MODULATION_SCHEME, wled_ctrl->mod_scheme);
+  if (enable) {
+    value = PM_WLED_LED1_SINK_MASK | PM_WLED_LED2_SINK_MASK |
+            PM_WLED_LED3_SINK_MASK;
+  }
 
-	pm8x41_wled_reg_write(PM_WLED_LED1_BRIGHTNESS_LSB, (wled_ctrl->led1_brightness & 0xFF));
-	pm8x41_wled_reg_write(PM_WLED_LED1_BRIGHTNESS_MSB, ((wled_ctrl->led1_brightness >> 8) & 0xFF));
-	pm8x41_wled_reg_write(PM_WLED_LED2_BRIGHTNESS_LSB, (wled_ctrl->led2_brightness & 0xFF));
-	pm8x41_wled_reg_write(PM_WLED_LED2_BRIGHTNESS_MSB, ((wled_ctrl->led2_brightness >> 8) & 0xFF));
-	pm8x41_wled_reg_write(PM_WLED_LED3_BRIGHTNESS_LSB, (wled_ctrl->led3_brightness & 0xFF));
-	pm8x41_wled_reg_write(PM_WLED_LED3_BRIGHTNESS_MSB, ((wled_ctrl->led3_brightness >> 8) & 0xFF));
+  pm8x41_wled_reg_write(PM_WLED_CURRENT_SINK, value);
 
-	pm8x41_wled_reg_write(PM_WLED_MAX_DUTY_CYCLE, wled_ctrl->max_duty_cycle);
-	pm8x41_wled_reg_write(PM_WLED_OVP, wled_ctrl->ovp);
-	pm8x41_wled_reg_write(LEDn_FULL_SCALE_CURRENT(1), wled_ctrl->full_current_scale);
-	pm8x41_wled_reg_write(LEDn_FULL_SCALE_CURRENT(2), wled_ctrl->full_current_scale);
-	pm8x41_wled_reg_write(LEDn_FULL_SCALE_CURRENT(3), wled_ctrl->full_current_scale);
-
-	pm8x41_wled_reg_write(PM_WLED_FDBCK_CONTROL, wled_ctrl->fdbck);
-
-	// Override default values for ISENSE and PS Threshold
-	pm8x41_wled_reg_write(PM_LAB_CURRENT_SENSE, 0x0A);
-	pm8x41_wled_reg_write(PM_LAB_PS_CTL, 0x80);
-
-	dprintf(SPEW, "WLED Configuration Success.\n");
-
+  dprintf(SPEW, "WLED Sink Success\n");
 }
 
-void pm8x41_wled_sink_control(uint8_t enable) {
+void pm8x41_wled_iled_sync_control(uint8_t enable)
+{
 
-	uint8_t value = 0x0;
+  uint8_t value = 0x0;
 
-	if (enable) {
-		value = PM_WLED_LED1_SINK_MASK |
-			PM_WLED_LED2_SINK_MASK |
-			PM_WLED_LED3_SINK_MASK;
-	}
+  if (enable) {
+    value = PM_WLED_LED1_ILED_SYNC_MASK | PM_WLED_LED2_ILED_SYNC_MASK |
+            PM_WLED_LED3_ILED_SYNC_MASK;
+  }
 
-	pm8x41_wled_reg_write(PM_WLED_CURRENT_SINK, value);
+  pm8x41_wled_reg_write(PM_WLED_ILED_SYNC_BIT, value);
 
-	dprintf(SPEW, "WLED Sink Success\n");
-
+  dprintf(SPEW, "WLED ILED Sync Success\n");
 }
 
-void pm8x41_wled_iled_sync_control(uint8_t enable) {
+void pm8x41_wled_led_mod_enable(uint8_t enable)
+{
 
-	uint8_t value = 0x0;
+  uint8_t value = 0x0;
 
-	if (enable) {
-		value = PM_WLED_LED1_ILED_SYNC_MASK |
-			PM_WLED_LED2_ILED_SYNC_MASK |
-			PM_WLED_LED3_ILED_SYNC_MASK;
-	}
+  if (enable)
+    value = PM_WLED_LED_MODULATOR_EN;
 
-	pm8x41_wled_reg_write(PM_WLED_ILED_SYNC_BIT, value);
+  pm8x41_wled_reg_write(PM_WLED_LED_CTNL_REG(1), value);
+  pm8x41_wled_reg_write(PM_WLED_LED_CTNL_REG(2), value);
+  pm8x41_wled_reg_write(PM_WLED_LED_CTNL_REG(3), value);
 
-	dprintf(SPEW, "WLED ILED Sync Success\n");
-
+  dprintf(SPEW, "WLED LED Module Enable Success\n");
 }
 
-void pm8x41_wled_led_mod_enable(uint8_t enable) {
+void pm8x41_wled_enable(uint8_t enable)
+{
 
-	uint8_t value = 0x0;
+  uint8_t value = 0x0;
 
-	if (enable)
-		value = PM_WLED_LED_MODULATOR_EN;
+  if (enable)
+    value = PM_WLED_ENABLE_MODULE_MASK;
 
-	pm8x41_wled_reg_write(PM_WLED_LED_CTNL_REG(1), value);
-	pm8x41_wled_reg_write(PM_WLED_LED_CTNL_REG(2), value);
-	pm8x41_wled_reg_write(PM_WLED_LED_CTNL_REG(3), value);
+  pm8x41_wled_reg_write(PM_WLED_ENABLE, value);
 
-	dprintf(SPEW, "WLED LED Module Enable Success\n");
-
-}
-
-void pm8x41_wled_enable(uint8_t enable) {
-
-	uint8_t value = 0x0;
-
-	if (enable)
-		value = PM_WLED_ENABLE_MODULE_MASK;
-
-	pm8x41_wled_reg_write(PM_WLED_ENABLE, value);
-
-	dprintf(SPEW, "WLED Enable Success\n");
-
+  dprintf(SPEW, "WLED Enable Success\n");
 }

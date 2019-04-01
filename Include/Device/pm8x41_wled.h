@@ -29,51 +29,51 @@
 #ifndef _PM8X41_WLED_H_
 #define _PM8X41_WLED_H_
 
-#define PM_WLED_BASE                 0x0D800
-#define PM_WLED_CTNL_REG(n)          (PM_WLED_BASE + n)
-#define PM_WLED_LED_CTNL_REG(n)      (PM_WLED_BASE + 0x60 + (n-1)*0x10)
+#define PM_WLED_BASE 0x0D800
+#define PM_WLED_CTNL_REG(n) (PM_WLED_BASE + n)
+#define PM_WLED_LED_CTNL_REG(n) (PM_WLED_BASE + 0x60 + (n - 1) * 0x10)
 
-#define PM_WLED_LED1_BRIGHTNESS_LSB  PM_WLED_CTNL_REG(0x40)
-#define PM_WLED_LED1_BRIGHTNESS_MSB  PM_WLED_CTNL_REG(0x41)
-#define PM_WLED_LED2_BRIGHTNESS_LSB  PM_WLED_CTNL_REG(0x42)
-#define PM_WLED_LED2_BRIGHTNESS_MSB  PM_WLED_CTNL_REG(0x43)
-#define PM_WLED_LED3_BRIGHTNESS_LSB  PM_WLED_CTNL_REG(0x44)
-#define PM_WLED_LED3_BRIGHTNESS_MSB  PM_WLED_CTNL_REG(0x45)
-#define PM_WLED_ENABLE               PM_WLED_CTNL_REG(0x46)
-#define PM_WLED_ILED_SYNC_BIT        PM_WLED_CTNL_REG(0x47)
-#define PM_WLED_FDBCK_CONTROL        PM_WLED_CTNL_REG(0x48)
-#define PM_WLED_MODULATION_SCHEME    PM_WLED_CTNL_REG(0x4A)
-#define PM_WLED_MAX_DUTY_CYCLE       PM_WLED_CTNL_REG(0x4B)
-#define PM_WLED_OVP                  PM_WLED_CTNL_REG(0x4D)
-#define PM_WLED_CURRENT_SINK         PM_WLED_CTNL_REG(0x4F)
-#define LEDn_FULL_SCALE_CURRENT(n)   (PM_WLED_LED_CTNL_REG(n) + 0x2)
+#define PM_WLED_LED1_BRIGHTNESS_LSB PM_WLED_CTNL_REG(0x40)
+#define PM_WLED_LED1_BRIGHTNESS_MSB PM_WLED_CTNL_REG(0x41)
+#define PM_WLED_LED2_BRIGHTNESS_LSB PM_WLED_CTNL_REG(0x42)
+#define PM_WLED_LED2_BRIGHTNESS_MSB PM_WLED_CTNL_REG(0x43)
+#define PM_WLED_LED3_BRIGHTNESS_LSB PM_WLED_CTNL_REG(0x44)
+#define PM_WLED_LED3_BRIGHTNESS_MSB PM_WLED_CTNL_REG(0x45)
+#define PM_WLED_ENABLE PM_WLED_CTNL_REG(0x46)
+#define PM_WLED_ILED_SYNC_BIT PM_WLED_CTNL_REG(0x47)
+#define PM_WLED_FDBCK_CONTROL PM_WLED_CTNL_REG(0x48)
+#define PM_WLED_MODULATION_SCHEME PM_WLED_CTNL_REG(0x4A)
+#define PM_WLED_MAX_DUTY_CYCLE PM_WLED_CTNL_REG(0x4B)
+#define PM_WLED_OVP PM_WLED_CTNL_REG(0x4D)
+#define PM_WLED_CURRENT_SINK PM_WLED_CTNL_REG(0x4F)
+#define LEDn_FULL_SCALE_CURRENT(n) (PM_WLED_LED_CTNL_REG(n) + 0x2)
 
-#define PM_LAB_BASE                  0X1DE00
-#define PM_LAB_CNTL(n)               (PM_LAB_BASE + n)
-#define PM_LAB_CURRENT_SENSE         PM_LAB_CNTL(0X4C)
-#define PM_LAB_PS_CTL                PM_LAB_CNTL(0X50)
+#define PM_LAB_BASE 0X1DE00
+#define PM_LAB_CNTL(n) (PM_LAB_BASE + n)
+#define PM_LAB_CURRENT_SENSE PM_LAB_CNTL(0X4C)
+#define PM_LAB_PS_CTL PM_LAB_CNTL(0X50)
 
-#define PM_WLED_LED1_SINK_MASK       BIT(5)
-#define PM_WLED_LED2_SINK_MASK       BIT(6)
-#define PM_WLED_LED3_SINK_MASK       BIT(7)
+#define PM_WLED_LED1_SINK_MASK BIT(5)
+#define PM_WLED_LED2_SINK_MASK BIT(6)
+#define PM_WLED_LED3_SINK_MASK BIT(7)
 
-#define PM_WLED_LED_MODULATOR_EN     BIT(7)
-#define PM_WLED_LED1_ILED_SYNC_MASK  BIT(0)
-#define PM_WLED_LED2_ILED_SYNC_MASK  BIT(1)
-#define PM_WLED_LED3_ILED_SYNC_MASK  BIT(2)
+#define PM_WLED_LED_MODULATOR_EN BIT(7)
+#define PM_WLED_LED1_ILED_SYNC_MASK BIT(0)
+#define PM_WLED_LED2_ILED_SYNC_MASK BIT(1)
+#define PM_WLED_LED3_ILED_SYNC_MASK BIT(2)
 
-#define PM_WLED_ENABLE_MODULE_MASK   BIT(7)
-#define DEFAULT_SLAVE_ID             0x1
+#define PM_WLED_ENABLE_MODULE_MASK BIT(7)
+#define DEFAULT_SLAVE_ID 0x1
 
 struct pm8x41_wled_data {
-	uint8_t mod_scheme;
-	uint16_t led1_brightness;
-	uint16_t led2_brightness;
-	uint16_t led3_brightness;
-	uint8_t max_duty_cycle;
-	uint8_t ovp;
-	uint8_t full_current_scale;
-	uint8_t fdbck;
+  uint8_t  mod_scheme;
+  uint16_t led1_brightness;
+  uint16_t led2_brightness;
+  uint16_t led3_brightness;
+  uint8_t  max_duty_cycle;
+  uint8_t  ovp;
+  uint8_t  full_current_scale;
+  uint8_t  fdbck;
 };
 
 #endif

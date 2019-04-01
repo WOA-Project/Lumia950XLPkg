@@ -28,31 +28,27 @@
 /* routines for dealing with power of 2 values for efficiency */
 STATIC inline __ALWAYS_INLINE BOOLEAN ispow2(UINTN val)
 {
-	return ((val - 1) & val) == 0;
+  return ((val - 1) & val) == 0;
 }
 
 STATIC inline __ALWAYS_INLINE UINTN log2(UINTN val)
 {
-	if (!ispow2(val))
-		return 0; // undefined
+  if (!ispow2(val))
+    return 0; // undefined
 
-	return __builtin_ctz(val);
+  return __builtin_ctz(val);
 }
 
-STATIC inline __ALWAYS_INLINE UINTN valpow2(UINTN valp2)
-{
-	return 1 << valp2;
-}
+STATIC inline __ALWAYS_INLINE UINTN valpow2(UINTN valp2) { return 1 << valp2; }
 
 STATIC inline __ALWAYS_INLINE UINTN divpow2(UINTN val, UINTN divp2)
 {
-	return val >> divp2;
+  return val >> divp2;
 }
 
 STATIC inline __ALWAYS_INLINE UINTN modpow2(UINTN val, UINTN modp2)
 {
-	return val & ((1UL << modp2) - 1);
+  return val & ((1UL << modp2) - 1);
 }
-
 
 #endif

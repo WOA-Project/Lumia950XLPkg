@@ -30,10 +30,10 @@
 #ifndef __RPM_SMD_H
 #define __RPM_SMD_H
 
-int rpm_smd_send_data(uint32_t *data, uint32_t len, msg_type type);
+int      rpm_smd_send_data(uint32_t *data, uint32_t len, msg_type type);
 uint32_t rpm_smd_recv_data(uint32_t *len);
-void rpm_smd_init(void);
-void rpm_smd_uninit(void);
-void rpm_smd_uninit_exit_bs(void);
+void     rpm_smd_init(void);
+void     rpm_smd_uninit(void);
+void     rpm_smd_uninit_exit_bs(void);
 
 #endif

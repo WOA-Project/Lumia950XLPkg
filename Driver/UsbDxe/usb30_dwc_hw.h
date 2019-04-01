@@ -33,22 +33,21 @@ void dwc_ep_cmd_end_transfer(dwc_dev_t *dev, uint8_t ep_phy_num);
 void dwc_ep_cmd_set_config(dwc_dev_t *dev, uint8_t index, uint8_t action);
 void dwc_ep_cmd_set_transfer_resource(dwc_dev_t *dev, uint8_t index);
 void dwc_ep_cmd_stall(dwc_dev_t *dev, uint8_t ep_phy_num);
-void dwc_ep_cmd_start_new_config(dwc_dev_t *dev,
-								 uint8_t ep_phy_num,
-								 uint8_t resource_idx);
+void dwc_ep_cmd_start_new_config(
+    dwc_dev_t *dev, uint8_t ep_phy_num, uint8_t resource_idx);
 
 void dwc_ep_enable(dwc_dev_t *dev, uint8_t ep_phy_num);
 void dwc_ep_disable(dwc_dev_t *dev, uint8_t ep_phy_num);
 void dwc_ep_disable_non_control(dwc_dev_t *dev);
 
-void dwc_event_init(dwc_dev_t *dev);
+void     dwc_event_init(dwc_dev_t *dev);
 uint16_t dwc_event_get_next(dwc_dev_t *dev, uint32_t *event);
-void dwc_event_processed(dwc_dev_t *dev, uint16_t count);
-void dwc_event_device_enable(dwc_dev_t *dev, uint32_t events);
+void     dwc_event_processed(dwc_dev_t *dev, uint16_t count);
+void     dwc_event_device_enable(dwc_dev_t *dev, uint32_t events);
 
 uint32_t dwc_coreid(dwc_dev_t *dev);
-uint8_t dwc_connectspeed(dwc_dev_t *dev);
-uint8_t dwc_device_run_status(dwc_dev_t *dev);
-void dwc_gctl_init(dwc_dev_t *dev);
-void dwc_axi_master_config(dwc_dev_t *dev);
+uint8_t  dwc_connectspeed(dwc_dev_t *dev);
+uint8_t  dwc_device_run_status(dwc_dev_t *dev);
+void     dwc_gctl_init(dwc_dev_t *dev);
+void     dwc_axi_master_config(dwc_dev_t *dev);
 #endif

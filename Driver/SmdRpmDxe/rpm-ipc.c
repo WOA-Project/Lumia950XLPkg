@@ -28,36 +28,37 @@
  */
 
 #include <Library/LKEnvLib.h>
+
 #include <Library/MallocLib.h>
 #include <Protocol/QcomRpm.h>
 
 #include "rpm-ipc.h"
+// Must come in order
 #include "rpm-smd.h"
 
 void fill_kvp_object(kvp_data **kdata, uint32_t *data, uint32_t len)
 {
-	*kdata = (kvp_data *) memalign(CACHE_LINE, ROUNDUP(len, CACHE_LINE));
-	ASSERT(*kdata);
+  *kdata = (kvp_data *)memalign(CACHE_LINE, ROUNDUP(len, CACHE_LINE));
+  ASSERT(*kdata);
 
-	memcpy(*kdata, data+2, len);
+  memcpy(*kdata, data + 2, len);
 }
 
 void free_kvp_object(kvp_data **kdata)
 {
-	if(*kdata)
-		free(*kdata);
+  if (*kdata)
+    free(*kdata);
 }
 
 int rpm_send_data(uint32_t *data, uint32_t len, msg_type type)
 {
-	return rpm_smd_send_data(data, len, type);
+  return rpm_smd_send_data(data, len, type);
 }
 
 void rpm_clk_enable(uint32_t *data, uint32_t len)
 {
-	if(rpm_send_data(data, len, RPM_REQUEST_TYPE))
-	{
-		dprintf(CRITICAL, "Clock enable failure\n");
-		ASSERT(0);
-	}
+  if (rpm_send_data(data, len, RPM_REQUEST_TYPE)) {
+    dprintf(CRITICAL, "Clock enable failure\n");
+    ASSERT(0);
+  }
 }

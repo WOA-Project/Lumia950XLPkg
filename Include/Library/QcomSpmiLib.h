@@ -5,9 +5,7 @@
 
 RETURN_STATUS
 EFIAPI
-SpmiImplLibInitialize (
-  VOID
-  );
+SpmiImplLibInitialize(VOID);
 
 extern QCOM_SPMI_PROTOCOL *gSpmi;
 

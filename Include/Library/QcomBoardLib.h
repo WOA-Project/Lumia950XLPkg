@@ -5,9 +5,7 @@
 
 RETURN_STATUS
 EFIAPI
-BoardImplLibInitialize (
-  VOID
-  );
+BoardImplLibInitialize(VOID);
 
 extern QCOM_BOARD_PROTOCOL *gBoard;
 

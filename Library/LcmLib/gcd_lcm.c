@@ -24,7 +24,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
 STATIC VOID swap(UINTN *x, UINTN *y)
 {
@@ -43,8 +43,7 @@ UINTN gcd(UINTN m, UINTN n)
   if (m < n)
     swap(&m, &n);
 
-  while (n != 0)
-  {
+  while (n != 0) {
     x = m % n;
     m = n;
     n = x;

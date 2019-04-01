@@ -29,31 +29,31 @@
 #define __GSBI_H_
 
 /* GSBI Registers */
-#define GSBI_CTRL_REG(base)        ((base) + 0x0)
+#define GSBI_CTRL_REG(base) ((base) + 0x0)
 
-#define GSBI_CTRL_REG_PROTOCOL_CODE_S   4
-#define GSBI_PROTOCOL_CODE_I2C          0x2
-#define GSBI_PROTOCOL_CODE_SPI          0x3
-#define GSBI_PROTOCOL_CODE_UART_FLOW    0x4
-#define GSBI_PROTOCOL_CODE_I2C_UART     0x6
+#define GSBI_CTRL_REG_PROTOCOL_CODE_S 4
+#define GSBI_PROTOCOL_CODE_I2C 0x2
+#define GSBI_PROTOCOL_CODE_SPI 0x3
+#define GSBI_PROTOCOL_CODE_UART_FLOW 0x4
+#define GSBI_PROTOCOL_CODE_I2C_UART 0x6
 
-#define GSBI_HCLK_CTL_S                 4
-#define GSBI_HCLK_CTL_CLK_ENA           0x1
+#define GSBI_HCLK_CTL_S 4
+#define GSBI_HCLK_CTL_CLK_ENA 0x1
 
 enum {
-	GSBI_ID_1 = 1,
-	GSBI_ID_2,
-	GSBI_ID_3,
-	GSBI_ID_4,
-	GSBI_ID_5,
-	GSBI_ID_6,
-	GSBI_ID_7,
-	GSBI_ID_8,
-	GSBI_ID_9,
-	GSBI_ID_10,
-	GSBI_ID_11,
-	GSBI_ID_12,
-	GSBI_ID_MAX,
+  GSBI_ID_1 = 1,
+  GSBI_ID_2,
+  GSBI_ID_3,
+  GSBI_ID_4,
+  GSBI_ID_5,
+  GSBI_ID_6,
+  GSBI_ID_7,
+  GSBI_ID_8,
+  GSBI_ID_9,
+  GSBI_ID_10,
+  GSBI_ID_11,
+  GSBI_ID_12,
+  GSBI_ID_MAX,
 };
 
 #endif

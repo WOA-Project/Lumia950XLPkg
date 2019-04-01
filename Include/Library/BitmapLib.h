@@ -26,12 +26,15 @@
 #include <Library/AtomicLib.h>
 
 #define BIT_SHIFT(x, bit) (((x) >> (bit)) & 1)
-#define BITS(x, high, low) ((x) & (((1<<((high)+1))-1) & ~((1<<(low))-1)))
-#define BITS_SHIFT(x, high, low) (((x) >> (low)) & ((1<<((high)-(low)+1))-1))
+#define BITS(x, high, low)                                                     \
+  ((x) & (((1 << ((high) + 1)) - 1) & ~((1 << (low)) - 1)))
+#define BITS_SHIFT(x, high, low)                                               \
+  (((x) >> (low)) & ((1 << ((high) - (low) + 1)) - 1))
 #define BIT_SET(x, bit) (((x) & (1UL << (bit))) ? 1 : 0)
 
 #define BITMAP_BITS_PER_WORD (sizeof(UINTN) * 8)
-#define BITMAP_NUM_WORDS(x) (((x) + BITMAP_BITS_PER_WORD - 1) / BITMAP_BITS_PER_WORD)
+#define BITMAP_NUM_WORDS(x)                                                    \
+  (((x) + BITMAP_BITS_PER_WORD - 1) / BITMAP_BITS_PER_WORD)
 #define BITMAP_WORD(x) ((x) / BITMAP_BITS_PER_WORD)
 #define BITMAP_BIT_IN_WORD(x) ((x) & (BITMAP_BITS_PER_WORD - 1))
 
@@ -39,24 +42,25 @@
 #define BITMAP_BIT_IN_INT(x) ((x) & (BITMAP_BITS_PER_INT - 1))
 #define BITMAP_INT(x) ((x) / BITMAP_BITS_PER_INT)
 
-#define BIT_MASK(x) (((x) >= sizeof(UINTN) * 8) ? (0UL-1) : ((1UL << (x)) - 1))
+#define BIT_MASK(x)                                                            \
+  (((x) >= sizeof(UINTN) * 8) ? (0UL - 1) : ((1UL << (x)) - 1))
 
 STATIC inline INTN BitmapSet(UINTN *bitmap, INTN bit)
 {
-    UINTN mask = 1UL << BITMAP_BIT_IN_INT(bit);
-    return AtomicOr(&((INTN *)bitmap)[BITMAP_INT(bit)], mask) & mask ? 1 : 0;
+  UINTN mask = 1UL << BITMAP_BIT_IN_INT(bit);
+  return AtomicOr(&((INTN *)bitmap)[BITMAP_INT(bit)], mask) & mask ? 1 : 0;
 }
 
 STATIC inline INTN BitmapClear(UINTN *bitmap, INTN bit)
 {
-    UINTN mask = 1UL << BITMAP_BIT_IN_INT(bit);
+  UINTN mask = 1UL << BITMAP_BIT_IN_INT(bit);
 
-    return AtomicAnd(&((INTN *)bitmap)[BITMAP_INT(bit)], ~mask) & mask ? 1:0;
+  return AtomicAnd(&((INTN *)bitmap)[BITMAP_INT(bit)], ~mask) & mask ? 1 : 0;
 }
 
 STATIC inline INTN BitmapTest(UINTN *bitmap, INTN bit)
 {
-    return BIT_SET(bitmap[BITMAP_WORD(bit)], BITMAP_BIT_IN_WORD(bit));
+  return BIT_SET(bitmap[BITMAP_WORD(bit)], BITMAP_BIT_IN_WORD(bit));
 }
 
 #endif

@@ -36,53 +36,47 @@
 #define CMD_MSG_LENGTH 0x08
 #define ACK_MSG_LENGTH 0x0C
 
-enum
-{
-	RESOURCETYPE,
-	RESOURCEID,
-	KVP_KEY,
-	KVP_LENGTH,
-	KVP_VALUE,
+enum {
+  RESOURCETYPE,
+  RESOURCEID,
+  KVP_KEY,
+  KVP_LENGTH,
+  KVP_VALUE,
 };
 
-typedef struct
-{
-	uint32_t type;
-	uint32_t len;
+typedef struct {
+  uint32_t type;
+  uint32_t len;
 } rpm_gen_hdr;
 
-typedef struct
-{
-	uint32_t key;
-	uint32_t len;
-	uint32_t val;
+typedef struct {
+  uint32_t key;
+  uint32_t len;
+  uint32_t val;
 } kvp_data;
 
-typedef struct
-{
-	uint32_t id;
-	uint32_t set;
-	uint32_t resourceType;
-	uint32_t resourceId;
-	uint32_t dataLength;
-}rpm_req_hdr;
+typedef struct {
+  uint32_t id;
+  uint32_t set;
+  uint32_t resourceType;
+  uint32_t resourceId;
+  uint32_t dataLength;
+} rpm_req_hdr;
 
-typedef struct
-{
-	rpm_gen_hdr hdr;
-	rpm_req_hdr req_hdr;
-	kvp_data *data;
+typedef struct {
+  rpm_gen_hdr hdr;
+  rpm_req_hdr req_hdr;
+  kvp_data *  data;
 } rpm_req;
 
-typedef struct
-{
-	rpm_gen_hdr hdr;
-	kvp_data *data;
+typedef struct {
+  rpm_gen_hdr hdr;
+  kvp_data *  data;
 } rpm_cmd;
 
 typedef rpm_cmd rpm_ack_msg;
-int rpm_send_data(uint32_t *data, uint32_t len, msg_type type);
-void rpm_clk_enable(uint32_t *data, uint32_t len);
+int             rpm_send_data(uint32_t *data, uint32_t len, msg_type type);
+void            rpm_clk_enable(uint32_t *data, uint32_t len);
 
 void fill_kvp_object(kvp_data **kdata, uint32_t *data, uint32_t len);
 void free_kvp_object(kvp_data **kdata);

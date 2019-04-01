@@ -30,9 +30,9 @@
 #ifndef _PLATFORM_MSM_SHARED_MDSS_HDMI_H_
 #define _PLATFORM_MSM_SHARED_MDSS_HDMI_H_
 
-void hdmi_phy_reset(void);
+void     hdmi_phy_reset(void);
 uint32_t hdmi_pll_config(uint32_t tmds_clk_rate);
-int hdmi_vco_enable(void);
-int hdmi_vco_disable(void);
-void mdss_hdmi_display_init(uint32_t rev, void *base);
+int      hdmi_vco_enable(void);
+int      hdmi_vco_disable(void);
+void     mdss_hdmi_display_init(uint32_t rev, void *base);
 #endif
