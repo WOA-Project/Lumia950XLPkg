@@ -302,7 +302,7 @@ SMBIOS_TABLE_TYPE4 mProcessorInfoType4 = {
     FixedPcdGet32(PcdCoreCount), // CoreCount;
     FixedPcdGet32(PcdCoreCount), // EnabledCoreCount;
     FixedPcdGet32(PcdCoreCount), // ThreadCount;
-    0x8,                         // ProcessorCharacteristics;
+    0xAC,                        // ProcessorCharacteristics;
     ProcessorFamilyARM,          // ARM Processor Family;
 };
 
