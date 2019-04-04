@@ -18,7 +18,7 @@ steps:
   displayName: 'Update APT sources'
 
 # Travis have this by default, because we preinstalled build-essentials
-- script: sudo apt install uuid-dev
+- script: sudo apt install uuid-dev iasl
   displayName: 'Install VSTS dependencies'
 
 # Fix-up directory link for VSTS, force replace current reference

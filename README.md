@@ -10,7 +10,7 @@ You can download the latest UEFI build by clicking the Azure Pipelines icon belo
 
 This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, Lumia 950 XL and Hapanero. Currently, it is able to boot Windows 10 ARM64, as well as Linux. See notes below for more details.
 
-**Please be aware that MSM8992 is likely less supported due to lack of testing device.**
+**Please be aware that MSM8992 have reduced support status due to the lack of testing device.**
 
 ## Support Status
 Applicable to all supported targets unless noted.
@@ -34,6 +34,7 @@ If you are familiar with EDK2, you don't need to use my build script.
 
 - Checkout a copy of [EDK2](https://github.com/tianocore/edk2). Switch to `UDK2018` branch. Commit `49fa59e82e4c6ea798f65fc4e5948eae63ad6e07` absolutely works for you.
 - Checkout this repository under EDK2's worktree.
+- Install ACPI tools from your package manager or ACPICA website.
 - Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
 script uses `gcc-linaro-7.2.1-2017.11`. Then untar them. I place everything under `/opt` directory, so I have 
 directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts.

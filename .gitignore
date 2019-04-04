@@ -8,9 +8,6 @@ Include/Resources/ReleaseInfo.h
 .vs
 .vscode
 
-# ACPI: Until we are able to compile it on the fly
-*.dsl
-
 # Variable Services: Defer
 Driver/BlockRamVariableDxe
 Driver/FaultTolerantWriteDxe
@@ -22,3 +19,8 @@ Driver/UsbTypeCDxe
 
 # RTC: Defer
 Library/QcomPmicRealTimeClockLib
+
+# SSDT
+AcpiTables/8992/generated
+AcpiTables/8994/generated
+AcpiTables/Hapanero/generated

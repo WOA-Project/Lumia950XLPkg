@@ -4,6 +4,18 @@
 # This script module provides shared utilities.
 #
 
+function Get-AcpiToolsPath
+{
+    $iaslPath = which "iasl"
+    if ($null -eq $iaslPath) 
+    {
+        Write-Error -Message "ACPI tools are not present on this system."
+        return $null
+    }
+
+    return $iaslPath
+}
+
 function Get-GnuAarch64CrossCollectionPath 
 {
     param(
@@ -20,7 +32,7 @@ function Get-GnuAarch64CrossCollectionPath
     foreach ($gccCommand in $possibleGccCommands)
     {
         $path = which $gccCommand
-        if ($null -ne $path)
+        if ($null -ne $path) 
         {
             # Trim "gcc"
             $ccprefix = $path.Substring(0, $path.LastIndexOf("gcc"))
@@ -29,14 +41,14 @@ function Get-GnuAarch64CrossCollectionPath
         }
     }
 
-    if (($null -eq $ccprefix) -and $AllowFallback)
+    if (($null -eq $ccprefix) -and $AllowFallback) 
     {
-        $ccprefix="/usr/bin/aarch64-linux-gnu-"
+        $ccprefix = "/usr/bin/aarch64-linux-gnu-"
         Write-Warning -Message "GCC not found, fallback to /usr/bin/aarch64-linux-gnu- prefix."
     }
 
     # Now it's not the fallback case
-    if ($null -eq $ccprefix)
+    if ($null -eq $ccprefix) 
     {
         Write-Error -Message "GCC not found. Either Linaro or distro-GCC is needed for build."
     }
@@ -50,7 +62,7 @@ function Test-GnuAarch64CrossCollectionVersionRequirements
     $prefix = Get-GnuAarch64CrossCollectionPath -AllowFallback
     $cc = "$($prefix)gcc"
     $versionOutput = . $cc --version
-    if (($null -eq $versionOutput) -or ($versionOutput.Length -lt 1))
+    if (($null -eq $versionOutput) -or ($versionOutput.Length -lt 1)) 
     {
         Write-Error -Message "GCC AArch64 toolchain is malfunctioned"
         return $false
@@ -58,7 +70,7 @@ function Test-GnuAarch64CrossCollectionVersionRequirements
 
     # Match line one using RegEx
     $match = [regex]::Match($versionOutput[0], '[0-9]+\.[0-9]+\.[0-9]+')
-    if ($match.Success -eq $true)
+    if ($match.Success -eq $true) 
     {
         # Load version .NET assembly.
         $gccVersion = [System.Version]::Parse($match.Value)
@@ -73,3 +85,4 @@ function Test-GnuAarch64CrossCollectionVersionRequirements
 # Exports
 Export-ModuleMember -Function Get-GnuAarch64CrossCollectionPath
 Export-ModuleMember -Function Test-GnuAarch64CrossCollectionVersionRequirements
+Export-ModuleMember -Function Get-AcpiToolsPath

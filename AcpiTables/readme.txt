@@ -1,6 +1,10 @@
 The AML files included here are compiled from the ASL sources.
 They need to be regenerated manually every time the ASLs change.
 
+One exception is SSDT table. The generation procedure will be 
+invoked with UEFI builds. Make sure you have iASL in the build 
+environment.
+
 All tables except the DSDTs are known to compile properly with
 iasl version 20190108, by simply calling "iasl <name of table>.asl"
 
