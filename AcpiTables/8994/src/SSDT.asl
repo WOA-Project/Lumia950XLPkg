@@ -5,7 +5,7 @@
  * 
  * Disassembling to symbolic ASL+ operators
  *
- * Disassembly of ../../Documents/GitHub/Lumia950XLPkg/AcpiTables/8994/SSDT.aml, Fri Jan 18 19:32:58 2019
+ * Disassembly of SSDT.aml, Fri Jan 18 19:32:58 2019
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -18,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20180209 (538444297)
  */
-DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000004)
+DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
 {
     External (_SB_.ABD_.AVBL, IntObj)
     External (_SB_.GIO0, DeviceObj)
@@ -646,6 +646,29 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000004)
         }
 
         Device (CPSW)
+        {
+            Name (_HID, "MSHW1009")  // _HID: Hardware ID
+            Name (_UID, Zero)  // _UID: Unique ID
+            Name (_DEP, Package (0x02)  // _DEP: Dependencies
+            {
+                \_SB.PEP0,
+                \_SB.PM02
+            })
+        }
+		
+        Device (LICE)
+        {
+            Name (_HID, "MSHW1006")  // _HID: Hardware ID
+            Name (_UID, Zero)  // _UID: Unique ID
+            Name (_DEP, Package (0x03)  // _DEP: Dependencies
+            {
+                \_SB.PEP0, 
+                \_SB.SP10, 
+                \_SB.GIO0
+            })
+        }
+
+        Device (USBC)
         {
             Name (_HID, "LUMI0001")  // _HID: Hardware ID
             Name (_UID, One)  // _UID: Unique ID

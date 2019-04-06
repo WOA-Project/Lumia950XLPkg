@@ -1,24 +1,24 @@
 /*
  * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20190108 (32-bit version)
+ * AML/ASL+ Disassembler version 20190405 (32-bit version)
  * Copyright (c) 2000 - 2019 Intel Corporation
  * 
  * Disassembling to symbolic ASL+ operators
  *
- * Disassembly of ../../Documents/GitHub/Lumia950XLPkg/AcpiTables/8992/SSDT.aml, Fri Jan 18 19:19:49 2019
+ * Disassembly of SSDT.aml, Sat Apr 06 11:18:52 2019
  *
  * Original Table Header:
  *     Signature        "SSDT"
  *     Length           0x000013D3 (5075)
  *     Revision         0x02
- *     Checksum         0x1B
+ *     Checksum         0x0C
  *     OEM ID           "MMO   "
- *     OEM Table ID     "MSM8994 "
+ *     OEM Table ID     "MSM8992 "
  *     OEM Revision     0x00000003 (3)
  *     Compiler ID      "INTL"
- *     Compiler Version 0x20180209 (538444297)
+ *     Compiler Version 0x20190215 (538509845)
  */
-DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
+DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8992 ", 0x00000003)
 {
     External (_SB_.ABD_.AVBL, IntObj)
     External (_SB_.GIO0, DeviceObj)
@@ -425,7 +425,7 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
                         Debug = "Method NFC _DSM EEPROM Config"
                         Return (Buffer (0x03CA)
                         {
-                            /* 0000 */  0x43, 0x69, 0x74, 0x79, 0x6D, 0x61, 0x6E, 0x00,  // Cityman.
+                            /* 0000 */  0x54, 0x61, 0x6C, 0x6B, 0x6D, 0x61, 0x6E, 0x00,  // Talkman.
                             /* 0008 */  0x00, 0x00, 0x00, 0x20, 0x08, 0x01, 0x22, 0x00,  // ... ..".
                             /* 0010 */  0x02, 0x01, 0x01, 0x03, 0x01, 0x11, 0x04, 0x01,  // ........
                             /* 0018 */  0x01, 0x06, 0x01, 0x01, 0x0E, 0x01, 0x01, 0x11,  // ........
@@ -643,6 +643,29 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
                 })
                 Return (RBUF) /* \_SB_.LPSD.PRIM.RBUF */
             }
+        }
+
+        Device (CPSW)
+        {
+            Name (_HID, "MSHW1009")  // _HID: Hardware ID
+            Name (_UID, Zero)  // _UID: Unique ID
+            Name (_DEP, Package (0x02)  // _DEP: Dependencies
+            {
+                \_SB.PEP0,
+                \_SB.PM02
+            })
+        }
+		
+        Device (LICE)
+        {
+            Name (_HID, "MSHW1006")  // _HID: Hardware ID
+            Name (_UID, Zero)  // _UID: Unique ID
+            Name (_DEP, Package (0x03)  // _DEP: Dependencies
+            {
+                \_SB.PEP0, 
+                \_SB.SP10, 
+                \_SB.GIO0
+            })
         }
 
         Device (USBC)
