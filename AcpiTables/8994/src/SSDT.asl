@@ -18,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20180209 (538444297)
  */
-DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
+DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000004)
 {
     External (_SB_.ABD_.AVBL, IntObj)
     External (_SB_.GIO0, DeviceObj)
