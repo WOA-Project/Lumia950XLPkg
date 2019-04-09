@@ -113,6 +113,35 @@ static uint32_t ldo30[][14] = {
     },
 };
 
+static uint32_t bst5v[][14] = {
+    {
+        BSTB_RES_TYPE,
+        1,
+        KEY_SOFTWARE_ENABLE,
+        4,
+        GENERIC_DISABLE,
+        KEY_MICRO_VOLT,
+        4,
+        0,
+        KEY_CURRENT,
+        4,
+        0,
+    },
+    {
+        BSTB_RES_TYPE,
+        1,
+        KEY_SOFTWARE_ENABLE,
+        4,
+        GENERIC_ENABLE,
+        KEY_MICRO_VOLT,
+        4,
+        5000000,
+        KEY_CURRENT,
+        4,
+        0,
+    },
+};
+
 VOID EFIAPI RpmDxeDeInitialize(IN EFI_EVENT Event, IN VOID *Context)
 {
   DEBUG((EFI_D_INFO, "Unregistering RPM \n"));
@@ -154,6 +183,18 @@ rpm_ldo30_enable(VOID)
 
 EFI_STATUS
 EFIAPI
+rpm_5vsw_enable(VOID)
+{
+  // Unconditionally enable 5V Boost (BSTB)
+  ASSERT(rpm_send_data(&bst5v[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
+  gBS->Stall(100);
+  DEBUG((EFI_D_INFO, "5V BSTB enabled \n"));
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
 RpmDxeInitialize(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
 {
   EFI_HANDLE Handle = NULL;
@@ -171,5 +212,9 @@ RpmDxeInitialize(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
       &gEfiEventExitBootServicesGuid, &mExitBootServicesEvent);
 
   ASSERT_EFI_ERROR(Status);
+
+  // Try to initialize 5V SW
+  rpm_5vsw_enable();
+
   return Status;
 }

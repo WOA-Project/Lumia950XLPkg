@@ -66,7 +66,6 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
   INF Lumia950XLPkg/Driver/SmemDxe/SmemDxe.inf
   INF Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
-  # Wont enable RPM until future use.
   INF Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
   INF Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   INF Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
