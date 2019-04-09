@@ -115,7 +115,7 @@ static uint32_t ldo30[][14] = {
 
 static uint32_t bst5v[][14] = {
     {
-        BSTB_RES_TYPE,
+        BTSB_RES_TYPE,
         1,
         KEY_SOFTWARE_ENABLE,
         4,
@@ -128,7 +128,7 @@ static uint32_t bst5v[][14] = {
         0,
     },
     {
-        BSTB_RES_TYPE,
+        BTSB_RES_TYPE,
         1,
         KEY_SOFTWARE_ENABLE,
         4,
@@ -185,10 +185,10 @@ EFI_STATUS
 EFIAPI
 rpm_5vsw_enable(VOID)
 {
-  // Unconditionally enable 5V Boost (BSTB)
+  // Unconditionally enable 5V Boost (BTSB)
   ASSERT(rpm_send_data(&bst5v[GENERIC_ENABLE][0], 36, RPM_REQUEST_TYPE) == 0);
   gBS->Stall(100);
-  DEBUG((EFI_D_INFO, "5V BSTB enabled \n"));
+  DEBUG((EFI_D_INFO, "5V BTSB enabled \n"));
 
   return EFI_SUCCESS;
 }
