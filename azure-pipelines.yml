@@ -18,12 +18,20 @@ steps:
   displayName: 'Update APT sources'
 
 # Travis have this by default, because we preinstalled build-essentials
-- script: sudo apt install uuid-dev iasl
+- script: sudo apt install uuid-dev flex bison
   displayName: 'Install VSTS dependencies'
 
 # Fix-up directory link for VSTS, force replace current reference
 - script: sudo ln -sfn $(pwd) ../Lumia950XLPkg
   displayName: 'Fix directory links'
+
+# Build iASL tool from repository
+# Eventually we will just install prepackaged version
+- script: git clone https://github.com/acpica/acpica acpica-tools
+  displayName: 'Checkout ACPICA tools repository'
+
+- script: cd acpica-tools && make clean && make && sudo make install && cd ..
+  displayName: 'Build and install ACPICA tools'
 
 - script: sudo ./Tools/CI/Bootstrapper/Stage0.sh
   displayName: 'Prepare pre-build environment, phase 0'
