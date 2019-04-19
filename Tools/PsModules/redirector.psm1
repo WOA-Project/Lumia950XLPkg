@@ -23,9 +23,9 @@ function Get-GnuAarch64CrossCollectionPath
     )
 
     $possibleGccCommands = @(
-        "aarch64-linux-gnu-gcc",
         "aarch64-elf-gcc",
-        "aarch64-none-elf-gcc"
+        "aarch64-none-elf-gcc",
+        "aarch64-linux-gnu-gcc"
     )
 
     $ccprefix = $null

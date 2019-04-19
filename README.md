@@ -35,6 +35,7 @@ If you are familiar with EDK2, you don't need to use my build script.
 - Checkout a copy of [EDK2](https://github.com/tianocore/edk2). Switch to `UDK2018` branch. Commit `49fa59e82e4c6ea798f65fc4e5948eae63ad6e07` absolutely works for you.
 - Checkout this repository under EDK2's worktree.
 - Install ACPI tools from your package manager or ACPICA website.
+- Install `uuid-dev` and `python` (or equivalent package on your distribution).
 - Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
 script uses `gcc-linaro-7.2.1-2017.11`. Then untar them. I place everything under `/opt` directory, so I have 
 directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts.
