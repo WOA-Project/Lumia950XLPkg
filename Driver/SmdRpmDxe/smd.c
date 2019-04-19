@@ -36,6 +36,7 @@
 #include <Library/MallocLib.h>
 #include <Library/QcomSmemLib.h>
 #include <Library/UefiBootServicesTableLib.h>
+#include <Library/UefiRuntimeServicesTableLib.h>
 
 #include <Protocol/HardwareInterrupt.h>
 
@@ -197,7 +198,7 @@ void smd_uninit_exit_bs(smd_channel_info_t *ch)
     // 10s timeout
     if (TimeoutCount > 100000) {
       DEBUG((EFI_D_ERROR, "ERROR: RPM channel release timed out \n"));
-      LibResetSystem(EfiResetCold, EFI_TIMEOUT, 0, NULL);
+      gRT->ResetSystem(EfiResetWarm, EFI_TIMEOUT, 0, NULL);
     }
     udelay(100);
     TimeoutCount++;

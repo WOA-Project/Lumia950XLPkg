@@ -17,6 +17,7 @@
 
 [LibraryClasses]
   UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
 
 [Protocols]
   gQcomRpmProtocolGuid

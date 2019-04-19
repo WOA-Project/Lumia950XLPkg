@@ -28,7 +28,7 @@
   TimerLib
   MallocLib
   InterruptsLib
-  EfiResetSystemLib
+  UefiRuntimeServicesTableLib
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-incompatible-pointer-types -Wno-unused-variable
