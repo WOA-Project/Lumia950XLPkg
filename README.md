@@ -73,7 +73,7 @@ To re-flash UEFI, simply place new `UEFI.elf` in WP EFIESP root directory.
 Qualcomm Snapdragon MSM8992/MSM8994 implements a subset of [PSCI interface](http://infocenter.arm.com/help//topic/com.arm.doc.den0022d/Power_State_Coordination_Interface_PDD_v1_1_DEN0022D.pdf) for multi-processor startup. However, required
 commands like `PSCI_SYSTEM_OFF` and `PSCI_SYSTEM_RESET` are not implemented. Hence we use PMIC to shutdown
 platform (there's a bug in RT that will be fixed) instead of PSCI. Additionally, 8992/8994 uses HVC call for
-PSCI commands instead of SMC call. It seems that Linux encounters some troubles during MP startup. 
+PSCI commands instead of SMC call.
 
 ## Linux Notes
 
