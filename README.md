@@ -15,11 +15,11 @@ This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, L
 ## Support Status
 Applicable to all supported targets unless noted.
 
-- Low-speed I/O: I2C, GPIO, SPMI and Pinmux(TLMM).
-- Power Management: PMIC and RPM.
-- High-speed I/O for firmware and HLOS use: eMMC (HS200), PCI Express (Firmware-configured, HLOS Only, x2 Lane)
-- Peripherals: Touchscreen (I2C), side-band buttons (TLMM GPIO and PMIC GPIO)
-- Display FrameBuffer
+- Low-speed I/O: I2C, GPIO, SPMI and Pinmux (TLMM).
+- Power Management: PMIC and Resource Power Manager (RPM).
+- High-speed I/O for firmware and HLOS use: eMMC (SDR50 in firmware, HS200/HS400 in OS), PCI Express (Firmware-configured, HLOS Only, x2 Lane)
+- Peripherals: Touchscreen (QUP I2C), side-band buttons (TLMM GPIO and PMIC GPIO)
+- Display FrameBuffer depends on stock Qualcomm UEFI for boostrapping, MDP is not fully implemented.
 
 ## What can you do?
 
@@ -95,7 +95,7 @@ PSCI partially works. If you want to use PSCI for multi-processor startup, add t
 
 And use `psci` for core-enable method.
 
-For MSM8994, PCI Express Root Port 1 is **firmware-initialized**. Hence it is not necessary to supply `qcom,pcie` in device tree. Instead, supply a firmware-initialized PCI bus device `pci-host-cam-generic`. ACPI MCFG table is supplied for your reference.
+For MSM8994, PCI Express Root Port 1 is **firmware-initialized**. Similarly, MSM8992 have PCI Express Root Port 0 initialized. Hence it is not necessary to supply `qcom,pcie` in device tree. Instead, supply a firmware-initialized PCI bus device `pci-host-cam-generic`. ACPI MCFG table is supplied for your reference.
 
 ## Acknowledgements
 
