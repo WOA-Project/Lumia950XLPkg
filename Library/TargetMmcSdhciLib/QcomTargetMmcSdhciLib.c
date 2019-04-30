@@ -35,8 +35,7 @@ VOID LibQcomTargetMmcSdhciInit(INIT_SLOT_CB InitSlot)
   config.sdhc_base     = mmc_sdhci_base[config.slot - 1];
   config.pwrctl_base   = mmc_pwrctl_base[config.slot - 1];
   config.pwr_irq       = mmc_sdc_pwrctl_irq[config.slot - 1];
-  config.hs200_support = 1;
-  config.hs400_support = 0;
+  config.hs200_support = 0;
 
   clk = TLMM_CUR_VAL_10MA;
   cmd = TLMM_CUR_VAL_8MA;
