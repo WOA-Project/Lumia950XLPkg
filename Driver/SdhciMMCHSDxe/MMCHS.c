@@ -6,30 +6,37 @@ PlatformCallbackInitSlot(struct mmc_config_data *config)
   EFI_STATUS    Status;
   BIO_INSTANCE *Instance;
 
-  // initialize MMC device
+  // Initialize MMC device
   struct mmc_device *dev = mmc_init(config);
   if (dev == NULL)
     return NULL;
 
-  // allocate instance
+  // Allocate instance
   Status = BioInstanceContructor(&Instance);
   if (EFI_ERROR(Status)) {
     return dev;
   }
 
-  // set data
+  // Set data
   Instance->MmcDev               = dev;
   Instance->BlockMedia.BlockSize = dev->card.block_size;
   Instance->BlockMedia.LastBlock =
       dev->card.capacity / Instance->BlockMedia.BlockSize - 1;
 
-  // give every device a slighty different GUID
+  // Give every device a slighty different GUID
   Instance->DevicePath.Mmc.Guid.Data4[7] = config->slot;
+
+  // Register for ExitBS event
+  Status = gBS->CreateEventEx(
+      EVT_NOTIFY_SIGNAL, TPL_NOTIFY, MMCHSExitBsUninit, (VOID *)Instance,
+      &gEfiEventExitBootServicesGuid, &Instance->ExitBsEvent);
+  ASSERT_EFI_ERROR(Status);
 
   // Publish BlockIO
   Status = gBS->InstallMultipleProtocolInterfaces(
       &Instance->Handle, &gEfiBlockIoProtocolGuid, &Instance->BlockIo,
       &gEfiDevicePathProtocolGuid, &Instance->DevicePath, NULL);
+  ASSERT_EFI_ERROR(Status);
 
   return dev;
 }
@@ -59,21 +66,28 @@ STATIC BIO_INSTANCE mBioTemplate = {
         0,                      // Pad
         0                       // LastBlock
     },
-    {// DevicePath
-     {
-         {
-             HARDWARE_DEVICE_PATH,
-             HW_VENDOR_DP,
-             {(UINT8)(sizeof(VENDOR_DEVICE_PATH)),
-              (UINT8)((sizeof(VENDOR_DEVICE_PATH)) >> 8)},
-         },
-         // Hardware Device Path for Bio
-         EFI_CALLER_ID_GUID // Use the driver's GUID
-     },
+    {
+        // DevicePath
+        {
+            {
+                HARDWARE_DEVICE_PATH,
+                HW_VENDOR_DP,
+                {(UINT8)(sizeof(VENDOR_DEVICE_PATH)),
+                 (UINT8)((sizeof(VENDOR_DEVICE_PATH)) >> 8)},
+            },
+            // Hardware Device Path for Bio
+            EFI_CALLER_ID_GUID // Use the driver's GUID
+        },
 
-     {END_DEVICE_PATH_TYPE,
-      END_ENTIRE_DEVICE_PATH_SUBTYPE,
-      {sizeof(EFI_DEVICE_PATH_PROTOCOL), 0}}}};
+        {
+            END_DEVICE_PATH_TYPE,
+            END_ENTIRE_DEVICE_PATH_SUBTYPE,
+            {sizeof(EFI_DEVICE_PATH_PROTOCOL), 0},
+        },
+    },
+    NULL, // MMCDev
+    NULL, // ExitBS Event
+};
 
 /*
  * Function: mmc_write
@@ -304,7 +318,20 @@ MMCHSWriteBlocks(
 
 EFI_STATUS
 EFIAPI
-MMCHSFlushBlocks(IN EFI_BLOCK_IO_PROTOCOL *This) { return EFI_SUCCESS; }
+MMCHSFlushBlocks(IN EFI_BLOCK_IO_PROTOCOL *This)
+{
+  // Nothing required
+  return EFI_SUCCESS;
+}
+
+VOID EFIAPI MMCHSExitBsUninit(IN EFI_EVENT Event, IN VOID *Context)
+{
+  BIO_INSTANCE *Instance = (BIO_INSTANCE *)Context;
+  ASSERT(Instance != NULL);
+
+  // Put card into sleep
+  mmc_put_card_to_sleep(Instance->MmcDev);
+}
 
 EFI_STATUS
 BioInstanceContructor(OUT BIO_INSTANCE **NewInstance)

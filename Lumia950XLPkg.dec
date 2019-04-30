@@ -185,7 +185,7 @@
   gQcomTokenSpaceGuid.PcdMmcBamSupport|FALSE|BOOLEAN|0x00010002
 
   # SdhciMMCHSDxe
-  gQcomTokenSpaceGuid.PcdMmcHs200Caps|FALSE|BOOLEAN|0x00010010
+  gQcomTokenSpaceGuid.PcdMmcHs200Caps|TRUE|BOOLEAN|0x00010010
 
   # ScmDxe
   gQcomTokenSpaceGuid.PcdTcsrBootMiscDetect|0|UINT64|0x000000a0

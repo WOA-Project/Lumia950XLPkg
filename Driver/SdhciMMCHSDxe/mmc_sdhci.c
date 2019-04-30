@@ -2297,6 +2297,13 @@ uint32_t mmc_set_clr_power_on_wp_user(
   return 0;
 }
 
+/* Function to put the mmc card to sleep and disable HC */
+void mmc_put_card_to_sleep_disable_hc(struct mmc_device *dev)
+{
+  mmc_put_card_to_sleep(dev);
+  sdhci_mode_disable(&dev->host);
+}
+
 /* Function to put the mmc card to sleep */
 void mmc_put_card_to_sleep(struct mmc_device *dev)
 {
