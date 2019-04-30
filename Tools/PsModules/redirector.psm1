@@ -43,8 +43,8 @@ function Get-GnuAarch64CrossCollectionPath
 
     if (($null -eq $ccprefix) -and $AllowFallback) 
     {
-        $ccprefix = "/usr/bin/aarch64-linux-gnu-"
-        Write-Warning -Message "GCC not found, fallback to /usr/bin/aarch64-linux-gnu- prefix."
+        $ccprefix = "/opt/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-elf/bin/aarch64-elf-"
+        Write-Warning -Message "GCC not found, fallback to /opt/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-elf/bin/aarch64-elf- prefix."
     }
 
     # Now it's not the fallback case
