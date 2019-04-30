@@ -36,6 +36,7 @@ typedef struct {
   EFI_BLOCK_IO_MEDIA    BlockMedia;
   MMCHS_DEVICE_PATH     DevicePath;
   struct mmc_device *   MmcDev;
+  EFI_EVENT             ExitBsEvent;
 } BIO_INSTANCE;
 
 #define BIO_INSTANCE_SIGNATURE SIGNATURE_32('e', 'm', 'm', 'c')
@@ -75,6 +76,8 @@ MMCHSFlushBlocks(IN EFI_BLOCK_IO_PROTOCOL *This);
 
 EFI_STATUS
 BioInstanceContructor(OUT BIO_INSTANCE **NewInstance);
+
+VOID EFIAPI MMCHSExitBsUninit(IN EFI_EVENT Event, IN VOID *Context);
 
 /* API: to initialize the controller */
 void sdhci_init(struct sdhci_host *);
@@ -118,5 +121,7 @@ bool mmc_set_drv_type(
     struct sdhci_host *host, struct mmc_card *card, uint8_t drv_type);
 /* API: Send the read & write command sequence to rpmb */
 uint32_t mmc_sdhci_rpmb_send(struct mmc_device *dev, struct mmc_command *cmd);
+/* API: De-init the card */
+void mmc_put_card_to_sleep_disable_hc(struct mmc_device *dev);
 
 #endif
