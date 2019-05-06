@@ -200,21 +200,32 @@ RpmDxeInitialize(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
   EFI_HANDLE Handle = NULL;
   EFI_STATUS Status;
 
+  // Init RPM SMD channel
   rpm_smd_init();
-  Status = gBS->InstallMultipleProtocolInterfaces(
-      &Handle, &gQcomRpmProtocolGuid, &mInternalRpm, NULL);
-  ASSERT_EFI_ERROR(Status);
 
-  // Register Exit BS event for RPM SMD uninit.
-  // Otherwise Windows will hang at startup.
-  Status = gBS->CreateEventEx(
-      EVT_NOTIFY_SIGNAL, TPL_NOTIFY, RpmDxeDeInitialize, NULL,
-      &gEfiEventExitBootServicesGuid, &mExitBootServicesEvent);
-
-  ASSERT_EFI_ERROR(Status);
-
-  // Try to initialize 5V SW
+  // Try to initialize 5V boost circuit
   rpm_5vsw_enable();
+
+  // Since RPM usage is pretty limited in current UEFI
+  // The protocol will not be installed unless the flag is set.
+  // As for PCIe clocks, it is pre-enabled in BootShim
+  if (FeaturePcdGet(PcdInstallRpmProtocol)) {
+    Status = gBS->InstallMultipleProtocolInterfaces(
+        &Handle, &gQcomRpmProtocolGuid, &mInternalRpm, NULL);
+    ASSERT_EFI_ERROR(Status);
+
+    // Register Exit BS event for RPM SMD uninit.
+    // Otherwise Windows will hang at startup.
+    Status = gBS->CreateEventEx(
+        EVT_NOTIFY_SIGNAL, TPL_NOTIFY, RpmDxeDeInitialize, NULL,
+        &gEfiEventExitBootServicesGuid, &mExitBootServicesEvent);
+
+    ASSERT_EFI_ERROR(Status);
+  }
+  else {
+    // Immediately unload RPM
+    rpm_smd_uninit();
+  }
 
   return Status;
 }

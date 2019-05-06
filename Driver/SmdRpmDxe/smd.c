@@ -45,9 +45,9 @@
 #define SMD_CHANNEL_ACCESS_RETRY 1000000
 
 STATIC smd_channel_alloc_entry_t *smd_channel_alloc_entry;
-STATIC EFI_EVENT smd_closed            = (EFI_EVENT)NULL;
-STATIC BOOLEAN smd_exit_bs_in_progress = FALSE;
-STATIC BOOLEAN smd_channel_alloc_freed = FALSE;
+STATIC EFI_EVENT        smd_closed              = (EFI_EVENT)NULL;
+STATIC volatile BOOLEAN smd_exit_bs_in_progress = FALSE;
+STATIC volatile BOOLEAN smd_channel_alloc_freed = FALSE;
 
 static void smd_write_state(smd_channel_info_t *ch, uint32_t state)
 {
@@ -193,8 +193,9 @@ void smd_uninit_exit_bs(smd_channel_info_t *ch)
 
   /* Wait for the SMD-RPM channel to be closed */
   while (TRUE) {
-    if (smd_channel_alloc_freed)
+    if (smd_channel_alloc_freed) {
       break;
+    }
     // 10s timeout
     if (TimeoutCount > 100000) {
       DEBUG((EFI_D_ERROR, "ERROR: RPM channel release timed out \n"));
@@ -435,12 +436,10 @@ enum handler_return smd_irq_handler(void *data)
 
   if (ch->current_state == SMD_SS_CLOSED) {
     if (!smd_exit_bs_in_progress) {
-      free(smd_channel_alloc_entry);
       gBS->SignalEvent(smd_closed);
     }
 
     smd_channel_alloc_freed = TRUE;
-
     return INT_NO_RESCHEDULE;
   }
 
