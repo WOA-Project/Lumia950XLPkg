@@ -445,9 +445,6 @@ SynaInitialize(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
         &m_AbsPointerProtImpl.WaitForInput);
     ASSERT_EFI_ERROR(Status);
 
-    // Set event routines
-    SynaStartPolling();
-
     // Install protocols
     Status = gBS->InstallMultipleProtocolInterfaces(
         &ImageHandle, &gEfiAbsolutePointerProtocolGuid, &m_AbsPointerProtImpl,
