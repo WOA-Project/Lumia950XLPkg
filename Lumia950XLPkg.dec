@@ -191,4 +191,7 @@
   gQcomTokenSpaceGuid.PcdTcsrBootMiscDetect|0|UINT64|0x000000a0
 
   # LK Build
-  gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|TRUE|BOOLEAN|0x00000b101
+  gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|TRUE|BOOLEAN|0x0000b101
+
+  # RPM
+  gQcomTokenSpaceGuid.PcdInstallRpmProtocol|FALSE|BOOLEAN|0x00000c100

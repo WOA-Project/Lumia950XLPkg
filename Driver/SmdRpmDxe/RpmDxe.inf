@@ -44,5 +44,8 @@
   gQcomTokenSpaceGuid.PcdApcsAlias0IpcInterrupt
   gQcomTokenSpaceGuid.PcdSmdIrq
 
+[FeaturePcd]
+  gQcomTokenSpaceGuid.PcdInstallRpmProtocol
+
 [Depex]
   gHardwareInterruptProtocolGuid
