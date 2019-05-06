@@ -24,27 +24,34 @@ UINT8  PageF12          = 0;
 UINT32 TouchDataAddress = 0;
 UINT32 FailureCount     = 0;
 
-EFI_EVENT m_CallbackTimer;
-EFI_EVENT m_TouchEvent;
+EFI_EVENT m_CallbackTimer = NULL;
+EFI_EVENT m_TouchEvent    = NULL;
 
 UINT64 LastX = 0;
 UINT64 LastY = 0;
 
+VOID EFIAPI SynaStartPolling(VOID);
+
 // Protocol information
 EFI_ABSOLUTE_POINTER_MODE m_AbsPointerModeInfo = {
-    0, 0, 0, FixedPcdGet64(SynapticsXMax), FixedPcdGet64(SynapticsYMax), 0, 0};
+    0, 0, 0, FixedPcdGet64(SynapticsXMax), FixedPcdGet64(SynapticsYMax), 0, 0,
+};
 
-EFI_STATUS AbsPReset(
+EFI_STATUS EFIAPI AbsPReset(
     IN EFI_ABSOLUTE_POINTER_PROTOCOL *This, IN BOOLEAN ExtendedVerification)
 {
   LastX          = 0;
   LastY          = 0;
   m_StateChanged = FALSE;
 
+  if (m_CallbackTimer == NULL) {
+    SynaStartPolling();
+  }
+
   return EFI_SUCCESS;
 }
 
-EFI_STATUS AbsPGetState(
+EFI_STATUS EFIAPI AbsPGetState(
     IN EFI_ABSOLUTE_POINTER_PROTOCOL *This,
     IN OUT EFI_ABSOLUTE_POINTER_STATE *State)
 {
@@ -53,6 +60,10 @@ EFI_STATUS AbsPGetState(
   if (State == NULL) {
     Status = EFI_INVALID_PARAMETER;
     goto exit;
+  }
+
+  if (m_CallbackTimer == NULL) {
+    SynaStartPolling();
   }
 
   State->CurrentX      = LastX;
@@ -67,6 +78,9 @@ exit:
 
 VOID EFIAPI AbsPWaitForInput(IN EFI_EVENT Event, IN VOID *Context)
 {
+  if (m_CallbackTimer == NULL) {
+    SynaStartPolling();
+  }
   if (m_StateChanged) {
     gBS->SignalEvent(Event);
   }
@@ -74,8 +88,11 @@ VOID EFIAPI AbsPWaitForInput(IN EFI_EVENT Event, IN VOID *Context)
 
 // Absolute Pointer Protocol
 EFI_ABSOLUTE_POINTER_PROTOCOL m_AbsPointerProtImpl = {
-    AbsPReset, AbsPGetState, (EFI_EVENT)NULL,
-    (EFI_ABSOLUTE_POINTER_MODE *)&m_AbsPointerModeInfo};
+    AbsPReset,
+    AbsPGetState,
+    (EFI_EVENT)NULL,
+    (EFI_ABSOLUTE_POINTER_MODE *)&m_AbsPointerModeInfo,
+};
 
 EFI_STATUS
 EFIAPI
@@ -135,13 +152,24 @@ SynaI2cRead(IN UINT8 Address, IN UINT8 *Data, IN UINT16 ReadBytes)
   }
 
   struct i2c_msg ControllerProbeMsg[] = {
-      {FixedPcdGet16(SynapticsCtlrAddress), I2C_M_WR, sizeof(UINT8),
-       (UINT8 *)&Address},
-      {FixedPcdGet16(SynapticsCtlrAddress), I2C_M_RD, ReadBytes, Data}};
+      {
+          FixedPcdGet16(SynapticsCtlrAddress),
+          I2C_M_WR,
+          sizeof(UINT8),
+          (UINT8 *)&Address,
+      },
+      {
+          FixedPcdGet16(SynapticsCtlrAddress),
+          I2C_M_RD,
+          ReadBytes,
+          Data,
+      },
+  };
 
   Transferred = I2cQupProtocol->Transfer(m_Controller, ControllerProbeMsg, 2);
-  if (Transferred != 2)
+  if (Transferred != 2) {
     Status = EFI_DEVICE_ERROR;
+  }
 
 exit:
   return Status;
@@ -165,13 +193,24 @@ SynaI2cWrite(IN UINT8 Address, IN UINT8 *Data, IN UINT16 WriteBytes)
   }
 
   struct i2c_msg ControllerProbeMsg[] = {
-      {FixedPcdGet16(SynapticsCtlrAddress), I2C_M_WR, sizeof(UINT8),
-       (UINT8 *)&Address},
-      {FixedPcdGet16(SynapticsCtlrAddress), I2C_M_WR, WriteBytes, Data}};
+      {
+          FixedPcdGet16(SynapticsCtlrAddress),
+          I2C_M_WR,
+          sizeof(UINT8),
+          (UINT8 *)&Address,
+      },
+      {
+          FixedPcdGet16(SynapticsCtlrAddress),
+          I2C_M_WR,
+          WriteBytes,
+          Data,
+      },
+  };
 
   Transferred = I2cQupProtocol->Transfer(m_Controller, ControllerProbeMsg, 2);
-  if (Transferred != 2)
+  if (Transferred != 2) {
     Status = EFI_DEVICE_ERROR;
+  }
 
 exit:
   return Status;
@@ -246,6 +285,19 @@ VOID EFIAPI SyncPollCallback(IN EFI_EVENT Event, IN VOID *Context)
       DEBUG((EFI_D_INFO, "Touch: X: %d, Y: %d \n", LastX, LastY));
     }
   }
+}
+
+VOID EFIAPI SynaStartPolling(VOID)
+{
+  EFI_STATUS Status = EFI_SUCCESS;
+  Status            = gBS->CreateEvent(
+      EVT_NOTIFY_SIGNAL | EVT_TIMER, TPL_CALLBACK, SyncPollCallback, NULL,
+      &m_CallbackTimer);
+  ASSERT_EFI_ERROR(Status);
+
+  Status =
+      gBS->SetTimer(m_CallbackTimer, TimerPeriodic, TIMER_INTERVAL_TOUCH_POLL);
+  ASSERT_EFI_ERROR(Status);
 }
 
 EFI_STATUS
@@ -347,6 +399,7 @@ SynaInitialize(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
       if (InfoData[5] == 0 && Address == TOUCH_RMI_PAGE_INFO_ADDRESS) {
         break;
       }
+
       // Switch page
       else if (InfoData[5] == 0 && Address != TOUCH_RMI_PAGE_INFO_ADDRESS) {
         DEBUG((EFI_D_INFO, "Switching to next Synaptics RMI4 Page........"));
@@ -393,12 +446,7 @@ SynaInitialize(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
     ASSERT_EFI_ERROR(Status);
 
     // Set event routines
-    gBS->CreateEvent(
-        EVT_NOTIFY_SIGNAL | EVT_TIMER, TPL_CALLBACK, SyncPollCallback, NULL,
-        &m_CallbackTimer);
-    ASSERT_EFI_ERROR(Status);
-
-    gBS->SetTimer(m_CallbackTimer, TimerPeriodic, TIMER_INTERVAL_TOUCH_POLL);
+    SynaStartPolling();
 
     // Install protocols
     Status = gBS->InstallMultipleProtocolInterfaces(
