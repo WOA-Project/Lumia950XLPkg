@@ -1,22 +1,16 @@
 #!/bin/bash
-# Travis CI environment bootstrapper
+# Generic CI environment bootstrapper
 # Stage 1
 #
-# Copyright 2018, Bingxing Wang. <uefi-oss-projects@imbushuo.net>
+# Copyright 2018-2019, Bingxing Wang. <uefi-oss-projects@imbushuo.net>
 # All rights reserved.
 #
 
-# Checkout EDK2 and switch to UDK2018
+# Checkout EDK2 at UDK2018 and recent commit only
 echo "Checking out EDK2 workspace"
 
 cd ..
-git clone https://github.com/tianocore/edk2
-
-cd edk2
-git checkout UDK2018
-git pull
-
-cd ..
+git clone --single-branch --depth 1 --branch UDK2018 https://github.com/tianocore/edk2
 
 # Set a link to EDK2 workspace
 ln -s $(pwd)/Lumia950XLPkg $(pwd)/edk2/Lumia950XLPkg
