@@ -44,10 +44,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000003)
         Name (RFAS, 0x00010000)
         Device (SDC1)
         {
-            Name (_DEP, Package (One)  // _DEP: Dependencies
-            {
-                \_SB.PEP0
-            })
             Name (_HID, "QCOM24BF")  // _HID: Hardware ID
             Name (_CID, "ACPIQCOM24BF")  // _CID: Compatible ID
             Name (_UID, Zero)  // _UID: Unique ID
