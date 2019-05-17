@@ -1258,7 +1258,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000003)
         Device (PEP0)
         {
             Name (_HID, "QCOM2425")  // _HID: Hardware ID
-            Name (_CID, "PNP0D80" /* Windows-compatible System Power Management Controller */)  // _CID: Compatible ID
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
                 Interrupt (ResourceConsumer, Level, ActiveHigh, ExclusiveAndWake, ,, )
