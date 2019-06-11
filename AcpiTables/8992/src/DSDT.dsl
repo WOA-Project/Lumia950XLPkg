@@ -1,45 +1,25 @@
-/*
- * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20190215 (32-bit version)
- * Copyright (c) 2000 - 2019 Intel Corporation
- * 
- * Disassembling to symbolic ASL+ operators
- *
- * Disassembly of DSDT.aml, Mon Mar 04 00:04:52 2019
- *
- * Original Table Header:
- *     Signature        "DSDT"
- *     Length           0x0002A180 (172416)
- *     Revision         0x02
- *     Checksum         0xEF
- *     OEM ID           "QCOMM "
- *     OEM Table ID     "MSM8992 "
- *     OEM Revision     0x00000003 (3)
- *     Compiler ID      "MSFT"
- *     Compiler Version 0x05000000 (83886080)
- */
-DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
+DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
 {
     External (_SB_.HDDP, UnknownObj)
 
     Scope (\_SB)
     {
-        Name (SOID, 0xFFFFFFFF)
-        Name (SIDS, "899200000000000")
-        Name (SIDV, 0xFFFFFFFF)
-        Name (SVMJ, 0xFFFF)
-        Name (SVMI, 0xFFFF)
-        Name (SDFE, 0xFFFF)
+        Name (SOID, 0x000000FB)
+        Name (SIDS, "MSM899200000000")
+        Name (SIDV, 0x00010000)
+        Name (SVMJ, 0x0001)
+        Name (SVMI, 0x0000)
+        Name (SDFE, 0x0039)
         Name (SFES, "899200000000000")
-        Name (SIDM, 0xFFFFFFFF)
+        Name (SIDM, 0xFFFF00FF)
         Name (NCPU, "6")
-        Name (PSCI, "000")
-        Name (RMTB, 0xAAAAAAAA)
-        Name (RMTX, 0xBBBBBBBB)
-        Name (RFMB, 0xCCCCCCCC)
-        Name (RFMS, 0xDDDDDDDD)
-        Name (RFAB, 0xEEEEEEEE)
-        Name (RFAS, 0x77777777)
+        Name (PSCI, "003")
+        Name (RMTB, 0x06F00000)
+        Name (RMTX, 0x00180000)
+        Name (RFMB, 0x07090000)
+        Name (RFMS, 0x00010000)
+        Name (RFAB, 0x07080000)
+        Name (RFAS, 0x00010000)
         Device (SDC1)
         {
             Name (_DEP, Package (One)  // _DEP: Dependencies
@@ -303,7 +283,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -312,7 +292,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -392,7 +372,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -401,7 +381,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -662,7 +642,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_BQI, 0, NotSerialized)
             {
-                Name (CFG0, Package (0x01)
+                Name (CFG0, Package (One)
                 {
                     Zero
                 })
@@ -1049,9 +1029,9 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         Device (PRTC)
         {
             Name (_HID, "ACPI000E" /* Time and Alarm Device */)  // _HID: Hardware ID
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            Name (_DEP, Package (One)  // _DEP: Dependencies
             {
-                "\\_SB.PMAP"
+                \_SB.PMAP
             })
             Method (_GCP, 0, NotSerialized)  // _GCP: Get Capabilities
             {
@@ -3386,7 +3366,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         }
                     }, 
 
-                    Package (0x01)
+                    Package (One)
                     {
                         "DEBUG_OFF"
                     }
@@ -3790,7 +3770,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         }
                     }, 
 
-                    Package (0x01)
+                    Package (One)
                     {
                         "DEBUG_OFF"
                     }
@@ -6060,7 +6040,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (OCCC) /* \_SB_.PEP0.OCCC */
             }
 
-            Name (OCCC, Package (0x01)
+            Name (OCCC, Package (One)
             {
                 Package (0x04)
                 {
@@ -6185,7 +6165,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Method (GPMD, 0, NotSerialized)
             {
-                Name (GPCC, Package (0x01)
+                Name (GPCC, Package (One)
                 {
                     Package (0x0B)
                     {
@@ -6208,7 +6188,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x0D)
                                 {
                                     "ENTER", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_SAVE"
                                     }, 
@@ -6390,7 +6370,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_RESTORE"
                                     }, 
@@ -6547,7 +6527,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                     Package (0x02)
                                     {
                                         "DELAY", 
-                                        Package (0x01)
+                                        Package (One)
                                         {
                                             One
                                         }
@@ -8594,7 +8574,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_SAVE"
                                     }, 
@@ -8685,7 +8665,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_RESTORE"
                                     }, 
@@ -8778,7 +8758,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                     Package (0x02)
                                     {
                                         "DELAY", 
-                                        Package (0x01)
+                                        Package (One)
                                         {
                                             One
                                         }
@@ -8893,7 +8873,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                     Package (0x02)
                                     {
                                         "DELAY", 
-                                        Package (0x01)
+                                        Package (One)
                                         {
                                             One
                                         }
@@ -9550,7 +9530,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_SAVE"
                                     }, 
@@ -9635,7 +9615,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_RESTORE"
                                     }
@@ -10530,7 +10510,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_SAVE"
                                     }, 
@@ -10605,7 +10585,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_RESTORE"
                                     }
@@ -11620,7 +11600,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_SAVE"
                                     }, 
@@ -11852,7 +11832,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_RESTORE"
                                     }, 
@@ -11977,7 +11957,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                     Package (0x02)
                                     {
                                         "DELAY", 
-                                        Package (0x01)
+                                        Package (One)
                                         {
                                             One
                                         }
@@ -13817,7 +13797,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_SAVE"
                                     }, 
@@ -13902,7 +13882,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                         }
                                     }, 
 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         "PSTATE_RESTORE"
                                     }, 
@@ -15339,7 +15319,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (MPCC) /* \_SB_.PEP0.MPCC */
             }
 
-            Name (MPCC, Package (0x00){})
+            Name (MPCC, Package (Zero){})
         }
 
         Scope (\_SB.PEP0)
@@ -15349,7 +15329,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (OPCC) /* \_SB_.PEP0.OPCC */
             }
 
-            Name (OPCC, Package (0x00){})
+            Name (OPCC, Package (Zero){})
         }
 
         Scope (\_SB.PEP0)
@@ -15673,7 +15653,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     }
                 }
             })
-            Name (SDFR, Package (0x01)
+            Name (SDFR, Package (One)
             {
                 Package (0x03)
                 {
@@ -16435,7 +16415,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16449,7 +16429,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16463,7 +16443,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16477,7 +16457,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16491,7 +16471,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16505,7 +16485,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16519,7 +16499,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16533,7 +16513,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16547,7 +16527,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16561,7 +16541,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16575,7 +16555,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16589,7 +16569,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16603,7 +16583,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16617,7 +16597,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16631,7 +16611,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16645,7 +16625,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16659,7 +16639,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16673,7 +16653,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16687,7 +16667,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16701,7 +16681,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16715,7 +16695,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16729,7 +16709,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -16783,7 +16763,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         0x23
                                     }
@@ -16815,7 +16795,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         0x23
                                     }
@@ -17254,7 +17234,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             }
                         }, 
 
-                        Package (0x01)
+                        Package (One)
                         {
                             "PSTATE_RESTORE"
                         }, 
@@ -17298,7 +17278,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             }
                         }, 
 
-                        Package (0x01)
+                        Package (One)
                         {
                             "PSTATE_SAVE"
                         }, 
@@ -17357,7 +17337,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17371,7 +17351,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17385,7 +17365,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17399,7 +17379,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17413,7 +17393,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17427,7 +17407,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17441,7 +17421,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17455,7 +17435,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17469,7 +17449,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17483,7 +17463,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17497,7 +17477,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17511,7 +17491,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17525,7 +17505,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17539,7 +17519,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17553,7 +17533,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17567,7 +17547,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17581,7 +17561,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17595,7 +17575,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17609,7 +17589,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         One
                                     }
@@ -17659,7 +17639,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         0x23
                                     }
@@ -17704,7 +17684,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         0x23
                                     }
@@ -17736,7 +17716,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         0x23
                                     }
@@ -17786,7 +17766,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         0x23
                                     }
@@ -17836,7 +17816,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                                 Package (0x02)
                                 {
                                     "DELAY", 
-                                    Package (0x01)
+                                    Package (One)
                                     {
                                         0x23
                                     }
@@ -18355,7 +18335,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "EXECUTE_FUNCTION", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 "WlanD0ResourceVote"
                             }
@@ -18651,7 +18631,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "EXECUTE_FUNCTION", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 "WlanD3ResourceVote"
                             }
@@ -18797,7 +18777,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x05
                             }
@@ -18925,7 +18905,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x14
                                 }
@@ -18994,7 +18974,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x14
                                 }
@@ -19046,7 +19026,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     One
                                 }
@@ -19083,7 +19063,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x14
                                 }
@@ -19124,7 +19104,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     One
                                 }
@@ -19161,7 +19141,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x14
                                 }
@@ -19433,7 +19413,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (IPSC) /* \_SB_.PEP0.IPSC */
             }
 
-            Name (IPSC, Package (0x01)
+            Name (IPSC, Package (One)
             {
                 Package (0x03)
                 {
@@ -19486,7 +19466,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (CRCC) /* \_SB_.PEP0.CRCC */
             }
 
-            Name (CRCC, Package (0x01)
+            Name (CRCC, Package (One)
             {
                 Package (0x05)
                 {
@@ -20008,7 +19988,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20027,7 +20007,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20050,7 +20030,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x0A
                             }
@@ -20078,7 +20058,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20097,7 +20077,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20211,7 +20191,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20230,7 +20210,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20335,7 +20315,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20372,7 +20352,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20395,7 +20375,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -20469,7 +20449,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (QDSC) /* \_SB_.PEP0.QDSC */
             }
 
-            Name (QDSC, Package (0x01)
+            Name (QDSC, Package (One)
             {
                 Package (0x03)
                 {
@@ -22355,7 +22335,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     One
                                 }
@@ -22448,7 +22428,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x0A
                                 }
@@ -22532,7 +22512,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "DELAY", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     One
                                 }
@@ -24299,7 +24279,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -24442,7 +24422,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -24451,7 +24431,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x19
                             }
@@ -24465,7 +24445,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -24608,7 +24588,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x05
                             }
@@ -24631,7 +24611,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -24694,7 +24674,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x0A
                             }
@@ -24731,7 +24711,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -24754,7 +24734,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -24909,7 +24889,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -24932,7 +24912,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x03
                             }
@@ -24960,7 +24940,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25115,7 +25095,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x05
                             }
@@ -25138,7 +25118,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25165,7 +25145,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x0A
                             }
@@ -25199,7 +25179,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25226,7 +25206,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25249,7 +25229,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25280,7 +25260,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25307,7 +25287,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25486,7 +25466,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25509,7 +25489,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x03
                             }
@@ -25537,7 +25517,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25716,7 +25696,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x05
                             }
@@ -25765,7 +25745,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25788,7 +25768,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25815,7 +25795,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x0A
                             }
@@ -25839,7 +25819,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -25921,7 +25901,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -27036,7 +27016,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "EXECUTE_FUNCTION", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 "HSUSBResetSequence"
                             }
@@ -27775,7 +27755,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (DIXC) /* \_SB_.PEP0.DIXC */
             }
 
-            Name (DIXC, Package (0x01)
+            Name (DIXC, Package (One)
             {
                 Package (0x06)
                 {
@@ -27824,7 +27804,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -27857,7 +27837,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x0A
                             }
@@ -27883,7 +27863,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x0A
                             }
@@ -27983,7 +27963,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (NPCC) /* \_SB_.PEP0.NPCC */
             }
 
-            Name (NPCC, Package (0x01)
+            Name (NPCC, Package (One)
             {
                 Package (0x07)
                 {
@@ -28070,7 +28050,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (LPXC) /* \_SB_.PEP0.LPXC */
             }
 
-            Name (LPXC, Package (0x01)
+            Name (LPXC, Package (One)
             {
                 Package (0x04)
                 {
@@ -28101,7 +28081,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x02
                             }
@@ -28124,7 +28104,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x3C
                             }
@@ -30556,7 +30536,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Package (0x02)
                         {
                             "DELAY", 
-                            Package (0x01)
+                            Package (One)
                             {
                                 One
                             }
@@ -30834,7 +30814,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     0x2000
                 }
             })
-            Name (CDIC, Package (0x01)
+            Name (CDIC, Package (One)
             {
                 Package (0x03)
                 {
@@ -30855,7 +30835,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_HID, "QCOM2429")  // _HID: Hardware ID
             Method (ACPO, 0, NotSerialized)
             {
-                Name (PKGG, Package (0x01)
+                Name (PKGG, Package (One)
                 {
                     Package (0x03)
                     {
@@ -30889,13 +30869,13 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (MSAL, 0, NotSerialized)
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     0x02
                 })
             }
 
-            Name (PGCM, Package (0x01)
+            Name (PGCM, Package (One)
             {
                 Package (0x02)
                 {
@@ -30905,7 +30885,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             })
             Method (PILC, 0, NotSerialized)
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     Zero
                 })
@@ -30925,7 +30905,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_HID, "QCOM242B")  // _HID: Hardware ID
             Method (MANU, 0, NotSerialized)
             {
-                Name (RBUF, Package (0x01)
+                Name (RBUF, Package (One)
                 {
                     0x06BE0BAF
                 })
@@ -30934,7 +30914,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (CHLD, 0, NotSerialized)
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     Package (0x05)
                     {
@@ -30949,7 +30929,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (SSRE, 0, NotSerialized)
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     One
                 })
@@ -31004,7 +30984,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                 Method (CHLD, 0, NotSerialized)
                 {
-                    Return (Package (0x01)
+                    Return (Package (One)
                     {
                         "SLM1\\QCOM242D"
                     })
@@ -31015,7 +30995,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     Name (_ADR, Zero)  // _ADR: Address
                     Method (SMMU, 0, NotSerialized)
                     {
-                        Name (CFG, Package (0x01)
+                        Name (CFG, Package (One)
                         {
                             Package (0x03)
                             {
@@ -31029,13 +31009,13 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                     Method (ACDB, 0, NotSerialized)
                     {
-                        Name (CFG, Package (0x01)
+                        Name (CFG, Package (One)
                         {
                             Package (0x04)
                             {
                                 0x4000, 
                                 0x60, 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     One
                                 }, 
@@ -31048,7 +31028,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                     Method (AVTI, 0, NotSerialized)
                     {
-                        Name (CFG, Package (0x01)
+                        Name (CFG, Package (One)
                         {
                             Package (0x04)
                             {
@@ -31063,7 +31043,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                     Method (DOLI, 0, NotSerialized)
                     {
-                        Name (CFG, Package (0x01)
+                        Name (CFG, Package (One)
                         {
                             Package (0x02)
                             {
@@ -31076,7 +31056,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                     Method (MEMI, 0, NotSerialized)
                     {
-                        Name (CFG, Package (0x01)
+                        Name (CFG, Package (One)
                         {
                             Package (0x07)
                             {
@@ -31094,7 +31074,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                     Method (CPMR, 0, NotSerialized)
                     {
-                        Name (CFG, Package (0x01)
+                        Name (CFG, Package (One)
                         {
                             Package (0x06)
                             {
@@ -31111,7 +31091,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                     Method (CHLD, 0, NotSerialized)
                     {
-                        Return (Package (0x01)
+                        Return (Package (One)
                         {
                             "ADCM\\QCOM242E"
                         })
@@ -31119,7 +31099,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                     Method (NOKI, 0, NotSerialized)
                     {
-                        Return (Package (0x01)
+                        Return (Package (One)
                         {
                             0x02
                         })
@@ -31156,7 +31136,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                         Method (BFSZ, 0, NotSerialized)
                         {
-                            Name (SIZE, Package (0x01)
+                            Name (SIZE, Package (One)
                             {
                                 0x0800
                             })
@@ -31165,7 +31145,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                         Method (PWRC, 0, NotSerialized)
                         {
-                            Name (PWRA, Package (0x01)
+                            Name (PWRA, Package (One)
                             {
                                 0x11
                             })
@@ -31666,7 +31646,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                             Method (BFSZ, 0, NotSerialized)
                             {
-                                Name (SIZE, Package (0x01)
+                                Name (SIZE, Package (One)
                                 {
                                     0x0800
                                 })
@@ -31675,7 +31655,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                             Method (GPNF, 0, NotSerialized)
                             {
-                                Name (GPIO, Package (0x00){})
+                                Name (GPIO, Package (Zero){})
                                 Return (GPIO) /* \_SB_.ADSP.SLM1.ADCM.AUDD.MBHC.GPNF.GPIO */
                             }
                         }
@@ -31685,7 +31665,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Name (_ADR, One)  // _ADR: Address
                             Method (CPMR, 0, NotSerialized)
                             {
-                                Name (CFG, Package (0x01)
+                                Name (CFG, Package (One)
                                 {
                                     Package (0x09)
                                     {
@@ -31839,7 +31819,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 If ((\_SB.SOID == 0xFC))
                 {
-                    Return (Package (0x00){})
+                    Return (Package (Zero){})
                 }
                 Else
                 {
@@ -31870,14 +31850,14 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 If ((\_SB.SOID == 0xFC))
                 {
-                    Return (Package (0x01)
+                    Return (Package (One)
                     {
                         One
                     })
                 }
                 Else
                 {
-                    Return (Package (0x01)
+                    Return (Package (One)
                     {
                         Zero
                     })
@@ -31886,7 +31866,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (SSRE, 0, NotSerialized)
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     One
                 })
@@ -31964,7 +31944,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (RBUF) /* \_SB_.QSM_._CRS.RBUF */
             }
 
-            Name (DHMS, Package (0x01)
+            Name (DHMS, Package (One)
             {
                 Package (0x03)
                 {
@@ -32764,7 +32744,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM2403")  // _HID: Hardware ID
             Name (_UID, Zero)  // _UID: Unique ID
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            Name (_DEP, Package (One)  // _DEP: Dependencies
             {
                 \_SB.PEP0
             })
@@ -32835,7 +32815,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (MEMI, 0, NotSerialized)
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     Package (0x08)
                     {
@@ -33271,23 +33251,23 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x04)
                             {
                                 "PERF_CONTROLS", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x02
                                 }, 
 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x03
                                 }, 
 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x04
                                 }
                             }, 
 
-                            Package (0x01)
+                            Package (One)
                             {
                                 "THERMAL_DOMAINS"
                             }, 
@@ -33315,13 +33295,13 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x02)
                             {
                                 "PERF_CONTROLS", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x02
                                 }
                             }, 
 
-                            Package (0x01)
+                            Package (One)
                             {
                                 "THERMAL_DOMAINS"
                             }
@@ -33343,23 +33323,23 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x04)
                             {
                                 "PERF_CONTROLS", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x02
                                 }, 
 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x03
                                 }, 
 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x04
                                 }
                             }, 
 
-                            Package (0x01)
+                            Package (One)
                             {
                                 "THERMAL_DOMAINS"
                             }
@@ -33375,18 +33355,18 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                             Package (0x03)
                             {
                                 "PERF_CONTROLS", 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x02
                                 }, 
 
-                                Package (0x01)
+                                Package (One)
                                 {
                                     0x03
                                 }
                             }, 
 
-                            Package (0x01)
+                            Package (One)
                             {
                                 "THERMAL_DOMAINS"
                             }
@@ -34027,7 +34007,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         {
                             "PROVIDERS", 
                             One, 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x07
                             }
@@ -36067,7 +36047,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         {
                             "PROVIDERS", 
                             One, 
-                            Package (0x01)
+                            Package (One)
                             {
                                 0x07
                             }
@@ -36081,7 +36061,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         ToUUID ("2feff049-f0c7-46fd-a9d8-6cf70e83ec9b"), 
                         "HDMI_HOTPLUG_DETECT", 
                         "HW_BLOCK_NONE", 
-                        Package (0x01)
+                        Package (One)
                         {
                             "UNMANAGED"
                         }, 
@@ -36116,7 +36096,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         ToUUID ("8dd40bdf-6fbd-45ed-8538-711d434b6ba1"), 
                         "ALWAYS_ACTIVE_WP", 
                         "HW_BLOCK_NONE", 
-                        Package (0x01)
+                        Package (One)
                         {
                             "UNMANAGED"
                         }, 
@@ -36966,7 +36946,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 })
                 While (One)
                 {
-                    Name (_T_0, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     _T_0 = ToInteger (Arg2)
                     If ((_T_0 == 0x00C130B0))
                     {
@@ -37127,7 +37107,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 Return (RBUF) /* \_SB_.GPU0.BLCP.RBUF */
             }
 
-            Name (_DOD, Package (0x01)  // _DOD: Display Output Devices
+            Name (_DOD, Package (One)  // _DOD: Display Output Devices
             {
                 0x00024321
             })
@@ -38880,7 +38860,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     ESCT = Local0
                     Local0 = PPMS /* \_SB_.PPMS */
                     PTOT = Zero
-                    While ((Local0 &= 0x20 != 0x20))
+                    While (Local0 &= (0x20 != 0x20))
                     {
                         Sleep (0x0A)
                         PTOT += One
@@ -39160,7 +39140,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     CTRL = CDW3 /* \_SB_.PCI0._OSC.CDW3 */
                     If (((SUPP & 0x16) != 0x16))
                     {
-                        (CTRL & 0x1E)
+                        CTRL &= 0x1E
                     }
 
                     CTRL &= 0x15
@@ -39190,7 +39170,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 {
                     While (One)
                     {
-                        Name (_T_0, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                        Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                         _T_0 = ToInteger (Arg2)
                         If ((_T_0 == Zero))
                         {
@@ -39357,26 +39337,26 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 MOD2,   1
             }
 
-            Name (_PR0, Package (0x01)  // _PR0: Power Resources for D0
+            Name (_PR0, Package (One)  // _PR0: Power Resources for D0
             {
                 \_SB.PHUB
             })
-            Name (_PR3, Package (0x01)  // _PR3: Power Resources for D3hot
+            Name (_PR3, Package (One)  // _PR3: Power Resources for D3hot
             {
                 \_SB.PHUB
             })
             Device (RP1)
             {
                 Name (_ADR, Zero)  // _ADR: Address
-                Name (_PR0, Package (0x01)  // _PR0: Power Resources for D0
+                Name (_PR0, Package (One)  // _PR0: Power Resources for D0
                 {
                     \_SB.PCON
                 })
-                Name (_PR3, Package (0x01)  // _PR3: Power Resources for D3hot
+                Name (_PR3, Package (One)  // _PR3: Power Resources for D3hot
                 {
                     \_SB.PCON
                 })
-                Name (_PRR, Package (0x01)  // _PRR: Power Resource for Reset
+                Name (_PRR, Package (One)  // _PRR: Power Resource for Reset
                 {
                     \_SB.PCON
                 })
@@ -39405,7 +39385,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_0, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_0 = ToInteger (Arg2)
                             If ((_T_0 == Zero))
                             {
@@ -39451,7 +39431,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         {
                             While (One)
                             {
-                                Name (_T_0, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                                 _T_0 = ToInteger (Arg2)
                                 If ((_T_0 == Zero))
                                 {
@@ -39647,7 +39627,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
         Device (IPA)
         {
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            Name (_DEP, Package (One)  // _DEP: Dependencies
             {
                 \_SB.PEP0
             })
@@ -39760,7 +39740,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
         Device (QDSS)
         {
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            Name (_DEP, Package (One)  // _DEP: Dependencies
             {
                 \_SB.PEP0
             })
@@ -40536,7 +40516,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "MSHW1024")  // _HID: Hardware ID
             Name (_UID, Zero)  // _UID: Unique ID
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            Name (_DEP, Package (One)  // _DEP: Dependencies
             {
                 \_SB.PEP0
             })
@@ -40666,7 +40646,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -40677,7 +40657,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM24AD")  // _HID: Hardware ID
             Name (_UID, One)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.PEP0
             })
@@ -40694,7 +40674,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -40703,7 +40683,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -40727,7 +40707,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -40756,7 +40736,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -40765,7 +40745,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -40789,7 +40769,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -40800,7 +40780,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM24AE")  // _HID: Hardware ID
             Name (_UID, One)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.PEP0
             })
@@ -40817,7 +40797,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -40826,7 +40806,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -40850,7 +40830,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -40861,7 +40841,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM24A8")  // _HID: Hardware ID
             Name (_UID, Zero)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.GPU0
             })
@@ -40876,7 +40856,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -40887,7 +40867,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM24A9")  // _HID: Hardware ID
             Name (_UID, Zero)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.GPU0
             })
@@ -40902,7 +40882,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -40935,7 +40915,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -40970,7 +40950,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41005,7 +40985,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41016,7 +40996,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM2474")  // _HID: Hardware ID
             Name (_UID, One)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.GPU0.AVS0
             })
@@ -41031,7 +41011,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41042,7 +41022,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM2471")  // _HID: Hardware ID
             Name (_UID, 0x02)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.GPU0
             })
@@ -41057,7 +41037,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41068,7 +41048,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM2472")  // _HID: Hardware ID
             Name (_UID, One)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.AMSS
             })
@@ -41083,7 +41063,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41117,7 +41097,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41146,7 +41126,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41155,7 +41135,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41200,7 +41180,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41209,7 +41189,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41236,7 +41216,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM248C")  // _HID: Hardware ID
             Name (_UID, 0x04)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.GPU0.AVS0
             })
@@ -41253,7 +41233,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41262,7 +41242,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41286,7 +41266,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41297,7 +41277,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM248C")  // _HID: Hardware ID
             Name (_UID, 0x05)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.PEP0
             })
@@ -41314,7 +41294,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41323,7 +41303,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41347,7 +41327,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41358,7 +41338,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM248C")  // _HID: Hardware ID
             Name (_UID, 0x06)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.DISP
             })
@@ -41375,7 +41355,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41384,7 +41364,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41408,7 +41388,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41437,7 +41417,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41446,7 +41426,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41470,7 +41450,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41481,7 +41461,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM248C")  // _HID: Hardware ID
             Name (_UID, 0x08)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.DISP
             })
@@ -41498,7 +41478,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41507,7 +41487,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41531,7 +41511,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41565,7 +41545,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41574,7 +41554,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41603,7 +41583,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41644,7 +41624,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41675,7 +41655,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41704,7 +41684,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41713,7 +41693,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41737,7 +41717,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41768,7 +41748,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41777,7 +41757,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41801,7 +41781,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41838,7 +41818,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41872,7 +41852,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -41881,7 +41861,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -41905,7 +41885,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41948,7 +41928,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -41982,7 +41962,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             Name (_TZP, Zero)  // _TZP: Thermal Zone Polling
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -42011,7 +41991,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42020,7 +42000,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42065,7 +42045,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42074,7 +42054,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42101,7 +42081,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM248D")  // _HID: Hardware ID
             Name (_UID, 0x04)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.GPU0.AVS0
             })
@@ -42118,7 +42098,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42127,7 +42107,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42151,7 +42131,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -42162,7 +42142,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM248D")  // _HID: Hardware ID
             Name (_UID, 0x05)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.PEP0
             })
@@ -42179,7 +42159,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42188,7 +42168,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42212,7 +42192,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -42223,7 +42203,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM248D")  // _HID: Hardware ID
             Name (_UID, 0x06)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.DISP
             })
@@ -42240,7 +42220,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42249,7 +42229,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42273,7 +42253,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -42302,7 +42282,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42311,7 +42291,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42335,7 +42315,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -42346,7 +42326,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
         {
             Name (_HID, "QCOM248D")  // _HID: Hardware ID
             Name (_UID, 0x08)  // _UID: Unique ID
-            Name (_TZD, Package (0x01)  // _TZD: Thermal Zone Devices
+            Name (_TZD, Package (One)  // _TZD: Thermal Zone Devices
             {
                 \_SB.DISP
             })
@@ -42363,7 +42343,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42372,7 +42352,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42396,7 +42376,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -42430,7 +42410,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42439,7 +42419,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42468,7 +42448,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -42497,7 +42477,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -42506,7 +42486,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
@@ -42530,7 +42510,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (_DEP, 0, NotSerialized)  // _DEP: Dependencies
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     \_SB.PEP0
                 })
@@ -43528,7 +43508,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                 {
                     While (One)
                     {
-                        Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                        Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                         {
                              0x00                                             // .
                         })
@@ -43537,13 +43517,13 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         {
                             While (One)
                             {
-                                Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                                Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                                 _T_1 = ToInteger (Arg2)
                                 If ((_T_1 == Zero))
                                 {
                                     While (One)
                                     {
-                                        Name (_T_2, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                                        Name (_T_2, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                                         _T_2 = ToInteger (Arg1)
                                         If ((_T_2 == Zero))
                                         {
@@ -43592,13 +43572,13 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         {
                             While (One)
                             {
-                                Name (_T_3, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                                Name (_T_3, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                                 _T_3 = ToInteger (Arg2)
                                 If ((_T_3 == Zero))
                                 {
                                     While (One)
                                     {
-                                        Name (_T_4, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                                        Name (_T_4, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                                         _T_4 = ToInteger (Arg1)
                                         If ((_T_4 == Zero))
                                         {
@@ -43658,7 +43638,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
                 Method (PHYC, 0, NotSerialized)
                 {
-                    Name (CFG0, Package (0x01)
+                    Name (CFG0, Package (One)
                     {
                         Package (0x03)
                         {
@@ -43748,7 +43728,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
             {
                 While (One)
                 {
-                    Name (_T_0, Buffer (0x01)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                    Name (_T_0, Buffer (One)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                     {
                          0x00                                             // .
                     })
@@ -43757,13 +43737,13 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_1, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_1 = ToInteger (Arg2)
                             If ((_T_1 == Zero))
                             {
                                 While (One)
                                 {
-                                    Name (_T_2, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                                    Name (_T_2, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                                     _T_2 = ToInteger (Arg1)
                                     If ((_T_2 == Zero))
                                     {
@@ -43812,13 +43792,13 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                     {
                         While (One)
                         {
-                            Name (_T_3, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                            Name (_T_3, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                             _T_3 = ToInteger (Arg2)
                             If ((_T_3 == Zero))
                             {
                                 While (One)
                                 {
-                                    Name (_T_4, 0x00)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
+                                    Name (_T_4, Zero)  // _T_x: Emitted by ASL Compiler, x=0-9, A-Z
                                     _T_4 = ToInteger (Arg1)
                                     If ((_T_4 == Zero))
                                     {
@@ -44053,7 +44033,9 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Zero, 
                         One, 
                         One, 
-                        PTCFPTCI (0x02), 
+                        PTCF,
+                        PTCI,
+                        0x02, 
                         Zero, 
                         One, 
                         0x000186A0, 
@@ -44073,7 +44055,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Zero, 
                         One, 
                         One, 
-                        XOCFZero, 
+                        XOCF,
+                        Zero, 
                         One, 
                         XTTB, 
                         Zero, 
@@ -44094,7 +44077,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Zero, 
                         One, 
                         One, 
-                        XOCFZero, 
+                        XOCF,
+                        Zero, 
                         One, 
                         XTTB, 
                         Zero, 
@@ -46268,7 +46252,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
                         Zero, 
                         One, 
                         One, 
-                        PISTZero, 
+                        PIST,
+                        Zero, 
                         0x02, 
                         Zero, 
                         One, 
@@ -46508,7 +46493,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000003)
 
             Method (CFGS, 0, NotSerialized)
             {
-                Return (Package (0x01)
+                Return (Package (One)
                 {
                     Package (0x03)
                     {
