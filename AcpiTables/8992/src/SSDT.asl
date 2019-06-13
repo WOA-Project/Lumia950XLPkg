@@ -267,11 +267,11 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8992 ", 0x00000011)
         Device (NFC1)
         {
             Name (_HID, "PNP0547")  // _HID: Hardware ID
-            Name (_CID, Package(0x02)  // _CID: Compatible ID
-			{
-				"PN547",
-				"ACPIPN547"
-			})		
+            Name (_CID, Package (0x02)  // _CID: Compatible ID
+            {
+                "PN547", 
+                "ACPIPN547"
+            })	
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
                 I2cSerialBusV2 (0x0028, ControllerInitiated, 0x00061A80,
