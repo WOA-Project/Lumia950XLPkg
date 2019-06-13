@@ -1,24 +1,4 @@
-/*
- * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20190108 (32-bit version)
- * Copyright (c) 2000 - 2019 Intel Corporation
- * 
- * Disassembling to symbolic ASL+ operators
- *
- * Disassembly of ../../Documents/GitHub/Lumia950XLPkg/AcpiTables/8992/SSDT.aml, Fri Jan 18 19:19:49 2019
- *
- * Original Table Header:
- *     Signature        "SSDT"
- *     Length           0x000013D3 (5075)
- *     Revision         0x02
- *     Checksum         0x1B
- *     OEM ID           "MMO   "
- *     OEM Table ID     "MSM8994 "
- *     OEM Revision     0x00000003 (3)
- *     Compiler ID      "INTL"
- *     Compiler Version 0x20180209 (538444297)
- */
-DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
+DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8992 ", 0x00000011)
 {
     External (_SB_.ABD_.AVBL, IntObj)
     External (_SB_.GIO0, DeviceObj)
@@ -287,11 +267,11 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
         Device (NFC1)
         {
             Name (_HID, "PNP0547")  // _HID: Hardware ID
-            Name (_CID, Package (0x02)  // _CID: Compatible ID
-            {
-                "PN547", 
-                "ACPIPN547"
-            })
+            Name (_CID, Package(0x02)  // _CID: Compatible ID
+			{
+				"PN547",
+				"ACPIPN547"
+			})		
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
                 I2cSerialBusV2 (0x0028, ControllerInitiated, 0x00061A80,
@@ -425,7 +405,7 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
                         Debug = "Method NFC _DSM EEPROM Config"
                         Return (Buffer (0x03CA)
                         {
-                            /* 0000 */  0x43, 0x69, 0x74, 0x79, 0x6D, 0x61, 0x6E, 0x00,  // Cityman.
+                            /* 0000 */  0x54, 0x61, 0x6C, 0x6B, 0x6D, 0x61, 0x6E, 0x00,  // Talkman.
                             /* 0008 */  0x00, 0x00, 0x00, 0x20, 0x08, 0x01, 0x22, 0x00,  // ... ..".
                             /* 0010 */  0x02, 0x01, 0x01, 0x03, 0x01, 0x11, 0x04, 0x01,  // ........
                             /* 0018 */  0x01, 0x06, 0x01, 0x01, 0x0E, 0x01, 0x01, 0x11,  // ........
@@ -645,7 +625,7 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
             }
         }
 
-        Device (USBC)
+        Device (CPSW)
         {
             Name (_HID, "LUMI0001")  // _HID: Hardware ID
             Name (_UID, One)  // _UID: Unique ID
@@ -750,7 +730,7 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
                             0x1001
                         }
                 })
-                Return (RBUF) /* \_SB_.USBC._CRS.RBUF */
+                Return (RBUF) /* \_SB_.CPSW._CRS.RBUF */
             }
 
             Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
@@ -795,7 +775,7 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
             })
             Name (PGID, Buffer (0x0A)
             {
-                "\\_SB.USBC"
+                "\\_SB.CPSW"
             })
             Name (DBUF, Buffer (DBFL){})
             CreateByteField (DBUF, Zero, STAT)
@@ -820,10 +800,10 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
             {
                 DEID = Buffer (ESNL){}
                 DVAL = Zero
-                DEID = PGID /* \_SB_.USBC.PGID */
+                DEID = PGID /* \_SB_.CPSW.PGID */
                 If (\_SB.ABD.AVBL)
                 {
-                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.USBC.DBUF */
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.CPSW.DBUF */
                 }
             }
 
@@ -831,10 +811,10 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
             {
                 DEID = Buffer (ESNL){}
                 DVAL = 0x03
-                DEID = PGID /* \_SB_.USBC.PGID */
+                DEID = PGID /* \_SB_.CPSW.PGID */
                 If (\_SB.ABD.AVBL)
                 {
-                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.USBC.DBUF */
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.CPSW.DBUF */
                 }
             }
         }

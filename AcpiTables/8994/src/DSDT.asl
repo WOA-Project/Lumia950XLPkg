@@ -1,23 +1,3 @@
-/*
- * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20190108 (32-bit version)
- * Copyright (c) 2000 - 2019 Intel Corporation
- * 
- * Disassembling to symbolic ASL+ operators
- *
- * Disassembly of ./DSDT.aml, Fri Jan 18 18:31:33 2019
- *
- * Original Table Header:
- *     Signature        "DSDT"
- *     Length           0x0002D213 (184851)
- *     Revision         0x02
- *     Checksum         0xFF
- *     OEM ID           "QCOMM "
- *     OEM Table ID     "MSM8994 "
- *     OEM Revision     0x00000003 (3)
- *     Compiler ID      "MSFT"
- *     Compiler Version 0x05000000 (83886080)
- */
 DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000003)
 {
     External (_SB_.HDDP, UnknownObj)
@@ -34912,7 +34892,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000003)
             Name (_CID, "ACPIQCOM246F")  // _CID: Compatible ID
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_CCA, Zero)  // _CCA: Cache Coherency Attribute
-            Name (SCLS, 0x0003000000000000)
             Device (MON0)
             {
                 Method (_ADR, 0, NotSerialized)  // _ADR: Address
