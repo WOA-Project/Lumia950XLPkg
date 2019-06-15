@@ -1,14 +1,3 @@
-/*
- * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20190108 (32-bit version)
- * Copyright (c) 2000 - 2019 Intel Corporation
- * 
- * Disassembly of ../../Documents/GitHub/Lumia950XLPkg/AcpiTables/8994/MCFG.aml, Fri Jan 18 19:32:53 2019
- *
- * ACPI Data Table [MCFG]
- *
- * Format: [HexOffset DecimalOffset ByteLength]  FieldName : FieldValue
- */
 
 [000h 0000   4]                    Signature : "MCFG"    [Memory Mapped Configuration table]
 [004h 0004   4]                 Table Length : 0000003C
