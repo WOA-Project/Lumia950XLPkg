@@ -59,3 +59,9 @@ steps:
   inputs:
     pathtoPublish: ../edk2/Build/LumiaHapanero-AARCH64/DEBUG_GCC5/FV/
     artifactName: MSM8994 UEFI (Hapanero)
+    
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish UEFI build (JadePrimo)'
+  inputs:
+    pathtoPublish: ../edk2/Build/LiquidJadePrimo-AARCH64/DEBUG_GCC5/FV/
+    artifactName: MSM8992 UEFI (JadePrimo)

@@ -23,7 +23,8 @@ if ($null -ne $env:BUILDALL)
 	$availableTargets = @(
 		"Lumia950",
 		"Lumia950XL",
-		"Hapanero"
+		"Hapanero",
+		"LiquidJadePrimo"
 	)
 }
 else
