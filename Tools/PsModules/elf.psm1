@@ -12,7 +12,7 @@ function Copy-ElfImages
 	Write-Host "Task: ELF Image generation"
 
 	# Check content (this search pattern is sufficient for our purpose at this moment)
-	$BuildContent = Get-ChildItem -Path "Build/Lumia*-AARCH64/**/*.fd" -Recurse
+	$BuildContent = Get-ChildItem -Path "Build/Lumia*-AARCH64/**/*.fd","Build/LiquidJade*-AARCH64/**/*.fd" -Recurse
 	$LdScript = "Lumia950XLPkg/FvWrapper.ld"
 	if ($BuildContent -eq $false)
 	{
