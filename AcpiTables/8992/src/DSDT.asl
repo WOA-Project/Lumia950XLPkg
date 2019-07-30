@@ -168,6 +168,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         Device (GIO0)
         {
             Name (_HID, "QCOM2405")  // _HID: Hardware ID
+            Name (_DEP, Package (One)  // _DEP: Dependencies
+            {
+                \_SB.I2C7
+            })
             Name (_UID, Zero)  // _UID: Unique ID
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
@@ -440,7 +444,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_HID, "QCOM2453")  // _HID: Hardware ID
             Name (_DEP, Package (One)  // _DEP: Dependencies
             {
-                \_SB.PMIC
+                \_SB.PMIC, 
+                \_SB.ADC1
             })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
@@ -1241,6 +1246,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         {
             Name (_HID, "QCOM2425")  // _HID: Hardware ID
             Name (_CID, "PNP0D80" /* Windows-compatible System Power Management Controller */)  // _CID: Compatible ID
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PMIC
+            })
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
                 Interrupt (ResourceConsumer, Edge, ActiveHigh, ExclusiveAndWake, ,, )
@@ -28398,6 +28407,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_HID, "QCOM2424")  // _HID: Hardware ID
             Name (_UID, 0x02)  // _UID: Unique ID
             Name (_CCA, Zero)  // _CCA: Cache Coherency Attribute
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PEP0
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Name (RBUF, ResourceTemplate ()
@@ -28454,6 +28467,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_HID, "QCOM2424")  // _HID: Hardware ID
             Name (_UID, 0x08)  // _UID: Unique ID
             Name (_CCA, Zero)  // _CCA: Cache Coherency Attribute
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PEP0
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Name (RBUF, ResourceTemplate ()
@@ -30899,6 +30916,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
                 \_SB.PEP0, 
                 \_SB.I2C2, 
                 \_SB.PILC, 
+                \_SB.IPC0, 
                 \_SB.SMD0, 
                 \_SB.RPEN
             })
@@ -31809,6 +31827,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_DEP, Package (0x05)  // _DEP: Dependencies
             {
                 \_SB.PEP0, 
+                \_SB.IPC0, 
                 \_SB.SMD0, 
                 \_SB.PILC, 
                 \_SB.RFS0, 
@@ -31964,6 +31983,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         {
             Name (_HID, "QCOM2400")  // _HID: Hardware ID
             Name (_UID, Zero)  // _UID: Unique ID
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PEP0
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Return (ResourceTemplate ()
@@ -32048,6 +32071,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         {
             Name (_HID, "QCOM2400")  // _HID: Hardware ID
             Name (_UID, One)  // _UID: Unique ID
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PEP0
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Return (ResourceTemplate ()
@@ -32140,6 +32167,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         {
             Name (_HID, "QCOM2400")  // _HID: Hardware ID
             Name (_UID, 0x02)  // _UID: Unique ID
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PEP0
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Return (ResourceTemplate ()
@@ -32228,6 +32259,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         {
             Name (_HID, "QCOM2400")  // _HID: Hardware ID
             Name (_UID, 0x03)  // _UID: Unique ID
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PEP0
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Return (ResourceTemplate ()
@@ -32320,6 +32355,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         {
             Name (_HID, "QCOM2400")  // _HID: Hardware ID
             Name (_UID, 0x04)  // _UID: Unique ID
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PEP0
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Return (ResourceTemplate ()
@@ -32652,6 +32691,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         {
             Name (_HID, "QCOM2400")  // _HID: Hardware ID
             Name (_UID, 0x05)  // _UID: Unique ID
+            Name (_DEP, Package (0x01)  // _DEP: Dependencies
+            {
+                \_SB.PEP0
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Return (ResourceTemplate ()
@@ -32939,6 +32982,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
                 \_SB.PEP0, 
                 \_SB.OMEM, 
                 \_SB.PMIC, 
+                \_SB.PILC, 
+                \_SB.RPEN, 
+                \_SB.TREE, 
+                \_SB.SCM0, 
                 \_SB.DISP, 
                 \_SB.HDDP
             })
@@ -39663,7 +39710,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_DEP, Package (0x02)  // _DEP: Dependencies
             {
                 \_SB.SMD0, 
-                \_SB.SCM0
+                \_SB.SCM0, 
+                \_SB.TREE
             })
             Name (_HID, "QCOM2414")  // _HID: Hardware ID
         }
@@ -43124,6 +43172,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         {
             Name (_HID, "QCOM24A4")  // _HID: Hardware ID
             Name (_UID, One)  // _UID: Unique ID
+            Name (_DEP, Package (One)  // _DEP: Dependencies
+            {
+                \_SB.PMIC
+            })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Name (NAM, Buffer (0x0A)
