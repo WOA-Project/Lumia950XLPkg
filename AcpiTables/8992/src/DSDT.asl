@@ -442,7 +442,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         Device (PMBT)
         {
             Name (_HID, "QCOM2453")  // _HID: Hardware ID
-            Name (_DEP, Package (One)  // _DEP: Dependencies
+            Name (_DEP, Package (0x2)  // _DEP: Dependencies
             {
                 \_SB.PMIC, 
                 \_SB.ADC1
@@ -30911,7 +30911,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
 
         Device (ADSP)
         {
-            Name (_DEP, Package (0x05)  // _DEP: Dependencies
+            Name (_DEP, Package (0x06)  // _DEP: Dependencies
             {
                 \_SB.PEP0, 
                 \_SB.I2C2, 
@@ -31824,7 +31824,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
 
         Device (AMSS)
         {
-            Name (_DEP, Package (0x05)  // _DEP: Dependencies
+            Name (_DEP, Package (0x06)  // _DEP: Dependencies
             {
                 \_SB.PEP0, 
                 \_SB.IPC0, 
@@ -32974,7 +32974,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
                 }
             }
 
-            Name (_DEP, Package (0x08)  // _DEP: Dependencies
+            Name (_DEP, Package (0x0C)  // _DEP: Dependencies
             {
                 \_SB.MMU0, 
                 \_SB.MMU3, 
@@ -39707,7 +39707,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
 
         Device (SSM)
         {
-            Name (_DEP, Package (0x02)  // _DEP: Dependencies
+            Name (_DEP, Package (0x03)  // _DEP: Dependencies
             {
                 \_SB.SMD0, 
                 \_SB.SCM0, 
