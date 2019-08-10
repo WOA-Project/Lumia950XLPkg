@@ -129,9 +129,9 @@ READ_LOCK_STATUS   = TRUE
     SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/FADT.acpi
     SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/GTDT.aml
     SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/MADT.aml
-	  SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/MCFG.aml
-	  SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/CSRT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/SSDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/MCFG.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/CSRT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/SSDT.aml
     SECTION UI = "AcpiTables"
   }
 
