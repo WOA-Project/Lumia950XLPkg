@@ -43,11 +43,11 @@ void spi_bit_bang_write(UINT8 data)
     else {
       mQcomGpioTlmmProtocol->Set(SPI_MOSI, 0);
     }
-    udelay(1);
+    udelay(2);
 
     // pulse clock to indicate that bit value should be read
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
-    udelay(100);
+    udelay(2);
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
 
     // shift byte left so next bit will be leftmost
@@ -60,17 +60,15 @@ int truly_spi_write(UINT8 *data, int num)
 {
   int i;
   mQcomGpioTlmmProtocol->Set(SPI_CS, 0); /* cs low */
-  udelay(100);
+  udelay(10);
 
   for (i = 0; i < num; i++) {
     spi_bit_bang_write(data[i]);
   }
 
   mQcomGpioTlmmProtocol->Set(SPI_CS, 1); /* cs high */
-  udelay(100);
-
-  // H/W needs delay for gpio's to turn high
   udelay(10);
+
   return 0;
 }
 
@@ -134,33 +132,10 @@ LiCE40SpiConfigEntry(
 
   mQcomPmicProtocol->pm8x41_gpio_config_sid(2, 4, &pmi_gpio4_param);
 
-  // SPMI write 0xa041, 0xa04a, 0xa046, slave ID 2
+  // TODO: SPMI write 0xa041, 0xa04a, 0xa046, slave ID 2
   // 0xa041: 0x16
   // 0xa04a: 0x81
   // 0xa046: 1 << 7
-  struct pmic_arb_cmd   spmi_cmd;
-  struct pmic_arb_param spmi_param;
-  UINT8                 buf;
-
-  spmi_cmd.address  = 0xa041 >> 8;
-  spmi_cmd.offset   = (UINT8)0xa041;
-  spmi_cmd.byte_cnt = 1;
-  spmi_cmd.slave_id = 2;
-
-  buf               = 0x16;
-  spmi_param.buffer = &buf;
-  spmi_param.size   = 1;
-  mQcomSpmiProtocol->pmic_arb_write_cmd(&spmi_cmd, &spmi_param);
-
-  spmi_cmd.address = 0xa04a >> 8;
-  spmi_cmd.offset  = (UINT8)0xa04a;
-  buf              = 0x81;
-  mQcomSpmiProtocol->pmic_arb_write_cmd(&spmi_cmd, &spmi_param);
-
-  spmi_cmd.address = 0xa046 >> 8;
-  spmi_cmd.offset  = (UINT8)0xa046;
-  buf              = 1 << 7;
-  mQcomSpmiProtocol->pmic_arb_write_cmd(&spmi_cmd, &spmi_param);
 
   // Configure CRESET_B TLMM (GPIO 95), 2mA Pull Up for input
   mQcomGpioTlmmProtocol->SetDriveStrength(95, 2);
@@ -193,7 +168,7 @@ LiCE40SpiConfigEntry(
   mQcomGpioTlmmProtocol->Set(55, 1);
   for (UINTN i = 0; i < 8; i++) {
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
-    udelay(100);
+    udelay(50);
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
   }
 
@@ -203,13 +178,21 @@ LiCE40SpiConfigEntry(
   // Wait 100 clk cycles
   for (UINTN i = 0; i < 8; i++) {
     // idk
-    udelay(100);
+    udelay(50);
   }
 
   // Check CDONE (INT_N) from TLMM GPIO 95
+  mQcomGpioTlmmProtocol->SetDriveStrength(95, 2);
+  mQcomGpioTlmmProtocol->SetFunction(95, 0);
+  mQcomGpioTlmmProtocol->SetPull(95, GPIO_PULL_UP);
+  mQcomGpioTlmmProtocol->DirectionInput(95);
+
   if (mQcomGpioTlmmProtocol->Get(95) == 0) {
     DEBUG((EFI_D_ERROR, "CDONE != 1"));
     ASSERT(FALSE);
+  }
+  else {
+    DEBUG((EFI_D_INFO, "CDONE check success!"));
   }
 
   // Send additional 49 dummy bits and 49 SCK (56) clk cycles
@@ -218,12 +201,11 @@ LiCE40SpiConfigEntry(
   truly_spi_write(dummy, sizeof(dummy));
   for (UINTN i = 0; i < 49; i++) {
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
-    udelay(100);
+    udelay(50);
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
   }
 
-  // Config PMI8994 GPIO 13 out (VCONN_OUT_EN)
-  mQcomPmicProtocol->pm8x41_gpio_set_sid(2, 13, 0);
+  // TODO: Config PMI8994 GPIO 13 out (VCONN_OUT_EN) ?
 
 exit:
   return Status;
