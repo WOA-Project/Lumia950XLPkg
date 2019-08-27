@@ -166,6 +166,81 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8992 ", 0x00000011)
             Name (_HID, "MSHW100D")  // _HID: Hardware ID
         }
 
+        Device (SIAD)		
+        {		
+            Name (_HID, "MSHW100F")  // _HID: Hardware ID		
+            Name (_UID, One)  // _UID: Unique ID		
+            Name (_DEP, Package (0x03)  // _DEP: Dependencies		
+            {		
+                \_SB.PEP0, 		
+                \_SB.I2C7, 		
+                \_SB.GIO0		
+            })		
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings		
+            {		
+                Name (RBUF, ResourceTemplate ()		
+                {		
+                    I2cSerialBusV2 (0x002C, ControllerInitiated, 0x00061A80,		
+                        AddressingMode7Bit, "\\_SB.I2C7",		
+                        0x00, ResourceConsumer, , Exclusive,		
+                        )		
+                    GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionNone,		
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,		
+                        )		
+                        {   // Pin list		
+                            0x0027		
+                        }		
+                    GpioInt (Edge, ActiveLow, Exclusive, PullUp, 0x0000,		
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,		
+                        )		
+                        {   // Pin list		
+                            0x0060		
+                        }		
+                })		
+                Return (RBUF) /* \_SB_.SIAD._CRS.RBUF */		
+            }		
+            Name (PGID, Buffer (0x0A)		
+            {		
+                "\\_SB.SIAD"		
+            })		
+            Name (DBUF, Buffer (DBFL){})		
+            CreateByteField (DBUF, Zero, STAT)		
+            CreateByteField (DBUF, 0x02, DVAL)		
+            CreateField (DBUF, 0x18, 0xA0, DEID)		
+            Method (_S1D, 0, NotSerialized)  // _S1D: S1 Device State		
+            {		
+                Return (0x03)		
+            }		
+            Method (_S2D, 0, NotSerialized)  // _S2D: S2 Device State		
+            {		
+                Return (0x03)		
+            }		
+            Method (_S3D, 0, NotSerialized)  // _S3D: S3 Device State		
+            {		
+                Return (0x03)		
+            }		
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0		
+            {		
+                DEID = Buffer (ESNL){}		
+                DVAL = Zero		
+                DEID = PGID /* \_SB_.SIAD.PGID */		
+                If (\_SB.ABD.AVBL)		
+                {		
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.SIAD.DBUF */		
+                }		
+            }		
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3		
+            {		
+                DEID = Buffer (ESNL){}		
+                DVAL = 0x03		
+                DEID = PGID /* \_SB_.SIAD.PGID */		
+                If (\_SB.ABD.AVBL)		
+                {		
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.SIAD.DBUF */		
+                }		
+            }		
+        }
+
         Device (MCPU)
         {
             Name (_HID, "MSHW1014")  // _HID: Hardware ID
