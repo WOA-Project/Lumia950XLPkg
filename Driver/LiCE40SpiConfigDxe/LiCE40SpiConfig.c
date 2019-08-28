@@ -176,9 +176,11 @@ LiCE40SpiConfigEntry(
   truly_spi_write(gBitstream, sizeof(gBitstream));
 
   // Wait 100 clk cycles
-  for (UINTN i = 0; i < 8; i++) {
+  for (UINTN i = 0; i < 100; i++) {
     // idk
+    mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
     udelay(50);
+    mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
   }
 
   // Check CDONE (INT_N) from TLMM GPIO 95
