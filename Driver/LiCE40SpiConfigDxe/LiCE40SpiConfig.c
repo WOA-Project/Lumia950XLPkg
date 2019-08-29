@@ -137,18 +137,17 @@ LiCE40SpiConfigEntry(
   // 0xa04a: 0x81
   // 0xa046: 1 << 7
 
-  // Configure CDONE TLMM (GPIO 95), 2mA No Pull (has external pullup) for input
+  // Configure CRESET_B TLMM (GPIO 95), 2mA Pull Up for input
   mQcomGpioTlmmProtocol->SetDriveStrength(95, 2);
   mQcomGpioTlmmProtocol->SetFunction(95, 0);
-  mQcomGpioTlmmProtocol->SetPull(95, GPIO_PULL_NONE);
+  mQcomGpioTlmmProtocol->SetPull(95, GPIO_PULL_UP);
   mQcomGpioTlmmProtocol->DirectionInput(95);
 
   // Configure SPI_SS TLMM (GPIO 55) 2mA No Pull, set value to 0
-  mQcomGpioTlmmProtocol->SetDriveStrength(SPI_CS, 2);
-  mQcomGpioTlmmProtocol->SetFunction(SPI_CS, 0);
-  mQcomGpioTlmmProtocol->SetPull(SPI_CS, GPIO_PULL_NONE);
-  mQcomGpioTlmmProtocol->DirectionOutput(SPI_CS, 0);
-  mQcomGpioTlmmProtocol->Set(SPI_CS, 0);
+  mQcomGpioTlmmProtocol->SetDriveStrength(55, 2);
+  mQcomGpioTlmmProtocol->SetFunction(55, 0);
+  mQcomGpioTlmmProtocol->SetPull(55, GPIO_PULL_NONE);
+  mQcomGpioTlmmProtocol->DirectionOutput(55, 0);
 
   // Configure CRESET_B: PMI8994 GPIO4 Out low
   mQcomPmicProtocol->pm8x41_gpio_set_sid(2, 4, 0);
@@ -164,39 +163,32 @@ LiCE40SpiConfigEntry(
 
   // Wait at least 1200ns
   udelay(1200);
-  
-  // Check CDONE (INT_N) from TLMM GPIO 95
-  if (mQcomGpioTlmmProtocol->Get(95) == 1) {
-    DEBUG((EFI_D_ERROR, "CDONE != 0"));
-    ASSERT(FALSE);
-  }
-  else {
-    DEBUG((EFI_D_INFO, "CDONE check success!"));
-  }
 
   // Set SPI_SS (GPIO 55) set to high, send 8 dummy clocks
-  mQcomGpioTlmmProtocol->Set(SPI_CS, 1);
+  mQcomGpioTlmmProtocol->Set(55, 1);
   for (UINTN i = 0; i < 8; i++) {
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
     udelay(50);
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
-    udelay(50);
   }
 
   // Transfer bitstream
   truly_spi_write(gBitstream, sizeof(gBitstream));
 
   // Wait 100 clk cycles
-  mQcomGpioTlmmProtocol->Set(SPI_MOSI, 0);
   for (UINTN i = 0; i < 100; i++) {
     // idk
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
     udelay(50);
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
-    udelay(50);
   }
 
   // Check CDONE (INT_N) from TLMM GPIO 95
+  mQcomGpioTlmmProtocol->SetDriveStrength(95, 2);
+  mQcomGpioTlmmProtocol->SetFunction(95, 0);
+  mQcomGpioTlmmProtocol->SetPull(95, GPIO_PULL_UP);
+  mQcomGpioTlmmProtocol->DirectionInput(95);
+
   if (mQcomGpioTlmmProtocol->Get(95) == 0) {
     DEBUG((EFI_D_ERROR, "CDONE != 1"));
     ASSERT(FALSE);
@@ -206,15 +198,13 @@ LiCE40SpiConfigEntry(
   }
 
   // Send additional 49 dummy bits and 49 SCK (56) clk cycles
-  /*unsigned char dummy[49];
+  unsigned char dummy[49];
   ZeroMem(dummy, sizeof(dummy));
-  truly_spi_write(dummy, sizeof(dummy));*/
-  mQcomGpioTlmmProtocol->Set(SPI_MOSI, 0);
+  truly_spi_write(dummy, sizeof(dummy));
   for (UINTN i = 0; i < 49; i++) {
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
     udelay(50);
     mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
-    udelay(50);
   }
 
   // TODO: Config PMI8994 GPIO 13 out (VCONN_OUT_EN) ?
