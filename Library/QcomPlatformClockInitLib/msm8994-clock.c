@@ -850,7 +850,7 @@ static struct branch_clk mdss_extpclk_clk = {
         },
 };
 
-/* BLSP2_QUI4 SPI clocks */
+/* BLSP2_QUP4 SPI clocks */
 static struct clk_freq_tbl ftbl_blsp2_qup4_spi_apps_clk_src[] = {
     F(960000, cxo, 10, 1, 2),       F(4800000, cxo, 4, 0, 0),
     F(9600000, cxo, 2, 0, 0),       F(15000000, gpll0, 10, 1, 4),
