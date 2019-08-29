@@ -34,8 +34,10 @@
   gQcomGpioTlmmProtocolGuid
   gQcomPm8x41ProtocolGuid
   gQcomSpmiProtocolGuid
+  gQcomSpiQupProtocolGuid
 
 [Depex]
   gQcomGpioTlmmProtocolGuid AND 
   gQcomPm8x41ProtocolGuid AND
-  gQcomSpmiProtocolGuid
+  gQcomSpmiProtocolGuid AND
+  gQcomSpiQupProtocolGuid

@@ -9,6 +9,7 @@
 
 #include <Protocol/QcomGpioTlmm.h>
 #include <Protocol/QcomPm8x41.h>
+#include <Protocol/QcomSpi.h>
 #include <Protocol/QcomSpmi.h>
 
 #include "Bitstream.h"
@@ -16,60 +17,19 @@
 QCOM_GPIO_TLMM_PROTOCOL *mQcomGpioTlmmProtocol;
 QCOM_PM8X41_PROTOCOL *   mQcomPmicProtocol;
 QCOM_SPMI_PROTOCOL *     mQcomSpmiProtocol;
+QCOM_SPI_QUP_PROTOCOL *  mQcomSpiProtocol;
 
 #define SPI_MOSI 53
 #define SPI_MISO 54
 #define SPI_CS 55
 #define SPI_SCLK 56
 
-#define TLMM_CONFIGURE_SPI_OUT(x)                                              \
-  mQcomGpioTlmmProtocol->SetFunction((x), 0);                                  \
-  mQcomGpioTlmmProtocol->SetDriveStrength((x), 2);                             \
-  mQcomGpioTlmmProtocol->SetPull((x), GPIO_PULL_NONE);                         \
-  mQcomGpioTlmmProtocol->DirectionOutput((x), 0)
-
-// spi_bit_bang_write: Write into SPI pipe using bitbang
-void spi_bit_bang_write(UINT8 data)
+VOID ConfigureTlmmPin(UINTN Pin, UINTN Func)
 {
-  int i;
-
-  // send bits 7..0
-  for (i = 0; i < 8; i++) {
-    // consider leftmost bit
-    // set line high if bit is 1, low if bit is 0
-    if (data & 0x80) {
-      mQcomGpioTlmmProtocol->Set(SPI_MOSI, 1);
-    }
-    else {
-      mQcomGpioTlmmProtocol->Set(SPI_MOSI, 0);
-    }
-    udelay(2);
-
-    // pulse clock to indicate that bit value should be read
-    mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
-    udelay(2);
-    mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
-
-    // shift byte left so next bit will be leftmost
-    data <<= 1;
-  }
-}
-
-// The actual write function
-int truly_spi_write(UINT8 *data, int num)
-{
-  int i;
-  mQcomGpioTlmmProtocol->Set(SPI_CS, 0); /* cs low */
-  udelay(10);
-
-  for (i = 0; i < num; i++) {
-    spi_bit_bang_write(data[i]);
-  }
-
-  mQcomGpioTlmmProtocol->Set(SPI_CS, 1); /* cs high */
-  udelay(10);
-
-  return 0;
+  mQcomGpioTlmmProtocol->SetFunction(Pin, Func);
+  mQcomGpioTlmmProtocol->SetDriveStrength(Pin, 2);
+  mQcomGpioTlmmProtocol->SetPull(Pin, GPIO_PULL_NONE);
+  mQcomGpioTlmmProtocol->DirectionOutput(Pin, 0);
 }
 
 EFI_STATUS
@@ -77,7 +37,6 @@ EFIAPI
 LiCE40SpiConfigEntry(
     IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
 {
-  // It may be necesary to run some init first
   EFI_STATUS Status;
 
   Status = gBS->LocateProtocol(
@@ -101,10 +60,18 @@ LiCE40SpiConfigEntry(
     goto exit;
   }
 
-  // Configure SPI output pins（2mA, no pull, out)
-  TLMM_CONFIGURE_SPI_OUT(SPI_MOSI);
-  TLMM_CONFIGURE_SPI_OUT(SPI_CS);
-  TLMM_CONFIGURE_SPI_OUT(SPI_SCLK);
+  Status = gBS->LocateProtocol(
+      &gQcomSpiQupProtocolGuid, NULL, (VOID **)mQcomSpiProtocol);
+
+  if (EFI_ERROR(Status)) {
+    goto exit;
+  }
+
+  ConfigureTlmmPin(SPI_MISO, 3);
+  ConfigureTlmmPin(SPI_MOSI, 3);
+  ConfigureTlmmPin(SPI_SCLK, 3);
+  // CS will be overwritten anyway
+  ConfigureTlmmPin(SPI_CS, 2);
 
   // Configure CRESET_B: PMI8994 GPIO4 Out low
   mQcomPmicProtocol->pm8x41_gpio_set_sid(2, 4, 0);
@@ -137,7 +104,7 @@ LiCE40SpiConfigEntry(
   // 0xa04a: 0x81
   // 0xa046: 1 << 7
 
-  // Configure CRESET_B TLMM (GPIO 95), 2mA Pull Up for input
+  // Configure CDONE TLMM (GPIO 95), 2mA Pull Up for input
   mQcomGpioTlmmProtocol->SetDriveStrength(95, 2);
   mQcomGpioTlmmProtocol->SetFunction(95, 0);
   mQcomGpioTlmmProtocol->SetPull(95, GPIO_PULL_UP);
@@ -147,13 +114,11 @@ LiCE40SpiConfigEntry(
   mQcomGpioTlmmProtocol->SetDriveStrength(55, 2);
   mQcomGpioTlmmProtocol->SetFunction(55, 0);
   mQcomGpioTlmmProtocol->SetPull(55, GPIO_PULL_NONE);
-  mQcomGpioTlmmProtocol->DirectionOutput(55, 0);
+  mQcomGpioTlmmProtocol->DirectionOutput(55, 1);
+  mQcomGpioTlmmProtocol->Set(55, 0);
 
   // Configure CRESET_B: PMI8994 GPIO4 Out low
   mQcomPmicProtocol->pm8x41_gpio_set_sid(2, 4, 0);
-
-  // Set SPI_SCK to 1
-  mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
 
   // Wait at least 200ns
   udelay(200);
@@ -164,28 +129,41 @@ LiCE40SpiConfigEntry(
   // Wait at least 1200ns
   udelay(1200);
 
-  // Set SPI_SS (GPIO 55) set to high, send 8 dummy clocks
-  mQcomGpioTlmmProtocol->Set(55, 1);
-  for (UINTN i = 0; i < 8; i++) {
-    mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
-    udelay(50);
-    mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
+  // Check if CDONE == 0
+  if (mQcomGpioTlmmProtocol->Get(95) != 0) {
+    DEBUG((EFI_D_ERROR, "CDONE != 0"));
+    ASSERT(FALSE);
   }
 
-  // Transfer bitstream
-  truly_spi_write(gBitstream, sizeof(gBitstream));
+  // Transfer firmware using QUP SPI
+  struct spi_transfer transfer;
+  UINTN               Transferred = 0;
+  void *              CurrentBuf  = gBitstream;
+  char                Dummy[7];
 
-  // Wait 100 clk cycles
-  for (UINTN i = 0; i < 8; i++) {
-    // idk
-    udelay(50);
+  ZeroMem(Dummy, sizeof(Dummy));
+
+  transfer.bits_per_word = 8;
+  transfer.len           = 0x40;
+  transfer.speed_hz      = 25000000;
+
+  while (Transferred < sizeof(CurrentBuf)) {
+    transfer.tx_buf = CurrentBuf;
+    Status          = mQcomSpiProtocol->Transfer(&transfer);
+    ASSERT_EFI_ERROR(Status);
+    Transferred += 0x40;
+    CurrentBuf = CurrentBuf + 0x40;
   }
 
-  // Check CDONE (INT_N) from TLMM GPIO 95
-  mQcomGpioTlmmProtocol->SetDriveStrength(95, 2);
-  mQcomGpioTlmmProtocol->SetFunction(95, 0);
-  mQcomGpioTlmmProtocol->SetPull(95, GPIO_PULL_UP);
-  mQcomGpioTlmmProtocol->DirectionInput(95);
+  // Pull up CS_N
+  mQcomGpioTlmmProtocol->SetPull(55, GPIO_PULL_UP);
+  mQcomGpioTlmmProtocol->DirectionOutput(55, 1);
+
+  // Transfer dummy
+  transfer.len    = sizeof(Dummy);
+  transfer.tx_buf = (void *)Dummy;
+  Status          = mQcomSpiProtocol->Transfer(&transfer);
+  ASSERT_EFI_ERROR(Status);
 
   if (mQcomGpioTlmmProtocol->Get(95) == 0) {
     DEBUG((EFI_D_ERROR, "CDONE != 1"));
@@ -193,16 +171,6 @@ LiCE40SpiConfigEntry(
   }
   else {
     DEBUG((EFI_D_INFO, "CDONE check success!"));
-  }
-
-  // Send additional 49 dummy bits and 49 SCK (56) clk cycles
-  unsigned char dummy[49];
-  ZeroMem(dummy, sizeof(dummy));
-  truly_spi_write(dummy, sizeof(dummy));
-  for (UINTN i = 0; i < 49; i++) {
-    mQcomGpioTlmmProtocol->Set(SPI_SCLK, 0);
-    udelay(50);
-    mQcomGpioTlmmProtocol->Set(SPI_SCLK, 1);
   }
 
   // TODO: Config PMI8994 GPIO 13 out (VCONN_OUT_EN) ?
