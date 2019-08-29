@@ -39,6 +39,9 @@
   gHardwareInterruptProtocolGuid
   gQcomSpiQupProtocolGuid
 
+[FixedPcd]
+  gQcomTokenSpaceGuid.PcdGicSpiStart
+
 [Depex]
   gQcomGpioTlmmProtocolGuid AND 
   gQcomPm8x41ProtocolGuid AND

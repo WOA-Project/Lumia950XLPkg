@@ -306,8 +306,8 @@ spi_qup_transfer_one(pspi_qup controller, struct spi_transfer *xfer)
 {
   unsigned long timeout, flags;
   EFI_STATUS    Status;
-  UINT64 TimerTicks64;
-  UINT64 SystemCounterVal;
+  UINT64        TimerTicks64;
+  UINT64        SystemCounterVal;
 
   Status = spi_qup_io_config(controller, xfer);
   if (EFI_ERROR(Status)) {
@@ -345,7 +345,7 @@ spi_qup_transfer_one(pspi_qup controller, struct spi_transfer *xfer)
 
   // Wait for completion
   SystemCounterVal = GetPerformanceCounter();
-  TimerTicks64 = timeout + SystemCounterVal;
+  TimerTicks64     = timeout + SystemCounterVal;
   while (SystemCounterVal < TimerTicks64) {
     if (AtomicRead(&controller->done) != 0) {
       break;
@@ -354,14 +354,16 @@ spi_qup_transfer_one(pspi_qup controller, struct spi_transfer *xfer)
   }
 
   if (AtomicRead(&controller->done) != 1) {
-      Status = EFI_TIMEOUT;
+    Status = EFI_TIMEOUT;
   }
 
 exit:
   spi_qup_set_state(controller, QUP_STATE_RESET);
   controller->xfer = NULL;
   if (EFI_ERROR(Status)) {
-    Status = controller->error;
+    if (EFI_ERROR(controller->error)) {
+      Status = controller->error;
+    }
   }
   return Status;
 }
