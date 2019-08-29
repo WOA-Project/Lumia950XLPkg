@@ -42,30 +42,22 @@ LiCE40SpiConfigEntry(
   Status = gBS->LocateProtocol(
       &gQcomGpioTlmmProtocolGuid, NULL, (VOID **)&mQcomGpioTlmmProtocol);
 
-  if (EFI_ERROR(Status)) {
-    goto exit;
-  }
+  ASSERT_EFI_ERROR(Status);
 
   Status = gBS->LocateProtocol(
       &gQcomPm8x41ProtocolGuid, NULL, (VOID **)&mQcomPmicProtocol);
 
-  if (EFI_ERROR(Status)) {
-    goto exit;
-  }
+  ASSERT_EFI_ERROR(Status);
 
   Status = gBS->LocateProtocol(
       &gQcomSpmiProtocolGuid, NULL, (VOID **)&mQcomSpmiProtocol);
 
-  if (EFI_ERROR(Status)) {
-    goto exit;
-  }
+  ASSERT_EFI_ERROR(Status);
 
   Status = gBS->LocateProtocol(
-      &gQcomSpiQupProtocolGuid, NULL, (VOID **)mQcomSpiProtocol);
+      &gQcomSpiQupProtocolGuid, NULL, (VOID **)&mQcomSpiProtocol);
 
-  if (EFI_ERROR(Status)) {
-    goto exit;
-  }
+  ASSERT_EFI_ERROR(Status);
 
   ConfigureTlmmPin(SPI_MISO, 3);
   ConfigureTlmmPin(SPI_MOSI, 3);
@@ -103,6 +95,9 @@ LiCE40SpiConfigEntry(
   // 0xa041: 0x16
   // 0xa04a: 0x81
   // 0xa046: 1 << 7
+  mQcomPmicProtocol->pm8x41_reg_write(0x2a041, 0x16);
+  mQcomPmicProtocol->pm8x41_reg_write(0x2a04a, 0x81);
+  mQcomPmicProtocol->pm8x41_reg_write(0x2a046, 1 << 7);
 
   // Configure CDONE TLMM (GPIO 95), 2mA Pull Up for input
   mQcomGpioTlmmProtocol->SetDriveStrength(95, 2);
@@ -149,6 +144,7 @@ LiCE40SpiConfigEntry(
 
   while (Transferred < sizeof(CurrentBuf)) {
     transfer.tx_buf = CurrentBuf;
+    transfer.len    = 0x40;
     Status          = mQcomSpiProtocol->Transfer(&transfer);
     ASSERT_EFI_ERROR(Status);
     Transferred += 0x40;
@@ -173,8 +169,7 @@ LiCE40SpiConfigEntry(
     DEBUG((EFI_D_INFO, "CDONE check success!"));
   }
 
-  // TODO: Config PMI8994 GPIO 13 out (VCONN_OUT_EN) ?
-
-exit:
+  // TODO: Config PM8994 GPIO 13 out (VCONN_OUT_EN) ?
+  ASSERT_EFI_ERROR(Status);
   return Status;
 }
