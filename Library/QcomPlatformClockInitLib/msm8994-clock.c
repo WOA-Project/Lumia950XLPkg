@@ -861,13 +861,17 @@ static struct clk_freq_tbl ftbl_blsp2_qup4_spi_apps_clk_src[] = {
 
 static struct rcg_clk gcc_blsp2_qup4_spi_apps_clk_src = {
     .cmd_reg      = (uint32_t *)BLSP2_QUP4_SPI_APPS_CMD_RCGR,
-    .set_rate     = clock_lib2_rcg_set_rate_hid,
+    .cfg_reg      = (uint32_t *)BLSP2_QUP4_SPI_APPS_CFG_CBCR,
+    .m_reg        = (uint32_t *)BLSP2_QUP4_SPI_APPS_M,
+    .n_reg        = (uint32_t *)BLSP2_QUP4_SPI_APPS_N,
+    .d_reg        = (uint32_t *)BLSP2_QUP4_SPI_APPS_D,
+    .set_rate     = clock_lib2_rcg_set_rate_mnd,
     .freq_tbl     = ftbl_blsp2_qup4_spi_apps_clk_src,
     .current_freq = &rcg_dummy_freq,
     .c =
         {
             .dbg_name = "gcc_blsp2_qup4_spi_apps_clk_src",
-            .ops      = &clk_ops_rcg,
+            .ops      = &clk_ops_rcg_mnd,
         },
 };
 
