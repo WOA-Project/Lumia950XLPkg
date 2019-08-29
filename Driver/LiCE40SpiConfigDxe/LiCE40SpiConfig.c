@@ -24,12 +24,21 @@ QCOM_SPI_QUP_PROTOCOL *  mQcomSpiProtocol;
 #define SPI_CS 55
 #define SPI_SCLK 56
 
-VOID ConfigureTlmmPin(UINTN Pin, UINTN Func)
+EFI_STATUS ReadUc120Register(UINTN Address, unsigned char *Value)
 {
-  mQcomGpioTlmmProtocol->SetFunction(Pin, Func);
-  mQcomGpioTlmmProtocol->SetDriveStrength(Pin, 2);
-  mQcomGpioTlmmProtocol->SetPull(Pin, GPIO_PULL_NONE);
-  mQcomGpioTlmmProtocol->DirectionOutput(Pin, 0);
+  EFI_STATUS Status;
+
+  struct spi_transfer transfer;
+  unsigned char       command = (unsigned char)(Address << 3);
+
+  transfer.tx_buf        = &command;
+  transfer.rx_buf        = Value;
+  transfer.len           = 1;
+  transfer.bits_per_word = 8;
+  transfer.speed_hz      = 25000000;
+
+  Status = mQcomSpiProtocol->Transfer(&transfer);
+  return Status;
 }
 
 EFI_STATUS
@@ -59,12 +68,6 @@ LiCE40SpiConfigEntry(
 
   ASSERT_EFI_ERROR(Status);
 
-  ConfigureTlmmPin(SPI_MISO, 3);
-  ConfigureTlmmPin(SPI_MOSI, 3);
-  ConfigureTlmmPin(SPI_SCLK, 3);
-  // CS will be overwritten anyway
-  ConfigureTlmmPin(SPI_CS, 2);
-
   // Configure CRESET_B: PMI8994 GPIO4 Out low
   mQcomPmicProtocol->pm8x41_gpio_set_sid(2, 4, 0);
 
@@ -72,15 +75,15 @@ LiCE40SpiConfigEntry(
   mQcomPmicProtocol->pm8x41_gpio_set_sid(2, 5, 0);
 
   // Set PMIC GPIO and LDO
-  // PMI8994 LDO18 3.3V On
-  struct pm8x41_ldo ldo18 = LDO(PM8x41_LDO18, PLDO_TYPE);
-  mQcomPmicProtocol->pm8x41_ldo_set_voltage(&ldo18, 3300000);
-  mQcomPmicProtocol->pm8x41_ldo_control(&ldo18, 1);
+  // PMI8994 LDO19 3.3V On
+  struct pm8x41_ldo ldo19 = LDO(PM8x41_LDO19, PLDO_TYPE);
+  mQcomPmicProtocol->pm8x41_ldo_set_voltage(&ldo19, 3300000);
+  mQcomPmicProtocol->pm8x41_ldo_control(&ldo19, 1);
 
-  // PMI8994 LDO30 1.2V On
-  struct pm8x41_ldo ldo30 = LDO(PM8x41_LDO30, PLDO_TYPE);
-  mQcomPmicProtocol->pm8x41_ldo_set_voltage(&ldo30, 1200000);
-  mQcomPmicProtocol->pm8x41_ldo_control(&ldo30, 1);
+  // PMI8994 LDO31 1.2V On
+  struct pm8x41_ldo ldo31 = LDO(PM8x41_LDO31, PLDO_TYPE);
+  mQcomPmicProtocol->pm8x41_ldo_set_voltage(&ldo31, 1200000);
+  mQcomPmicProtocol->pm8x41_ldo_control(&ldo31, 1);
 
   // PMI8994 GPIO 4 2mA output no pull
   struct pm8x41_gpio pmi_gpio4_param = {
@@ -129,6 +132,9 @@ LiCE40SpiConfigEntry(
     DEBUG((EFI_D_ERROR, "CDONE != 0"));
     ASSERT(FALSE);
   }
+  else {
+    DEBUG((EFI_D_INFO, "CDONE initial check succeeded \n"));
+  }
 
   // Transfer firmware using QUP SPI
   struct spi_transfer transfer;
@@ -139,16 +145,22 @@ LiCE40SpiConfigEntry(
   ZeroMem(Dummy, sizeof(Dummy));
 
   transfer.bits_per_word = 8;
-  transfer.len           = 0x40;
   transfer.speed_hz      = 25000000;
 
-  while (Transferred < sizeof(CurrentBuf)) {
+  DEBUG((EFI_D_INFO, "Downloading bitstream at 25MHz \n"));
+  while (Transferred < sizeof(gBitstream)) {
+    UINTN ActualTransfer = (sizeof(gBitstream) - Transferred >= 0x40)
+                               ? 0x40
+                               : (sizeof(gBitstream) - Transferred);
+
     transfer.tx_buf = CurrentBuf;
-    transfer.len    = 0x40;
-    Status          = mQcomSpiProtocol->Transfer(&transfer);
+    transfer.len    = ActualTransfer;
+
+    Status = mQcomSpiProtocol->Transfer(&transfer);
     ASSERT_EFI_ERROR(Status);
-    Transferred += 0x40;
-    CurrentBuf = CurrentBuf + 0x40;
+
+    Transferred += ActualTransfer;
+    CurrentBuf = CurrentBuf + ActualTransfer;
   }
 
   // Pull up CS_N
@@ -166,7 +178,7 @@ LiCE40SpiConfigEntry(
     ASSERT(FALSE);
   }
   else {
-    DEBUG((EFI_D_INFO, "CDONE check success!"));
+    DEBUG((EFI_D_INFO, "CDONE check succeeded!\n"));
   }
 
   // TODO: Config PM8994 GPIO 13 out (VCONN_OUT_EN) ?
