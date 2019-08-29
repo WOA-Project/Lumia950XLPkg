@@ -20327,7 +20327,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                             Zero
                         }, 
 
-                        Package (0x07)
+                        Package (0x08)
                         {
                             "PSTATE", 
                             Zero, 
@@ -20412,7 +20412,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                             }
                         }, 
 
-                        Package (0x07)
+                        Package (0x08)
                         {
                             "PSTATE", 
                             One, 
@@ -20497,7 +20497,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                             }
                         }, 
 
-                        Package (0x08)
+                        Package (0x09)
                         {
                             "PSTATE", 
                             0x02, 
@@ -20591,7 +20591,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                             }
                         }, 
 
-                        Package (0x08)
+                        Package (0x09)
                         {
                             "PSTATE", 
                             0x03, 
