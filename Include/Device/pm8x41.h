@@ -106,6 +106,7 @@ struct pm8x41_ldo {
 #define PM8x41_LDO19 0x15200
 #define PM8x41_LDO22 0x15500
 #define PM8x41_LDO30 0x15d00
+#define PM8x41_LDO31 0x15e00
 
 /* LDO voltage ranges */
 #define NLDO_UV_MIN 375000
