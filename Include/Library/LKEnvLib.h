@@ -32,6 +32,7 @@ typedef UINT64 u64;
 
 #define UINT_MAX MAX_UINTN
 #define ULONG_MAX (~0UL)
+#define LONG_MAX ((long)(~0UL >> 1))
 
 #define REG32(addr) ((volatile uint32_t *)(addr))
 #define writel_rt(v, a) (*REG32(a) = (v))

@@ -533,6 +533,7 @@
 
   # Lattice UC120 Configuration
   Lumia950XLPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
+  Lumia950XLPkg/GPLDriver/QupSpiDxe/QupSpiDxe.inf
 
   # BDS
   MdeModulePkg/Universal/PrintDxe/PrintDxe.inf

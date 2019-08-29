@@ -1,13 +1,14 @@
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = LiCE40SpiConfigDxe
-  FILE_GUID                      = 3a19a112-06cc-45a4-b3e2-9c1dfd2b6a68
+  BASE_NAME                      = QupSpiDxe
+  FILE_GUID                      = e0781fcd-cec3-4415-916d-169faf9675c9
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
-  ENTRY_POINT                    = LiCE40SpiConfigEntry
+  ENTRY_POINT                    = QupSpiDxeEntry
 
 [Sources.common]
-  LiCE40SpiConfig.c
+  QupSpiDxe.c
+  QupSpiImpl.c
 
 [Packages]
   ArmPkg/ArmPkg.dec
@@ -26,6 +27,7 @@
   UefiBootServicesTableLib
   DxeServicesTableLib
   QcomPlatformClock2Lib
+  InterruptsLib
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-unused-function -Wno-unused-variable
@@ -33,11 +35,11 @@
 [Protocols]
   gQcomGpioTlmmProtocolGuid
   gQcomPm8x41ProtocolGuid
-  gQcomSpmiProtocolGuid
+  gQcomClockProtocolGuid
+  gHardwareInterruptProtocolGuid
   gQcomSpiQupProtocolGuid
 
 [Depex]
   gQcomGpioTlmmProtocolGuid AND 
   gQcomPm8x41ProtocolGuid AND
-  gQcomSpmiProtocolGuid AND
-  gQcomSpiQupProtocolGuid
+  gQcomClockProtocolGuid

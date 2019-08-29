@@ -93,7 +93,11 @@ $commit = git rev-parse HEAD
 Set-Location ..
 $date = (Get-Date).Date.ToString("MM/dd/yyyy")
 $user = (whoami)
-$machine = [System.Net.Dns]::GetHostByName((hostname)).HostName
+try {
+    $machine = [System.Net.Dns]::GetHostByName((hostname)).HostName
+} catch {
+    $machine = "$(hostname)"
+}
 $owner = "$($user)@$($machine)"
 if ($null -eq $machine) { $owner = $user }
 
