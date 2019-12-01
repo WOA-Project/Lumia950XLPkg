@@ -1,4 +1,4 @@
-DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
+DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000003)
 {
     External (_SB_.HDDP, UnknownObj)
 
@@ -20327,7 +20327,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                             Zero
                         }, 
 
-                        Package (0x08)
+                        Package (0x07)
                         {
                             "PSTATE", 
                             Zero, 
@@ -20383,22 +20383,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                                     0x05
                                 }
                             }, 
-                            
-                            Package (0x02)
-                            {
-                                "PMICGPIO", 
-                                Package (0x08)
-                                {
-                                    "IOCTL_PM_GPIO_CONFIG_DIGITAL_OUTPUT", 
-                                    Zero, 
-                                    0x10, 
-                                    Zero, 
-                                    0x02, 
-                                    0x04, 
-                                    0x03, 
-                                    0x05
-                                }
-                            }, 
 
                             Package (0x02)
                             {
@@ -20412,7 +20396,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                             }
                         }, 
 
-                        Package (0x08)
+                        Package (0x07)
                         {
                             "PSTATE", 
                             One, 
@@ -20471,22 +20455,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
 
                             Package (0x02)
                             {
-                                "PMICGPIO", 
-                                Package (0x08)
-                                {
-                                    "IOCTL_PM_GPIO_CONFIG_DIGITAL_OUTPUT", 
-                                    Zero, 
-                                    0x10, 
-                                    Zero, 
-                                    0x02, 
-                                    0x04, 
-                                    0x03, 
-                                    0x05
-                                }
-                            }, 
-
-                            Package (0x02)
-                            {
                                 "PMICDIVCLK", 
                                 Package (0x03)
                                 {
@@ -20497,26 +20465,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                             }
                         }, 
 
-                        Package (0x09)
+                        Package (0x08)
                         {
                             "PSTATE", 
                             0x02, 
-                            Package (0x02)
-                            {
-                                "PMICGPIO", 
-                                Package (0x08)
-                                {
-                                    "IOCTL_PM_GPIO_CONFIG_DIGITAL_OUTPUT", 
-                                    Zero, 
-                                    0x10, 
-                                    Zero, 
-                                    0x02, 
-                                    0x04, 
-                                    0x03, 
-                                    0x05
-                                }
-                            }, 
-
                             Package (0x02)
                             {
                                 "PMICDIVCLK", 
@@ -20591,26 +20543,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000004)
                             }
                         }, 
 
-                        Package (0x09)
+                        Package (0x08)
                         {
                             "PSTATE", 
                             0x03, 
-                            Package (0x02)
-                            {
-                                "PMICGPIO", 
-                                Package (0x08)
-                                {
-                                    "IOCTL_PM_GPIO_CONFIG_DIGITAL_OUTPUT", 
-                                    Zero, 
-                                    0x10, 
-                                    Zero, 
-                                    0x02, 
-                                    0x04, 
-                                    0x03, 
-                                    0x05
-                                }
-                            }, 
-
                             Package (0x02)
                             {
                                 "PMICDIVCLK", 
