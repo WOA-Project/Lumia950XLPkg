@@ -850,9 +850,47 @@ static struct branch_clk mdss_extpclk_clk = {
         },
 };
 
-/* BLSP1_QUP2 Clocks */
+/* BLSP2_QUP4 SPI clocks */
+static struct clk_freq_tbl ftbl_blsp2_qup4_spi_apps_clk_src[] = {
+    F(960000, cxo, 10, 1, 2),       F(4800000, cxo, 4, 0, 0),
+    F(9600000, cxo, 2, 0, 0),       F(15000000, gpll0, 10, 1, 4),
+    F(19200000, cxo, 1, 0, 0),      F(24000000, gpll0, 12.5, 1, 2),
+    F(25000000, gpll0, 12, 1, 2),   F(42860000, gpll0, 14, 0, 0),
+    F(48000000, gpll0, 12.5, 0, 0), F_END,
+};
+
+static struct rcg_clk gcc_blsp2_qup4_spi_apps_clk_src = {
+    .cmd_reg      = (uint32_t *)BLSP2_QUP4_SPI_APPS_CMD_RCGR,
+    .cfg_reg      = (uint32_t *)BLSP2_QUP4_SPI_APPS_CFG_CBCR,
+    .m_reg        = (uint32_t *)BLSP2_QUP4_SPI_APPS_M,
+    .n_reg        = (uint32_t *)BLSP2_QUP4_SPI_APPS_N,
+    .d_reg        = (uint32_t *)BLSP2_QUP4_SPI_APPS_D,
+    .set_rate     = clock_lib2_rcg_set_rate_mnd,
+    .freq_tbl     = ftbl_blsp2_qup4_spi_apps_clk_src,
+    .current_freq = &rcg_dummy_freq,
+    .c =
+        {
+            .dbg_name = "gcc_blsp2_qup4_spi_apps_clk_src",
+            .ops      = &clk_ops_rcg_mnd,
+        },
+};
+
+static struct branch_clk gcc_blsp2_qup4_spi_apps_clk = {
+    .cbcr_reg = (uint32_t *)BLSP2_QUP4_SPI_APPS_CBCR,
+    .parent   = &gcc_blsp2_qup4_spi_apps_clk_src.c,
+    .c =
+        {
+            .dbg_name = "gcc_blsp2_qup4_spi_apps_clk",
+            .ops      = &clk_ops_branch,
+        },
+};
+
+/* BLSP1_QUP2 I2C clocks */
 static struct clk_freq_tbl ftbl_blsp_i2c_apps_clk_src[] = {
-    F(19200000, cxo, 1, 0, 0), F(50000000, gpll0, 16, 0, 0), F_END};
+    F(19200000, cxo, 1, 0, 0),
+    F(50000000, gpll0, 16, 0, 0),
+    F_END,
+};
 
 static struct rcg_clk gcc_blsp1_qup1_i2c_apps_clk_src = {
     .cmd_reg      = (uint32_t *)GCC_BLSP1_QUP1_CMD_RCGR,
@@ -1026,6 +1064,11 @@ static struct clk_lookup msm_8994_clocks[] = {
     CLK_LOOKUP("gcc_qupF9963000_i2c_apps_clk", gcc_blsp2_qup1_i2c_apps_clk.c),
 
     /* SMMU Clocks */
+
+    /* BLSP2 QUP4 SPI clocks */
+    CLK_LOOKUP(
+        "gcc_blsp2_qup4_spi_apps_clk_src", gcc_blsp2_qup4_spi_apps_clk_src.c),
+    CLK_LOOKUP("gcc_blsp2_qup4_spi_apps_clk", gcc_blsp2_qup4_spi_apps_clk.c),
 
 };
 

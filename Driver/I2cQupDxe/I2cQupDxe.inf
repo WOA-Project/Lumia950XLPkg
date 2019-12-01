@@ -19,7 +19,7 @@
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [BuildOptions.AARCH64]
-  GCC:*_*_*_CC_FLAGS = -Werror -Wno-error=incompatible-pointer-types
+  GCC:*_*_*_CC_FLAGS = -Werror
 
 [LibraryClasses]
   UefiDriverEntryPoint

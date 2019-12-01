@@ -113,7 +113,7 @@ struct qup_i2c_dev {
   int                   clk_state;
   unsigned int          noise_rjct_scl;
   unsigned int          noise_rjct_sda;
-  int                   xfer_progress;
+  volatile INTN         xfer_progress;
 };
 
 struct device {
