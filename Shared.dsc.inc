@@ -531,10 +531,6 @@
   # Graphics Driver
   Lumia950XLPkg/Driver/SimpleFbDxe/SimpleFbDxe.inf
 
-  # Lattice UC120 Configuration
-  Lumia950XLPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
-  Lumia950XLPkg/GPLDriver/QupSpiDxe/QupSpiDxe.inf
-
   # BDS
   MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
   MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
