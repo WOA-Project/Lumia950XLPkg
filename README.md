@@ -1,6 +1,6 @@
 # EDK2 Implementation for Lumia 950, Lumia 950 XL and Hapanero
 
-![Devices](https://raw.githubusercontent.com/WOA-Project/MSM8994-8992-NT-ARM64-Drivers/assets/banner.png)
+![Devices](https://raw.githubusercontent.com/WOA-Project/MSM8994-8992-NT-ARM64-Drivers/1911/assets/banner.png)
 
 ## For users
 
