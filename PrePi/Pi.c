@@ -16,7 +16,9 @@
 #include <Library/CacheMaintenanceLib.h>
 #include <Library/DebugAgentLib.h>
 #include <Library/DebugLib.h>
+#ifdef USE_SCREEN_FRAMEBUFFER_SERIAL
 #include <Library/FrameBufferSerialPortLib.h>
+#endif
 #include <Library/HobLib.h>
 #include <Library/IoLib.h>
 #include <Library/MemoryAllocationLib.h>
@@ -59,8 +61,10 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
   /* Enable program flow prediction, if supported */
   ArmEnableBranchPrediction();
 
+#ifdef USE_SCREEN_FRAMEBUFFER_SERIAL
   // Clear FB
   ResetFb();
+#endif
 
   // Initialize (fake) UART.
   UartInit();
