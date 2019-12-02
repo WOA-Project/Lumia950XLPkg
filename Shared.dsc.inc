@@ -289,7 +289,11 @@
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
 
   # Platform Drivers
+!if $(USE_SCREEN_FRAMEBUFFER_SERIAL) == 1
   SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+!else
+  SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
+!endif
   MemoryInitPeiLib|Lumia950XLPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
   PlatformPeiLib|Lumia950XLPkg/Library/PlatformPeiLib/PlatformPeiLib.inf
   PlatformBootManagerLib|Lumia950XLPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf

@@ -29,6 +29,8 @@
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Lumia950XLPkg/Hapanero.fdf
+
+  DEFINE USE_SCREEN_FRAMEBUFFER_SERIAL = 0
   
 [PcdsFixedAtBuild.common]
   # Platform-specific
