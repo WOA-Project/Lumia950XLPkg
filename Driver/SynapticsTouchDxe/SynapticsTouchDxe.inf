@@ -27,6 +27,7 @@
   BaseLib
   DebugLib
   PrintLib
+  CompilerIntrinsicsLib
 
 [FixedPcd]
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrAddress
@@ -44,6 +45,7 @@
   gHardwareInterruptProtocolGuid
   gQcomGpioTlmmProtocolGuid
   gEfiAbsolutePointerProtocolGuid
+  gEfiDevicePathProtocolGuid
 
 [Depex]
   gQcomI2cQupProtocolGuid

@@ -17,6 +17,7 @@
 
 [LibraryClasses]
   UefiBootServicesTableLib
+  IoLib
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
