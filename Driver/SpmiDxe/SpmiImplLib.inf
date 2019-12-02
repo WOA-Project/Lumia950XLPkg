@@ -18,6 +18,7 @@
 
 [LibraryClasses]
   MallocLib
+  IoLib
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-incompatible-pointer-types
