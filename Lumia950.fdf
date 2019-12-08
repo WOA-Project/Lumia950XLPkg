@@ -93,7 +93,7 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/SimpleFbDxe/SimpleFbDxe.inf
 
   # Lattice UC120 Configuration
-  INF Lumia950XLPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
+  # INF Lumia950XLPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
   INF Lumia950XLPkg/GPLDriver/QupSpiDxe/QupSpiDxe.inf
 
   # BDS
@@ -135,7 +135,7 @@ READ_LOCK_STATUS   = TRUE
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/MADT.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/MCFG.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/CSRT.aml
-  SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/SSDT.aml
+  	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/SSDT.aml
 	SECTION UI = "AcpiTables"
   }
 
