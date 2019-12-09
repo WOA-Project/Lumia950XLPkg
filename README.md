@@ -12,7 +12,7 @@ You can download the latest UEFI build by clicking the Azure Pipelines icon belo
 
 This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, Lumia 950 XL and Hapanero. Currently it is able to boot Windows 10 ARM64 as well as various Linux distros. See notes below for more details.
 
-**Please be aware that MSM8992 have reduced support status due to the lack of testing device.**
+**Please be aware that MSM8992 devices have limited support.**
 
 ## Support Status
 Applicable to all supported targets unless noted.
