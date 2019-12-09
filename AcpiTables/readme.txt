@@ -1,3 +1,7 @@
+Update 12/09/19: PPTT table has been added and ASL C file has
+been provided. However, the table has been pre-compiled and 
+bundled as blobs.
+
 The AML files included here are compiled from the ASL sources.
 They need to be regenerated manually every time the ASLs change.
 
