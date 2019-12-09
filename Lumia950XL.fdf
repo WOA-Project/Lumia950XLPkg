@@ -135,6 +135,7 @@ READ_LOCK_STATUS   = TRUE
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/builtin/MADT.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/builtin/MCFG.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8994/builtin/CSRT.aml
+  SECTION RAW = Lumia950XLPkg/AcpiTables/8994/builtin/PPTT.aml
   SECTION RAW = Lumia950XLPkg/AcpiTables/8994/generated/SSDT.aml
 	SECTION UI = "AcpiTables"
   }
@@ -145,7 +146,7 @@ READ_LOCK_STATUS   = TRUE
   # PreLoader assets
   FILE FREEFORM = 5fdf5e3c-6b70-4acc-8330-63a673924a46 {
     SECTION RAW = Lumia950XLPkg/Driver/PreLoaderDxe/BootshimCheckFail.png
-	SECTION UI = "BootshimCheckFail"
+	  SECTION UI = "BootshimCheckFail"
   }
 
 [FV.FVMAIN_COMPACT]
