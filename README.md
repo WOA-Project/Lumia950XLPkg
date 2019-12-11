@@ -1,30 +1,32 @@
 # EDK2 Implementation for Lumia 950, Lumia 950 XL and Hapanero
 
-## For final users
+![Devices](https://raw.githubusercontent.com/WOA-Project/MSM8994-8992-NT-ARM64-Drivers/1911/assets/banner.png)
+
+## For users
 
 You can download the latest UEFI build by clicking the Azure Pipelines icon below. Click Artifacts button in Azure Pipelines, then download UEFI.elf in ELF directory.
 
-[![Build Status (Visual Studio Team Services)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_apis/build/status/Lumia950XLPkg%20CI%20build?branchName=msm8994)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_build/latest?definitionId=1&branchName=msm8994)
+[![Build Status (Visual Studio Team Services)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_apis/build/status/Lumia950XLPkg%20CI%20build?branchName=master)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_build/latest?definitionId=1&branchName=master)
 
 ## What's this?
 
-This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, Lumia 950 XL and Hapanero. Currently, it is able to boot Windows 10 ARM64, as well as Linux. See notes below for more details.
+This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, Lumia 950 XL and Hapanero. Currently it is able to boot Windows 10 ARM64 as well as various Linux distros. See notes below for more details.
 
-**Please be aware that MSM8992 have reduced support status due to the lack of testing device.**
+**Please be aware that MSM8992 devices have limited support.**
 
 ## Support Status
 Applicable to all supported targets unless noted.
 
-- Low-speed I/O: I2C, GPIO, SPMI and Pinmux (TLMM).
+- Low-speed I/O: I2C, SPI, GPIO, SPMI and Pinmux (TLMM).
 - Power Management: PMIC and Resource Power Manager (RPM).
-- High-speed I/O for firmware and HLOS use: eMMC (SDR50 in firmware, HS200/HS400 in OS), PCI Express (Firmware-configured, HLOS Only, x2 Lane)
-- Peripherals: Touchscreen (QUP I2C), side-band buttons (TLMM GPIO and PMIC GPIO)
+- High-speed I/O for firmware and HLOS: eMMC (SDR50 in firmware, HS200/HS400 in OS), PCI Express (Firmware-configured, HLOS Only, x2 Lane)
+- Peripherals: Touchscreen (QUP I2C), side-band buttons (TLMM GPIO and PMIC GPIO) and Lattice UC120 (iCE5LP2K) FPGA configuration
 - Display FrameBuffer depends on stock Qualcomm UEFI for boostrapping, MDP is not fully implemented.
 
 ## What can you do?
 
-I am too busy to write an average-user instruction. So, if you are interested in, you are welcome to
-contribute to an easy instruction for all Lumia 950 XL users.
+I am too busy to write an average-user tutorialspoint. So, if you are interested in, you are welcome to
+contribute to an easy instruction for all Lumia 950 (XL) users.
 
 Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 
@@ -32,13 +34,13 @@ Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 
 If you are familiar with EDK2, you don't need to use my build script.
 
-- Checkout a copy of [EDK2](https://github.com/tianocore/edk2). Switch to `UDK2018` branch. Commit `49fa59e82e4c6ea798f65fc4e5948eae63ad6e07` absolutely works for you.
+- Checkout a copy of [EDK2](https://github.com/tianocore/edk2). Switch to `UDK2018` branch.
 - Checkout this repository under EDK2's worktree.
 - Install ACPI tools from your package manager or ACPICA website.
 - Install `uuid-dev` and `python` (or equivalent package on your distribution).
 - Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
 script uses `gcc-linaro-7.2.1-2017.11`. Then untar them. I place everything under `/opt` directory, so I have 
-directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts.
+directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts. If you are macOS user, bootstrap the toolchain using ct-ng.
 - Run EDK2 BaseTools setup (`make -C BaseTools`).
 - Copy `rundbbuild.sh` in `Tools` directory to your EDK2 worktree root directory.
 - By default only MSM8994 target is built. To build all, set environment variable `BUILDALL`.
