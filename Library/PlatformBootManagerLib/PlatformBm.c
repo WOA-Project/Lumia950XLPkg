@@ -553,7 +553,7 @@ VOID EFIAPI PlatformBootManagerWaitCallback(UINT16 TimeoutRemain)
   White.Raw = 0x00FFFFFF;
 
   Status = BootLogoUpdateProgress(
-      White.Pixel, Black.Pixel, L"If you ever see @kotomei2, tell him to study for the exam\n", White.Pixel,
+      White.Pixel, Black.Pixel, L"If you ever see @donotexist_A, tell him to study for the exam\n", White.Pixel,
 #if REQUIRE_PROGRESSBAR
       (Timeout - TimeoutRemain) * 100 / Timeout,
 #else
