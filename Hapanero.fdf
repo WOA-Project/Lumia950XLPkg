@@ -84,7 +84,7 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
 
   # Variable Services
-  INF MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
+  INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 
   # Security Stub
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
