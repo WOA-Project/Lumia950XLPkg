@@ -304,8 +304,8 @@ MMCHSWriteBlocks(
   // Here goes a fail-safe design (see issue #5)
   // Assume the partition layout before partition 36 is identical on our target
   // devices
-  // TODO: Once SD card support is added, check for eMMC/SD
-  if (0 <= Lba && Lba <= 253951) {
+  // Only slot 1 (eMMC) is protected
+  if (Instance->MmcDev->config.slot <= 1 && (0 <= Lba && Lba <= 253951)) {
     return EFI_UNSUPPORTED;
   }
 

@@ -21,14 +21,25 @@ typedef struct {
 #pragma pack()
 
 EFI_KEYPAD_DEVICE_PATH KeyPadDxeDevicePath = {
-    {{HARDWARE_DEVICE_PATH,
-      HW_VENDOR_DP,
-      {(UINT8)(sizeof(VENDOR_DEVICE_PATH)),
-       (UINT8)((sizeof(VENDOR_DEVICE_PATH)) >> 8)}},
-     PLAT_KEYPAD_DEVICE_GUID},
-    {END_DEVICE_PATH_TYPE,
-     END_ENTIRE_DEVICE_PATH_SUBTYPE,
-     {(UINT8)(END_DEVICE_PATH_LENGTH),
-      (UINT8)((END_DEVICE_PATH_LENGTH) >> 8)}}};
+    {
+        {
+            HARDWARE_DEVICE_PATH,
+            HW_VENDOR_DP,
+            {
+                (UINT8)(sizeof(VENDOR_DEVICE_PATH)),
+                (UINT8)((sizeof(VENDOR_DEVICE_PATH)) >> 8),
+            },
+        },
+        PLAT_KEYPAD_DEVICE_GUID,
+    },
+    {
+        END_DEVICE_PATH_TYPE,
+        END_ENTIRE_DEVICE_PATH_SUBTYPE,
+        {
+            (UINT8)(END_DEVICE_PATH_LENGTH),
+            (UINT8)((END_DEVICE_PATH_LENGTH) >> 8),
+        },
+    },
+};
 
 #endif

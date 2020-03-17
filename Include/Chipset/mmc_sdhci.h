@@ -310,6 +310,7 @@ struct mmc_card {
   struct mmc_csd    csd;          /* CSD structure */
   struct mmc_sd_scr scr;          /* SCR structure */
   struct mmc_sd_ssr ssr;          /* SSR Register */
+  uint32_t          slot;         /* MSM SDHCI Slot */
 };
 
 /* mmc device config data */
