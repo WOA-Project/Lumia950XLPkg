@@ -44,124 +44,6 @@
     (UINT8)sizeof(Type), (UINT8)(sizeof(Type) >> 8)                            \
   }
 
-#pragma pack(1)
-typedef struct {
-  VENDOR_DEVICE_PATH         SerialDxe;
-  UART_DEVICE_PATH           Uart;
-  VENDOR_DEFINED_DEVICE_PATH TermType;
-  EFI_DEVICE_PATH_PROTOCOL   End;
-} PLATFORM_SERIAL_CONSOLE;
-#pragma pack()
-
-typedef struct {
-  VENDOR_DEVICE_PATH       Custom;
-  USB_DEVICE_PATH          Hub;
-  USB_DEVICE_PATH          Dev;
-  EFI_DEVICE_PATH_PROTOCOL EndDevicePath;
-} PLATFORM_USB_DEV;
-
-#define DW_USB_DXE_FILE_GUID                                                   \
-  {                                                                            \
-    0x4bf1704c, 0x03f4, 0x46d5,                                                \
-    {                                                                          \
-      0xbc, 0xa6, 0x82, 0xfa, 0x58, 0x0b, 0xad, 0xfd                           \
-    }                                                                          \
-  }
-
-STATIC PLATFORM_USB_DEV mUsbHubPort = {
-    //
-    // VENDOR_DEVICE_PATH DwUsbHostDxe
-    //
-    {{HARDWARE_DEVICE_PATH, HW_VENDOR_DP, DP_NODE_LEN(VENDOR_DEVICE_PATH)},
-     DW_USB_DXE_FILE_GUID},
-
-    //
-    // USB_DEVICE_PATH Hub
-    //
-    {{MESSAGING_DEVICE_PATH, MSG_USB_DP, DP_NODE_LEN(USB_DEVICE_PATH)}, 0, 0},
-
-    //
-    // USB_DEVICE_PATH Dev
-    //
-    {{MESSAGING_DEVICE_PATH, MSG_USB_DP, DP_NODE_LEN(USB_DEVICE_PATH)}, 1, 0},
-
-    //
-    // EFI_DEVICE_PATH_PROTOCOL End
-    //
-    {END_DEVICE_PATH_TYPE, END_ENTIRE_DEVICE_PATH_SUBTYPE,
-     DP_NODE_LEN(EFI_DEVICE_PATH_PROTOCOL)}};
-
-#define SERIAL_DXE_FILE_GUID                                                   \
-  {                                                                            \
-    0xD3987D4B, 0x971A, 0x435F,                                                \
-    {                                                                          \
-      0x8C, 0xAF, 0x49, 0x67, 0xEB, 0x62, 0x72, 0x41                           \
-    }                                                                          \
-  }
-
-STATIC PLATFORM_SERIAL_CONSOLE mSerialConsole = {
-    //
-    // VENDOR_DEVICE_PATH SerialDxe
-    //
-    {{HARDWARE_DEVICE_PATH, HW_VENDOR_DP, DP_NODE_LEN(VENDOR_DEVICE_PATH)},
-     SERIAL_DXE_FILE_GUID},
-
-    //
-    // UART_DEVICE_PATH Uart
-    //
-    {
-        {MESSAGING_DEVICE_PATH, MSG_UART_DP, DP_NODE_LEN(UART_DEVICE_PATH)},
-        0,                                     // Reserved
-        FixedPcdGet64(PcdUartDefaultBaudRate), // BaudRate
-        FixedPcdGet8(PcdUartDefaultDataBits),  // DataBits
-        FixedPcdGet8(PcdUartDefaultParity),    // Parity
-        FixedPcdGet8(PcdUartDefaultStopBits)   // StopBits
-    },
-
-    //
-    // VENDOR_DEFINED_DEVICE_PATH TermType
-    //
-    {
-        {MESSAGING_DEVICE_PATH, MSG_VENDOR_DP,
-         DP_NODE_LEN(VENDOR_DEFINED_DEVICE_PATH)}
-        //
-        // Guid to be filled in dynamically
-        //
-    },
-
-    //
-    // EFI_DEVICE_PATH_PROTOCOL End
-    //
-    {END_DEVICE_PATH_TYPE, END_ENTIRE_DEVICE_PATH_SUBTYPE,
-     DP_NODE_LEN(EFI_DEVICE_PATH_PROTOCOL)}};
-
-#pragma pack(1)
-typedef struct {
-  USB_CLASS_DEVICE_PATH    Keyboard;
-  EFI_DEVICE_PATH_PROTOCOL End;
-} PLATFORM_USB_KEYBOARD;
-#pragma pack()
-
-STATIC PLATFORM_USB_KEYBOARD mUsbKeyboard = {
-    //
-    // USB_CLASS_DEVICE_PATH Keyboard
-    //
-    {
-        {MESSAGING_DEVICE_PATH, MSG_USB_CLASS_DP,
-         DP_NODE_LEN(USB_CLASS_DEVICE_PATH)},
-        0xFFFF, // VendorId: any
-        0xFFFF, // ProductId: any
-        3,      // DeviceClass: HID
-        1,      // DeviceSubClass: boot
-        1       // DeviceProtocol: keyboard
-    },
-
-    //
-    // EFI_DEVICE_PATH_PROTOCOL End
-    //
-    {END_DEVICE_PATH_TYPE, END_ENTIRE_DEVICE_PATH_SUBTYPE,
-     DP_NODE_LEN(EFI_DEVICE_PATH_PROTOCOL)}};
-
 /**
   Check if the handle satisfies a particular condition.
 
@@ -377,10 +259,18 @@ INTN PlatformRegisterFvBootOption(
 STATIC
 VOID PlatformRegisterOptionsAndKeys(VOID)
 {
-  INTN ShellOption;
+  INTN          ShellOption;
+  EFI_INPUT_KEY VolUpBtn;
+  EFI_STATUS    Status;
 
   ShellOption = PlatformRegisterFvBootOption(
       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
+
+  VolUpBtn.ScanCode    = SCAN_UP;
+  VolUpBtn.UnicodeChar = SCAN_UP;
+  Status =
+      EfiBootManagerAddKeyOptionVariable(NULL, ShellOption, 0, &VolUpBtn, NULL);
+  ASSERT(Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
 }
 
 STATIC
@@ -388,6 +278,7 @@ VOID PlatformRegisterSetupKey(VOID)
 {
   EFI_STATUS                   Status;
   EFI_INPUT_KEY                PowerBtn;
+  EFI_INPUT_KEY                EscBtn;
   EFI_BOOT_MANAGER_LOAD_OPTION BootOption;
 
   //
@@ -395,10 +286,15 @@ VOID PlatformRegisterSetupKey(VOID)
   //
   PowerBtn.ScanCode    = SCAN_NULL;
   PowerBtn.UnicodeChar = CHAR_CARRIAGE_RETURN;
+  EscBtn.ScanCode      = SCAN_ESC;
+  EscBtn.UnicodeChar   = CHAR_NULL;
   Status               = EfiBootManagerGetBootManagerMenu(&BootOption);
   ASSERT_EFI_ERROR(Status);
   Status = EfiBootManagerAddKeyOptionVariable(
       NULL, (UINT16)BootOption.OptionNumber, 0, &PowerBtn, NULL);
+  ASSERT(Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
+  Status = EfiBootManagerAddKeyOptionVariable(
+      NULL, (UINT16)BootOption.OptionNumber, 0, &EscBtn, NULL);
   ASSERT(Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
 }
 
@@ -435,16 +331,20 @@ VOID EFIAPI PlatformBootManagerBeforeConsole(VOID)
   }
 
   //
+  // Signal EndOfDxe PI Event
+  //
+  EfiEventGroupSignal(&gEfiEndOfDxeEventGroupGuid);
+
+  //
+  // Dispatch deferred images after EndOfDxe event and ReadyToLock installation.
+  //
+  EfiBootManagerDispatchDeferredImages();
+
+  //
   // Now add the device path of all handles with GOP on them to ConOut and
   // ErrOut.
   //
   FilterAndProcess(&gEfiGraphicsOutputProtocolGuid, NULL, AddOutput);
-
-  //
-  // Add the hardcoded short-form USB keyboard device path to ConIn.
-  //
-  EfiBootManagerUpdateConsoleVariable(
-      ConIn, (EFI_DEVICE_PATH_PROTOCOL *)&mUsbKeyboard, NULL);
 
   //
   // Add touch screen to ConIn
@@ -457,31 +357,9 @@ VOID EFIAPI PlatformBootManagerBeforeConsole(VOID)
   // on them to ConIn.
   //
   FilterAndProcess(&gEFIDroidKeypadDeviceProtocolGuid, NULL, AddInput);
+
   // Register setup key then
   PlatformRegisterSetupKey();
-
-  //
-  // Add the hardcoded serial console device path to ConIn, ConOut, ErrOut.
-  //
-  ASSERT(FixedPcdGet8(PcdDefaultTerminalType) == 4);
-  CopyGuid(&mSerialConsole.TermType.Guid, &gEfiTtyTermGuid);
-
-  EfiBootManagerUpdateConsoleVariable(
-      ConIn, (EFI_DEVICE_PATH_PROTOCOL *)&mSerialConsole, NULL);
-  EfiBootManagerUpdateConsoleVariable(
-      ConOut, (EFI_DEVICE_PATH_PROTOCOL *)&mSerialConsole, NULL);
-  EfiBootManagerUpdateConsoleVariable(
-      ErrOut, (EFI_DEVICE_PATH_PROTOCOL *)&mSerialConsole, NULL);
-
-  //
-  // Signal EndOfDxe PI Event
-  //
-  EfiEventGroupSignal(&gEfiEndOfDxeEventGroupGuid);
-
-  //
-  // Dispatch deferred images after EndOfDxe event and ReadyToLock installation.
-  //
-  EfiBootManagerDispatchDeferredImages();
 }
 
 /**
@@ -553,7 +431,9 @@ VOID EFIAPI PlatformBootManagerWaitCallback(UINT16 TimeoutRemain)
   White.Raw = 0x00FFFFFF;
 
   Status = BootLogoUpdateProgress(
-      White.Pixel, Black.Pixel, L"If you ever see @donotexist_A, tell him to study for the exam\n", White.Pixel,
+      White.Pixel, Black.Pixel,
+      L"If you ever see @donotexist_A, tell him to study for the exam\n",
+      White.Pixel,
 #if REQUIRE_PROGRESSBAR
       (Timeout - TimeoutRemain) * 100 / Timeout,
 #else

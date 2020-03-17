@@ -17,6 +17,8 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 #include "Keypad.h"
 #include <Configuration/BootDevices.h>
 
+#include <Device/KeypadDevicePath.h>
+
 //
 // Function prototypes
 //
@@ -196,7 +198,7 @@ KeypadControllerDriverStart(
   KEYPAD_CONSOLE_IN_DEV * ConsoleIn;
 
   //
-  // Get the ISA I/O Protocol on Controller's handle
+  // Get the KeyPad Protocol on Controller's handle
   //
   Status = gBS->OpenProtocol(
       Controller, &gEFIDroidKeypadDeviceProtocolGuid, (VOID **)&KeypadDevice,

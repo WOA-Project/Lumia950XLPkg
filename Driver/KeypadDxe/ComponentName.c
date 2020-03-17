@@ -141,8 +141,11 @@ KeypadComponentNameGetControllerName(
 // EFI Component Name Protocol
 //
 GLOBAL_REMOVE_IF_UNREFERENCED EFI_COMPONENT_NAME_PROTOCOL
-                              gKeypadComponentName = {KeypadComponentNameGetDriverName,
-                            KeypadComponentNameGetControllerName, "eng"};
+                              gKeypadComponentName = {
+        KeypadComponentNameGetDriverName,
+        KeypadComponentNameGetControllerName,
+        "eng",
+};
 
 //
 // EFI Component Name 2 Protocol
@@ -152,10 +155,14 @@ GLOBAL_REMOVE_IF_UNREFERENCED EFI_COMPONENT_NAME2_PROTOCOL
         (EFI_COMPONENT_NAME2_GET_DRIVER_NAME)KeypadComponentNameGetDriverName,
         (EFI_COMPONENT_NAME2_GET_CONTROLLER_NAME)
             KeypadComponentNameGetControllerName,
-        "en"};
+        "en",
+};
 
 GLOBAL_REMOVE_IF_UNREFERENCED EFI_UNICODE_STRING_TABLE
-                              mKeypadDriverNameTable[] = {{"eng;en", L"Keypad Driver"}, {NULL, NULL}};
+                              mKeypadDriverNameTable[] = {
+        {"eng;en", L"Keypad Driver"},
+        {NULL, NULL},
+};
 
 /**
   Retrieves a Unicode string that is the user readable name of the driver.
