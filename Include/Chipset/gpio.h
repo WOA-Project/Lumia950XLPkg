@@ -59,13 +59,6 @@ typedef enum {
   SDC1_CMD_PULL_CTL_OFF  = 11,
   SDC1_CLK_PULL_CTL_OFF  = 13,
   SDC1_RCLK_PULL_CTL_OFF = 15,
-
-  SDC2_DATA_HDRV_CTL_OFF = 0,
-  SDC2_CMD_HDRV_CTL_OFF  = 3,
-  SDC2_CLK_HDRV_CTL_OFF  = 6,
-  SDC2_DATA_PULL_CTL_OFF = 9,
-  SDC2_CMD_PULL_CTL_OFF  = 11,
-  SDC2_CLK_PULL_CTL_OFF  = 14,
 } tlmm_sdc_drv_ctrl;
 
 /* EBI2 Bit offsets in the TLMM register */

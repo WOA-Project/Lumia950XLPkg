@@ -223,16 +223,18 @@ static uint32_t mmc_decode_and_save_csd(struct mmc_card *card)
       sizeof(struct mmc_csd));
 
   /* Calculate the wp grp size */
-  if (card->ext_csd[MMC_ERASE_GRP_DEF])
-    card->wp_grp_size =
-        MMC_HC_ERASE_MULT * card->ext_csd[MMC_HC_ERASE_GRP_SIZE] / MMC_BLK_SZ;
-  else
-    card->wp_grp_size = (card->csd.wp_grp_size + 1) *
-                        (card->csd.erase_grp_size + 1) *
-                        (card->csd.erase_grp_mult + 1);
+  if (MMC_CARD_MMC(card)) {
+    if (card->ext_csd[MMC_ERASE_GRP_DEF])
+      card->wp_grp_size =
+          MMC_HC_ERASE_MULT * card->ext_csd[MMC_HC_ERASE_GRP_SIZE] / MMC_BLK_SZ;
+    else
+      card->wp_grp_size = (card->csd.wp_grp_size + 1) *
+                          (card->csd.erase_grp_size + 1) *
+                          (card->csd.erase_grp_mult + 1);
 
-  card->rpmb_size    = RPMB_PART_MIN_SIZE * card->ext_csd[RPMB_SIZE_MULT];
-  card->rel_wr_count = card->ext_csd[REL_WR_SEC_C];
+    card->rpmb_size    = RPMB_PART_MIN_SIZE * card->ext_csd[RPMB_SIZE_MULT];
+    card->rel_wr_count = card->ext_csd[REL_WR_SEC_C];
+  }
 
   dprintf(SPEW, "Decoded CSD fields:\n");
   dprintf(SPEW, "cmmc_structure: %u\n", mmc_csd.cmmc_structure);
@@ -1632,7 +1634,7 @@ static uint32_t mmc_card_init(struct mmc_device *dev)
   card->block_size = MMC_BLK_SZ;
 
   /* Enable RST_n_FUNCTION */
-  if (!card->ext_csd[MMC_EXT_CSD_RST_N_FUNC]) {
+  if (MMC_CARD_MMC(card) && !card->ext_csd[MMC_EXT_CSD_RST_N_FUNC]) {
     mmc_return = mmc_switch_cmd(
         host, card, MMC_SET_BIT, MMC_EXT_CSD_RST_N_FUNC, RST_N_FUNC_ENABLE);
 
@@ -1687,6 +1689,7 @@ struct mmc_device *mmc_init(struct mmc_config_data *data)
   memcpy((void *)&dev->config, (void *)data, sizeof(struct mmc_config_data));
 
   memset((struct mmc_card *)&dev->card, 0, sizeof(struct mmc_card));
+  dev->card.slot = data->slot;
 
   /* Initialize the host & clock */
   dprintf(SPEW, " Initializing MMC host data structure and clock!\n");

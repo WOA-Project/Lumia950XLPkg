@@ -249,7 +249,7 @@ static struct clk_freq_tbl ftbl_gcc_sdcc1_apps_clk[] = {
     F(384000000, gpll4, 1, 0, 0),
     F_END};
 
-static struct clk_freq_tbl ftbl_gcc_sdcc2_4_apps_clk[] = {
+static struct clk_freq_tbl ftbl_gcc_sdcc2_apps_clk[] = {
     F(144000, cxo, 16, 3, 25),    F(400000, cxo, 12, 1, 4),
     F(20000000, gpll0, 15, 1, 2), F(25000000, gpll0, 12, 1, 2),
     F(50000000, gpll0, 12, 0, 0), F(100000000, gpll0, 6, 0, 0),
@@ -303,7 +303,7 @@ static struct rcg_clk sdcc2_apps_clk_src = {
     .d_reg   = (uint32_t *)SDCC2_D,
 
     .set_rate     = clock_lib2_rcg_set_rate_mnd,
-    .freq_tbl     = ftbl_gcc_sdcc2_4_apps_clk,
+    .freq_tbl     = ftbl_gcc_sdcc2_apps_clk,
     .current_freq = &rcg_dummy_freq,
 
     .c =
