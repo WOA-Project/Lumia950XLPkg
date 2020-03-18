@@ -61,13 +61,13 @@ EFI_STATUS AbsStartPolling(IN RMI4_INTERNAL_DATA *Instance)
 
   // Set event routines
   Status = gBS->CreateEvent(
-      EVT_NOTIFY_SIGNAL | EVT_TIMER, TPL_NOTIFY, SyncPollCallback, Instance,
+      EVT_NOTIFY_SIGNAL | EVT_TIMER, TPL_CALLBACK, SyncPollCallback, Instance,
       &Instance->PollingTimerEvent);
   ASSERT_EFI_ERROR(Status);
 
   Status = gBS->SetTimer(
       Instance->PollingTimerEvent, TimerPeriodic,
-      EFI_TIMER_PERIOD_MILLISECONDS(20));
+      EFI_TIMER_PERIOD_MILLISECONDS(25));
   ASSERT_EFI_ERROR(Status);
 
   return Status;
