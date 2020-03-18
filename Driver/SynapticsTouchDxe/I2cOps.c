@@ -21,8 +21,9 @@ SynaI2cRead(
   EFI_STATUS Status      = EFI_SUCCESS;
   int        Transferred = 0;
 
-  if (Instance == NULL || Instance->I2cController == NULL ||
-      Instance->I2cQupProtocol == NULL) {
+  if (Instance == NULL || Instance->Rmi4Device == NULL ||
+      Instance->I2cController == NULL ||
+      Instance->Rmi4Device->I2cQupProtocol == NULL) {
     Status = EFI_INVALID_PARAMETER;
     goto exit;
   }
@@ -34,20 +35,20 @@ SynaI2cRead(
 
   struct i2c_msg ControllerProbeMsg[] = {
       {
-          FixedPcdGet16(SynapticsCtlrAddress),
+          Instance->Rmi4Device->ControllerAddress,
           I2C_M_WR,
           sizeof(UINT8),
           (UINT8 *)&Address,
       },
       {
-          FixedPcdGet16(SynapticsCtlrAddress),
+          Instance->Rmi4Device->ControllerAddress,
           I2C_M_RD,
           ReadBytes,
           Data,
       },
   };
 
-  Transferred = Instance->I2cQupProtocol->Transfer(
+  Transferred = Instance->Rmi4Device->I2cQupProtocol->Transfer(
       Instance->I2cController, ControllerProbeMsg, 2);
   if (Transferred != 2)
     Status = EFI_DEVICE_ERROR;
@@ -65,8 +66,9 @@ SynaI2cWrite(
   EFI_STATUS Status      = EFI_SUCCESS;
   int        Transferred = 0;
 
-  if (Instance == NULL || Instance->I2cController == NULL ||
-      Instance->I2cQupProtocol == NULL) {
+  if (Instance == NULL || Instance->Rmi4Device == NULL ||
+      Instance->I2cController == NULL ||
+      Instance->Rmi4Device->I2cQupProtocol == NULL) {
     Status = EFI_INVALID_PARAMETER;
     goto exit;
   }
@@ -78,20 +80,20 @@ SynaI2cWrite(
 
   struct i2c_msg ControllerProbeMsg[] = {
       {
-          FixedPcdGet16(SynapticsCtlrAddress),
+          Instance->Rmi4Device->ControllerAddress,
           I2C_M_WR,
           sizeof(UINT8),
           (UINT8 *)&Address,
       },
       {
-          FixedPcdGet16(SynapticsCtlrAddress),
+          Instance->Rmi4Device->ControllerAddress,
           I2C_M_WR,
           WriteBytes,
           Data,
       },
   };
 
-  Transferred = Instance->I2cQupProtocol->Transfer(
+  Transferred = Instance->Rmi4Device->I2cQupProtocol->Transfer(
       Instance->I2cController, ControllerProbeMsg, 2);
   if (Transferred != 2)
     Status = EFI_DEVICE_ERROR;

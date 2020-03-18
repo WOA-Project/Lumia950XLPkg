@@ -515,6 +515,7 @@
   Lumia950XLPkg/Driver/PreLoaderDxe/PreLoaderDxe.inf
 
   # Device Drivers
+  Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDevice.inf
   Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
 
   # Runtime Services

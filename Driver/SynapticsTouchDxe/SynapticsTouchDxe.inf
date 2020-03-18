@@ -9,6 +9,7 @@
 [Sources.common]
   SynapticsTouchDxe.c
   I2cOps.c
+  ComponentName.c
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -45,6 +46,7 @@
   gHardwareInterruptProtocolGuid
   gQcomGpioTlmmProtocolGuid
   gEfiAbsolutePointerProtocolGuid
+  gSynapticsTouchDeviceProtocolGuid
 
 [Depex]
-  gQcomI2cQupProtocolGuid
+  gSynapticsTouchDeviceProtocolGuid
