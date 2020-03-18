@@ -15,10 +15,25 @@ typedef struct {
   }
 
 EFI_TOUCH_DEVICE_PATH TouchDxeDevicePath = {
-    {{HARDWARE_DEVICE_PATH, HW_VENDOR_DP, {sizeof(VENDOR_DEVICE_PATH), 0}},
-     TOUCH_DEVICE_GUID},
-    {END_DEVICE_PATH_TYPE,
-     END_ENTIRE_DEVICE_PATH_SUBTYPE,
-     {sizeof(EFI_DEVICE_PATH_PROTOCOL), 0}}};
+    {
+        {
+            HARDWARE_DEVICE_PATH,
+            HW_VENDOR_DP,
+            {
+                sizeof(VENDOR_DEVICE_PATH),
+                0,
+            },
+        },
+        TOUCH_DEVICE_GUID,
+    },
+    {
+        END_DEVICE_PATH_TYPE,
+        END_ENTIRE_DEVICE_PATH_SUBTYPE,
+        {
+            sizeof(EFI_DEVICE_PATH_PROTOCOL),
+            0,
+        },
+    },
+};
 
 #endif

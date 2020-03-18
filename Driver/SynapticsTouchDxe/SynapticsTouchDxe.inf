@@ -8,6 +8,7 @@
 
 [Sources.common]
   SynapticsTouchDxe.c
+  I2cOps.c
 
 [Packages]
   MdePkg/MdePkg.dec

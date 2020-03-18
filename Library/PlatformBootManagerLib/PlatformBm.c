@@ -103,7 +103,7 @@ VOID FilterAndProcess(
 
   ASSERT(NoHandles > 0);
   for (Idx = 0; Idx < NoHandles; ++Idx) {
-    CHAR16 *DevicePathText;
+    CHAR16 *      DevicePathText;
     STATIC CHAR16 Fallback[] = L"<device path unavailable>";
 
     //
@@ -345,12 +345,6 @@ VOID EFIAPI PlatformBootManagerBeforeConsole(VOID)
   // ErrOut.
   //
   FilterAndProcess(&gEfiGraphicsOutputProtocolGuid, NULL, AddOutput);
-
-  //
-  // Add touch screen to ConIn
-  //
-  EfiBootManagerUpdateConsoleVariable(
-      ConIn, (EFI_DEVICE_PATH_PROTOCOL *)&TouchDxeDevicePath, NULL);
 
   //
   // Now add the device path of all handles with QcomKeypadDeviceProtocolGuid
