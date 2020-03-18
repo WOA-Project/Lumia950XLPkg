@@ -408,11 +408,13 @@ VOID EFIAPI SyncPollCallback(IN EFI_EVENT Event, IN VOID *Context)
   EFI_STATUS          Status;
   RMI4_INTERNAL_DATA *Instance = (RMI4_INTERNAL_DATA *)Context;
   TOUCH_DATA          TouchPointerData;
+  EFI_TPL             OldTpl;
 
+  OldTpl = gBS->RaiseTPL(TPL_NOTIFY);
   Status = SyncGetTouchData(Instance, &TouchPointerData);
 
   if (EFI_ERROR(Status)) {
-    DEBUG((EFI_D_ERROR, "Faild to get Synaptics RMI4 F12 Data \n"));
+    DEBUG((EFI_D_ERROR, "Failed to get Synaptics RMI4 F12 Data \n"));
   }
   else {
     if (TouchPointerData.TouchStatus > 0) {
@@ -425,6 +427,8 @@ VOID EFIAPI SyncPollCallback(IN EFI_EVENT Event, IN VOID *Context)
            Instance->LastY));
     }
   }
+
+  gBS->RestoreTPL(OldTpl);
 }
 
 EFI_STATUS
