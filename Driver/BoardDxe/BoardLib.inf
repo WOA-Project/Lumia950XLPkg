@@ -17,6 +17,8 @@
 
 [LibraryClasses]
   UefiBootServicesTableLib
+  IoLib
+  ArmLib
 
 [Protocols]
   gQcomBoardProtocolGuid

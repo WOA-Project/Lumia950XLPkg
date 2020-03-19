@@ -19,6 +19,7 @@
   GCC:*_*_*_CC_FLAGS = -Werror -Wno-error=unused-variable
 
 [LibraryClasses]
+  ArmLib
   UefiDriverEntryPoint
   IoLib
   InterruptsLib
@@ -27,6 +28,9 @@
   BaseLib
   DebugLib
   PrintLib
+  CompilerIntrinsicsLib
+  CacheMaintenanceLib
+  UefiLib
 
 [FixedPcd]
   gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrAddress
@@ -44,6 +48,7 @@
   gHardwareInterruptProtocolGuid
   gQcomGpioTlmmProtocolGuid
   gSynapticsTouchDeviceProtocolGuid
+  gEfiDevicePathProtocolGuid
 
 [Depex]
   gQcomI2cQupProtocolGuid

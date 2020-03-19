@@ -18,8 +18,15 @@
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
+  ArmLib
+  BaseLib
+  DebugLib
+  MemoryAllocationLib
   UefiDriverEntryPoint
   UefiBootServicesTableLib
+  CompilerIntrinsicsLib
+  CacheMaintenanceLib
+  DxeServicesTableLib
   IoLib
 
 [BuildOptions.AARCH64]

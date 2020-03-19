@@ -23,6 +23,8 @@
   QcomTargetBoardLib
   SmemLib
   PrintLib
+  IoLib
+  ArmLib
 
 [Protocols]
   gQcomBoardProtocolGuid

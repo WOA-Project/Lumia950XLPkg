@@ -20,3 +20,5 @@
   QcomTargetBoardLib
   SmemLib
   PrintLib
+  IoLib
+  ArmLib

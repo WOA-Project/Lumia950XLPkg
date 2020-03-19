@@ -17,6 +17,8 @@
 
 [LibraryClasses]
   UefiBootServicesTableLib
+  IoLib
+  ArmLib
 
 [Protocols]
   gQcomPm8x41ProtocolGuid
