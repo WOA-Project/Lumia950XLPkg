@@ -62,6 +62,7 @@
 
   # QTimer
   gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000|UINT64|0x00000050
+  gQcomTokenSpaceGuid.PcdIntDebugTimerExp|41|UINT64|0x00000010
 
   # GpioTlmmDxe and GpioTlmmInterruptDxe
   gQcomTokenSpaceGuid.PcdGpioTlmmBaseAddress|0|UINT64|0x00000100
