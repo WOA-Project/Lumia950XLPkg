@@ -35,15 +35,9 @@ RETURN_STATUS
 EFIAPI
 SerialPortInitialize(VOID)
 {
-  UINTN InterruptState = 0;
-
   // Prevent dup initialization
   if (m_Initialized)
     return RETURN_SUCCESS;
-
-  // Interrupt Disable
-  InterruptState = ArmGetInterruptState();
-  ArmDisableInterrupts();
 
   // Reset console
   FbConReset();
@@ -51,8 +45,6 @@ SerialPortInitialize(VOID)
   // Set flag
   m_Initialized = TRUE;
 
-  if (InterruptState)
-    ArmEnableInterrupts();
   return RETURN_SUCCESS;
 }
 
@@ -121,9 +113,6 @@ paint:
       type != FBCON_SUBTITLE_MSG && type != FBCON_TITLE_MSG)
     return;
 
-  BOOLEAN intstate = ArmGetInterruptState();
-  ArmDisableInterrupts();
-
   Pixels = (void *)FixedPcdGet32(PcdMipiFrameBufferAddress);
   Pixels += m_Position.y * ((gBpp / 8) * FONT_HEIGHT * gWidth);
   Pixels += m_Position.x * scale_factor * ((gBpp / 8) * (FONT_WIDTH + 1));
@@ -136,8 +125,6 @@ paint:
   if (m_Position.x >= (int)(m_MaxPosition.x / scale_factor))
     goto newline;
 
-  if (intstate)
-    ArmEnableInterrupts();
   return;
 
 newline:
@@ -148,14 +135,10 @@ newline:
     FbConFlush();
     m_Position.y = 0;
 
-    if (intstate)
-      ArmEnableInterrupts();
     goto paint;
   }
   else {
     FbConFlush();
-    if (intstate)
-      ArmEnableInterrupts();
   }
 }
 
@@ -294,16 +277,12 @@ UINTN
 EFIAPI
 SerialPortWrite(IN UINT8 *Buffer, IN UINTN NumberOfBytes)
 {
-  UINT8 *CONST Final          = &Buffer[NumberOfBytes];
-  UINTN        InterruptState = ArmGetInterruptState();
-  ArmDisableInterrupts();
+  UINT8 *CONST Final = &Buffer[NumberOfBytes];
 
   while (Buffer < Final) {
     FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
   }
 
-  if (InterruptState)
-    ArmEnableInterrupts();
   return NumberOfBytes;
 }
 
@@ -313,9 +292,7 @@ SerialPortWriteCritical(IN UINT8 *Buffer, IN UINTN NumberOfBytes)
 {
   UINT8 *CONST Final             = &Buffer[NumberOfBytes];
   UINTN        CurrentForeground = m_Color.Foreground;
-  UINTN        InterruptState    = ArmGetInterruptState();
 
-  ArmDisableInterrupts();
   m_Color.Foreground = FB_BGRA8888_YELLOW;
 
   while (Buffer < Final) {
@@ -324,8 +301,6 @@ SerialPortWriteCritical(IN UINT8 *Buffer, IN UINTN NumberOfBytes)
 
   m_Color.Foreground = CurrentForeground;
 
-  if (InterruptState)
-    ArmEnableInterrupts();
   return NumberOfBytes;
 }
 
