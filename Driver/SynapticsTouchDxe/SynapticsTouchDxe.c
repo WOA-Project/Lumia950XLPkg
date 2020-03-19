@@ -274,9 +274,7 @@ EFI_STATUS AbsStartPolling(IN RMI4_INTERNAL_DATA *Instance)
       &Instance->PollingTimerEvent);
   ASSERT_EFI_ERROR(Status);
 
-  Status = gBS->SetTimer(
-      Instance->PollingTimerEvent, TimerPeriodic,
-      EFI_TIMER_PERIOD_MILLISECONDS(25));
+  Status = gBS->SetTimer(Instance->PollingTimerEvent, TimerPeriodic, 200000);
   ASSERT_EFI_ERROR(Status);
 
   return Status;
@@ -313,9 +311,23 @@ exit:
 VOID EFIAPI AbsPWaitForInput(IN EFI_EVENT Event, IN VOID *Context)
 {
   RMI4_INTERNAL_DATA *Instance = (RMI4_INTERNAL_DATA *)Context;
+  EFI_TPL             OldTpl;
+
+  //
+  // Enter critical section
+  //
+  OldTpl = gBS->RaiseTPL(TPL_NOTIFY);
+
+  SyncPollCallback(NULL, Instance);
+
   if (Instance->StateChanged) {
     gBS->SignalEvent(Event);
   }
+
+  //
+  // Leave critical section and return
+  //
+  gBS->RestoreTPL(OldTpl);
 }
 
 EFI_STATUS
@@ -410,7 +422,11 @@ VOID EFIAPI SyncPollCallback(IN EFI_EVENT Event, IN VOID *Context)
   TOUCH_DATA          TouchPointerData;
   EFI_TPL             OldTpl;
 
+  //
+  // Enter critical section
+  //
   OldTpl = gBS->RaiseTPL(TPL_NOTIFY);
+
   Status = SyncGetTouchData(Instance, &TouchPointerData);
 
   if (EFI_ERROR(Status)) {
@@ -428,6 +444,9 @@ VOID EFIAPI SyncPollCallback(IN EFI_EVENT Event, IN VOID *Context)
     }
   }
 
+  //
+  // Leave critical section and return
+  //
   gBS->RestoreTPL(OldTpl);
 }
 
