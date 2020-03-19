@@ -99,7 +99,9 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/SimpleFbDxe/SimpleFbDxe.inf
 
   # Lattice UC120 Configuration
-  # INF Lumia950XLPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
+!if $(UC120_BITSTREAM_UPLOADER) == 1
+  INF Lumia950XLPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
+!endif
   INF Lumia950XLPkg/GPLDriver/QupSpiDxe/QupSpiDxe.inf
 
   # BDS
