@@ -136,7 +136,7 @@ KeypadControllerDriverSupported(
 
 STATIC
 VOID EFIAPI
-     KeypadReturnApiPushEfikeyBufTail(KEYPAD_RETURN_API *This, EFI_KEY_DATA *KeyData)
+KeypadReturnApiPushEfikeyBufTail(KEYPAD_RETURN_API *This, EFI_KEY_DATA *KeyData)
 {
   KEYPAD_CONSOLE_IN_DEV *      ConsoleIn;
   LIST_ENTRY *                 Link;
@@ -264,8 +264,8 @@ KeypadControllerDriverStart(
   // Setup a periodic timer, used for reading keystrokes at a fixed interval
   //
   Status = gBS->CreateEvent(
-      EVT_TIMER | EVT_NOTIFY_SIGNAL, TPL_NOTIFY, KeypadTimerHandler, ConsoleIn,
-      &ConsoleIn->TimerEvent);
+      EVT_TIMER | EVT_NOTIFY_SIGNAL, TPL_CALLBACK, KeypadTimerHandler,
+      ConsoleIn, &ConsoleIn->TimerEvent);
   if (EFI_ERROR(Status)) {
     Status = EFI_OUT_OF_RESOURCES;
     goto ErrorExit;
