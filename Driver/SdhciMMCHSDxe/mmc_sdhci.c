@@ -393,7 +393,7 @@ static uint32_t mmc_send_op_cond(struct sdhci_host *host, struct mmc_card *card)
     /* Check the response for busy status */
     if (!(mmc_resp & MMC_OCR_BUSY)) {
       mmc_retry++;
-      mdelay(1);
+      gBS->Stall(1000);
       continue;
     }
     else
@@ -1219,7 +1219,7 @@ uint32_t mmc_sd_card_init(struct sdhci_host *host, struct mmc_card *card)
     /* As per SDCC the spec try for max three times with
      * 1 ms delay
      */
-    mdelay(1);
+    gBS->Stall(1000);
   }
 
   if (i == SD_CMD8_MAX_RETRY && (cmd.resp[0] != MMC_SD_HC_VOLT_SUPPLIED)) {
@@ -1258,7 +1258,7 @@ uint32_t mmc_sd_card_init(struct sdhci_host *host, struct mmc_card *card)
     /*
      * As per SDCC spec try for max 1 second
      */
-    mdelay(50);
+    gBS->Stall(50 * 1000);
   }
 
   if (i == SD_ACMD41_MAX_RETRY && !(cmd.resp[0] & MMC_SD_DEV_READY)) {
@@ -2046,7 +2046,7 @@ static uint32_t mmc_send_erase(struct mmc_device *dev, uint64_t erase_timeout)
           "Write Protect set for the region, only partial space was erased\n");
 
     retry++;
-    udelay(1000);
+    gBS->Stall(1000);
     if (retry == MMC_MAX_CARD_STAT_RETRY) {
       dprintf(
           CRITICAL,
@@ -2286,7 +2286,7 @@ uint32_t mmc_set_clr_power_on_wp_user(
 
       /* Time out for WP command */
       retry++;
-      udelay(1000);
+      gBS->Stall(1000);
       if (retry == MMC_MAX_CARD_STAT_RETRY) {
         dprintf(
             CRITICAL,
@@ -2417,7 +2417,7 @@ uint32_t mmc_sdhci_rpmb_send(struct mmc_device *dev, struct mmc_command *cmd)
       }
 
       retry--;
-      udelay(500);
+      gBS->Stall(500);
       if (!retry) {
         dprintf(
             CRITICAL, "Card status check timed out after rpmb operations\n");

@@ -8,8 +8,9 @@ PlatformCallbackInitSlot(struct mmc_config_data *config)
 
   // Initialize MMC device
   struct mmc_device *dev = mmc_init(config);
-  if (dev == NULL)
+  if (dev == NULL) {
     return NULL;
+  }
 
   // Allocate instance
   Status = BioInstanceContructor(&Instance);
@@ -96,7 +97,7 @@ STATIC BIO_INSTANCE mBioTemplate = {
  * Flow    : Write the data from in to the card
  */
 STATIC UINT32
-       mmc_write(BIO_INSTANCE *Instance, UINT64 data_addr, UINT32 data_len, VOID *in)
+mmc_write(BIO_INSTANCE *Instance, UINT64 data_addr, UINT32 data_len, VOID *in)
 {
   UINT32 val        = 0;
   UINT32 block_size = 0;
@@ -156,7 +157,7 @@ STATIC UINT32
  * Flow    : Read data from the card to out
  */
 STATIC UINT32
-       mmc_read(BIO_INSTANCE *Instance, UINT64 data_addr, UINT32 *out, UINT32 data_len)
+mmc_read(BIO_INSTANCE *Instance, UINT64 data_addr, UINT32 *out, UINT32 data_len)
 {
   UINT32 ret = 0;
   UINT32 block_size;
@@ -224,6 +225,7 @@ MMCHSReadBlocks(
 {
   BIO_INSTANCE *      Instance;
   EFI_BLOCK_IO_MEDIA *Media;
+  EFI_TPL             OldTpl;
   UINTN               BlockSize;
   UINTN               RC;
 
@@ -255,7 +257,10 @@ MMCHSReadBlocks(
     return EFI_SUCCESS;
   }
 
-  RC = mmc_read(Instance, (UINT64)Lba * BlockSize, Buffer, BufferSize);
+  OldTpl = gBS->RaiseTPL(TPL_NOTIFY);
+  RC     = mmc_read(Instance, (UINT64)Lba * BlockSize, Buffer, BufferSize);
+  gBS->RestoreTPL(OldTpl);
+
   if (RC == 0)
     return EFI_SUCCESS;
   else
@@ -272,6 +277,7 @@ MMCHSWriteBlocks(
   EFI_BLOCK_IO_MEDIA *Media;
   UINTN               BlockSize;
   UINTN               RC;
+  EFI_TPL             OldTpl;
 
   Instance  = BIO_INSTANCE_FROM_BLOCKIO_THIS(This);
   Media     = &Instance->BlockMedia;
@@ -309,7 +315,10 @@ MMCHSWriteBlocks(
     return EFI_UNSUPPORTED;
   }
 
-  RC = mmc_write(Instance, (UINT64)Lba * BlockSize, BufferSize, Buffer);
+  OldTpl = gBS->RaiseTPL(TPL_NOTIFY);
+  RC     = mmc_write(Instance, (UINT64)Lba * BlockSize, BufferSize, Buffer);
+  gBS->RestoreTPL(OldTpl);
+
   if (RC == 0)
     return EFI_SUCCESS;
   else
@@ -326,11 +335,17 @@ MMCHSFlushBlocks(IN EFI_BLOCK_IO_PROTOCOL *This)
 
 VOID EFIAPI MMCHSExitBsUninit(IN EFI_EVENT Event, IN VOID *Context)
 {
+  EFI_TPL OldTpl;
+
   BIO_INSTANCE *Instance = (BIO_INSTANCE *)Context;
   ASSERT(Instance != NULL);
 
+  OldTpl = gBS->RaiseTPL(TPL_NOTIFY);
+
   // Put card into sleep
   mmc_put_card_to_sleep(Instance->MmcDev);
+
+  gBS->RestoreTPL(OldTpl);
 }
 
 EFI_STATUS
