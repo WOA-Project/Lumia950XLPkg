@@ -39,6 +39,8 @@
 
 #include "PlatformBm.h"
 
+VOID EFIAPI EfiBootManagerConnectAllConsoles(VOID);
+
 #define DP_NODE_LEN(Type)                                                      \
   {                                                                            \
     (UINT8)sizeof(Type), (UINT8)(sizeof(Type) >> 8)                            \
@@ -52,8 +54,8 @@
                          purposes. It must never be NULL.
 
   @retval TRUE   The condition is satisfied.
-  @retval FALSE  Otherwise. This includes the case when the condition could not
-                 be fully evaluated due to an error.
+  @retval FALSE  Otherwise. This includes the case when the condition could
+not be fully evaluated due to an error.
 **/
 typedef BOOLEAN(EFIAPI *FILTER_FUNCTION)(
     IN EFI_HANDLE Handle, IN CONST CHAR16 *ReportText);
@@ -266,11 +268,13 @@ VOID PlatformRegisterOptionsAndKeys(VOID)
   ShellOption = PlatformRegisterFvBootOption(
       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
 
-  VolUpBtn.ScanCode    = SCAN_UP;
-  VolUpBtn.UnicodeChar = SCAN_UP;
-  Status =
-      EfiBootManagerAddKeyOptionVariable(NULL, ShellOption, 0, &VolUpBtn, NULL);
-  ASSERT(Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
+  if (ShellOption != -1) {
+    VolUpBtn.ScanCode    = SCAN_UP;
+    VolUpBtn.UnicodeChar = SCAN_UP;
+    Status               = EfiBootManagerAddKeyOptionVariable(
+        NULL, ShellOption, 0, &VolUpBtn, NULL);
+    ASSERT(Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
+  }
 }
 
 STATIC
@@ -388,6 +392,7 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
   // Connect the rest of the devices.
   //
   EfiBootManagerConnectAll();
+  EfiBootManagerConnectAllConsoles();
 
   Status = gBS->LocateProtocol(
       &gEsrtManagementProtocolGuid, NULL, (VOID **)&EsrtManagement);
@@ -445,7 +450,4 @@ VOID EFIAPI PlatformBootManagerWaitCallback(UINT16 TimeoutRemain)
   built into firmware volumes.
   If this function returns, BDS attempts to enter an infinite loop.
 **/
-VOID EFIAPI PlatformBootManagerUnableToBoot(VOID)
-{
-  return;
-}
+VOID EFIAPI PlatformBootManagerUnableToBoot(VOID) { return; }

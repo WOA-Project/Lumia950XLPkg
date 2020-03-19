@@ -34,13 +34,13 @@ Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 
 If you are familiar with EDK2, you don't need to use my build script.
 
-- Checkout a copy of [EDK2](https://github.com/tianocore/edk2). Switch to `UDK2018` branch.
+- Checkout a copy of [EDK2](https://github.com/tianocore/edk2). We are currently tracking the `master` branch. At least commit `1b6b4a83e1d85e48837068dfe409f5557b50d71d` works without further modification.
 - Checkout this repository under EDK2's worktree.
 - Install ACPI tools from your package manager or ACPICA website.
 - Install `uuid-dev` and `python` (or equivalent package on your distribution).
 - Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
-script uses `gcc-linaro-7.2.1-2017.11`. Then untar them. I place everything under `/opt` directory, so I have 
-directories like `/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts. If you are macOS user, bootstrap the toolchain using ct-ng.
+script uses `gcc-linaro-7.5.0-2019.12`. Then untar them. I place everything under `/opt` directory, so I have 
+directories like `/opt/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts. If you are macOS user, bootstrap the toolchain using ct-ng.
 - Run EDK2 BaseTools setup (`make -C BaseTools`).
 - Copy `rundbbuild.sh` in `Tools` directory to your EDK2 worktree root directory.
 - By default only MSM8994 target is built. To build all, set environment variable `BUILDALL`.
