@@ -39,7 +39,7 @@ if ($null -eq (Test-Path -Path "Lumia950XLPkg")) {
 
 # Set environment again for legacy compatibility. On newer systems, GCC should be used from package source.
 Write-Output "Set legacy environment."
-$env:PATH = "/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin:/opt/gcc-linaro-7.2.1-2017.11-x86_64_arm-eabi/bin:$($env:PATH)"
+$env:PATH = "/opt/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf/bin:/opt/gcc-linaro-7.5.0-2019.12-x86_64_arm-eabi/bin:$($env:PATH)"
 
 # Probe GCC
 # Probe GCC. Use the most suitable one
