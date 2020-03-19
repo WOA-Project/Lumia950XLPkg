@@ -16,7 +16,12 @@
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
+  ArmLib
+  BaseLib
   UefiBootServicesTableLib
+  IoLib
+  CompilerIntrinsicsLib
+  CacheMaintenanceLib
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast

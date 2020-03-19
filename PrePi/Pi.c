@@ -59,9 +59,6 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
   /* Enable program flow prediction, if supported */
   ArmEnableBranchPrediction();
 
-  // Clear FB
-  ResetFb();
-
   // Initialize (fake) UART.
   UartInit();
 

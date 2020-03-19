@@ -1,0 +1,55 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SynapticsTouchDeviceDxe
+  FILE_GUID                      = f0d87c5e-4d5d-4fb5-939f-a6768ae8a310
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SynaDeviceInitialize
+
+[Sources.common]
+  SynapticsTouchDevice.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Werror -Wno-error=unused-variable
+
+[LibraryClasses]
+  ArmLib
+  UefiDriverEntryPoint
+  IoLib
+  InterruptsLib
+  MallocLib
+  TimerLib
+  BaseLib
+  DebugLib
+  PrintLib
+  CompilerIntrinsicsLib
+  CacheMaintenanceLib
+  UefiLib
+
+[FixedPcd]
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrAddress
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrResetPin
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrIntPin
+  gLumia950XLPkgTokenSpaceGuid.SynapticsCtlrI2cDevice
+  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferWidth
+  gLumia950XLPkgTokenSpaceGuid.PcdMipiFrameBufferHeight
+  gLumia950XLPkgTokenSpaceGuid.PcdEnableScreenSerial
+  gLumia950XLPkgTokenSpaceGuid.SynapticsXMax
+  gLumia950XLPkgTokenSpaceGuid.SynapticsYMax
+
+[Protocols]
+  gQcomI2cQupProtocolGuid
+  gHardwareInterruptProtocolGuid
+  gQcomGpioTlmmProtocolGuid
+  gSynapticsTouchDeviceProtocolGuid
+  gEfiDevicePathProtocolGuid
+
+[Depex]
+  gQcomI2cQupProtocolGuid
+

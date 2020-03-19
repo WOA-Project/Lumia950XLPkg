@@ -42,7 +42,7 @@
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [BuildOptions.AARCH64]
-  GCC:*_*_*_CC_FLAGS = -Wno-unused-variable
+  GCC:*_*_*_CC_FLAGS = -Wno-unused-variable -Wno-unused-function
 
 [LibraryClasses]
   BaseLib

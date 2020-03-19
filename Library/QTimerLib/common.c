@@ -1,4 +1,5 @@
 #include <Base.h>
+#include <Library/ArmGenericTimerCounterLib.h>
 
 UINT32 qtimer_get_frequency(VOID)
 {
@@ -11,3 +12,7 @@ UINT32 qtimer_get_frequency(VOID)
 
   return freq;
 }
+
+UINTN
+EFIAPI
+ArmGenericTimerGetTimerFreq(VOID) { return qtimer_get_frequency(); }

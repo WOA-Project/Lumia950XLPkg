@@ -47,7 +47,7 @@ READ_LOCK_STATUS   = TRUE
 
   # Core Drivers
   INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
-  INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
+  INF Lumia950XLPkg/Driver/TimerDxe/TimerDxe.inf
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
@@ -76,7 +76,13 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/PreLoaderDxe/PreLoaderDxe.inf
 
   # Device Drivers
+  INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDevice.inf
   INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
+
+  # Debug heartbeat
+!if $(SEND_HEARTBEAT_TO_SERIAL) == 1
+  INF Lumia950XLPkg/Driver/HeartbeatDxe/HeartbeatDxe.inf
+!endif
 
   # Runtime Services
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
@@ -93,7 +99,9 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/SimpleFbDxe/SimpleFbDxe.inf
 
   # Lattice UC120 Configuration
+!if $(UC120_BITSTREAM_UPLOADER) == 1
   INF Lumia950XLPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
+!endif
   INF Lumia950XLPkg/GPLDriver/QupSpiDxe/QupSpiDxe.inf
 
   # BDS

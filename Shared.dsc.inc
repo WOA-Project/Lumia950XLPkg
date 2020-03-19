@@ -43,6 +43,8 @@
 
   gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|FALSE
 
+  gQcomTokenSpaceGuid.PcdMmcHs200Caps|FALSE
+
 [PcdsFixedAtBuild.common]
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x00000000         # Starting address
   gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x00C40000
@@ -141,9 +143,6 @@
   # SoC Drivers UARTDM
   gQcomTokenSpaceGuid.PcdUartDmClkRxTxBitRate|0xCC
 
-  # SoC Drivers QTimer
-  gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000
-
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize|0x7800000      
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize|0x20000000  # Start here
 
@@ -217,6 +216,10 @@
   gArmTokenSpaceGuid.PcdPciBusMin|0x0
   gArmTokenSpaceGuid.PcdPciBusMax|0xff
 
+  # Timer
+  gQcomTokenSpaceGuid.PcdIntDebugTimerExp|41
+  gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000
+
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|1920
@@ -233,6 +236,7 @@
   ArmGicLib|ArmPkg/Drivers/ArmGic/ArmGicLib.inf
   ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
   ArmGicArchLib|ArmPkg/Library/ArmGicArchLib/ArmGicArchLib.inf
+  TimerLib|ArmPkg/Library/ArmArchTimerLib/ArmArchTimerLib.inf
   BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
   BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
   BaseSynchronizationLib|MdePkg/Library/BaseSynchronizationLib/BaseSynchronizationLib.inf
@@ -241,6 +245,7 @@
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   CacheMaintenanceLib|ArmPkg/Library/ArmCacheMaintenanceLib/ArmCacheMaintenanceLib.inf
   CompilerIntrinsicsLib|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
+  NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
   CpuExceptionHandlerLib|ArmPkg/Library/ArmExceptionLib/ArmExceptionLib.inf
   CpuLib|MdePkg/Library/BaseCpuLib/BaseCpuLib.inf
   CustomizedDisplayLib|MdeModulePkg/Library/CustomizedDisplayLib/CustomizedDisplayLib.inf
@@ -257,7 +262,6 @@
   FrameBufferBltLib|MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.inf
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
-  TimerLib|ArmPkg/Library/ArmArchTimerLib/ArmArchTimerLib.inf
   IoLib|MdePkg/Library/BaseIoLibIntrinsic/BaseIoLibIntrinsic.inf
   LzmaDecompressLib|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
   NetLib|NetworkPkg/Library/DxeNetLib/DxeNetLib.inf
@@ -291,13 +295,17 @@
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
 
   # Platform Drivers
+!if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1
   SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+!else
+  SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
+!endif
+  
   MemoryInitPeiLib|Lumia950XLPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
   PlatformPeiLib|Lumia950XLPkg/Library/PlatformPeiLib/PlatformPeiLib.inf
   PlatformBootManagerLib|Lumia950XLPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
 
   # SoC Drivers
-  QTimerLib|Lumia950XLPkg/Library/QTimerLib/QTimerLib.inf
   InterruptsLib|Lumia950XLPkg/Library/InterruptsLib/InterruptsLib.inf
   MallocLib|Lumia950XLPkg/Library/MallocLib/MallocLib.inf
   KeypadDeviceHelperLib|Lumia950XLPkg/Library/KeypadDeviceHelperLib/KeypadDeviceHelperLib.inf
@@ -318,8 +326,7 @@
   BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
   QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
   PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
-  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
-  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
+  QTimerLib|Lumia950XLPkg/Library/QTimerLib/QTimerLib.inf
 
   # RTC Private
   Pm8x41LibRtcPrivate|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
@@ -361,8 +368,6 @@
   BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
   QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
   PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
-  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
-  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
 
 [LibraryClasses.common.DXE_CORE]
   HobLib|MdePkg/Library/DxeCoreHobLib/DxeCoreHobLib.inf
@@ -382,7 +387,6 @@
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
   # SoC Drivers
-  QcomDxeTimerLib|Lumia950XLPkg/Library/QTimerLib/QcomQTimerDxeTimerLib.inf
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
   Pm8x41Lib|Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41ImplLib.inf
@@ -396,8 +400,7 @@
   BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
   QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
   PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
-  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
-  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
+  QcomDxeTimerLib|Lumia950XLPkg/Library/QTimerLib/QcomQTimerDxeTimerLib.inf
 
 [LibraryClasses.common.UEFI_APPLICATION]
   UefiDecompressLib|MdePkg/Library/BaseUefiDecompressLib/BaseUefiTianoCustomDecompressLib.inf
@@ -421,8 +424,6 @@
   BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
   QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
   PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
-  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
-  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER]
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
@@ -445,8 +446,6 @@
   BoardLib|Lumia950XLPkg/Driver/BoardDxe/BoardImplLib.inf
   QcomTargetBoardLib|Lumia950XLPkg/Library/QcomTargetBoardLib/QcomTargetBoardLib.inf
   PlatformIdLib|Lumia950XLPkg/Library/PlatformIdLib/PlatformIdLib.inf
-  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
-  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
@@ -483,6 +482,8 @@
 
   # Processor Core Services
   ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+  # Even though we switch to QTimer / armv7-timer
+  # We are still building it
   ArmPkg/Drivers/TimerDxe/TimerDxe.inf
   ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
@@ -509,15 +510,21 @@
   Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
   Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
-  Lumia950XLPkg/Driver/UsbDxe/UsbDxe.inf
   Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
   Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
+  Lumia950XLPkg/Driver/TimerDxe/TimerDxe.inf
 
   # PreLoader checker
   Lumia950XLPkg/Driver/PreLoaderDxe/PreLoaderDxe.inf
 
   # Device Drivers
+  Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDevice.inf
   Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
+
+  # Debug heartbeat
+!if $(SEND_HEARTBEAT_TO_SERIAL) == 1
+  Lumia950XLPkg/Driver/HeartbeatDxe/HeartbeatDxe.inf
+!endif
 
   # Runtime Services
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf

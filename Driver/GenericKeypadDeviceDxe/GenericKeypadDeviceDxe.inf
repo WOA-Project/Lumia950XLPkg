@@ -20,6 +20,8 @@
   UefiDriverEntryPoint
   MemoryAllocationLib
   KeypadDeviceImplLib
+  IoLib
+  ArmLib
 
 [Protocols]
   gEFIDroidKeypadDeviceProtocolGuid

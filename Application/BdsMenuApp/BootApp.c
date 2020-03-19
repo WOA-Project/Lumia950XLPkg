@@ -2,19 +2,19 @@
 
 #include "../Modules.h"
 
-EFI_EVENT      mTimerEvent;
-lv_indev_drv_t mSidebuttonInputDrv;
-
-BOOLEAN mModeInitialized = FALSE;
-BOOLEAN mExitSignaled    = FALSE;
-UINT16  mScanCode        = 0;
+static EFI_EVENT mTimerEvent;
+static EFI_EVENT mExitEvent;
 
 static lv_res_t mbox_apply_action(lv_obj_t *mbox, const char *txt)
 {
   return LV_RES_OK; /*Return OK if the message box is not deleted*/
 }
 
-static lv_res_t continue_bds_action(lv_obj_t *btn) { return LV_RES_OK; }
+static lv_res_t continue_bds_action(lv_obj_t *btn)
+{
+  gBS->SignalEvent(mExitEvent);
+  return LV_RES_OK;
+}
 
 static lv_res_t power_off_action(lv_obj_t *btn)
 {
@@ -26,19 +26,6 @@ static lv_res_t reset_action(lv_obj_t *btn)
 {
   gRT->ResetSystem(EfiResetWarm, EFI_SUCCESS, 0, NULL);
   return LV_RES_OK;
-}
-
-static bool EfiKeyRead(lv_indev_data_t *data)
-{
-  if (mScanCode != 0 && data != NULL) {
-    data->btn   = mScanCode;
-    data->state = LV_INDEV_STATE_PR;
-
-    mScanCode = 0;
-    return true;
-  }
-
-  return false;
 }
 
 void create_title_with_text(lv_obj_t *parent, const char *text)
@@ -77,7 +64,7 @@ void create_label_with_text(lv_obj_t *parent, const char *text)
   lv_label_set_long_mode(label, LV_LABEL_LONG_BREAK);
   lv_label_set_align(label, LV_LABEL_ALIGN_LEFT);
   lv_obj_set_width(label, 900);
-  lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
+  lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 5);
   lv_label_set_text(label, text);
 }
 
@@ -85,6 +72,11 @@ VOID EFIAPI TimerCallback(IN EFI_EVENT Event, IN VOID *Context)
 {
   lv_tick_inc(10);
   lv_task_handler();
+}
+
+VOID EFIAPI BdsAppExitCallback(IN EFI_EVENT Event, IN VOID *Context)
+{
+  // Do nothing
 }
 
 VOID EFIAPI DrawMenu(VOID)
@@ -106,6 +98,7 @@ VOID EFIAPI DrawMenu(VOID)
   lv_obj_t *win = lv_win_create(lv_scr_act(), NULL);
   lv_win_set_title(win, "Lumia UEFI Menu");
   lv_win_set_style(win, LV_WIN_STYLE_SB, &style_sb);
+  lv_win_set_sb_mode(win, LV_SB_MODE_OFF);
 
   /* Add control button to the header */
   lv_win_add_btn(win, SYMBOL_CLOSE, continue_bds_action);
@@ -116,9 +109,8 @@ VOID EFIAPI DrawMenu(VOID)
   lv_obj_t *tbvFunc;
   tbvFunc = lv_tabview_create(win, NULL);
 
-  lv_obj_t *tbSysinfo        = lv_tabview_add_tab(tbvFunc, "System Info");
-  lv_obj_t *tbDeviceSettings = lv_tabview_add_tab(tbvFunc, "Device Settings");
-  lv_obj_t *tbBootDevice     = lv_tabview_add_tab(tbvFunc, "Boot Device");
+  lv_obj_t *tbSysinfo    = lv_tabview_add_tab(tbvFunc, "System Info");
+  lv_obj_t *tbBootDevice = lv_tabview_add_tab(tbvFunc, "Boot Device Selection");
 
   /* System Info */
   SystemInfoEntry(tbSysinfo);
@@ -154,12 +146,6 @@ InitializeUserInterface(
   if (EFI_ERROR(Status))
     goto exit;
 
-  // Initialize Keypad
-  lv_indev_drv_init(&mSidebuttonInputDrv);
-  mSidebuttonInputDrv.type = LV_INDEV_TYPE_KEYPAD;
-  mSidebuttonInputDrv.read = EfiKeyRead;
-  lv_indev_drv_register(&mSidebuttonInputDrv);
-
   // Initialize Menu
   DrawMenu();
 
@@ -176,19 +162,22 @@ InitializeUserInterface(
       &mTimerEvent);
   ASSERT_EFI_ERROR(Status);
 
+  Status = gBS->CreateEvent(
+      EVT_NOTIFY_WAIT, TPL_NOTIFY, BdsAppExitCallback, NULL, &mExitEvent);
+  ASSERT_EFI_ERROR(Status);
+
   Status = gBS->SetTimer(
       mTimerEvent, TimerPeriodic, EFI_TIMER_PERIOD_MILLISECONDS(10));
   ASSERT_EFI_ERROR(Status);
 
-  // UI Input Begin
-  while (!mExitSignaled) {
-    Status = gBS->WaitForEvent(1, &gST->ConIn->WaitForKey, &WaitIndex);
+  while (TRUE) {
+    Status = gBS->WaitForEvent(1, &mExitEvent, &WaitIndex);
     ASSERT_EFI_ERROR(Status);
-    Status = gST->ConIn->ReadKeyStroke(gST->ConIn, &Key);
-    if (!EFI_ERROR(Status))
-      mScanCode = Key.ScanCode;
+    break;
   }
 
 exit:
+  gBS->CloseEvent(mTimerEvent);
+  gBS->CloseEvent(mExitEvent);
   return Status;
 }

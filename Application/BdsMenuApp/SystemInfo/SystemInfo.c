@@ -31,7 +31,9 @@ EFIAPI EFI_STATUS SystemInfoEntry(lv_obj_t *tbSysInfo)
       gST->Hdr.Revision >> 16, gST->Hdr.Revision & ((1 << 16) - 1));
   create_label_with_text(tbSysInfo, TempStr8);
 
+  create_label_with_text(tbSysInfo, "\n\n");
   create_title_with_text(tbSysInfo, "Software Information \n\n");
+  create_label_with_text(tbSysInfo, "\n\n");
 
   AsciiSPrint(
       TempStr8, sizeof(TempStr8), "Processor: %a \n",
@@ -43,6 +45,7 @@ EFIAPI EFI_STATUS SystemInfoEntry(lv_obj_t *tbSysInfo)
       (CHAR8 *)FixedPcdGetPtr(PcdSmbiosSystemModel));
   create_label_with_text(tbSysInfo, TempStr8);
 
+  create_label_with_text(tbSysInfo, "\n\n");
   create_title_with_text(tbSysInfo, "Hardware Information \n\n");
 
 exit:

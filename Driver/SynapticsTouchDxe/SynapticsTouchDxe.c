@@ -1,76 +1,308 @@
-#include <PiDxe.h>
+#include <Uefi.h>
 
 #include <Library/LKEnvLib.h>
-
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PcdLib.h>
 #include <Library/UefiBootServicesTableLib.h>
+#include <Library/UefiLib.h>
 
 #include <Protocol/AbsolutePointer.h>
 #include <Protocol/QcomGpioTlmm.h>
 #include <Protocol/QcomI2cQup.h>
 
 #include "SynapticsRmi4.h"
-#include <Device/TouchDevicePath.h>
 
-QCOM_GPIO_TLMM_PROTOCOL *GpioTlmmProtocol;
-QCOM_I2C_QUP_PROTOCOL *  I2cQupProtocol;
-
-BOOLEAN             m_DeviceInitialized = FALSE;
-BOOLEAN             m_StateChanged      = FALSE;
-struct qup_i2c_dev *m_Controller;
-
-UINT8  PageF12          = 0;
-UINT32 TouchDataAddress = 0;
-UINT32 FailureCount     = 0;
-
-EFI_EVENT m_CallbackTimer = NULL;
-EFI_EVENT m_TouchEvent    = NULL;
-
-UINT64 LastX = 0;
-UINT64 LastY = 0;
-
-VOID EFIAPI SynaStartPolling(VOID);
-
-// Protocol information
-EFI_ABSOLUTE_POINTER_MODE m_AbsPointerModeInfo = {
-    0, 0, 0, FixedPcdGet64(SynapticsXMax), FixedPcdGet64(SynapticsYMax), 0, 0,
+// Instance Template
+RMI4_INTERNAL_DATA mInstanceTemplate = {
+    RMI4_TCH_INSTANCE_SIGNATURE,
+    0,
+    0,
+    {
+        AbsPReset,
+        AbsPGetState,
+        NULL,
+        NULL,
+    },
+    {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    NULL,
+    FALSE,
+    0,
+    0,
+    0,
+    NULL,
+    FALSE,
+    NULL,
+    NULL,
 };
 
-EFI_STATUS EFIAPI AbsPReset(
-    IN EFI_ABSOLUTE_POINTER_PROTOCOL *This, IN BOOLEAN ExtendedVerification)
-{
-  LastX          = 0;
-  LastY          = 0;
-  m_StateChanged = FALSE;
+// Binding
+EFI_DRIVER_BINDING_PROTOCOL gRmi4DriverBinding = {
+    Rmi4AbsolutePointerDriverBindingSupported,
+    Rmi4AbsolutePointerDriverBindingStart,
+    Rmi4AbsolutePointerDriverBindingStop,
+    0x1,
+    NULL,
+    NULL,
+};
 
-  if (m_CallbackTimer == NULL) {
-    SynaStartPolling();
+EFI_STATUS
+EFIAPI
+Rmi4AbsolutePointerDriverBindingSupported(
+    IN EFI_DRIVER_BINDING_PROTOCOL *This, IN EFI_HANDLE Controller,
+    IN EFI_DEVICE_PATH_PROTOCOL *RemainingDevicePath)
+{
+  EFI_STATUS            Status;
+  SYNAPTICS_I2C_DEVICE *Rmi4I2cDeviceIo;
+
+  Status = gBS->OpenProtocol(
+      Controller, &gSynapticsTouchDeviceProtocolGuid, (VOID **)&Rmi4I2cDeviceIo,
+      This->DriverBindingHandle, Controller, EFI_OPEN_PROTOCOL_BY_DRIVER);
+
+  if (EFI_ERROR(Status)) {
+    return Status;
   }
+
+  Status = EFI_SUCCESS;
+  gBS->CloseProtocol(
+      Controller, &gSynapticsTouchDeviceProtocolGuid, This->DriverBindingHandle,
+      Controller);
+
+  return Status;
+}
+
+EFI_STATUS
+EFIAPI
+Rmi4AbsolutePointerDriverBindingStart(
+    IN EFI_DRIVER_BINDING_PROTOCOL *This, IN EFI_HANDLE Controller,
+    IN EFI_DEVICE_PATH_PROTOCOL *RemainingDevicePath)
+{
+  EFI_TPL               OldTpl;
+  EFI_STATUS            Status;
+  SYNAPTICS_I2C_DEVICE *Rmi4I2cDeviceIo;
+  RMI4_INTERNAL_DATA *  Instance;
+
+  UINT8 InfoData[TOUCH_RMI_PAGE_INFO_BYTES] = {0};
+  UINT8 Address                             = TOUCH_RMI_PAGE_INFO_ADDRESS;
+
+  UINT8 Page     = 0;
+  UINT8 Function = 0;
+
+  OldTpl = gBS->RaiseTPL(TPL_CALLBACK);
+  Status = gBS->OpenProtocol(
+      Controller, &gSynapticsTouchDeviceProtocolGuid, (VOID **)&Rmi4I2cDeviceIo,
+      This->DriverBindingHandle, Controller, EFI_OPEN_PROTOCOL_BY_DRIVER);
+  if (EFI_ERROR(Status)) {
+    goto exit;
+  }
+
+  Instance = AllocateCopyPool(sizeof(RMI4_INTERNAL_DATA), &mInstanceTemplate);
+  ASSERT(Instance != NULL);
+  ASSERT(Rmi4I2cDeviceIo != NULL);
+
+  Instance->Rmi4Device                  = Rmi4I2cDeviceIo;
+  Instance->AbsPointerMode.AbsoluteMaxX = Rmi4I2cDeviceIo->XMax;
+  Instance->AbsPointerMode.AbsoluteMaxY = Rmi4I2cDeviceIo->YMax;
+  Instance->AbsPointerProtocol.Mode     = &Instance->AbsPointerMode;
+  Instance->I2cController = Rmi4I2cDeviceIo->I2cQupProtocol->GetDevice(
+      Rmi4I2cDeviceIo->ControllerI2cDevice);
+
+  Status = SynaPowerUpController(Instance);
+  if (EFI_ERROR(Status)) {
+    DEBUG((EFI_D_ERROR, "Failed to power on controller \n"));
+    goto exit;
+  }
+
+  DEBUG((EFI_D_INFO, "Probe Synaptics RMI4 F12 Function \n"));
+  if (Instance->I2cController->suspended) {
+    DEBUG((EFI_D_ERROR, "Device not found, or in invalid state \n"));
+    Status = EFI_DEVICE_ERROR;
+    goto exit;
+  }
+
+  // Probe device to locate F12 function
+  do {
+    Status =
+        SynaI2cRead(Instance, Address, &InfoData[0], TOUCH_RMI_PAGE_INFO_BYTES);
+
+    if (EFI_ERROR(Status)) {
+      DEBUG((EFI_D_ERROR, "I2C Read failed \n"));
+      goto exit;
+    }
+
+    if (InfoData[5] == TOUCH_RMI_F12_FUNCTION) {
+      DEBUG((EFI_D_INFO, "RMI4 F12 Function Found. \n"));
+      Instance->PageF12          = Page;
+      Instance->TouchDataAddress = InfoData[3];
+      break;
+    }
+
+    // Last page. Go out
+    if (InfoData[5] == 0 && Address == TOUCH_RMI_PAGE_INFO_ADDRESS) {
+      break;
+    }
+    // Switch page
+    else if (InfoData[5] == 0 && Address != TOUCH_RMI_PAGE_INFO_ADDRESS) {
+      DEBUG((EFI_D_INFO, "Switching to next Synaptics RMI4 Page........"));
+
+      Page++;
+      Address = TOUCH_RMI_PAGE_INFO_ADDRESS;
+
+      Status = SynaI2cWrite(Instance, RMI_CHANGE_PAGE_ADDRESS, &Page, 1);
+      if (EFI_ERROR(Status)) {
+        DEBUG((EFI_D_ERROR, "Unable to switch RMI4 page \n"));
+        goto exit;
+      }
+    }
+    else {
+      Function++;
+      Address = Address - TOUCH_RMI_PAGE_INFO_BYTES;
+    }
+  } while ((Address > 0) && (Function < TOUCH_RMI_MAX_FUNCTIONS));
+
+  // Determine final result
+  if (Function >= TOUCH_RMI_MAX_FUNCTIONS) {
+    DEBUG((EFI_D_ERROR, "Invalid RMI4 function index \n"));
+    Status = EFI_DEVICE_ERROR;
+    goto exit;
+  }
+
+  if (Address <= 0) {
+    DEBUG((EFI_D_ERROR, "Invalid RMI4 address \n"));
+    Status = EFI_DEVICE_ERROR;
+    goto exit;
+  }
+
+  // Flag device as initialized
+  Instance->Initialized = TRUE;
+
+  // Set touch event
+  Status = gBS->CreateEvent(
+      EVT_NOTIFY_WAIT, TPL_NOTIFY, AbsPWaitForInput, Instance,
+      &Instance->AbsPointerProtocol.WaitForInput);
+  ASSERT_EFI_ERROR(Status);
+
+  // Start polling
+  Status = AbsStartPolling(Instance);
+  ASSERT_EFI_ERROR(Status);
+
+  // Install protocols
+  Status = gBS->InstallProtocolInterface(
+      &Controller, &gEfiAbsolutePointerProtocolGuid, EFI_NATIVE_INTERFACE,
+      &Instance->AbsPointerProtocol);
+
+  if (EFI_ERROR(Status)) {
+    DEBUG((EFI_D_ERROR, "Failed to install protocol interface \n"));
+  }
+
+  // Name table
+  Instance->ControllerNameTable = NULL;
+  AddUnicodeString2(
+      "eng", gRmi4DriverComponentName.SupportedLanguages,
+      &Instance->ControllerNameTable, L"Synaptics RMI4 Absolute Pointer", TRUE);
+  AddUnicodeString2(
+      "en", gRmi4DriverComponentName.SupportedLanguages,
+      &Instance->ControllerNameTable, L"Synaptics RMI4 Absolute Pointer",
+      FALSE);
+
+exit:
+  gBS->RestoreTPL(OldTpl);
+  return Status;
+}
+
+EFI_STATUS
+EFIAPI
+Rmi4AbsolutePointerDriverBindingStop(
+    IN EFI_DRIVER_BINDING_PROTOCOL *This, IN EFI_HANDLE Controller,
+    IN UINTN NumberOfChildren, IN EFI_HANDLE *ChildHandleBuffer)
+{
+  EFI_STATUS                     Status;
+  EFI_ABSOLUTE_POINTER_PROTOCOL *AbsolutePointerProtocol;
+  RMI4_INTERNAL_DATA *           Instance;
+
+  Status = gBS->OpenProtocol(
+      Controller, &gEfiAbsolutePointerProtocolGuid,
+      (VOID **)&AbsolutePointerProtocol, This->DriverBindingHandle, Controller,
+      EFI_OPEN_PROTOCOL_GET_PROTOCOL);
+
+  if (EFI_ERROR(Status)) {
+    return EFI_UNSUPPORTED;
+  }
+
+  Instance = RMI4_TCH_INSTANCE_FROM_ABSTCH_THIS(AbsolutePointerProtocol);
+
+  Status = gBS->UninstallProtocolInterface(
+      Controller, &gEfiAbsolutePointerProtocolGuid,
+      &Instance->AbsPointerProtocol);
+  if (EFI_ERROR(Status)) {
+    return Status;
+  }
+
+  gBS->CloseEvent(Instance->PollingTimerEvent);
+  gBS->CloseEvent(Instance->AbsPointerProtocol.WaitForInput);
 
   return EFI_SUCCESS;
 }
 
-EFI_STATUS EFIAPI AbsPGetState(
-    IN EFI_ABSOLUTE_POINTER_PROTOCOL *This,
-    IN OUT EFI_ABSOLUTE_POINTER_STATE *State)
+EFI_STATUS AbsPReset(
+    IN EFI_ABSOLUTE_POINTER_PROTOCOL *This, IN BOOLEAN ExtendedVerification)
+{
+  RMI4_INTERNAL_DATA *Instance;
+
+  Instance               = RMI4_TCH_INSTANCE_FROM_ABSTCH_THIS(This);
+  Instance->LastX        = 0;
+  Instance->LastY        = 0;
+  Instance->StateChanged = FALSE;
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS AbsStartPolling(IN RMI4_INTERNAL_DATA *Instance)
 {
   EFI_STATUS Status = EFI_SUCCESS;
 
-  if (State == NULL) {
+  // Set event routines
+  Status = gBS->CreateEvent(
+      EVT_NOTIFY_SIGNAL | EVT_TIMER, TPL_CALLBACK, SyncPollCallback, Instance,
+      &Instance->PollingTimerEvent);
+  ASSERT_EFI_ERROR(Status);
+
+  Status = gBS->SetTimer(Instance->PollingTimerEvent, TimerPeriodic, 200000);
+  ASSERT_EFI_ERROR(Status);
+
+  return Status;
+}
+
+EFI_STATUS AbsPGetState(
+    IN EFI_ABSOLUTE_POINTER_PROTOCOL *This,
+    IN OUT EFI_ABSOLUTE_POINTER_STATE *State)
+{
+  EFI_STATUS          Status = EFI_SUCCESS;
+  RMI4_INTERNAL_DATA *Instance;
+
+  if (This == NULL || State == NULL) {
     Status = EFI_INVALID_PARAMETER;
     goto exit;
   }
 
-  if (m_CallbackTimer == NULL) {
-    SynaStartPolling();
+  Instance = RMI4_TCH_INSTANCE_FROM_ABSTCH_THIS(This);
+  if (!Instance->StateChanged) {
+    Status = EFI_NOT_READY;
+    goto exit;
   }
 
-  State->CurrentX      = LastX;
-  State->CurrentY      = LastY;
-  State->CurrentZ      = 0;
-  State->ActiveButtons = 0;
-  m_StateChanged       = FALSE;
+  State->CurrentX        = Instance->LastX;
+  State->CurrentY        = Instance->LastY;
+  State->CurrentZ        = 0;
+  State->ActiveButtons   = 1;
+  Instance->StateChanged = FALSE;
 
 exit:
   return Status;
@@ -78,36 +310,41 @@ exit:
 
 VOID EFIAPI AbsPWaitForInput(IN EFI_EVENT Event, IN VOID *Context)
 {
-  if (m_CallbackTimer == NULL) {
-    SynaStartPolling();
-  }
-  if (m_StateChanged) {
+  RMI4_INTERNAL_DATA *Instance = (RMI4_INTERNAL_DATA *)Context;
+  EFI_TPL             OldTpl;
+
+  //
+  // Enter critical section
+  //
+  OldTpl = gBS->RaiseTPL(TPL_NOTIFY);
+
+  SyncPollCallback(NULL, Instance);
+
+  if (Instance->StateChanged) {
     gBS->SignalEvent(Event);
   }
-}
 
-// Absolute Pointer Protocol
-EFI_ABSOLUTE_POINTER_PROTOCOL m_AbsPointerProtImpl = {
-    AbsPReset,
-    AbsPGetState,
-    (EFI_EVENT)NULL,
-    (EFI_ABSOLUTE_POINTER_MODE *)&m_AbsPointerModeInfo,
-};
+  //
+  // Leave critical section and return
+  //
+  gBS->RestoreTPL(OldTpl);
+}
 
 EFI_STATUS
 EFIAPI
-SynaPowerUpController(VOID)
+SynaPowerUpController(RMI4_INTERNAL_DATA *Instance)
 {
   UINT32     ResetLine;
   EFI_STATUS Status;
 
-  if (GpioTlmmProtocol == NULL) {
-    Status = EFI_NOT_READY;
+  if (Instance == NULL || Instance->Rmi4Device == NULL ||
+      Instance->Rmi4Device->GpioTlmmProtocol == NULL) {
+    Status = EFI_INVALID_PARAMETER;
     goto exit;
   }
 
   // Pin Sanity check
-  ResetLine = FixedPcdGet32(SynapticsCtlrResetPin);
+  ResetLine = Instance->Rmi4Device->ControllerResetPin;
   if (ResetLine <= 0) {
     DEBUG((EFI_D_ERROR, "Invalid GPIO configuration \n"));
     Status = EFI_INVALID_PARAMETER;
@@ -115,16 +352,16 @@ SynaPowerUpController(VOID)
   }
 
   // Power Seq
-  GpioTlmmProtocol->SetPull(ResetLine, GPIO_PULL_NONE);
-  GpioTlmmProtocol->SetDriveStrength(ResetLine, 2);
-  GpioTlmmProtocol->Set(ResetLine, GPIO_ENABLE);
+  Instance->Rmi4Device->GpioTlmmProtocol->SetPull(ResetLine, GPIO_PULL_NONE);
+  Instance->Rmi4Device->GpioTlmmProtocol->SetDriveStrength(ResetLine, 2);
+  Instance->Rmi4Device->GpioTlmmProtocol->Set(ResetLine, GPIO_ENABLE);
 
   // Configure MSM GPIO RESET line to Low
-  GpioTlmmProtocol->DirectionOutput(ResetLine, GPIO_LOW);
+  Instance->Rmi4Device->GpioTlmmProtocol->DirectionOutput(ResetLine, GPIO_LOW);
   gBS->Stall(TOUCH_POWER_RAIL_STABLE_TIME);
 
   // configure MSM GPIO RESET line to High
-  GpioTlmmProtocol->DirectionOutput(ResetLine, GPIO_HIGH);
+  Instance->Rmi4Device->GpioTlmmProtocol->DirectionOutput(ResetLine, GPIO_HIGH);
   gBS->Stall(TOUCH_DELAY_TO_COMMUNICATE);
 
   DEBUG((EFI_D_INFO, "Touch controller powered on \n"));
@@ -136,113 +373,33 @@ exit:
 
 EFI_STATUS
 EFIAPI
-SynaI2cRead(IN UINT8 Address, IN UINT8 *Data, IN UINT16 ReadBytes)
-{
-  EFI_STATUS Status      = EFI_SUCCESS;
-  int        Transferred = 0;
-
-  if (m_Controller == NULL || I2cQupProtocol == NULL) {
-    Status = EFI_NOT_READY;
-    goto exit;
-  }
-
-  if (Data == NULL) {
-    Status = EFI_INVALID_PARAMETER;
-    goto exit;
-  }
-
-  struct i2c_msg ControllerProbeMsg[] = {
-      {
-          FixedPcdGet16(SynapticsCtlrAddress),
-          I2C_M_WR,
-          sizeof(UINT8),
-          (UINT8 *)&Address,
-      },
-      {
-          FixedPcdGet16(SynapticsCtlrAddress),
-          I2C_M_RD,
-          ReadBytes,
-          Data,
-      },
-  };
-
-  Transferred = I2cQupProtocol->Transfer(m_Controller, ControllerProbeMsg, 2);
-  if (Transferred != 2) {
-    Status = EFI_DEVICE_ERROR;
-  }
-
-exit:
-  return Status;
-}
-
-EFI_STATUS
-EFIAPI
-SynaI2cWrite(IN UINT8 Address, IN UINT8 *Data, IN UINT16 WriteBytes)
-{
-  EFI_STATUS Status      = EFI_SUCCESS;
-  int        Transferred = 0;
-
-  if (m_Controller == NULL || I2cQupProtocol == NULL) {
-    Status = EFI_NOT_READY;
-    goto exit;
-  }
-
-  if (Data == NULL) {
-    Status = EFI_INVALID_PARAMETER;
-    goto exit;
-  }
-
-  struct i2c_msg ControllerProbeMsg[] = {
-      {
-          FixedPcdGet16(SynapticsCtlrAddress),
-          I2C_M_WR,
-          sizeof(UINT8),
-          (UINT8 *)&Address,
-      },
-      {
-          FixedPcdGet16(SynapticsCtlrAddress),
-          I2C_M_WR,
-          WriteBytes,
-          Data,
-      },
-  };
-
-  Transferred = I2cQupProtocol->Transfer(m_Controller, ControllerProbeMsg, 2);
-  if (Transferred != 2) {
-    Status = EFI_DEVICE_ERROR;
-  }
-
-exit:
-  return Status;
-}
-
-EFI_STATUS
-EFIAPI
-SyncGetTouchData(IN PTOUCH_DATA DataBuffer)
+SyncGetTouchData(RMI4_INTERNAL_DATA *Instance, IN PTOUCH_DATA DataBuffer)
 {
   EFI_STATUS Status                             = EFI_SUCCESS;
   UINT8      TouchCoordinates[TOUCH_DATA_BYTES] = {0};
 
-  if (!m_DeviceInitialized) {
-    Status = EFI_NOT_READY;
-    goto exit;
-  }
-
-  if (DataBuffer == NULL) {
+  if (Instance == NULL || DataBuffer == NULL) {
     Status = EFI_INVALID_PARAMETER;
     goto exit;
   }
 
+  if (!Instance->Initialized) {
+    Status = EFI_NOT_READY;
+    goto exit;
+  }
+
   // Change RMI page to F12
-  Status = SynaI2cWrite(RMI_CHANGE_PAGE_ADDRESS, &PageF12, 1);
+  Status =
+      SynaI2cWrite(Instance, RMI_CHANGE_PAGE_ADDRESS, &Instance->PageF12, 1);
   if (EFI_ERROR(Status)) {
     DEBUG((EFI_D_ERROR, "Failed to change RMI4 page address \n"));
     goto exit;
   }
 
   // Read a fingerprint
-  Status =
-      SynaI2cRead(TouchDataAddress, &TouchCoordinates[0], TOUCH_DATA_BYTES);
+  Status = SynaI2cRead(
+      Instance, Instance->TouchDataAddress, &TouchCoordinates[0],
+      TOUCH_DATA_BYTES);
   if (EFI_ERROR(Status)) {
     DEBUG((EFI_D_ERROR, "Failed to read RMI4 F12 page data \n"));
     goto exit;
@@ -260,206 +417,49 @@ exit:
 
 VOID EFIAPI SyncPollCallback(IN EFI_EVENT Event, IN VOID *Context)
 {
-  EFI_STATUS Status;
-  TOUCH_DATA TouchPointerData;
-  UINT32     CurrentX, CurrentY;
+  EFI_STATUS          Status;
+  RMI4_INTERNAL_DATA *Instance = (RMI4_INTERNAL_DATA *)Context;
+  TOUCH_DATA          TouchPointerData;
+  EFI_TPL             OldTpl;
 
-  Status = SyncGetTouchData(&TouchPointerData);
+  //
+  // Enter critical section
+  //
+  OldTpl = gBS->RaiseTPL(TPL_NOTIFY);
+
+  Status = SyncGetTouchData(Instance, &TouchPointerData);
 
   if (EFI_ERROR(Status)) {
-    DEBUG((EFI_D_ERROR, "Faild to get Synaptics RMI4 F12 Data \n"));
-    FailureCount++;
-
-    if (FailureCount >= FAILURE_THRESHOLD) {
-      gBS->CloseEvent(m_CallbackTimer);
-    }
+    DEBUG((EFI_D_ERROR, "Failed to get Synaptics RMI4 F12 Data \n"));
   }
   else {
     if (TouchPointerData.TouchStatus > 0) {
-      CurrentX       = TouchPointerData.TouchX;
-      CurrentY       = TouchPointerData.TouchY;
-      LastX          = CurrentX;
-      LastY          = CurrentY;
-      m_StateChanged = TRUE;
+      Instance->LastX        = TouchPointerData.TouchX;
+      Instance->LastY        = TouchPointerData.TouchY;
+      Instance->StateChanged = TRUE;
 
-      DEBUG((EFI_D_INFO, "Touch: X: %d, Y: %d \n", LastX, LastY));
+      DEBUG(
+          (EFI_D_INFO | EFI_D_ERROR, "Touch: X: %d, Y: %d \n", Instance->LastX,
+           Instance->LastY));
     }
   }
-}
 
-VOID EFIAPI SynaStartPolling(VOID)
-{
-  EFI_STATUS Status = EFI_SUCCESS;
-  Status            = gBS->CreateEvent(
-      EVT_NOTIFY_SIGNAL | EVT_TIMER, TPL_CALLBACK, SyncPollCallback, NULL,
-      &m_CallbackTimer);
-  ASSERT_EFI_ERROR(Status);
-
-  Status =
-      gBS->SetTimer(m_CallbackTimer, TimerPeriodic, TIMER_INTERVAL_TOUCH_POLL);
-  ASSERT_EFI_ERROR(Status);
+  //
+  // Leave critical section and return
+  //
+  gBS->RestoreTPL(OldTpl);
 }
 
 EFI_STATUS
 EFIAPI
 SynaInitialize(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
 {
-  EFI_STATUS Status = EFI_SUCCESS;
+  EFI_STATUS Status;
 
-  UINT8  InfoData[TOUCH_RMI_PAGE_INFO_BYTES] = {0};
-  UINT8  Address                             = TOUCH_RMI_PAGE_INFO_ADDRESS;
-  UINTN  DeviceIndex                         = 0;
-  UINT16 ControllerSlaveAddr                 = 0;
-
-  UINT8 Page     = 0;
-  UINT8 Function = 0;
-
-  // Device ID
-  DeviceIndex = FixedPcdGet32(SynapticsCtlrI2cDevice);
-  if (DeviceIndex <= 0) {
-    DEBUG((EFI_D_ERROR, "Invalid I2C Device \n"));
-    Status = EFI_INVALID_PARAMETER;
-    goto exit;
-  }
-
-  // Controller Slave Address
-  ControllerSlaveAddr = FixedPcdGet16(SynapticsCtlrAddress);
-  if (ControllerSlaveAddr <= 0) {
-    DEBUG((EFI_D_ERROR, "Invalid I2C Address \n"));
-    Status = EFI_INVALID_PARAMETER;
-    goto exit;
-  }
-
-  // Locate protocol
-  Status = gBS->LocateProtocol(
-      &gQcomI2cQupProtocolGuid, NULL, (VOID *)&I2cQupProtocol);
-
-  if (EFI_ERROR(Status)) {
-    DEBUG((EFI_D_ERROR, "Unable to locate I2C protocol \n"));
-    goto exit;
-  }
-
-  // GPIO Processing
-  Status = gBS->LocateProtocol(
-      &gQcomGpioTlmmProtocolGuid, NULL, (VOID *)&GpioTlmmProtocol);
-
-  if (EFI_ERROR(Status)) {
-    DEBUG((EFI_D_ERROR, "Unable to locate GPIO protocol \n"));
-    goto exit;
-  }
-
-  // Power Seq
-  Status = SynaPowerUpController();
-  if (EFI_ERROR(Status)) {
-    DEBUG((EFI_D_ERROR, "Failed to power on controller \n"));
-    goto exit;
-  }
-
-  DEBUG((EFI_D_INFO, "Probe Synaptics RMI4 F12 Function     \n"));
-
-  // Locate device
-  m_Controller = I2cQupProtocol->GetDevice(DeviceIndex);
-
-  if (m_Controller != NULL && !m_Controller->suspended) {
-    // Probe device to locate F12 function
-    do {
-      Status = SynaI2cRead(Address, &InfoData[0], TOUCH_RMI_PAGE_INFO_BYTES);
-      if (EFI_ERROR(Status)) {
-        DEBUG((EFI_D_ERROR, "I2C Read failed \n"));
-        goto exit;
-      }
-
-      DEBUG(
-          (EFI_D_INFO, "TouchInit: FDT.QueryBase is %d         \n",
-           InfoData[0]));
-      DEBUG(
-          (EFI_D_INFO, "TouchInit: FDT.commadBase is %d        \n",
-           InfoData[1]));
-      DEBUG(
-          (EFI_D_INFO, "TouchInit: FDT.controlBase is %d       \n",
-           InfoData[2]));
-      DEBUG(
-          (EFI_D_INFO, "TouchInit: FDT.Database is %d          \n",
-           InfoData[3]));
-      DEBUG(
-          (EFI_D_INFO, "TouchInit: FDT.IRQ is %d               \n",
-           InfoData[4]));
-      DEBUG(
-          (EFI_D_INFO, "TouchInit: FDT.FuncNumber is %d        \n",
-           InfoData[5]));
-
-      if (InfoData[5] == TOUCH_RMI_F12_FUNCTION) {
-        DEBUG((EFI_D_INFO, "RMI4 F12 Function Found. \n"));
-        PageF12          = Page;
-        TouchDataAddress = InfoData[3];
-        break;
-      }
-
-      // Last page. Go out
-      if (InfoData[5] == 0 && Address == TOUCH_RMI_PAGE_INFO_ADDRESS) {
-        break;
-      }
-
-      // Switch page
-      else if (InfoData[5] == 0 && Address != TOUCH_RMI_PAGE_INFO_ADDRESS) {
-        DEBUG((EFI_D_INFO, "Switching to next Synaptics RMI4 Page........"));
-
-        Page++;
-        Address = TOUCH_RMI_PAGE_INFO_ADDRESS;
-
-        Status = SynaI2cWrite(RMI_CHANGE_PAGE_ADDRESS, &Page, 1);
-        if (EFI_ERROR(Status)) {
-          DEBUG((EFI_D_ERROR, "Unable to switch RMI4 page \n"));
-          goto exit;
-        }
-
-        DEBUG((EFI_D_INFO, "done \n"));
-      }
-      else {
-        Function++;
-        Address = Address - TOUCH_RMI_PAGE_INFO_BYTES;
-      }
-    } while ((Address > 0) && (Function < TOUCH_RMI_MAX_FUNCTIONS));
-
-    // Determine final result
-    if (Function >= TOUCH_RMI_MAX_FUNCTIONS) {
-      DEBUG((EFI_D_ERROR, "Invalid RMI4 function index \n"));
-      Status = EFI_DEVICE_ERROR;
-      goto exit;
-    }
-
-    if (Address <= 0) {
-      DEBUG((EFI_D_ERROR, "Invalid RMI4 address \n"));
-      Status = EFI_DEVICE_ERROR;
-      goto exit;
-    }
-
-    // Flag device as initialized
-    m_DeviceInitialized = TRUE;
-    m_StateChanged      = FALSE;
-
-    // Set touch event
-    m_AbsPointerProtImpl.WaitForInput = m_TouchEvent;
-    Status                            = gBS->CreateEvent(
-        EVT_NOTIFY_WAIT, TPL_NOTIFY, AbsPWaitForInput, NULL,
-        &m_AbsPointerProtImpl.WaitForInput);
-    ASSERT_EFI_ERROR(Status);
-
-    // Install protocols
-    Status = gBS->InstallMultipleProtocolInterfaces(
-        &ImageHandle, &gEfiAbsolutePointerProtocolGuid, &m_AbsPointerProtImpl,
-        &gEfiDevicePathProtocolGuid, &TouchDxeDevicePath, NULL);
-
-    if (EFI_ERROR(Status)) {
-      DEBUG((EFI_D_ERROR, "Failed to install protocol interface \n"));
-    }
-  }
-  else {
-    DEBUG((EFI_D_ERROR, "Device not found, or in invalid state \n"));
-    Status = EFI_DEVICE_ERROR;
-  }
-
-exit:
+  Status = EfiLibInstallDriverBindingComponentName2(
+      ImageHandle, SystemTable, &gRmi4DriverBinding, ImageHandle,
+      &gRmi4DriverComponentName, &gRmi4DriverComponentName2);
   ASSERT_EFI_ERROR(Status);
-  return Status;
+
+  return EFI_SUCCESS;
 }

@@ -22,3 +22,5 @@
 
 [LibraryClasses]
   SpmiLib
+  IoLib
+  ArmLib

@@ -18,10 +18,13 @@
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
+  ArmLib
   UefiDriverEntryPoint
   IoLib
   MemoryAllocationLib
   MallocLib
+  CompilerIntrinsicsLib
+  CacheMaintenanceLib
 
 [Pcd.common]
   gQcomTokenSpaceGuid.PcdSpmiMaxPeripherals
