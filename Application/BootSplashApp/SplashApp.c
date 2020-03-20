@@ -59,6 +59,22 @@ STATIC EFI_GUID gSplashPromptGuid = {
     },
 };
 
+STATIC EFI_GUID gSplashPromptClearGuid = {
+    0x5af45c60,
+    0xa0cd,
+    0x4aab,
+    {
+        0xb6,
+        0xf4,
+        0xb1,
+        0xc0,
+        0x7c,
+        0x34,
+        0x7a,
+        0xd8,
+    },
+};
+
 VOID EFIAPI InputPollingCallback(IN EFI_EVENT Event, IN VOID *Context)
 {
   EFI_STATUS                 Status;
@@ -137,20 +153,22 @@ VOID EFIAPI DrawPrompt(BOOLEAN Clear)
   unsigned int   Height;
   UINT32         DecoderError;
 
-  Status = GetSectionFromAnyFv(
-      &gSplashPromptGuid, EFI_SECTION_RAW, 0, &ImageData, &ImageSize);
+  if (Clear) {
+    Status = GetSectionFromAnyFv(
+        &gSplashPromptClearGuid, EFI_SECTION_RAW, 0, &ImageData, &ImageSize);
+  }
+  else {
+    Status = GetSectionFromAnyFv(
+        &gSplashPromptGuid, EFI_SECTION_RAW, 0, &ImageData, &ImageSize);
+  }
+
   if (!EFI_ERROR(Status)) {
     DecoderError = lodepng_decode32(
         &DecodedData, &Width, &Height, (unsigned char *)ImageData,
         (size_t)ImageSize);
 
     if (!DecoderError) {
-      if (Clear) {
-        ZeroMem(DecodedData, Width * Height * sizeof(unsigned char));
-      }
-      else {
-        ConvertBetweenBGRAandRGBA(DecodedData, Width, Height);
-      }
+      ConvertBetweenBGRAandRGBA(DecodedData, Width, Height);
 
       // Just check for safety
       if (mGop->Mode->Info->VerticalResolution - Height > 0) {
