@@ -17,6 +17,7 @@
 
 **/
 
+#include <Library/BootAppLib.h>
 #include <Library/BootLogoLib.h>
 #include <Library/CapsuleLib.h>
 #include <Library/DevicePathLib.h>
@@ -262,6 +263,7 @@ STATIC
 VOID PlatformRegisterOptionsAndKeys(VOID)
 {
   INTN          ShellOption;
+  INTN          SplashOption;
   EFI_INPUT_KEY VolUpBtn;
   EFI_STATUS    Status;
 
@@ -275,6 +277,10 @@ VOID PlatformRegisterOptionsAndKeys(VOID)
         NULL, ShellOption, 0, &VolUpBtn, NULL);
     ASSERT(Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
   }
+
+  SplashOption = PlatformRegisterFvBootOption(
+      &gLumiaBootSplashAppGuid, LUMIA_BOOTAPP_TITLE, LOAD_OPTION_ACTIVE);
+  ASSERT(SplashOption != -1);
 }
 
 STATIC
@@ -358,6 +364,7 @@ VOID EFIAPI PlatformBootManagerBeforeConsole(VOID)
 
   // Register setup key then
   PlatformRegisterSetupKey();
+  PlatformRegisterOptionsAndKeys();
 }
 
 /**
@@ -373,8 +380,10 @@ VOID EFIAPI PlatformBootManagerBeforeConsole(VOID)
 **/
 VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
 {
-  ESRT_MANAGEMENT_PROTOCOL *EsrtManagement;
-  EFI_STATUS                Status;
+  ESRT_MANAGEMENT_PROTOCOL *    EsrtManagement;
+  EFI_BOOT_MANAGER_LOAD_OPTION *BootOptions;
+  UINTN                         BootOptionCount;
+  EFI_STATUS                    Status;
 
   //
   // Show the splash screen.
@@ -408,7 +417,16 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
 
   EfiBootManagerRefreshAllBootOption();
 
-  PlatformRegisterOptionsAndKeys();
+  BootOptions =
+      EfiBootManagerGetLoadOptions(&BootOptionCount, LoadOptionTypeBoot);
+  ASSERT(BootOptionCount != -1);
+  for (UINTN i = 0; i < BootOptionCount; i++) {
+    if (StrCmp(LUMIA_BOOTAPP_TITLE, BootOptions[i].Description) == 0) {
+      EfiBootManagerBoot(&BootOptions[i]);
+    }
+  }
+
+  EfiBootManagerFreeLoadOptions(BootOptions, BootOptionCount);
 }
 
 /**
@@ -419,29 +437,7 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
 **/
 VOID EFIAPI PlatformBootManagerWaitCallback(UINT16 TimeoutRemain)
 {
-  EFI_GRAPHICS_OUTPUT_BLT_PIXEL_UNION Black;
-  EFI_GRAPHICS_OUTPUT_BLT_PIXEL_UNION White;
-  UINT16                              Timeout;
-  EFI_STATUS                          Status;
-
-  Timeout = PcdGet16(PcdPlatformBootTimeOut);
-
-  Black.Raw = 0x00000000;
-  White.Raw = 0x00FFFFFF;
-
-  Status = BootLogoUpdateProgress(
-      White.Pixel, Black.Pixel,
-      L"If you ever see @donotexist_A, tell him to study for the exam\n",
-      White.Pixel,
-#if REQUIRE_PROGRESSBAR
-      (Timeout - TimeoutRemain) * 100 / Timeout,
-#else
-      0,
-#endif
-      0);
-  if (EFI_ERROR(Status)) {
-    Print(L".");
-  }
+  // Not using now
 }
 
 /**
@@ -450,4 +446,21 @@ VOID EFIAPI PlatformBootManagerWaitCallback(UINT16 TimeoutRemain)
   built into firmware volumes.
   If this function returns, BDS attempts to enter an infinite loop.
 **/
-VOID EFIAPI PlatformBootManagerUnableToBoot(VOID) { return; }
+VOID EFIAPI PlatformBootManagerUnableToBoot(VOID)
+{
+  EFI_STATUS                   Status;
+  EFI_BOOT_MANAGER_LOAD_OPTION BootManagerMenu;
+
+  //
+  // BootManagerMenu doesn't contain the correct information when return status
+  // is EFI_NOT_FOUND.
+  //
+  Status = EfiBootManagerGetBootManagerMenu(&BootManagerMenu);
+  if (EFI_ERROR(Status)) {
+    return;
+  }
+
+  for (;;) {
+    EfiBootManagerBoot(&BootManagerMenu);
+  }
+}

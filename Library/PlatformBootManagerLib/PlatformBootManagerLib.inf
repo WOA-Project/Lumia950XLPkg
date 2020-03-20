@@ -72,6 +72,7 @@
 
 [Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut
+  gLumia950XLPkgTokenSpaceGuid.PcdBootSplashAppFile
 
 [Guids]
   gEfiFileInfoGuid
@@ -80,6 +81,7 @@
   gEfiEndOfDxeEventGroupGuid
   gEfiTtyTermGuid
   gUefiShellFileGuid
+  gLumiaBootSplashAppGuid
 
 [Protocols]
   gEfiDevicePathProtocolGuid

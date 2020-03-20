@@ -10,12 +10,6 @@ static lv_res_t mbox_apply_action(lv_obj_t *mbox, const char *txt)
   return LV_RES_OK; /*Return OK if the message box is not deleted*/
 }
 
-static lv_res_t continue_bds_action(lv_obj_t *btn)
-{
-  gBS->SignalEvent(mExitEvent);
-  return LV_RES_OK;
-}
-
 static lv_res_t power_off_action(lv_obj_t *btn)
 {
   gRT->ResetSystem(EfiResetShutdown, EFI_SUCCESS, 0, NULL);
@@ -101,7 +95,6 @@ VOID EFIAPI DrawMenu(VOID)
   lv_win_set_sb_mode(win, LV_SB_MODE_OFF);
 
   /* Add control button to the header */
-  lv_win_add_btn(win, SYMBOL_CLOSE, continue_bds_action);
   lv_win_add_btn(win, SYMBOL_POWER, power_off_action);
   lv_win_add_btn(win, SYMBOL_REFRESH, reset_action);
 
@@ -109,8 +102,11 @@ VOID EFIAPI DrawMenu(VOID)
   lv_obj_t *tbvFunc;
   tbvFunc = lv_tabview_create(win, NULL);
 
-  lv_obj_t *tbSysinfo    = lv_tabview_add_tab(tbvFunc, "System Info");
+  lv_obj_t *tbSysinfo = lv_tabview_add_tab(tbvFunc, "System Info");
+
+#ifdef BOOTAPP_DEVICE_SELECTION
   lv_obj_t *tbBootDevice = lv_tabview_add_tab(tbvFunc, "Boot Device Selection");
+#endif
 
   /* System Info */
   SystemInfoEntry(tbSysinfo);

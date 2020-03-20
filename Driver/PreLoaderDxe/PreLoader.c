@@ -14,6 +14,7 @@
 #include <IndustryStandard/Bmp.h>
 #include <Protocol/GraphicsOutput.h>
 
+#include <Library/BgraRgbaConvert.h>
 #include <Library/lodepng.h>
 #include <LittleVgl/core/lv_core/lv_refr.h>
 #include <LittleVgl/core/lvgl.h>
@@ -23,7 +24,18 @@ STATIC EFI_GUID gUnsupportedImageGuid = {
     0x5fdf5e3c,
     0x6b70,
     0x4acc,
-    {0x83, 0x30, 0x63, 0xa6, 0x73, 0x92, 0x4a, 0x46}};
+    {
+        0x83,
+        0x30,
+        0x63,
+        0xa6,
+        0x73,
+        0x92,
+        0x4a,
+        0x46,
+    },
+};
+
 extern EFI_GUID gPreLoaderProtocolGuid;
 
 EFI_GRAPHICS_OUTPUT_PROTOCOL *mGop;
@@ -41,22 +53,6 @@ static void EfiGopBltFlush(
 }
 
 static bool FakeInputRead(lv_indev_data_t *data) { return false; }
-
-void ConvertBetweenBGRAandRGBA(
-    uint8_t *input, int pixel_width, int pixel_height)
-{
-  int offset = 0;
-
-  for (int y = 0; y < pixel_height; y++) {
-    for (int x = 0; x < pixel_width; x++) {
-      input[offset] ^= input[offset + 2];
-      input[offset + 2] ^= input[offset];
-      input[offset] ^= input[offset + 2];
-
-      offset += 4;
-    }
-  }
-}
 
 VOID EFIAPI BootShimVersionCheckFail(VOID)
 {

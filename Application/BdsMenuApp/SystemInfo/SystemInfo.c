@@ -48,6 +48,9 @@ EFIAPI EFI_STATUS SystemInfoEntry(lv_obj_t *tbSysInfo)
   create_label_with_text(tbSysInfo, "\n\n");
   create_title_with_text(tbSysInfo, "Hardware Information \n\n");
 
+  create_label_with_text(
+      tbSysInfo, "Failed to boot OS. No usable boot entry found. \n\n");
+
 exit:
   return Status;
 }
