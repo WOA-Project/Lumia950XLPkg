@@ -22,3 +22,4 @@
 
 [Sources.common]
   lodepng.c
+  PngConvert.c
