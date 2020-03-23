@@ -439,7 +439,7 @@ VOID EFIAPI SyncPollCallback(IN EFI_EVENT Event, IN VOID *Context)
       Instance->StateChanged = TRUE;
 
       DEBUG(
-          (EFI_D_INFO | EFI_D_ERROR, "Touch: X: %d, Y: %d \n", Instance->LastX,
+          (EFI_D_INFO, "Touch: X: %d, Y: %d \n", Instance->LastX,
            Instance->LastY));
     }
   }
