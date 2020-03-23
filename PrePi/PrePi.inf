@@ -44,6 +44,8 @@
   # Platform-specific libraries
   MemoryInitPeiLib
   PlatformPeiLib
+  # MpPark
+  ArmHvcLib
 
 [Guids]
   gEfiSystemNvDataFvGuid
@@ -65,6 +67,10 @@
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize
   gLumia950XLPkgTokenSpaceGuid.PcdBootShimInfo1
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase
+  gArmTokenSpaceGuid.PcdGicDistributorBase
+  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase
 
 [FeaturePcd]
   gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild

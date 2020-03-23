@@ -42,4 +42,27 @@ EFI_STATUS
 EFIAPI
 QGicPeim(VOID);
 
+VOID QGicCpuInit(VOID);
+VOID QgicCpuInitSecondary(VOID);
+
+UINTN EFIAPI ArmGicAcknowledgeInterrupt(
+    IN UINTN GicInterruptInterfaceBase, OUT UINTN *InterruptId);
+VOID EFIAPI ArmGicEnableInterruptInterface(IN INTN GicInterruptInterfaceBase);
+
+VOID EFIAPI
+     ArmGicV2EndOfInterrupt(IN UINTN GicInterruptInterfaceBase, IN UINTN Source);
+
+VOID EFIAPI
+     ArmGicEndOfInterrupt(IN UINTN GicInterruptInterfaceBase, IN UINTN Source);
+
+UINTN EFIAPI ArmGicGetMaxNumInterrupts(IN INTN GicDistributorBase);
+
+#pragma pack(1)
+typedef struct {
+  UINT32 ProcessorId;
+  UINT32 Reserved;
+  UINT64 JumpAddress;
+} EFI_PROCESSOR_MAILBOX, *PEFI_PROCESSOR_MAILBOX;
+#pragma pack()
+
 #endif /* _PREPI_H_ */

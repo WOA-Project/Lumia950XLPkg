@@ -9,15 +9,19 @@
 .align 3
 
 GCC_ASM_IMPORT (CEntryPoint)
-GCC_ASM_EXPORT (_ModuleEntryPoint)
+GCC_ASM_IMPORT (SecondaryCEntryPoint)
 GCC_ASM_IMPORT (ArmWriteCpacr)
 GCC_ASM_IMPORT (ArmEnableInstructionCache)
 GCC_ASM_IMPORT (ArmEnableDataCache)
 GCC_ASM_IMPORT (ArmInvalidateTlb)
 
+GCC_ASM_EXPORT (_ModuleEntryPoint)
+GCC_ASM_EXPORT (SecondaryCpuEntry)
+
 .global _StackBase 
 .global _StackSize
-.global CNTFRQ 
+.global _SecondaryCpuStackSize
+.global _MpParkBase
 
 _StackBase:
   .quad FixedPcdGet32(PcdPrePiStackBase)
@@ -25,8 +29,11 @@ _StackBase:
 _StackSize:
   .quad FixedPcdGet32(PcdPrePiStackSize)
 
-CNTFRQ:
-  .quad 0x0124F800
+_SecondaryCpuStackSize:
+  .quad FixedPcdGet32(SecondaryCpuStackSize)
+
+_MpParkBase:
+  .quad FixedPcdGet64(SecondaryCpuMpParkRegionBase)
 
 _ModuleEntryPoint:
   mov x0, #0
@@ -46,7 +53,7 @@ _ModuleEntryPoint:
   /* Get current EL in x0 */
   mrs x0, CurrentEl
 
-  /* Check if we are in EL1, if yes skip other EL init */
+  /* Check if we are in EL1 */
   cmp x0, #0x4
   b.eq _Start_EL1_NS
 
@@ -63,17 +70,20 @@ _SetupExceptionVector:
   mov x2, #0
 
 _FillVectors:
+  /* Each entry is 8 bytes, vector table is 0x800 per core and we have 8 cores */
   str     x1, [x0, x2]
-  adds    x2, x2, #8      /* Fill every 8 byte */
-  cmp     x2, #0x800      /* Vector Table Size */
+  adds    x2, x2, #8
+  cmp     x2, #0x4000
   bne     _FillVectors
   
-  /* Update VBAR */
-  msr vbar_el1, x0        /* End _SetupExceptionVector */
+  /* Update VBAR for primary core */
+  msr vbar_el1, x0        
+  /* End _SetupExceptionVector */
     
 _DonNotTrap_VFP_SIMD:
   mrs x0, CPACR_EL1
-  orr x0, x0, #0x300000  /* Set FPEN Bits 20 and 21 for not trapping FP and Advanced SIMD instructions */
+  /* Bit 20 and 21 */
+  orr x0, x0, #0x300000
   msr CPACR_EL1, x0
     
 _SetupPrimaryCoreStack:
@@ -95,7 +105,73 @@ _PrepareArguments:
 
   bl CEntryPoint
 
+SecondaryCpuEntry:
+  /* Keep the incoming index */
+  mov x19, x0
+
+  /* First ensure all interrupts are disabled */
+  bl ASM_PFX(ArmDisableInterrupts)
+
+  /* Ensure that the MMU and caches are off */
+  bl ASM_PFX(ArmDisableCachesAndMmu)
+
+  /* Invalide I-Cache */
+  bl ASM_PFX(ArmInvalidateInstructionCache)
+  
+  /* Invalidate TLB */
+  bl ASM_PFX(ArmInvalidateTlb)
+
+  /* Get current EL in x0 */
+  mrs x0, CurrentEl
+
+  /* Check if we are in EL1 */
+  cmp x0, #0x4
+  b.eq _SecondaryCpuEl1Setup
+
+  cmp x0, #0x5
+  b.eq _SecondaryCpuEl1Setup
+
+  /* We should have EL1 initialized */
+  b dead
+
+_SecondaryCpuEl1Setup:
+  /* Get the vector table base for this core */
+  mov x1, #0x800
+  mul x1, x1, x19
+  LoadConstantToReg (FixedPcdGet32(PcdCpuVectorBaseAddress), x0)
+  add x0, x0, x1
+  msr vbar_el1, x0
+
+  /* SIMD */
+  mrs x0, CPACR_EL1
+  orr x0, x0, #0x300000
+  msr CPACR_EL1, x0
+
+  /* Exception should be DAIF */
+  msr daifset, #0xF
+
+  /* MpPark mailbox region: each core have 0x10000 available, the first 4KB is mailbox */
+  mov x1, #0x10000
+  mul x1, x1, x19
+  ldr x0, _MpParkBase
+  add x0, x0, x1
+
+  /* Setup stack for this core */
+  mov x2, #0x2000
+  /* Stackbase */
+  add x0, x0, x2
+  /* Stacksize */
+  ldr x1, _SecondaryCpuStackSize
+
+  add x4, x0, x1
+  add sp, x4, #0
+
+  bl ArmInvalidateDataCache
+
+  /* Enter MpPark spin */
+  mov x0, x19
+  bl SecondaryCEntryPoint
+
 .align 3
 dead:  
   b dead                      /* We should never get here */
-

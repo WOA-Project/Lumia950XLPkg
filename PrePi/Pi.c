@@ -11,6 +11,7 @@
 #include <Guid/LzmaDecompress.h>
 #include <Ppi/GuidedSectionExtraction.h>
 
+#include <Library/ArmGicLib.h>
 #include <Library/ArmLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/CacheMaintenanceLib.h>
@@ -27,7 +28,18 @@
 #include <Library/PrePiLib.h>
 #include <Library/SerialPortLib.h>
 
+#include <Library/ArmHvcLib.h>
+#include <Library/ArmSmcLib.h>
+
+#include <IndustryStandard/ArmStdSmc.h>
+
 VOID EFIAPI ProcessLibraryConstructorList(VOID);
+extern void SecondaryCpuEntry();
+
+static UINT32 ProcessorIdMapping[8] = {
+    0x00000000, 0x00000001, 0x00000002, 0x00000003,
+    0x00000100, 0x00000101, 0x00000102, 0x00000103,
+};
 
 STATIC VOID UartInit(VOID)
 {
@@ -134,14 +146,30 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
     }
   }
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "Launching CPUs\n"));
+
+  // Launch all CPUs
+  if (ArmReadMpidr() == 0x80000000) {
+    for (UINTN i = 1; i < 8; i++) {
+      ARM_HVC_ARGS ArmHvcArgs;
+      ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_CPU_ON_AARCH64;
+      ArmHvcArgs.Arg1 = ProcessorIdMapping[i];
+      ArmHvcArgs.Arg2 = (UINTN)&SecondaryCpuEntry;
+      ArmHvcArgs.Arg3 = i;
+
+      ArmCallHvc(&ArmHvcArgs);
+      ASSERT(ArmHvcArgs.Arg0 == ARM_SMC_PSCI_RET_SUCCESS);
+    }
+  }
+
   // Now, the HOB List has been initialized, we can register performance
   // information PERF_START (NULL, "PEI", NULL, StartTimeStamp);
 
   // SEC phase needs to run library constructors by hand.
   ProcessLibraryConstructorList();
 
-  // Assume the FV that contains the PI (our code) also contains a compressed
-  // FV.
+  // Assume the FV that contains the PI (our code) also contains a
+  // compressed FV.
   Status = DecompressFirstFv();
   ASSERT_EFI_ERROR(Status);
 
@@ -156,4 +184,69 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
 VOID CEntryPoint(IN VOID *StackBase, IN UINTN StackSize)
 {
   Main(StackBase, StackSize, 0);
+}
+
+extern void ResetFb();
+
+VOID SecondaryCEntryPoint(IN UINTN Index)
+{
+  ASSERT(Index >= 1 && Index <= 7);
+
+  EFI_PHYSICAL_ADDRESS MailboxAddress =
+      FixedPcdGet64(SecondaryCpuMpParkRegionBase) + 0x10000 * Index + 0x1000;
+  PEFI_PROCESSOR_MAILBOX pMailbox =
+      (PEFI_PROCESSOR_MAILBOX)(VOID *)MailboxAddress;
+
+  UINT32 CurrentProcessorId = 0;
+  VOID (*SecondaryStart)(VOID * pMailbox);
+  UINTN SecondaryEntryAddr;
+  UINTN InterruptId;
+  UINTN AcknowledgeInterrupt;
+
+  // MMU, cache and branch predicton must be disabled
+  // Cache is disabled in CRT startup code
+  ArmDisableMmu();
+  ArmDisableBranchPrediction();
+
+  // Turn on GIC CPU interface as well as SGI interrupts
+  ArmGicEnableInterruptInterface(FixedPcdGet64(PcdGicInterruptInterfaceBase));
+  MmioWrite32(FixedPcdGet64(PcdGicInterruptInterfaceBase) + 0x4, 0xf0);
+
+  // But turn off interrupts
+  ArmDisableInterrupts();
+
+  // Clear mailbox
+  pMailbox->JumpAddress = 0;
+  pMailbox->ProcessorId = 0xffffffff;
+  CurrentProcessorId    = ProcessorIdMapping[Index];
+
+  do {
+    // ArmDataSynchronizationBarrier();
+    // DEBUG((EFI_D_ERROR, "%d: WFI \n", Index));
+    // ArmCallWFI();
+    // DEBUG((EFI_D_ERROR, "%d: end WFI \n", Index));
+    ArmDataSynchronizationBarrier();
+
+    if (pMailbox->ProcessorId == Index) {
+      SecondaryEntryAddr = pMailbox->JumpAddress;
+    }
+
+    AcknowledgeInterrupt = ArmGicAcknowledgeInterrupt(
+        FixedPcdGet64(PcdGicInterruptInterfaceBase), &InterruptId);
+    if (InterruptId <
+        ArmGicGetMaxNumInterrupts(FixedPcdGet64(PcdGicDistributorBase))) {
+      // Got a valid SGI number hence signal End of Interrupt
+      ArmGicEndOfInterrupt(
+          FixedPcdGet64(PcdGicInterruptInterfaceBase), AcknowledgeInterrupt);
+    }
+  } while (SecondaryEntryAddr == 0);
+
+  // Acknowledge this one
+  pMailbox->JumpAddress = 0;
+
+  SecondaryStart = (VOID(*)())SecondaryEntryAddr;
+  SecondaryStart(pMailbox);
+
+  // Should never reach here
+  ASSERT(FALSE);
 }
