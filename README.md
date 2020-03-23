@@ -19,7 +19,7 @@ Applicable to all supported targets unless noted.
 
 - Low-speed I/O: I2C, SPI, GPIO, SPMI and Pinmux (TLMM).
 - Power Management: PMIC and Resource Power Manager (RPM).
-- High-speed I/O for firmware and HLOS: eMMC (SDR50 in firmware, HS200/HS400 in OS), PCI Express (Firmware-configured, HLOS Only, x2 Lane)
+- High-speed I/O for firmware and HLOS: eMMC (SDR50 in firmware, HS200/HS400 in OS) and microSD (be aware that a few cards are unsupported), PCI Express (Firmware-configured, HLOS Only, x2 Lane)
 - Peripherals: Touchscreen (QUP I2C), side-band buttons (TLMM GPIO and PMIC GPIO) and Lattice UC120 (iCE5LP2K) FPGA configuration
 - Display FrameBuffer depends on stock Qualcomm UEFI for boostrapping, MDP is not fully implemented.
 
