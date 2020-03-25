@@ -46,6 +46,7 @@
   PlatformPeiLib
   # MpPark
   ArmHvcLib
+  ArmSmcLib
 
 [Guids]
   gEfiSystemNvDataFvGuid

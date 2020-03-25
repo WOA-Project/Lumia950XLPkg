@@ -34,11 +34,26 @@
 #include <IndustryStandard/ArmStdSmc.h>
 
 VOID EFIAPI ProcessLibraryConstructorList(VOID);
-extern void SecondaryCpuEntry();
+extern void _ModuleEntryPoint();
 
 static UINT32 ProcessorIdMapping[8] = {
     0x00000000, 0x00000001, 0x00000002, 0x00000003,
     0x00000100, 0x00000101, 0x00000102, 0x00000103,
+};
+
+// The EL2 shellcode is pre-compiled. For detailed explanation, see
+// El2Redirection.S in the same directory
+UINT8 El2ShellCode[120] = {
+    0xDF, 0x43, 0x03, 0xD5, 0xDF, 0x3F, 0x03, 0xD5, 0x41, 0x42, 0x38, 0xD5,
+    0x3F, 0x20, 0x00, 0xF1, 0x0C, 0x01, 0x00, 0x54, 0xA0, 0x00, 0x00, 0x54,
+    0x41, 0x00, 0x00, 0xB5, 0x00, 0x00, 0x00, 0x14, 0x00, 0x10, 0x38, 0xD5,
+    0x04, 0x00, 0x00, 0x14, 0x00, 0x10, 0x3C, 0xD5, 0x02, 0x00, 0x00, 0x14,
+    0x00, 0x10, 0x3E, 0xD5, 0xA1, 0x00, 0x82, 0x92, 0x00, 0x00, 0x01, 0x8A,
+    0x41, 0x42, 0x38, 0xD5, 0x3F, 0x20, 0x00, 0xF1, 0x0C, 0x01, 0x00, 0x54,
+    0xA0, 0x00, 0x00, 0x54, 0x41, 0x00, 0x00, 0xB5, 0x00, 0x00, 0x00, 0x14,
+    0x00, 0x10, 0x18, 0xD5, 0x04, 0x00, 0x00, 0x14, 0x00, 0x10, 0x1C, 0xD5,
+    0x02, 0x00, 0x00, 0x14, 0x00, 0x10, 0x1E, 0xD5, 0x9F, 0x3F, 0x03, 0xD5,
+    0xDF, 0x3F, 0x03, 0xD5, 0x00, 0x04, 0xA0, 0xD2, 0x00, 0x00, 0x1F, 0xD6,
 };
 
 STATIC VOID UartInit(VOID)
@@ -49,6 +64,33 @@ STATIC VOID UartInit(VOID)
   DEBUG(
       (EFI_D_INFO, "Firmware version %s built %a %a\n\n",
        (CHAR16 *)PcdGetPtr(PcdFirmwareVersionString), __TIME__, __DATE__));
+}
+
+VOID WaitForSecondaryCPUs(VOID)
+{
+  while (1) {
+
+    BOOLEAN IsAllCpuLaunched = TRUE;
+
+    for (UINTN Index = 1; Index < 7; Index++) {
+      EFI_PHYSICAL_ADDRESS MailboxAddress =
+          FixedPcdGet64(SecondaryCpuMpParkRegionBase) + 0x10000 * Index +
+          0x1000;
+      PEFI_PROCESSOR_MAILBOX pMailbox =
+          (PEFI_PROCESSOR_MAILBOX)(VOID *)MailboxAddress;
+
+      ArmDataSynchronizationBarrier();
+      if (pMailbox->El2JumpFlag != 0xfffffff1) {
+        IsAllCpuLaunched = FALSE;
+        break;
+      }
+    }
+
+    // All CPU started. Continue.
+    if (IsAllCpuLaunched) {
+      break;
+    }
+  }
 }
 
 VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
@@ -64,15 +106,89 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
   UINTN UefiMemoryBase = 0;
   UINTN UefiMemorySize = 0;
 
+  // Initialize (fake) UART.
+  UartInit();
+
+  // Which EL?
+  if (ArmReadCurrentEL() == AARCH64_EL2) {
+    DEBUG((EFI_D_ERROR, "Running at EL2 \n"));
+  }
+  else {
+    DEBUG((EFI_D_ERROR, "Running at EL1 \n"));
+  }
+
+  // Immediately launch all CPUs, 7 CPUs hold
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "Launching CPUs\n"));
+
+  // Launch all CPUs, hold and jump to EL2 (only for EL1)
+  if (ArmReadCurrentEL() == AARCH64_EL1) {
+#if 0
+    if (ArmReadMpidr() == 0x80000000) {
+      for (UINTN i = 1; i < 7; i++) {
+        ARM_HVC_ARGS ArmHvcArgs;
+        ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_CPU_ON_AARCH64;
+        ArmHvcArgs.Arg1 = ProcessorIdMapping[i];
+        ArmHvcArgs.Arg2 = (UINTN)&_ModuleEntryPoint;
+        ArmHvcArgs.Arg3 = i;
+
+        ArmCallHvc(&ArmHvcArgs);
+        ASSERT(ArmHvcArgs.Arg0 == ARM_SMC_PSCI_RET_SUCCESS);
+      }
+    }
+
+    DEBUG((EFI_D_ERROR, "Waiting for all CPUs...\n"));
+    WaitForSecondaryCPUs();
+    DEBUG((EFI_D_ERROR, "All CPU started.\n"));
+#endif
+    DEBUG((EFI_D_ERROR, "Injecting shellcode...\n"));
+    EFI_PHYSICAL_ADDRESS El2ExceptionHandlerAddr = 0x06c01984;
+    UINT8 *El2ExceptionHandler = (UINT8 *)(VOID *)El2ExceptionHandlerAddr;
+    CopyMem(El2ExceptionHandler, El2ShellCode, sizeof(El2ShellCode));
+    ArmDataSynchronizationBarrier();
+    DEBUG((EFI_D_ERROR, "You have been served\n"));
+
+    // Jump overself
+    ARM_HVC_ARGS StubArg;
+    ArmCallHvc(&StubArg);
+    // We should not reach here
+    CpuDeadLoop();
+  }
+  else if (ArmReadCurrentEL() == AARCH64_EL2) {
+#if 0
+    // Looks good. Notify all secondary CPUs to jump!
+    for (UINTN Index = 1; Index < 7; Index++) {
+      EFI_PHYSICAL_ADDRESS MailboxAddress =
+          FixedPcdGet64(SecondaryCpuMpParkRegionBase) + 0x10000 * Index +
+          0x1000;
+      PEFI_PROCESSOR_MAILBOX pMailbox =
+          (PEFI_PROCESSOR_MAILBOX)(VOID *)MailboxAddress;
+
+      pMailbox->El2JumpFlag = 0xfffffff2;
+      ArmDataSynchronizationBarrier();
+    }
+
+    // Make sure they are all initialized
+    DEBUG((EFI_D_ERROR, "Waiting for all CPUs...\n"));
+    WaitForSecondaryCPUs();
+    DEBUG((EFI_D_ERROR, "All CPU started.\n"));
+#endif
+  }
+  else {
+    // How do I get there?
+    ASSERT(FALSE);
+  }
+
   // Architecture-specific initialization
+  // Enable cache
+  ArmInvalidateDataCache();
+  ArmEnableInstructionCache();
+  ArmEnableDataCache();
+
   // Enable Floating Point
   ArmEnableVFP();
 
   /* Enable program flow prediction, if supported */
   ArmEnableBranchPrediction();
-
-  // Initialize (fake) UART.
-  UartInit();
 
   // Declare UEFI region
   MemoryBase     = FixedPcdGet32(PcdSystemMemoryBase);
@@ -146,22 +262,6 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
     }
   }
 
-  DEBUG((EFI_D_LOAD | EFI_D_INFO, "Launching CPUs\n"));
-
-  // Launch all CPUs
-  if (ArmReadMpidr() == 0x80000000) {
-    for (UINTN i = 1; i < 8; i++) {
-      ARM_HVC_ARGS ArmHvcArgs;
-      ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_CPU_ON_AARCH64;
-      ArmHvcArgs.Arg1 = ProcessorIdMapping[i];
-      ArmHvcArgs.Arg2 = (UINTN)&SecondaryCpuEntry;
-      ArmHvcArgs.Arg3 = i;
-
-      ArmCallHvc(&ArmHvcArgs);
-      ASSERT(ArmHvcArgs.Arg0 == ARM_SMC_PSCI_RET_SUCCESS);
-    }
-  }
-
   // Now, the HOB List has been initialized, we can register performance
   // information PERF_START (NULL, "PEI", NULL, StartTimeStamp);
 
@@ -186,8 +286,6 @@ VOID CEntryPoint(IN VOID *StackBase, IN UINTN StackSize)
   Main(StackBase, StackSize, 0);
 }
 
-extern void ResetFb();
-
 VOID SecondaryCEntryPoint(IN UINTN Index)
 {
   ASSERT(Index >= 1 && Index <= 7);
@@ -208,17 +306,37 @@ VOID SecondaryCEntryPoint(IN UINTN Index)
   ArmDisableMmu();
   ArmDisableBranchPrediction();
 
+  // Clear mailbox
+  pMailbox->JumpAddress = 0;
+  pMailbox->ProcessorId = 0xffffffff;
+  // Notify the main processor that we are here
+  pMailbox->El2JumpFlag = 0xfffffff1;
+  CurrentProcessorId    = ProcessorIdMapping[Index];
+  ArmDataSynchronizationBarrier();
+
+  // Check Exception Level and hold if we are in EL1
+  if (ArmReadCurrentEL() == AARCH64_EL1) {
+    while (1) {
+      ArmDataSynchronizationBarrier();
+      if (pMailbox->El2JumpFlag == 0xfffffff2) {
+        /* Acknowledge and jump */
+        pMailbox->El2JumpFlag = 0xfffffff3;
+        ArmDataSynchronizationBarrier();
+
+        ARM_HVC_ARGS StubArgs;
+        ArmCallHvc(&StubArgs);
+        /* We should not reach here */
+        CpuDeadLoop();
+      }
+    }
+  }
+
   // Turn on GIC CPU interface as well as SGI interrupts
   ArmGicEnableInterruptInterface(FixedPcdGet64(PcdGicInterruptInterfaceBase));
   MmioWrite32(FixedPcdGet64(PcdGicInterruptInterfaceBase) + 0x4, 0xf0);
 
   // But turn off interrupts
   ArmDisableInterrupts();
-
-  // Clear mailbox
-  pMailbox->JumpAddress = 0;
-  pMailbox->ProcessorId = 0xffffffff;
-  CurrentProcessorId    = ProcessorIdMapping[Index];
 
   do {
     // ArmDataSynchronizationBarrier();

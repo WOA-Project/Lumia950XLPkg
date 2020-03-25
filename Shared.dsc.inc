@@ -223,7 +223,7 @@
   gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000
 
   # Parking
-  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize|0x4000
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize|0x2000
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase|0x00300000
 
 [PcdsDynamicDefault.common]
@@ -470,7 +470,10 @@
 
 [Components.common]
   # PrePI
-  Lumia950XLPkg/PrePi/PrePi.inf
+  Lumia950XLPkg/PrePi/PrePi.inf {
+    <LibraryClasses>
+    SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+  }
 
   # DXE
   MdeModulePkg/Core/Dxe/DxeMain.inf {
