@@ -225,6 +225,7 @@
   # Parking
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize|0x2000
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase|0x00300000
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuIgnoreCpuIdCheck|TRUE
 
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080

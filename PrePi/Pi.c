@@ -358,7 +358,20 @@ VOID SecondaryCEntryPoint(IN UINTN Index)
     // But we just spin here instead
     ArmDataSynchronizationBarrier();
 
-    if (pMailbox->ProcessorId == Index) {
+    // Technically the CPU ID should be checked
+    // against request per MpPark spec,
+    // but the actual Windows implementation guarantees
+    // that no CPU will be started simultaneously,
+    // so the check was made optional.
+    //
+    // This also enables "spin-table" startup method
+    // for Linux.
+    //
+    // Example usage:
+    // enable-method = "spin-table";
+    // cpu-release-addr = <0 0x00311008>;
+    if (FixedPcdGetBool(SecondaryCpuIgnoreCpuIdCheck) ||
+        pMailbox->ProcessorId == Index) {
       SecondaryEntryAddr = pMailbox->JumpAddress;
     }
 
