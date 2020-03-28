@@ -57,6 +57,10 @@ _CpuIndex:
   /* Keep the CPU index in x19 */
   mov x19, x0
 
+  /* Secondary startup case */
+  cmp x19, #0x0
+  bne SecondaryCpuEntry
+
   /* First ensure all interrupts are disabled */
   bl ASM_PFX(ArmDisableInterrupts)
 
@@ -149,8 +153,15 @@ SecondaryCpuEntry:
   cmp x0, #0x5
   b.eq _SecondaryCpuEl1Setup
 
-  /* We should have EL1 initialized */
-  b dead
+  /* Otherwise initialize EL2 */
+  /* Get the vector table base for this core */
+  mov x1, #0x800
+  mul x1, x1, x19
+  LoadConstantToReg (FixedPcdGet32(PcdCpuVectorBaseAddress), x0)
+  add x0, x0, x1
+  msr vbar_el2, x0
+
+  b _SecondaryStackSetup
 
 _SecondaryCpuEl1Setup:
   /* Get the vector table base for this core */
@@ -165,6 +176,7 @@ _SecondaryCpuEl1Setup:
   orr x0, x0, #0x300000
   msr CPACR_EL1, x0
 
+_SecondaryStackSetup:
   /* Exception should be DAIF */
   msr daifset, #0xF
 
