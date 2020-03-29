@@ -74,6 +74,22 @@ VOID WaitForSecondaryCPUs(VOID)
   }
 }
 
+VOID InstallEl2Patch(VOID)
+{
+  // The big EL2 HVC call handler is located at 0x06c01984,
+  // but if secondary CPUs are launched, exception vector will be
+  // fixed so CPU0 call would fail. Therefore we patched
+  // PSCI_CPU_SUSPEND_AARCH64 handler at 0x06c03aa8.
+  DEBUG((EFI_D_ERROR, "Injecting shellcode...\n"));
+  EFI_PHYSICAL_ADDRESS PsciCpuSuspendHandlerAddr = 0x06c03aa8;
+  UINT8 *PsciCpuSuspendHandler = (UINT8 *)(VOID *)PsciCpuSuspendHandlerAddr;
+  CopyMem(PsciCpuSuspendHandler, El2ShellCode, sizeof(El2ShellCode));
+  ArmDataSynchronizationBarrier();
+  ArmInvalidateDataCache();
+  ArmInvalidateInstructionCache();
+  DEBUG((EFI_D_ERROR, "You have been served\n"));
+}
+
 VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
 {
 
@@ -120,16 +136,8 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
     WaitForSecondaryCPUs();
     DEBUG((EFI_D_ERROR, "All CPU started.\n"));
 
-    // The big EL2 HVC call handler is located at 0x06c01984,
-    // but if secondary CPUs are launched, exception vector will be
-    // fixed so CPU0 call would fail. Therefore we patched
-    // PSCI_CPU_SUSPEND_AARCH64 handler at 0x06c03aa8.
-    DEBUG((EFI_D_ERROR, "Injecting shellcode...\n"));
-    EFI_PHYSICAL_ADDRESS PsciCpuSuspendHandlerAddr = 0x06c03aa8;
-    UINT8 *PsciCpuSuspendHandler = (UINT8 *)(VOID *)PsciCpuSuspendHandlerAddr;
-    CopyMem(PsciCpuSuspendHandler, El2ShellCode, sizeof(El2ShellCode));
-    ArmDataSynchronizationBarrier();
-    DEBUG((EFI_D_ERROR, "You have been served\n"));
+    // Install patch
+    InstallEl2Patch();
 
     // Looks good. Notify all secondary CPUs to jump!
     for (UINTN Index = 1; Index < FixedPcdGet32(PcdCoreCount); Index++) {
@@ -151,6 +159,9 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
 
     DEBUG((EFI_D_ERROR, "Jump CPU0 to EL2.\n"));
     ArmDataSynchronizationBarrier();
+
+    // Install patch again
+    InstallEl2Patch();
 
     // Jump overself
     ARM_HVC_ARGS StubArg;
