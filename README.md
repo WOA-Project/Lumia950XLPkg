@@ -88,14 +88,14 @@ GRUB configuration:
 	devicetree /lumia-950-xl.dtb
 	linux /vmlinuz ..... acpi=no
 
-PSCI partially works. If you want to use PSCI for multi-processor startup, add the following code to your DT:
+PSCI partially works in EL1. If you want to use PSCI for multi-processor startup, add the following code to your DT:
 
 	psci {
 		compatible	= "arm,psci-0.2";
 		method		= "hvc";
 	};
 
-And use `psci` for core-enable method.
+And use `psci` for core-enable method. If you are using EL2 startup, use `spin-table` with `per_cpu_mailbox_addr + 0x8` as the release address.
 
 For MSM8994, PCI Express Root Port 1 is **firmware-initialized**. Similarly, MSM8992 have PCI Express Root Port 0 initialized. Hence it is not necessary to supply `qcom,pcie` in device tree. Instead, supply a firmware-initialized PCI bus device `pci-host-ecam-generic`. ACPI MCFG table is supplied for your reference.
 
