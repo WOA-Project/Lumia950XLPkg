@@ -302,7 +302,7 @@
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
 
   # Platform Drivers
-!if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1
+!if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 0
   SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
 !else
   SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf

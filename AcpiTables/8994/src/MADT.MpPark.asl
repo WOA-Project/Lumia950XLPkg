@@ -25,10 +25,10 @@
 [03Ch 0060   4]     Parking Protocol Version : 00000001
 [040h 0064   4]        Performance Interrupt : 00000017
 [044h 0068   8]               Parked Address : 0000000000301000
-[04Ch 0076   8]                 Base Address : 0000000000000000
-[054h 0084   8]     Virtual GIC Base Address : 0000000000000000
-[05Ch 0092   8]  Hypervisor GIC Base Address : 0000000000000000
-[064h 0100   4]        Virtual GIC Interrupt : 00000000
+[04Ch 0076   8]                 Base Address : 00000000F9002000
+[054h 0084   8]     Virtual GIC Base Address : 00000000F9004000
+[05Ch 0092   8]  Hypervisor GIC Base Address : 00000000F9001000
+[064h 0100   4]        Virtual GIC Interrupt : 00000019
 [068h 0104   8]   Redistributor Base Address : 0000000000000000
 [070h 0112   8]                    ARM MPIDR : 0000000000000000
 [078h 0120   1]             Efficiency Class : 00
@@ -46,10 +46,10 @@
 [08Ch 0140   4]     Parking Protocol Version : 00000001
 [090h 0144   4]        Performance Interrupt : 00000017
 [094h 0148   8]               Parked Address : 0000000000311000
-[09Ch 0156   8]                 Base Address : 0000000000000000
-[0A4h 0164   8]     Virtual GIC Base Address : 0000000000000000
-[0ACh 0172   8]  Hypervisor GIC Base Address : 0000000000000000
-[0B4h 0180   4]        Virtual GIC Interrupt : 00000000
+[09Ch 0156   8]                 Base Address : 00000000F9002000
+[0A4h 0164   8]     Virtual GIC Base Address : 00000000F9004000
+[0ACh 0172   8]  Hypervisor GIC Base Address : 00000000F9001000
+[0B4h 0180   4]        Virtual GIC Interrupt : 00000019
 [0B8h 0184   8]   Redistributor Base Address : 0000000000000000
 [0C0h 0192   8]                    ARM MPIDR : 0000000000000001
 [0C8h 0200   1]             Efficiency Class : 00
@@ -67,10 +67,10 @@
 [0DCh 0220   4]     Parking Protocol Version : 00000001
 [0E0h 0224   4]        Performance Interrupt : 00000017
 [0E4h 0228   8]               Parked Address : 0000000000321000
-[0ECh 0236   8]                 Base Address : 0000000000000000
-[0F4h 0244   8]     Virtual GIC Base Address : 0000000000000000
-[0FCh 0252   8]  Hypervisor GIC Base Address : 0000000000000000
-[104h 0260   4]        Virtual GIC Interrupt : 00000000
+[0ECh 0236   8]                 Base Address : 00000000F9002000
+[0F4h 0244   8]     Virtual GIC Base Address : 00000000F9004000
+[0FCh 0252   8]  Hypervisor GIC Base Address : 00000000F9001000
+[104h 0260   4]        Virtual GIC Interrupt : 00000019
 [108h 0264   8]   Redistributor Base Address : 0000000000000000
 [110h 0272   8]                    ARM MPIDR : 0000000000000002
 [118h 0280   1]             Efficiency Class : 00
@@ -88,10 +88,10 @@
 [12Ch 0300   4]     Parking Protocol Version : 00000001
 [130h 0304   4]        Performance Interrupt : 00000017
 [134h 0308   8]               Parked Address : 0000000000331000
-[13Ch 0316   8]                 Base Address : 0000000000000000
-[144h 0324   8]     Virtual GIC Base Address : 0000000000000000
-[14Ch 0332   8]  Hypervisor GIC Base Address : 0000000000000000
-[154h 0340   4]        Virtual GIC Interrupt : 00000000
+[13Ch 0316   8]                 Base Address : 00000000F9002000
+[144h 0324   8]     Virtual GIC Base Address : 00000000F9004000
+[14Ch 0332   8]  Hypervisor GIC Base Address : 00000000F9001000
+[154h 0340   4]        Virtual GIC Interrupt : 00000019
 [158h 0344   8]   Redistributor Base Address : 0000000000000000
 [160h 0352   8]                    ARM MPIDR : 0000000000000003
 [168h 0360   1]             Efficiency Class : 00
@@ -109,10 +109,10 @@
 [17Ch 0380   4]     Parking Protocol Version : 00000001
 [180h 0384   4]        Performance Interrupt : 00000017
 [184h 0388   8]               Parked Address : 0000000000341000
-[18Ch 0396   8]                 Base Address : 0000000000000000
-[194h 0404   8]     Virtual GIC Base Address : 0000000000000000
-[19Ch 0412   8]  Hypervisor GIC Base Address : 0000000000000000
-[1A4h 0420   4]        Virtual GIC Interrupt : 00000000
+[18Ch 0396   8]                 Base Address : 00000000F9002000
+[194h 0404   8]     Virtual GIC Base Address : 00000000F9004000
+[19Ch 0412   8]  Hypervisor GIC Base Address : 00000000F9001000
+[1A4h 0420   4]        Virtual GIC Interrupt : 00000019
 [1A8h 0424   8]   Redistributor Base Address : 0000000000000000
 [1B0h 0432   8]                    ARM MPIDR : 0000000000000100
 [1B8h 0440   1]             Efficiency Class : 01
@@ -130,10 +130,10 @@
 [1CCh 0460   4]     Parking Protocol Version : 00000001
 [1D0h 0464   4]        Performance Interrupt : 00000017
 [1D4h 0468   8]               Parked Address : 0000000000351000
-[1DCh 0476   8]                 Base Address : 0000000000000000
-[1E4h 0484   8]     Virtual GIC Base Address : 0000000000000000
-[1ECh 0492   8]  Hypervisor GIC Base Address : 0000000000000000
-[1F4h 0500   4]        Virtual GIC Interrupt : 00000000
+[1DCh 0476   8]                 Base Address : 00000000F9002000
+[1E4h 0484   8]     Virtual GIC Base Address : 00000000F9004000
+[1ECh 0492   8]  Hypervisor GIC Base Address : 00000000F9001000
+[1F4h 0500   4]        Virtual GIC Interrupt : 00000019
 [1F8h 0504   8]   Redistributor Base Address : 0000000000000000
 [200h 0512   8]                    ARM MPIDR : 0000000000000101
 [208h 0520   1]             Efficiency Class : 01
@@ -151,10 +151,10 @@
 [21Ch 0540   4]     Parking Protocol Version : 00000001
 [220h 0544   4]        Performance Interrupt : 00000017
 [224h 0548   8]               Parked Address : 0000000000361000
-[22Ch 0556   8]                 Base Address : 0000000000000000
-[234h 0564   8]     Virtual GIC Base Address : 0000000000000000
-[23Ch 0572   8]  Hypervisor GIC Base Address : 0000000000000000
-[244h 0580   4]        Virtual GIC Interrupt : 00000000
+[22Ch 0556   8]                 Base Address : 00000000F9002000
+[234h 0564   8]     Virtual GIC Base Address : 00000000F9004000
+[23Ch 0572   8]  Hypervisor GIC Base Address : 00000000F9001000
+[244h 0580   4]        Virtual GIC Interrupt : 00000019
 [248h 0584   8]   Redistributor Base Address : 0000000000000000
 [250h 0592   8]                    ARM MPIDR : 0000000000000102
 [258h 0600   1]             Efficiency Class : 01
@@ -172,10 +172,10 @@
 [26Ch 0620   4]     Parking Protocol Version : 00000001
 [270h 0624   4]        Performance Interrupt : 00000017
 [274h 0628   8]               Parked Address : 0000000000371000
-[27Ch 0636   8]                 Base Address : 0000000000000000
-[284h 0644   8]     Virtual GIC Base Address : 0000000000000000
-[28Ch 0652   8]  Hypervisor GIC Base Address : 0000000000000000
-[294h 0660   4]        Virtual GIC Interrupt : 00000000
+[27Ch 0636   8]                 Base Address : 00000000F9002000
+[284h 0644   8]     Virtual GIC Base Address : 00000000F9004000
+[28Ch 0652   8]  Hypervisor GIC Base Address : 00000000F9001000
+[294h 0660   4]        Virtual GIC Interrupt : 00000019
 [298h 0664   8]   Redistributor Base Address : 0000000000000000
 [2A0h 0672   8]                    ARM MPIDR : 0000000000000103
 [2A8h 0680   1]             Efficiency Class : 01
@@ -187,7 +187,7 @@
 [2B0h 0688   4]        Local GIC Hardware ID : 00000000
 [2B4h 0692   8]                 Base Address : 00000000F9000000
 [2BCh 0700   4]               Interrupt Base : 00000000
-[2C0h 0704   1]                      Version : 00
+[2C0h 0704   1]                      Version : 02
 [2C1h 0705   3]                     Reserved : 000000
 
 [2C4h 0708   1]                Subtable Type : 0D [Generic MSI Frame]
