@@ -43,5 +43,6 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RX-130"
   gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1080
   gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|1920
+  gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03aa8
 
 !include Lumia950XLPkg/Shared.dsc.inc

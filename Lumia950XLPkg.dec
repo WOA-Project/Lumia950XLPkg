@@ -67,6 +67,7 @@
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize|0x4000|UINT32|0x0000f001
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase|0x00300000|UINT64|0x0000f002
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuIgnoreCpuIdCheck|FALSE|BOOLEAN|0x0000f003
+  gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x06c03aa8|UINT64|0x0000f004
 
   # QTimer
   gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000|UINT64|0x00000050

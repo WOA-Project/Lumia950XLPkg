@@ -74,6 +74,7 @@
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase
   gLumia950XLPkgTokenSpaceGuid.SecondaryCpuIgnoreCpuIdCheck
+  gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress
 
 [FeaturePcd]
   gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild
