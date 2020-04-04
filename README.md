@@ -88,16 +88,32 @@ GRUB configuration:
 	devicetree /lumia-950-xl.dtb
 	linux /vmlinuz ..... acpi=no
 
-PSCI partially works. If you want to use PSCI for multi-processor startup, add the following code to your DT:
+PSCI partially works in EL1. If you want to use PSCI for multi-processor startup, add the following code to your DT:
 
 	psci {
 		compatible	= "arm,psci-0.2";
 		method		= "hvc";
 	};
 
-And use `psci` for core-enable method.
+And use `psci` for core-enable method. If you are using EL2 startup, use `spin-table` with `per_cpu_mailbox_addr + 0x8` as the release address.
 
-For MSM8994, PCI Express Root Port 1 is **firmware-initialized**. Similarly, MSM8992 have PCI Express Root Port 0 initialized. Hence it is not necessary to supply `qcom,pcie` in device tree. Instead, supply a firmware-initialized PCI bus device `pci-host-cam-generic`. ACPI MCFG table is supplied for your reference.
+For MSM8994, PCI Express Root Port 1 is **firmware-initialized**. Similarly, MSM8992 have PCI Express Root Port 0 initialized. Hence it is not necessary to supply `qcom,pcie` in device tree. Instead, supply a firmware-initialized PCI bus device `pci-host-ecam-generic`. ACPI MCFG table is supplied for your reference.
+
+Note: interrupt is not configured in the example below (therefore ath10k will crash the system if loaded.)
+
+	pci@f8800000 {
+		compatible = "pci-host-ecam-generic";
+		device_type = "pci";
+		#address-cells = <0x3>;
+		#size-cells = <0x2>;
+		bus-range = <0x0 0x1>;
+		#interrupt-cells = <0x1>;
+
+		reg = <0xf8800000 0x200000>;
+		ranges = <0x02000000 0x0 0xf8a00000 0xf8a00000 0x0 0x600000>;
+
+		status = "okay";
+	};
 
 ## Acknowledgements
 

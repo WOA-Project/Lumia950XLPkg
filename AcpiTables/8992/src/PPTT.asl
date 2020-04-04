@@ -2,10 +2,10 @@
 [004h 0004   4]                 Table Length : 00000192
 [008h 0008   1]                     Revision : 01
 [009h 0009   1]                     Checksum : 00
-[00Ah 0010   6]                       Oem ID : "LMNL  "
-[010h 0016   8]                 Oem Table ID : "LMNLEDK2"
+[00Ah 0010   6]                       Oem ID : "QCOM  "
+[010h 0016   8]                 Oem Table ID : "QCOMEDK2"
 [018h 0024   4]                 Oem Revision : 00008992
-[01Ch 0028   4]              Asl Compiler ID : "LMNL"
+[01Ch 0028   4]              Asl Compiler ID : "QCOM"
 [020h 0032   4]        Asl Compiler Revision : 00000001
 
 

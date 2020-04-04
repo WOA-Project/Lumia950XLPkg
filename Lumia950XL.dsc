@@ -42,5 +42,8 @@
   gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1440
   gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
   gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03aa8
+  
+[PcdsFeatureFlag.common]
+  gLumia950XLPkgTokenSpaceGuid.PcdIs4GBSystem|FALSE
 
 !include Lumia950XLPkg/Shared.dsc.inc
