@@ -2,12 +2,12 @@
 [000h 0000   4]                    Signature : "APIC"    [Multiple APIC Description Table (MADT)]
 [004h 0004   4]                 Table Length : 000002DC
 [008h 0008   1]                     Revision : 03
-[009h 0009   1]                     Checksum : 5C
+[009h 0009   1]                     Checksum : 00
 [00Ah 0010   6]                       Oem ID : "QCOM  "
 [010h 0016   8]                 Oem Table ID : "QCOMEDK2"
 [018h 0024   4]                 Oem Revision : 00008994
-[01Ch 0028   4]              Asl Compiler ID : "INTL"
-[020h 0032   4]        Asl Compiler Revision : 20180209
+[01Ch 0028   4]              Asl Compiler ID : "QCOM"
+[020h 0032   4]        Asl Compiler Revision : 00000001
 
 [024h 0036   4]           Local Apic Address : F9002000
 [028h 0040   4]        Flags (decoded below) : 00000000
@@ -32,7 +32,8 @@
 [068h 0104   8]   Redistributor Base Address : 0000000000000000
 [070h 0112   8]                    ARM MPIDR : 0000000000000000
 [078h 0120   1]             Efficiency Class : 00
-[079h 0121   3]                     Reserved : 000000
+[079h 0121   1]                     Reserved : 00
+[07Ah 0122   2]       SPE Overflow Interrupt : 0000
 
 [07Ch 0124   1]                Subtable Type : 0B [Generic Interrupt Controller]
 [07Dh 0125   1]                       Length : 50
@@ -53,7 +54,8 @@
 [0B8h 0184   8]   Redistributor Base Address : 0000000000000000
 [0C0h 0192   8]                    ARM MPIDR : 0000000000000001
 [0C8h 0200   1]             Efficiency Class : 00
-[0C9h 0201   3]                     Reserved : 000000
+[0C9h 0201   1]                     Reserved : 00
+[0CAh 0202   2]       SPE Overflow Interrupt : 0000
 
 [0CCh 0204   1]                Subtable Type : 0B [Generic Interrupt Controller]
 [0CDh 0205   1]                       Length : 50
@@ -74,7 +76,8 @@
 [108h 0264   8]   Redistributor Base Address : 0000000000000000
 [110h 0272   8]                    ARM MPIDR : 0000000000000002
 [118h 0280   1]             Efficiency Class : 00
-[119h 0281   3]                     Reserved : 000000
+[119h 0281   1]                     Reserved : 00
+[11Ah 0282   2]       SPE Overflow Interrupt : 0000
 
 [11Ch 0284   1]                Subtable Type : 0B [Generic Interrupt Controller]
 [11Dh 0285   1]                       Length : 50
@@ -95,7 +98,8 @@
 [158h 0344   8]   Redistributor Base Address : 0000000000000000
 [160h 0352   8]                    ARM MPIDR : 0000000000000003
 [168h 0360   1]             Efficiency Class : 00
-[169h 0361   3]                     Reserved : 000000
+[169h 0361   1]                     Reserved : 00
+[16Ah 0362   2]       SPE Overflow Interrupt : 0000
 
 [16Ch 0364   1]                Subtable Type : 0B [Generic Interrupt Controller]
 [16Dh 0365   1]                       Length : 50
@@ -116,7 +120,8 @@
 [1A8h 0424   8]   Redistributor Base Address : 0000000000000000
 [1B0h 0432   8]                    ARM MPIDR : 0000000000000100
 [1B8h 0440   1]             Efficiency Class : 01
-[1B9h 0441   3]                     Reserved : 000000
+[1B9h 0441   1]                     Reserved : 00
+[1BAh 0442   2]       SPE Overflow Interrupt : 0000
 
 [1BCh 0444   1]                Subtable Type : 0B [Generic Interrupt Controller]
 [1BDh 0445   1]                       Length : 50
@@ -137,7 +142,8 @@
 [1F8h 0504   8]   Redistributor Base Address : 0000000000000000
 [200h 0512   8]                    ARM MPIDR : 0000000000000101
 [208h 0520   1]             Efficiency Class : 01
-[209h 0521   3]                     Reserved : 000000
+[209h 0521   1]                     Reserved : 00
+[20Ah 0522   2]       SPE Overflow Interrupt : 0000
 
 [20Ch 0524   1]                Subtable Type : 0B [Generic Interrupt Controller]
 [20Dh 0525   1]                       Length : 50
@@ -158,7 +164,8 @@
 [248h 0584   8]   Redistributor Base Address : 0000000000000000
 [250h 0592   8]                    ARM MPIDR : 0000000000000102
 [258h 0600   1]             Efficiency Class : 01
-[259h 0601   3]                     Reserved : 000000
+[259h 0601   1]                     Reserved : 00
+[25Ah 0602   2]       SPE Overflow Interrupt : 0000
 
 [25Ch 0604   1]                Subtable Type : 0B [Generic Interrupt Controller]
 [25Dh 0605   1]                       Length : 50
@@ -179,7 +186,8 @@
 [298h 0664   8]   Redistributor Base Address : 0000000000000000
 [2A0h 0672   8]                    ARM MPIDR : 0000000000000103
 [2A8h 0680   1]             Efficiency Class : 01
-[2A9h 0681   3]                     Reserved : 000000
+[2A9h 0681   1]                     Reserved : 00
+[2AAh 0682   2]       SPE Overflow Interrupt : 0000
 
 [2ACh 0684   1]                Subtable Type : 0C [Generic Interrupt Distributor]
 [2ADh 0685   1]                       Length : 18

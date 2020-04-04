@@ -141,8 +141,7 @@ READ_LOCK_STATUS   = TRUE
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/FACS.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/FADT.NoPsci.acpi
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/GTDT.aml
-  # 8992 APIC/MADT table already sets parking protocol version
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/MADT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/MADT.MpPark.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/MCFG.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/CSRT.aml
   SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/PPTT.aml
