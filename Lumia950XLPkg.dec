@@ -202,6 +202,9 @@
 
   # LK Build
   gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|TRUE|BOOLEAN|0x0000b101
+  
+  # 4GB System Memory
+  gLumia950XLPkgTokenSpaceGuid.PcdIs4GBSystem|FALSE|BOOLEAN|0x0000b102
 
   # RPM
   gQcomTokenSpaceGuid.PcdInstallRpmProtocol|FALSE|BOOLEAN|0x00000c100
