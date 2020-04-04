@@ -41,5 +41,6 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1104"
   gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1440
   gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
+  gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03920
 
 !include Lumia950XLPkg/Shared.dsc.inc

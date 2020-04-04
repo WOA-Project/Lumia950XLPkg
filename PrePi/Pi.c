@@ -81,7 +81,7 @@ VOID InstallEl2Patch(VOID)
   // fixed so CPU0 call would fail. Therefore we patched
   // PSCI_CPU_SUSPEND_AARCH64 handler at 0x06c03aa8.
   DEBUG((EFI_D_ERROR, "Injecting shellcode...\n"));
-  EFI_PHYSICAL_ADDRESS PsciCpuSuspendHandlerAddr = 0x06c03aa8;
+  EFI_PHYSICAL_ADDRESS PsciCpuSuspendHandlerAddr = FixedPcdGet64(PsciCpuSuspendAddress);
   UINT8 *PsciCpuSuspendHandler = (UINT8 *)(VOID *)PsciCpuSuspendHandlerAddr;
   CopyMem(PsciCpuSuspendHandler, El2ShellCode, sizeof(El2ShellCode));
   ArmDataSynchronizationBarrier();
