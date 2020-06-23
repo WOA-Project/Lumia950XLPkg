@@ -8,6 +8,7 @@
   ENTRY_POINT                    = PreLoaderDxeInitialize
 
 [Sources.common]
+  AcpiTableInstaller.c
   PreLoader.c
 
 [Packages]
@@ -27,11 +28,16 @@
   BmpSupportLib
   LittleVglLib
   LodePngLib
+  UefiLib
+  DebugLib
 
 [Protocols]
   gPreLoaderProtocolGuid
+  gEfiAcpiTableProtocolGuid                     ## CONSUMES
+  gEfiFirmwareVolume2ProtocolGuid               ## CONSUMES
 
 [Depex]
   gEfiGraphicsOutputProtocolGuid AND
   gEfiVariableArchProtocolGuid AND
-  gEfiVariableWriteArchProtocolGuid
+  gEfiVariableWriteArchProtocolGuid AND
+  gEfiAcpiTableProtocolGuid

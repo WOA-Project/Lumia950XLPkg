@@ -40,7 +40,7 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Qualcomm Snapdragon 810 Processor (8994)"
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1085"
   gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1440
-  gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
+  gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2560
   gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03aa8
   
 [PcdsFeatureFlag.common]

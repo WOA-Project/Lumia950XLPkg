@@ -30,7 +30,7 @@
 
 [Sources]
   FADT.aslc
-  8994/src/PPTT.aslc
+  PPTT.aslc
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-error=missing-braces

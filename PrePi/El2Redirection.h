@@ -7,6 +7,7 @@
 #include <IndustryStandard/ArmStdSmc.h>
 
 extern void _ModuleEntryPoint();
+extern void SecondaryCpuEL1Entry();
 
 // The EL2 shellcode is pre-compiled. For detailed explanation, see
 // El2Redirection.S in the same directory

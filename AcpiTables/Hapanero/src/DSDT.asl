@@ -69,58 +69,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8994 ", 0x00000003)
             }
         }
 
-        Device (SDC2)
-        {
-            Name (_DEP, Package (0x02)  // _DEP: Dependencies
-            {
-                \_SB.PEP0, 
-                \_SB.GIO0
-            })
-            Name (_HID, "QCOM2466")  // _HID: Hardware ID
-            Name (_CID, "ACPIQCOM2466")  // _CID: Compatible ID
-            Name (_UID, One)  // _UID: Unique ID
-            Name (_CCA, Zero)  // _CCA: Cache Coherency Attribute
-            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-            {
-                Name (RBUF, ResourceTemplate ()
-                {
-                    Memory32Fixed (ReadWrite,
-                        0xF98A4900,         // Address Base
-                        0x00000200,         // Address Length
-                        )
-                    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive, ,, )
-                    {
-                        0x0000009D,
-                    }
-                    GpioInt (Edge, ActiveBoth, SharedAndWake, PullNone, 0x7530,
-                        "\\_SB.PM01", 0x00, ResourceConsumer, ,
-                        RawDataBuffer (0x04)  // Vendor Data
-                        {
-                            0x02, 0x03, 0x01, 0x00
-                        })
-                        {   // Pin list
-                            0x0638
-                        }
-                    GpioIo (Shared, PullNone, 0x0000, 0x0000, IoRestrictionNone,
-                        "\\_SB.PM01", 0x00, ResourceConsumer, ,
-                        )
-                        {   // Pin list
-                            0x0638
-                        }
-                })
-                Return (RBUF) /* \_SB_.SDC2._CRS.RBUF */
-            }
-
-            Method (_DIS, 0, NotSerialized)  // _DIS: Disable Device
-            {
-            }
-
-            Method (_STA, 0, NotSerialized)  // _STA: Status
-            {
-                Return (0x0F)
-            }
-        }
-
         Device (ABD)
         {
             Name (_HID, "QCOM2431")  // _HID: Hardware ID
