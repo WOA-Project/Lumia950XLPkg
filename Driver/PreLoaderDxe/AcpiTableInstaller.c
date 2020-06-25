@@ -270,8 +270,8 @@ EFI_STATUS
 EFIAPI
 InstallAcpiTables()
 {
-  PPRELOADER_ENVIRONMENT Env    = (VOID *)PRELOADER_ENV_ADDR;
-  EFI_STATUS             Status = EFI_SUCCESS;
+  PPRELOADER_ENVIRONMENT_VERSION_2 Env    = (VOID *)PRELOADER_ENV_ADDR;
+  EFI_STATUS                       Status = EFI_SUCCESS;
 
   switch (Env->BootMode) {
   case BOOT_MODE_MPPARK:

@@ -94,10 +94,10 @@ VOID InstallEl2Patch(VOID)
 VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
 {
 
-  EFI_HOB_HANDOFF_INFO_TABLE *HobList;
-  PRELOADER_ENVIRONMENT *     PreEnv = (VOID *)PRELOADER_ENV_ADDR;
-  UINT32                      Crc32  = 0;
-  EFI_STATUS                  Status;
+  EFI_HOB_HANDOFF_INFO_TABLE      *HobList;
+  PRELOADER_ENVIRONMENT_VERSION_2 *PreEnv = (VOID *)PRELOADER_ENV_ADDR;
+  UINT32                          Crc32   = 0;
+  EFI_STATUS                      Status;
 
   UINTN MemoryBase     = 0;
   UINTN MemorySize     = 0;
@@ -115,7 +115,7 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
   if (PreEnv->Header == PRELOADER_HEADER) {
     Crc32         = PreEnv->Crc32;
     PreEnv->Crc32 = 0x0;
-    if (CalculateCrc32(PreEnv, sizeof(PRELOADER_ENVIRONMENT)) == Crc32) {
+    if (CalculateCrc32(PreEnv, sizeof(PRELOADER_ENVIRONMENT_VERSION_1)) == Crc32) {
       PreEnv->Crc32 = Crc32;
       DEBUG((EFI_D_INFO, "CRC32 check succeeded \n"));
     }
@@ -125,9 +125,23 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
       ASSERT(FALSE);
     }
 
-    BootMode                 = PreEnv->BootMode;
-    EnablePlatformSdCardBoot = PreEnv->EnablePlatformSdCardBoot;
-    UseQuadCoreConfiguration = PreEnv->UseQuadCoreConfiguration;
+    if (PreEnv->PreloaderVersion >= PRELOADER_VERSION_MIN) {
+      Crc32           = PreEnv->Crc32v2;
+      PreEnv->Crc32v2 = 0x0;
+      if (CalculateCrc32(PreEnv, sizeof(PRELOADER_ENVIRONMENT_VERSION_2)) == Crc32) {
+        PreEnv->Crc32v2 = Crc32;
+        DEBUG((EFI_D_INFO, "CRC32v2 check succeeded \n"));
+      }
+      else {
+        // Hey we have memory corrpution
+        DEBUG((EFI_D_ERROR, "CRC32v2 check failed \n"));
+        ASSERT(FALSE);
+      }
+
+      BootMode                 = PreEnv->BootMode;
+      EnablePlatformSdCardBoot = PreEnv->EnablePlatformSdCardBoot;
+      UseQuadCoreConfiguration = PreEnv->UseQuadCoreConfiguration;
+    }
   }
 
   if (BootMode != BOOT_MODE_PSCI) {
