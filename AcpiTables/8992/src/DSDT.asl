@@ -1193,10 +1193,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         Device (PEP0)
         {
             Name (_HID, "QCOM2425")  // _HID: Hardware ID
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
-            {
-                \_SB.PMIC
-            })
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
                 Interrupt (ResourceConsumer, Edge, ActiveHigh, ExclusiveAndWake, ,, )
