@@ -1364,49 +1364,49 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             {
                 Package (0x02)
                 {
-                    "\\_SB.CPU0", 
+                    "\\_SB.SYSM.APC0.CL0.CPU0", 
                     0x10
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU1", 
+                    "\\_SB.SYSM.APC0.CL0.CPU1", 
                     0x11
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU2", 
+                    "\\_SB.SYSM.APC0.CL0.CPU2", 
                     0x12
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU3", 
+                    "\\_SB.SYSM.APC0.CL0.CPU3", 
                     0x13
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU4", 
+                    "\\_SB.SYSM.APC0.CL1.CPU4", 
                     0x14
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU5", 
+                    "\\_SB.SYSM.APC0.CL1.CPU5", 
                     0x15
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU6", 
+                    "\\_SB.SYSM.APC0.CL1.CPU6", 
                     0x16
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU7", 
+                    "\\_SB.SYSM.APC0.CL1.CPU7", 
                     0x17
                 }
             })
@@ -39813,52 +39813,72 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_HID, "QCOM2414")  // _HID: Hardware ID
         }
 
-        Device (CPU0)
+		Device (SYSM)
         {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, Zero)  // _UID: Unique ID
-        }
+            Name (_HID, "ACPI0010" /* Processor Container Device */)  // _HID: Hardware ID
+            Name (_UID, 0x00100000)  // _UID: Unique ID
+            Device (APC0)
+            {
+                Name (_HID, "ACPI0010" /* Processor Container Device */)  // _HID: Hardware ID
+                Name (_UID, 0x0100)  // _UID: Unique ID
+                Device (CL0)
+                {
+                    Name (_HID, "ACPI0010" /* Processor Container Device */)  // _HID: Hardware ID
+                    Name (_UID, 0x10)  // _UID: Unique ID
+                    Device (CPU0)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, Zero)  // _UID: Unique ID
+                    }
 
-        Device (CPU1)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, One)  // _UID: Unique ID
-        }
+                    Device (CPU1)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, One)  // _UID: Unique ID
+                    }
 
-        Device (CPU2)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x02)  // _UID: Unique ID
-        }
+                    Device (CPU2)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x02)  // _UID: Unique ID
+                    }
 
-        Device (CPU3)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x03)  // _UID: Unique ID
-        }
+                    Device (CPU3)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x03)  // _UID: Unique ID
+                    }
+                }
 
-        Device (CPU4)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x04)  // _UID: Unique ID
-        }
+                Device (CL1)
+                {
+                    Name (_HID, "ACPI0010" /* Processor Container Device */)  // _HID: Hardware ID
+                    Name (_UID, 0x20)  // _UID: Unique ID
+                    Device (CPU4)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x04)  // _UID: Unique ID
+                    }
 
-        Device (CPU5)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x05)  // _UID: Unique ID
-        }
+                    Device (CPU5)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x05)  // _UID: Unique ID
+                    }
 
-        Device (CPU6)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x06)  // _UID: Unique ID
-        }
+                    Device (CPU6)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x06)  // _UID: Unique ID
+                    }
 
-        Device (CPU7)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x07)  // _UID: Unique ID
+                    Device (CPU7)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x07)  // _UID: Unique ID
+                    }
+                }
+            }
         }
 
         Device (GPS)
@@ -40774,10 +40794,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x04)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -40864,8 +40884,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x02)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU4, 
-                \_SB.CPU5
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -41039,12 +41059,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x08)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS
             })
@@ -41072,12 +41092,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x0A)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS, 
                 \_SB.DISP, 
@@ -41107,12 +41127,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x0A)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS, 
                 \_SB.DISP, 
@@ -41668,12 +41688,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x09)  // _UID: Unique ID
             Name (_TZD, Package (0x07)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.GPU0
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
@@ -41740,12 +41760,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, One)  // _UID: Unique ID
             Name (_TZD, Package (0x0B)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS, 
                 \_SB.DISP, 
@@ -41781,12 +41801,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x06)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -41812,8 +41832,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x02)  // _UID: Unique ID
             Name (_TZD, Package (0x02)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU4, 
-                \_SB.CPU5
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -41874,10 +41894,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x03)  // _UID: Unique ID
             Name (_TZD, Package (0x04)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -41938,12 +41958,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x04)  // _UID: Unique ID
             Name (_TZD, Package (0x07)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
@@ -41975,12 +41995,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x07)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
@@ -42042,12 +42062,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x64)  // _UID: Unique ID
             Name (_TZD, Package (0x0D)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS, 
                 \_SB.DISP, 
@@ -42533,12 +42553,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x09)  // _UID: Unique ID
             Name (_TZD, Package (0x07)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.GPU0
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
@@ -42605,8 +42625,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x02)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU4, 
-                \_SB.CPU5
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
