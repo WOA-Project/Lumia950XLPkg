@@ -136,7 +136,6 @@ READ_LOCK_STATUS   = TRUE
 	SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/GTDT.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/MCFG.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/CSRT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/TPM2.aml
 	SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/PPTT.aml
 	SECTION UI = "AcpiTables"
   }
