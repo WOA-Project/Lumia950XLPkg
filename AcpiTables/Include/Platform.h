@@ -4,7 +4,6 @@
 #include <IndustryStandard/Acpi.h>
 #include <Library/AcpiLib.h>
 
-
 #define SIGNATURE4(a, b, c, d) (((a) | (b << 8)) | ((((c) | (d << 8)) << 16)))
 
 #define SIGNATURE8(a, b, c, d, e, f, g, h)                                     \
@@ -14,7 +13,7 @@
 #define ACPI_OEM_TABLE_ID SIGNATURE8('Q', 'C', 'O', 'M', 'E', 'D', 'K', '2')
 #define ACPI_OEM_REVISION 0x00008994
 #define ACPI_CREATOR_ID SIGNATURE4('Q', 'C', 'O', 'M')
-#define ACPI_CREATOR_REVISION 0x00000001
+#define ACPI_CREATOR_REVISION 0x00000002
 
 #define ACPI_VENDOR_ID SIGNATURE4('Q', 'C', 'O', 'M')
 

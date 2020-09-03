@@ -57,9 +57,9 @@ _CpuIndex:
   /* Keep the CPU index in x19 */
   mov x19, x0
 
-  /* Secondary startup case */
+  /* Secondary startup is not expected */
   cmp x19, #0x0
-  bne SecondaryCpuEntry
+  bne dead
 
   /* First ensure all interrupts are disabled */
   bl ASM_PFX(ArmDisableInterrupts)
@@ -79,10 +79,10 @@ _SetupExceptionVector:
   mov x2, #0
 
 _FillVectors:
-  /* Each entry is 8 bytes, vector table is 0x800 per core and we have 8 cores */
+  /* Each entry is 8 bytes, vector table size is 0x800 per core */
   str     x1, [x0, x2]
   adds    x2, x2, #8
-  cmp     x2, #0x4000
+  cmp     x2, #0x800
   bne     _FillVectors
 
   /* Get current EL in x0 */
@@ -94,10 +94,6 @@ _FillVectors:
 
   cmp x0, #0x5
   b.eq _SetupEl1VBar
-
-_SetupEL2VBar:
-  msr vbar_el2, x0
-  b _SetupPrimaryCoreStack
   
 _SetupEl1VBar:
   msr vbar_el1, x0        
@@ -126,81 +122,6 @@ _PrepareArguments:
   ldr x1, _StackSize     /* Stack size arg1 */
 
   bl CEntryPoint
-
-SecondaryCpuEntry:
-  /* Keep the incoming index */
-  mov x19, x0
-
-  /* First ensure all interrupts are disabled */
-  bl ASM_PFX(ArmDisableInterrupts)
-
-  /* Ensure that the MMU and caches are off */
-  bl ASM_PFX(ArmDisableCachesAndMmu)
-
-  /* Invalide I-Cache */
-  bl ASM_PFX(ArmInvalidateInstructionCache)
-  
-  /* Invalidate TLB */
-  bl ASM_PFX(ArmInvalidateTlb)
-
-  /* Get current EL in x0 */
-  mrs x0, CurrentEl
-
-  /* Check if we are in EL1 */
-  cmp x0, #0x4
-  b.eq _SecondaryCpuEl1Setup
-
-  cmp x0, #0x5
-  b.eq _SecondaryCpuEl1Setup
-
-  /* Otherwise initialize EL2 */
-  /* Get the vector table base for this core */
-  mov x1, #0x800
-  mul x1, x1, x19
-  LoadConstantToReg (FixedPcdGet32(PcdCpuVectorBaseAddress), x0)
-  add x0, x0, x1
-  msr vbar_el2, x0
-
-  b _SecondaryStackSetup
-
-_SecondaryCpuEl1Setup:
-  /* Get the vector table base for this core */
-  mov x1, #0x800
-  mul x1, x1, x19
-  LoadConstantToReg (FixedPcdGet32(PcdCpuVectorBaseAddress), x0)
-  add x0, x0, x1
-  msr vbar_el1, x0
-
-  /* SIMD */
-  mrs x0, CPACR_EL1
-  orr x0, x0, #0x300000
-  msr CPACR_EL1, x0
-
-_SecondaryStackSetup:
-  /* Exception should be DAIF */
-  msr daifset, #0xF
-
-  /* MpPark mailbox region: each core have 0x10000 available, the first 4KB is mailbox */
-  mov x1, #0x10000
-  mul x1, x1, x19
-  ldr x0, _MpParkBase
-  add x0, x0, x1
-
-  /* Setup stack for this core */
-  mov x2, #0x2000
-  /* Stackbase */
-  add x0, x0, x2
-  /* Stacksize */
-  ldr x1, _SecondaryCpuStackSize
-
-  add x4, x0, x1
-  add sp, x4, #0
-
-  bl ArmInvalidateDataCache
-
-  /* Enter MpPark spin */
-  mov x0, x19
-  bl SecondaryCEntryPoint
 
 .align 3
 dead:  
