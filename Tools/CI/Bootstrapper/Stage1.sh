@@ -10,7 +10,7 @@
 echo "Checking out EDK2 workspace"
 
 cd ..
-git clone --single-branch --depth 1 --branch master https://github.com/tianocore/edk2
+git clone --single-branch --depth 1 --recurse-submodules --branch master https://github.com/tianocore/edk2
 
 # Set a link to EDK2 workspace
 ln -s $(pwd)/Lumia950XLPkg $(pwd)/edk2/Lumia950XLPkg
