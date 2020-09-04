@@ -57,13 +57,15 @@ UINT32 LowerELSynchronous64PatchHandler[] = {
     0xd53c4030, // 0x34: mrs x16, ELR_EL2
     0x91001210, // add  x16, x16, #4
     0xd51c4030, // msr  ELR_EL2, x16
-    0x52b08010, // mov  w16, #0x84000000
-    0x6a10001f, // tst  w0, w16
-    0x54000081, // b.ne 0x58
-    0xa8c143ef, // ldp  x15, x16, [sp], #0x10
-    0xd4000003, // smc #0
+    0x121b6810, // and  w16, w0, #0xffffffe0
+    0x32020210, // orr  w16, w16, #0x40000000
+    0x52b8800f, // mov  w15, #0xc4000000
+    0x6b0f021f, // cmp  w16, w15
+    0x54000041, // b.ne 0x58
+    0x17fffa23, // b    0xffffffffffffe644
+    0xa8c143ef, // 0x58: ldp  x15, x16, [sp], #0x10
+    0xd4000003, // smc  #0
     0xd69f03e0, // eret
-    0x17fffa22, // 0x58: b 0xffffffffffffe8e0
 };
 
 // Overwrite at 0x6C08E24:
@@ -82,15 +84,17 @@ UINT32 LowerELSynchronous32PatchHandler[] = {
     0x54000040, // b.eq 0x34
     0x17fff9ed, // b    0xffffffffffffe7e4
     0xd53c4030, // 0x34: mrs x16, ELR_EL2
-    0x91001210, // add x16, x16, #4
-    0xd51c4030, // msr ELR_EL2, x16
-    0x52b08010, // mov  w16, #0x84000000
-    0x6a10001f, // tst  w0, w16
-    0x54000081, // b.ne 0x58
-    0xa8c143ef, // ldp  x15, x16, [sp], #0x10
-    0xd4000003, // smc #0
+    0x91001210, // add  x16, x16, #4
+    0xd51c4030, // msr  ELR_EL2, x16
+    0x121b6810, // and  w16, w0, #0xffffffe0
+    0x32020210, // orr  w16, w16, #0x40000000
+    0x52b8800f, // mov  w15, #0xc4000000
+    0x6b0f021f, // cmp  w16, w15
+    0x54000041, // b.ne 0x58
+    0x17fff97c, // b    0xffffffffffffe644
+    0xa8c143ef, // 0x58: ldp  x15, x16, [sp], #0x10
+    0xd4000003, // smc  #0
     0xd69f03e0, // eret
-    0x17fff97b, // 0x58: b 0xffffffffffffe644
 };
 
 VOID EFIAPI ProcessLibraryConstructorList(VOID);
