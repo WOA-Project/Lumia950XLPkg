@@ -4,6 +4,7 @@ trigger:
   branches:
     include:
     - master
+    - psci-scm
   paths:
     exclude:
     - README.md

@@ -29,6 +29,9 @@
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Lumia950XLPkg/Lumia950XL.fdf
+
+[BuildOptions.common]
+  GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8994
   
 [PcdsFixedAtBuild.common]
   # Platform-specific
@@ -41,5 +44,9 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RM-1085"
   gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1440
   gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
+  gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03aa8
+  
+[PcdsFeatureFlag.common]
+  gLumia950XLPkgTokenSpaceGuid.PcdIs4GBSystem|FALSE
 
 !include Lumia950XLPkg/Shared.dsc.inc

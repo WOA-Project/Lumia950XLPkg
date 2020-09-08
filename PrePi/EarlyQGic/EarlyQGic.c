@@ -26,6 +26,7 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 #include <PiPei.h>
 #include <Ppi/GuidedSectionExtraction.h>
 
+#include <Library/ArmGicLib.h>
 #include <Library/ArmLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/CacheMaintenanceLib.h>
@@ -169,4 +170,71 @@ QGicPeim(VOID)
   QGicCpuInit();
 
   return EFI_SUCCESS;
+}
+
+UINTN
+EFIAPI
+ArmGicV2AcknowledgeInterrupt(IN UINTN GicInterruptInterfaceBase)
+{
+  // Read the Interrupt Acknowledge Register
+  return MmioRead32(GicInterruptInterfaceBase + ARM_GIC_ICCIAR);
+}
+
+UINTN
+EFIAPI
+ArmGicAcknowledgeInterrupt(
+    IN UINTN GicInterruptInterfaceBase, OUT UINTN *InterruptId)
+{
+  UINTN Value;
+
+  Value = ArmGicV2AcknowledgeInterrupt(GicInterruptInterfaceBase);
+  if (InterruptId != NULL) {
+    *InterruptId = Value & ARM_GIC_ICCIAR_ACKINTID;
+  }
+
+  return Value;
+}
+
+VOID EFIAPI ArmGicSendSgiTo(
+    IN INTN GicDistributorBase, IN INTN TargetListFilter, IN INTN CPUTargetList,
+    IN INTN SgiId)
+{
+  MmioWrite32(
+      GicDistributorBase + ARM_GIC_ICDSGIR, ((TargetListFilter & 0x3) << 24) |
+                                                ((CPUTargetList & 0xFF) << 16) |
+                                                SgiId);
+}
+
+VOID EFIAPI ArmGicV2EnableInterruptInterface(IN INTN GicInterruptInterfaceBase)
+{
+  /*
+   * Enable the CPU interface in Non-Secure world
+   * Note: The ICCICR register is banked when Security extensions are
+   * implemented
+   */
+  MmioWrite32(GicInterruptInterfaceBase + ARM_GIC_ICCICR, 0x1);
+}
+
+VOID EFIAPI ArmGicEnableInterruptInterface(IN INTN GicInterruptInterfaceBase)
+{
+  ArmGicV2EnableInterruptInterface(GicInterruptInterfaceBase);
+}
+
+VOID EFIAPI
+     ArmGicV2EndOfInterrupt(IN UINTN GicInterruptInterfaceBase, IN UINTN Source)
+{
+  MmioWrite32(GicInterruptInterfaceBase + ARM_GIC_ICCEIOR, Source);
+}
+
+UINTN
+EFIAPI
+ArmGicGetMaxNumInterrupts(IN INTN GicDistributorBase)
+{
+  return 32 * ((MmioRead32(GicDistributorBase + ARM_GIC_ICDICTR) & 0x1F) + 1);
+}
+
+VOID EFIAPI
+     ArmGicEndOfInterrupt(IN UINTN GicInterruptInterfaceBase, IN UINTN Source)
+{
+  ArmGicV2EndOfInterrupt(GicInterruptInterfaceBase, Source);
 }

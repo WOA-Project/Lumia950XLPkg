@@ -22,7 +22,7 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[03Ch 0060   4]     Parking Protocol Version : 00000000
+[03Ch 0060   4]     Parking Protocol Version : 00000001
 [040h 0064   4]        Performance Interrupt : 00000017
 [044h 0068   8]               Parked Address : 0000000000301000
 [04Ch 0076   8]                 Base Address : 00000000F9002000
@@ -44,9 +44,9 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[08Ch 0140   4]     Parking Protocol Version : 00000000
+[08Ch 0140   4]     Parking Protocol Version : 00000001
 [090h 0144   4]        Performance Interrupt : 00000017
-[094h 0148   8]               Parked Address : 0000000000302000
+[094h 0148   8]               Parked Address : 0000000000311000
 [09Ch 0156   8]                 Base Address : 00000000F9002000
 [0A4h 0164   8]     Virtual GIC Base Address : 00000000F9004000
 [0ACh 0172   8]  Hypervisor GIC Base Address : 00000000F9001000
@@ -66,9 +66,9 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[0DCh 0220   4]     Parking Protocol Version : 00000000
+[0DCh 0220   4]     Parking Protocol Version : 00000001
 [0E0h 0224   4]        Performance Interrupt : 00000017
-[0E4h 0228   8]               Parked Address : 0000000000303000
+[0E4h 0228   8]               Parked Address : 0000000000321000
 [0ECh 0236   8]                 Base Address : 00000000F9002000
 [0F4h 0244   8]     Virtual GIC Base Address : 00000000F9004000
 [0FCh 0252   8]  Hypervisor GIC Base Address : 00000000F9001000
@@ -88,9 +88,9 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[12Ch 0300   4]     Parking Protocol Version : 00000000
+[12Ch 0300   4]     Parking Protocol Version : 00000001
 [130h 0304   4]        Performance Interrupt : 00000017
-[134h 0308   8]               Parked Address : 0000000000304000
+[134h 0308   8]               Parked Address : 0000000000331000
 [13Ch 0316   8]                 Base Address : 00000000F9002000
 [144h 0324   8]     Virtual GIC Base Address : 00000000F9004000
 [14Ch 0332   8]  Hypervisor GIC Base Address : 00000000F9001000
@@ -110,9 +110,9 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[17Ch 0380   4]     Parking Protocol Version : 00000000
+[17Ch 0380   4]     Parking Protocol Version : 00000001
 [180h 0384   4]        Performance Interrupt : 00000017
-[184h 0388   8]               Parked Address : 0000000000305000
+[184h 0388   8]               Parked Address : 0000000000341000
 [18Ch 0396   8]                 Base Address : 00000000F9002000
 [194h 0404   8]     Virtual GIC Base Address : 00000000F9004000
 [19Ch 0412   8]  Hypervisor GIC Base Address : 00000000F9001000
@@ -132,9 +132,9 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[1CCh 0460   4]     Parking Protocol Version : 00000000
+[1CCh 0460   4]     Parking Protocol Version : 00000001
 [1D0h 0464   4]        Performance Interrupt : 00000017
-[1D4h 0468   8]               Parked Address : 0000000000306000
+[1D4h 0468   8]               Parked Address : 0000000000351000
 [1DCh 0476   8]                 Base Address : 00000000F9002000
 [1E4h 0484   8]     Virtual GIC Base Address : 00000000F9004000
 [1ECh 0492   8]  Hypervisor GIC Base Address : 00000000F9001000
@@ -154,9 +154,9 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[21Ch 0540   4]     Parking Protocol Version : 00000000
+[21Ch 0540   4]     Parking Protocol Version : 00000001
 [220h 0544   4]        Performance Interrupt : 00000017
-[224h 0548   8]               Parked Address : 0000000000307000
+[224h 0548   8]               Parked Address : 0000000000361000
 [22Ch 0556   8]                 Base Address : 00000000F9002000
 [234h 0564   8]     Virtual GIC Base Address : 00000000F9004000
 [23Ch 0572   8]  Hypervisor GIC Base Address : 00000000F9001000
@@ -176,9 +176,9 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[26Ch 0620   4]     Parking Protocol Version : 00000000
+[26Ch 0620   4]     Parking Protocol Version : 00000001
 [270h 0624   4]        Performance Interrupt : 00000017
-[274h 0628   8]               Parked Address : 0000000000308000
+[274h 0628   8]               Parked Address : 0000000000371000
 [27Ch 0636   8]                 Base Address : 00000000F9002000
 [284h 0644   8]     Virtual GIC Base Address : 00000000F9004000
 [28Ch 0652   8]  Hypervisor GIC Base Address : 00000000F9001000

@@ -29,11 +29,12 @@
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Lumia950XLPkg/Hapanero.fdf
+
+[BuildOptions.common]
+  GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8994
   
 [PcdsFixedAtBuild.common]
   # Platform-specific
-  # gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
-  # gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB
   gArmTokenSpaceGuid.PcdSystemMemorySize|0xF8000000         # 3.875GB
   gArmTokenSpaceGuid.PcdSystemMemorySize|0xF8000000         # 3.875GB
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8
@@ -43,5 +44,9 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"RX-130"
   gLumia950XLPkgTokenSpaceGuid.SynapticsXMax|1080
   gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|1920
+  gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03aa8
+  
+[PcdsFeatureFlag.common]
+  gLumia950XLPkgTokenSpaceGuid.PcdIs4GBSystem|TRUE
 
 !include Lumia950XLPkg/Shared.dsc.inc
