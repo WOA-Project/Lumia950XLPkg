@@ -29,6 +29,9 @@
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Lumia950XLPkg/Lumia950XL.fdf
+
+[BuildOptions.common]
+  GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8994
   
 [PcdsFixedAtBuild.common]
   # Platform-specific

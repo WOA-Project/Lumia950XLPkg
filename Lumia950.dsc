@@ -30,6 +30,9 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Lumia950XLPkg/Lumia950.fdf
 
+[BuildOptions.common]
+  GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8992
+
 [PcdsFixedAtBuild.common]
   # Platform-specific
   gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB

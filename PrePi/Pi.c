@@ -1,6 +1,7 @@
 // Pi.c: Entry point for SEC(Security).
 
 #include "Pi.h"
+#include "HvcPatch.h"
 
 #include <Pi/PiBootMode.h>
 #include <Pi/PiHob.h>
@@ -31,72 +32,6 @@
 #include <Library/ArmHvcLib.h>
 #include <Library/ArmSmcLib.h>
 
-// Overwrite at 0x6C001F8:
-UINT32 WakeFromPowerGatePatchHandler[] = {
-    0xd53c1108, // mrs  x8, HCR_EL2
-    0xb26d0108, // orr  x8, x8, #(HCR_EL2.TSC)
-    0xd51c1108, // msr  HCR_EL2, x8
-    0xd5033fdf, // isb
-};
-
-// Overwrite at 0x6C08C24:
-UINT32 LowerELSynchronous64PatchHandler[] = {
-    0xd53c1110, // mrs  x16, HCR_EL2
-    0xb26d0210, // orr  x16, x16, #(HCR_EL2.TSC)
-    0xd51c1110, // msr  HCR_EL2, x16
-    0xd5033fdf, // isb
-    0xf10059ff, // cmp  x15, #0x16
-    0x54ff4660, // b.eq 0xffffffffffffe8e0
-    0xf10049ff, // cmp  x15, #0x12
-    0x54ff4620, // b.eq 0xffffffffffffe8e0
-    0xf1005dff, // cmp  x15, #0x17
-    0x54000080, // b.eq 0x34
-    0xf1004dff, // cmp  x15, #0x13
-    0x54000040, // b.eq 0x34
-    0x17fffa6d, // b    0xffffffffffffe9e4
-    0xd53c4030, // 0x34: mrs x16, ELR_EL2
-    0x91001210, // add  x16, x16, #4
-    0xd51c4030, // msr  ELR_EL2, x16
-    0x121b6810, // and  w16, w0, #0xffffffe0
-    0x32020210, // orr  w16, w16, #0x40000000
-    0x52b8800f, // mov  w15, #0xc4000000
-    0x6b0f021f, // cmp  w16, w15
-    0x54000041, // b.ne 0x58
-    0x17fffa23, // b    0xffffffffffffe644
-    0xa8c143ef, // 0x58: ldp  x15, x16, [sp], #0x10
-    0xd4000003, // smc  #0
-    0xd69f03e0, // eret
-};
-
-// Overwrite at 0x6C08E24:
-UINT32 LowerELSynchronous32PatchHandler[] = {
-    0xd53c1110, // mrs  x16, HCR_EL2
-    0xb26d0210, // orr  x16, x16, #(HCR_EL2.TSC)
-    0xd51c1110, // msr  HCR_EL2, x16
-    0xd5033fdf, // isb
-    0xf10059ff, // cmp  x15, #0x16
-    0x54ff3180, // b.eq 0xffffffffffffe644
-    0xf10049ff, // cmp  x15, #0x12
-    0x54ff3140, // b.eq 0xffffffffffffe644
-    0xf1005dff, // cmp  x15, #0x17
-    0x54000080, // b.eq 0x34
-    0xf1004dff, // cmp  x15, #0x13
-    0x54000040, // b.eq 0x34
-    0x17fff9ed, // b    0xffffffffffffe7e4
-    0xd53c4030, // 0x34: mrs x16, ELR_EL2
-    0x91001210, // add  x16, x16, #4
-    0xd51c4030, // msr  ELR_EL2, x16
-    0x121b6810, // and  w16, w0, #0xffffffe0
-    0x32020210, // orr  w16, w16, #0x40000000
-    0x52b8800f, // mov  w15, #0xc4000000
-    0x6b0f021f, // cmp  w16, w15
-    0x54000041, // b.ne 0x58
-    0x17fff97c, // b    0xffffffffffffe644
-    0xa8c143ef, // 0x58: ldp  x15, x16, [sp], #0x10
-    0xd4000003, // smc  #0
-    0xd69f03e0, // eret
-};
-
 VOID EFIAPI ProcessLibraryConstructorList(VOID);
 
 STATIC VOID UartInit(VOID)
@@ -117,9 +52,9 @@ STATIC VOID PsciFixupInit(VOID)
   ARM_HVC_ARGS         StubArgsHvc;
   ARM_SMC_ARGS         StubArgsSmc;
 
-  WakeFromPowerGatePatchOffset    = 0x6C001F8;
-  LowerELSynchronous64PatchOffset = 0x6C08C24;
-  LowerELSynchronous32PatchOffset = 0x6C08E24;
+  WakeFromPowerGatePatchOffset    = WAKE_FROM_POWERGATE_PATCH_ADDR;
+  LowerELSynchronous64PatchOffset = LOWER_EL_SYNC_EXC_64B_PATCH_ADDR;
+  LowerELSynchronous32PatchOffset = LOWER_EL_SYNC_EXC_32B_PATCH_ADDR;
 
   CopyMem(
       (VOID *)WakeFromPowerGatePatchOffset, WakeFromPowerGatePatchHandler,
