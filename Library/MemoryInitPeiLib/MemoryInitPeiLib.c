@@ -85,6 +85,10 @@ MemoryPeim(IN EFI_PHYSICAL_ADDRESS UefiMemoryBase, IN UINT64 UefiMemorySize)
         MemoryDescriptor[MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT];
   UINTN Index = 0;
 
+  if (FeaturePcdGet(PcdIs4GBSystem)) {
+    MemoryDescriptorEx = gDeviceMemoryDescriptor4GBEx;
+  }
+
   // Ensure PcdSystemMemorySize has been set
   ASSERT(PcdGet64(PcdSystemMemorySize) != 0);
 

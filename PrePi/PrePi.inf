@@ -10,17 +10,17 @@
   EarlyQGic/EarlyQGic.c
 
 [Sources.AARCH64]
-  ReleaseInfo.S | GCC
   ModuleEntryPoint.S | GCC
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Werror -Wno-error=unused-function
 
 [Packages]
+  ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
-  ArmPkg/ArmPkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
@@ -44,6 +44,9 @@
   # Platform-specific libraries
   MemoryInitPeiLib
   PlatformPeiLib
+  # MpPark
+  ArmHvcLib
+  ArmSmcLib
 
 [Guids]
   gEfiSystemNvDataFvGuid
@@ -57,6 +60,9 @@
   gArmTokenSpaceGuid.PcdFvSize
   gArmTokenSpaceGuid.PcdFdBaseAddress
   gArmTokenSpaceGuid.PcdFdSize
+  gArmTokenSpaceGuid.PcdGicDistributorBase
+  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase
+  gArmPlatformTokenSpaceGuid.PcdCoreCount
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultBaudRate
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
   gEmbeddedTokenSpaceGuid.PcdPrePiStackBase
@@ -65,6 +71,10 @@
   gLumia950XLPkgTokenSpaceGuid.PcdPreAllocatedMemorySize
   gLumia950XLPkgTokenSpaceGuid.PcdUefiMemPoolSize
   gLumia950XLPkgTokenSpaceGuid.PcdBootShimInfo1
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuIgnoreCpuIdCheck
+  gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress
 
 [FeaturePcd]
   gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild

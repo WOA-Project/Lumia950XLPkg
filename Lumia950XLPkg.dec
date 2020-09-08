@@ -63,6 +63,12 @@
   # RTC information
   gLumia950XLPkgTokenSpaceGuid.PcdBootShimInfo1|0xb0000000|UINT64|0x00000a601
 
+  # MpPark
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize|0x4000|UINT32|0x0000f001
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase|0x00300000|UINT64|0x0000f002
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuIgnoreCpuIdCheck|FALSE|BOOLEAN|0x0000f003
+  gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x06c03aa8|UINT64|0x0000f004
+
   # QTimer
   gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000|UINT64|0x00000050
   gQcomTokenSpaceGuid.PcdIntDebugTimerExp|41|UINT64|0x00000010
@@ -202,6 +208,9 @@
 
   # LK Build
   gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|TRUE|BOOLEAN|0x0000b101
+  
+  # 4GB System Memory
+  gLumia950XLPkgTokenSpaceGuid.PcdIs4GBSystem|FALSE|BOOLEAN|0x0000b102
 
   # RPM
   gQcomTokenSpaceGuid.PcdInstallRpmProtocol|FALSE|BOOLEAN|0x00000c100

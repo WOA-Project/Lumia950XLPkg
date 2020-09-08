@@ -9,15 +9,17 @@
 .align 3
 
 GCC_ASM_IMPORT (CEntryPoint)
-GCC_ASM_EXPORT (_ModuleEntryPoint)
 GCC_ASM_IMPORT (ArmWriteCpacr)
 GCC_ASM_IMPORT (ArmEnableInstructionCache)
 GCC_ASM_IMPORT (ArmEnableDataCache)
 GCC_ASM_IMPORT (ArmInvalidateTlb)
 
+GCC_ASM_EXPORT (_ModuleEntryPoint)
+
 .global _StackBase 
 .global _StackSize
-.global CNTFRQ 
+.global _SecondaryCpuStackSize
+.global _MpParkBase
 
 _StackBase:
   .quad FixedPcdGet32(PcdPrePiStackBase)
@@ -25,11 +27,37 @@ _StackBase:
 _StackSize:
   .quad FixedPcdGet32(PcdPrePiStackSize)
 
-CNTFRQ:
-  .quad 0x0124F800
+_SecondaryCpuStackSize:
+  .quad FixedPcdGet32(SecondaryCpuStackSize)
+
+_MpParkBase:
+  .quad FixedPcdGet64(SecondaryCpuMpParkRegionBase)
 
 _ModuleEntryPoint:
   mov x0, #0
+
+  /* Know about the current CPU index */
+  mrs x3, mpidr_el1
+  mov x2, x3
+  mov x1, #0x0000100
+  and x2, x2, x1
+  cmp x2, #0x0
+  mov x0, #0
+  beq _CpuIndex
+
+  mov x0, #4
+_CpuIndex:
+  mov x2, x3
+  mov x1, #0xf
+  and x2, x2, x1
+  add x0, x0, x2
+
+  /* Keep the CPU index in x19 */
+  mov x19, x0
+
+  /* Secondary startup is not expected */
+  cmp x19, #0x0
+  bne dead
 
   /* First ensure all interrupts are disabled */
   bl ASM_PFX(ArmDisableInterrupts)
@@ -42,38 +70,36 @@ _ModuleEntryPoint:
   
   /* Invalidate TLB */
   bl ASM_PFX(ArmInvalidateTlb)
-  
-  /* Get current EL in x0 */
-  mrs x0, CurrentEl
 
-  /* Check if we are in EL1, if yes skip other EL init */
-  cmp x0, #0x4
-  b.eq _Start_EL1_NS
-
-  cmp x0, #0x5
-  b.eq _Start_EL1_NS
-
-  /* We should have EL1 initialized */
-  b dead
-
-_Start_EL1_NS:
 _SetupExceptionVector:
   LoadConstantToReg (FixedPcdGet32(PcdCpuVectorBaseAddress), x0)
   ldr x1, dead
   mov x2, #0
 
 _FillVectors:
+  /* Each entry is 8 bytes, vector table size is 0x800 per core */
   str     x1, [x0, x2]
-  adds    x2, x2, #8      /* Fill every 8 byte */
-  cmp     x2, #0x800      /* Vector Table Size */
+  adds    x2, x2, #8
+  cmp     x2, #0x800
   bne     _FillVectors
+
+  /* Get current EL in x0 */
+  mrs x0, CurrentEl
+
+  /* Check if we are in EL1 */
+  cmp x0, #0x4
+  b.eq _SetupEl1VBar
+
+  cmp x0, #0x5
+  b.eq _SetupEl1VBar
   
-  /* Update VBAR */
-  msr vbar_el1, x0        /* End _SetupExceptionVector */
+_SetupEl1VBar:
+  msr vbar_el1, x0        
     
 _DonNotTrap_VFP_SIMD:
   mrs x0, CPACR_EL1
-  orr x0, x0, #0x300000  /* Set FPEN Bits 20 and 21 for not trapping FP and Advanced SIMD instructions */
+  /* Bit 20 and 21 */
+  orr x0, x0, #0x300000
   msr CPACR_EL1, x0
     
 _SetupPrimaryCoreStack:
@@ -98,4 +124,3 @@ _PrepareArguments:
 .align 3
 dead:  
   b dead                      /* We should never get here */
-

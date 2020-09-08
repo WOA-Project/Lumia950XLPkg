@@ -222,6 +222,11 @@
   gQcomTokenSpaceGuid.PcdIntDebugTimerExp|41
   gQcomTokenSpaceGuid.PcdQTimerBase|0xF9021000
 
+  # Parking
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuStackSize|0x2000
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase|0x00300000
+  gLumia950XLPkgTokenSpaceGuid.SecondaryCpuIgnoreCpuIdCheck|TRUE
+
 [PcdsDynamicDefault.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|1920
@@ -466,7 +471,10 @@
 
 [Components.common]
   # PrePI
-  Lumia950XLPkg/PrePi/PrePi.inf
+  Lumia950XLPkg/PrePi/PrePi.inf {
+    <LibraryClasses>
+    SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+  }
 
   # DXE
   MdeModulePkg/Core/Dxe/DxeMain.inf {
@@ -577,6 +585,7 @@
 
   # ACPI and SMBIOS
   # We use pre-built ACPI tables, so only core components are loaded
+  Lumia950XLPkg/AcpiTables/Lumia950XLAcpiTables.inf
   Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
   MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
   MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf

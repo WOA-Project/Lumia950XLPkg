@@ -2,7 +2,7 @@
 [000h 0000   4]                    Signature : "APIC"    [Multiple APIC Description Table (MADT)]
 [004h 0004   4]                 Table Length : 000002DC
 [008h 0008   1]                     Revision : 03
-[009h 0009   1]                     Checksum : 9D
+[009h 0009   1]                     Checksum : 00
 [00Ah 0010   6]                       Oem ID : "QCOM  "
 [010h 0016   8]                 Oem Table ID : "QCOMEDK2"
 [018h 0024   4]                 Oem Revision : 00008994
@@ -22,13 +22,13 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[03Ch 0060   4]     Parking Protocol Version : 00000001
+[03Ch 0060   4]     Parking Protocol Version : 00000000
 [040h 0064   4]        Performance Interrupt : 00000017
 [044h 0068   8]               Parked Address : 0000000000301000
-[04Ch 0076   8]                 Base Address : 0000000000000000
-[054h 0084   8]     Virtual GIC Base Address : 0000000000000000
-[05Ch 0092   8]  Hypervisor GIC Base Address : 0000000000000000
-[064h 0100   4]        Virtual GIC Interrupt : 00000000
+[04Ch 0076   8]                 Base Address : 00000000F9002000
+[054h 0084   8]     Virtual GIC Base Address : 00000000F9004000
+[05Ch 0092   8]  Hypervisor GIC Base Address : 00000000F9001000
+[064h 0100   4]        Virtual GIC Interrupt : 00000019
 [068h 0104   8]   Redistributor Base Address : 0000000000000000
 [070h 0112   8]                    ARM MPIDR : 0000000000000000
 [078h 0120   1]             Efficiency Class : 00
@@ -44,13 +44,13 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[08Ch 0140   4]     Parking Protocol Version : 00000001
+[08Ch 0140   4]     Parking Protocol Version : 00000000
 [090h 0144   4]        Performance Interrupt : 00000017
 [094h 0148   8]               Parked Address : 0000000000302000
-[09Ch 0156   8]                 Base Address : 0000000000000000
-[0A4h 0164   8]     Virtual GIC Base Address : 0000000000000000
-[0ACh 0172   8]  Hypervisor GIC Base Address : 0000000000000000
-[0B4h 0180   4]        Virtual GIC Interrupt : 00000000
+[09Ch 0156   8]                 Base Address : 00000000F9002000
+[0A4h 0164   8]     Virtual GIC Base Address : 00000000F9004000
+[0ACh 0172   8]  Hypervisor GIC Base Address : 00000000F9001000
+[0B4h 0180   4]        Virtual GIC Interrupt : 00000019
 [0B8h 0184   8]   Redistributor Base Address : 0000000000000000
 [0C0h 0192   8]                    ARM MPIDR : 0000000000000001
 [0C8h 0200   1]             Efficiency Class : 00
@@ -66,13 +66,13 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[0DCh 0220   4]     Parking Protocol Version : 00000001
+[0DCh 0220   4]     Parking Protocol Version : 00000000
 [0E0h 0224   4]        Performance Interrupt : 00000017
 [0E4h 0228   8]               Parked Address : 0000000000303000
-[0ECh 0236   8]                 Base Address : 0000000000000000
-[0F4h 0244   8]     Virtual GIC Base Address : 0000000000000000
-[0FCh 0252   8]  Hypervisor GIC Base Address : 0000000000000000
-[104h 0260   4]        Virtual GIC Interrupt : 00000000
+[0ECh 0236   8]                 Base Address : 00000000F9002000
+[0F4h 0244   8]     Virtual GIC Base Address : 00000000F9004000
+[0FCh 0252   8]  Hypervisor GIC Base Address : 00000000F9001000
+[104h 0260   4]        Virtual GIC Interrupt : 00000019
 [108h 0264   8]   Redistributor Base Address : 0000000000000000
 [110h 0272   8]                    ARM MPIDR : 0000000000000002
 [118h 0280   1]             Efficiency Class : 00
@@ -88,13 +88,13 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[12Ch 0300   4]     Parking Protocol Version : 00000001
+[12Ch 0300   4]     Parking Protocol Version : 00000000
 [130h 0304   4]        Performance Interrupt : 00000017
 [134h 0308   8]               Parked Address : 0000000000304000
-[13Ch 0316   8]                 Base Address : 0000000000000000
-[144h 0324   8]     Virtual GIC Base Address : 0000000000000000
-[14Ch 0332   8]  Hypervisor GIC Base Address : 0000000000000000
-[154h 0340   4]        Virtual GIC Interrupt : 00000000
+[13Ch 0316   8]                 Base Address : 00000000F9002000
+[144h 0324   8]     Virtual GIC Base Address : 00000000F9004000
+[14Ch 0332   8]  Hypervisor GIC Base Address : 00000000F9001000
+[154h 0340   4]        Virtual GIC Interrupt : 00000019
 [158h 0344   8]   Redistributor Base Address : 0000000000000000
 [160h 0352   8]                    ARM MPIDR : 0000000000000003
 [168h 0360   1]             Efficiency Class : 00
@@ -110,13 +110,13 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[17Ch 0380   4]     Parking Protocol Version : 00000001
+[17Ch 0380   4]     Parking Protocol Version : 00000000
 [180h 0384   4]        Performance Interrupt : 00000017
 [184h 0388   8]               Parked Address : 0000000000305000
-[18Ch 0396   8]                 Base Address : 0000000000000000
-[194h 0404   8]     Virtual GIC Base Address : 0000000000000000
-[19Ch 0412   8]  Hypervisor GIC Base Address : 0000000000000000
-[1A4h 0420   4]        Virtual GIC Interrupt : 00000000
+[18Ch 0396   8]                 Base Address : 00000000F9002000
+[194h 0404   8]     Virtual GIC Base Address : 00000000F9004000
+[19Ch 0412   8]  Hypervisor GIC Base Address : 00000000F9001000
+[1A4h 0420   4]        Virtual GIC Interrupt : 00000019
 [1A8h 0424   8]   Redistributor Base Address : 0000000000000000
 [1B0h 0432   8]                    ARM MPIDR : 0000000000000100
 [1B8h 0440   1]             Efficiency Class : 01
@@ -132,13 +132,13 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[1CCh 0460   4]     Parking Protocol Version : 00000001
+[1CCh 0460   4]     Parking Protocol Version : 00000000
 [1D0h 0464   4]        Performance Interrupt : 00000017
 [1D4h 0468   8]               Parked Address : 0000000000306000
-[1DCh 0476   8]                 Base Address : 0000000000000000
-[1E4h 0484   8]     Virtual GIC Base Address : 0000000000000000
-[1ECh 0492   8]  Hypervisor GIC Base Address : 0000000000000000
-[1F4h 0500   4]        Virtual GIC Interrupt : 00000000
+[1DCh 0476   8]                 Base Address : 00000000F9002000
+[1E4h 0484   8]     Virtual GIC Base Address : 00000000F9004000
+[1ECh 0492   8]  Hypervisor GIC Base Address : 00000000F9001000
+[1F4h 0500   4]        Virtual GIC Interrupt : 00000019
 [1F8h 0504   8]   Redistributor Base Address : 0000000000000000
 [200h 0512   8]                    ARM MPIDR : 0000000000000101
 [208h 0520   1]             Efficiency Class : 01
@@ -154,13 +154,13 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[21Ch 0540   4]     Parking Protocol Version : 00000001
+[21Ch 0540   4]     Parking Protocol Version : 00000000
 [220h 0544   4]        Performance Interrupt : 00000017
 [224h 0548   8]               Parked Address : 0000000000307000
-[22Ch 0556   8]                 Base Address : 0000000000000000
-[234h 0564   8]     Virtual GIC Base Address : 0000000000000000
-[23Ch 0572   8]  Hypervisor GIC Base Address : 0000000000000000
-[244h 0580   4]        Virtual GIC Interrupt : 00000000
+[22Ch 0556   8]                 Base Address : 00000000F9002000
+[234h 0564   8]     Virtual GIC Base Address : 00000000F9004000
+[23Ch 0572   8]  Hypervisor GIC Base Address : 00000000F9001000
+[244h 0580   4]        Virtual GIC Interrupt : 00000019
 [248h 0584   8]   Redistributor Base Address : 0000000000000000
 [250h 0592   8]                    ARM MPIDR : 0000000000000102
 [258h 0600   1]             Efficiency Class : 01
@@ -176,13 +176,13 @@
                            Processor Enabled : 1
           Performance Interrupt Trigger Mode : 0
           Virtual GIC Interrupt Trigger Mode : 0
-[26Ch 0620   4]     Parking Protocol Version : 00000001
+[26Ch 0620   4]     Parking Protocol Version : 00000000
 [270h 0624   4]        Performance Interrupt : 00000017
 [274h 0628   8]               Parked Address : 0000000000308000
-[27Ch 0636   8]                 Base Address : 0000000000000000
-[284h 0644   8]     Virtual GIC Base Address : 0000000000000000
-[28Ch 0652   8]  Hypervisor GIC Base Address : 0000000000000000
-[294h 0660   4]        Virtual GIC Interrupt : 00000000
+[27Ch 0636   8]                 Base Address : 00000000F9002000
+[284h 0644   8]     Virtual GIC Base Address : 00000000F9004000
+[28Ch 0652   8]  Hypervisor GIC Base Address : 00000000F9001000
+[294h 0660   4]        Virtual GIC Interrupt : 00000019
 [298h 0664   8]   Redistributor Base Address : 0000000000000000
 [2A0h 0672   8]                    ARM MPIDR : 0000000000000103
 [2A8h 0680   1]             Efficiency Class : 01
@@ -195,7 +195,7 @@
 [2B0h 0688   4]        Local GIC Hardware ID : 00000000
 [2B4h 0692   8]                 Base Address : 00000000F9000000
 [2BCh 0700   4]               Interrupt Base : 00000000
-[2C0h 0704   1]                      Version : 00
+[2C0h 0704   1]                      Version : 02
 [2C1h 0705   3]                     Reserved : 000000
 
 [2C4h 0708   1]                Subtable Type : 0D [Generic MSI Frame]
@@ -207,52 +207,3 @@
                                   Select SPI : 0
 [2D8h 0728   2]                    SPI Count : 0000
 [2DAh 0730   2]                     SPI Base : 0000
-
-Raw Table Data: Length 732 (0x2DC)
-
-    0000: 41 50 49 43 DC 02 00 00 03 9D 51 43 4F 4D 20 20  // APIC......QCOM  
-    0010: 51 43 4F 4D 45 44 4B 32 94 89 00 00 51 43 4F 4D  // QCOMEDK2....QCOM
-    0020: 01 00 00 00 00 20 00 F9 00 00 00 00 0B 50 00 00  // ..... .......P..
-    0030: 00 00 00 00 00 00 00 00 01 00 00 00 01 00 00 00  // ................
-    0040: 17 00 00 00 00 10 30 00 00 00 00 00 00 00 00 00  // ......0.........
-    0050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0070: 00 00 00 00 00 00 00 00 00 00 00 00 0B 50 00 00  // .............P..
-    0080: 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00  // ................
-    0090: 17 00 00 00 00 20 30 00 00 00 00 00 00 00 00 00  // ..... 0.........
-    00A0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    00B0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    00C0: 01 00 00 00 00 00 00 00 00 00 00 00 0B 50 00 00  // .............P..
-    00D0: 02 00 00 00 02 00 00 00 01 00 00 00 01 00 00 00  // ................
-    00E0: 17 00 00 00 00 30 30 00 00 00 00 00 00 00 00 00  // .....00.........
-    00F0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0110: 02 00 00 00 00 00 00 00 00 00 00 00 0B 50 00 00  // .............P..
-    0120: 03 00 00 00 03 00 00 00 01 00 00 00 01 00 00 00  // ................
-    0130: 17 00 00 00 00 40 30 00 00 00 00 00 00 00 00 00  // .....@0.........
-    0140: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0150: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0160: 03 00 00 00 00 00 00 00 00 00 00 00 0B 50 00 00  // .............P..
-    0170: 04 00 00 00 04 00 00 00 01 00 00 00 01 00 00 00  // ................
-    0180: 17 00 00 00 00 50 30 00 00 00 00 00 00 00 00 00  // .....P0.........
-    0190: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    01A0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    01B0: 00 01 00 00 00 00 00 00 01 00 00 00 0B 50 00 00  // .............P..
-    01C0: 05 00 00 00 05 00 00 00 01 00 00 00 01 00 00 00  // ................
-    01D0: 17 00 00 00 00 60 30 00 00 00 00 00 00 00 00 00  // .....`0.........
-    01E0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    01F0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0200: 01 01 00 00 00 00 00 00 01 00 00 00 0B 50 00 00  // .............P..
-    0210: 06 00 00 00 06 00 00 00 01 00 00 00 01 00 00 00  // ................
-    0220: 17 00 00 00 00 70 30 00 00 00 00 00 00 00 00 00  // .....p0.........
-    0230: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0240: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0250: 02 01 00 00 00 00 00 00 01 00 00 00 0B 50 00 00  // .............P..
-    0260: 07 00 00 00 07 00 00 00 01 00 00 00 01 00 00 00  // ................
-    0270: 17 00 00 00 00 80 30 00 00 00 00 00 00 00 00 00  // ......0.........
-    0280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    0290: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  // ................
-    02A0: 03 01 00 00 00 00 00 00 01 00 00 00 0C 18 00 00  // ................
-    02B0: 00 00 00 00 00 00 00 F9 00 00 00 00 00 00 00 00  // ................
-    02C0: 00 00 00 00 0D 18 00 00 01 00 00 00 00 70 00 F9  // .............p..
-    02D0: 00 00 00 00 00 00 00 00 00 00 00 00              // ............
