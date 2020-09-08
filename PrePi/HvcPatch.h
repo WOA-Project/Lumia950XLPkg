@@ -2,7 +2,7 @@
 // Copyright (c) 2020 Sarah Purohit, Bingxing Wang
 
 // Some background story: it seems that Windows build higher than 19041 (not
-// includin 19041) Messed up the HVC-based PSCI call, although it boots fine on
+// including 19041) Messed up the HVC-based PSCI call, although it boots fine on
 // Qemu/KVM platform. There are undisclosed platforms also reporting issues with
 // HVC-based PSCI call. But on 8992/8994 devices, it completely hangs the boot
 // process (ACPI.sys refused to enumerate devices)
