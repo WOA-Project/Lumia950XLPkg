@@ -9,14 +9,12 @@
 .align 3
 
 GCC_ASM_IMPORT (CEntryPoint)
-GCC_ASM_IMPORT (SecondaryCEntryPoint)
 GCC_ASM_IMPORT (ArmWriteCpacr)
 GCC_ASM_IMPORT (ArmEnableInstructionCache)
 GCC_ASM_IMPORT (ArmEnableDataCache)
 GCC_ASM_IMPORT (ArmInvalidateTlb)
 
 GCC_ASM_EXPORT (_ModuleEntryPoint)
-GCC_ASM_EXPORT (SecondaryCpuEntry)
 
 .global _StackBase 
 .global _StackSize
