@@ -96,8 +96,6 @@ VOID InstallEl2Patch(VOID)
 
 STATIC VOID MpParkEl2Init(VOID)
 {
-  ARM_HVC_ARGS StubArg;
-
   // Which EL?
   if (ArmReadCurrentEL() == AARCH64_EL2) {
     DEBUG((EFI_D_ERROR, "Running at EL2 \n"));
@@ -113,6 +111,7 @@ STATIC VOID MpParkEl2Init(VOID)
   if (ArmReadCurrentEL() == AARCH64_EL1) {
     if (ArmReadMpidr() == 0x80000000) {
       for (UINTN i = 1; i < FixedPcdGet32(PcdCoreCount); i++) {
+        ARM_HVC_ARGS ArmHvcArgs;
         ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_CPU_ON_AARCH64;
         ArmHvcArgs.Arg1 = ProcessorIdMapping[i];
         ArmHvcArgs.Arg2 = (UINTN)&_ModuleEntryPoint;
@@ -155,6 +154,7 @@ STATIC VOID MpParkEl2Init(VOID)
     InstallEl2Patch();
 
     // Jump overself
+    ARM_HVC_ARGS StubArg;
     StubArg.Arg0 = ARM_SMC_ID_PSCI_CPU_SUSPEND_AARCH64;
     ArmCallHvc(&StubArg);
 
@@ -184,13 +184,12 @@ STATIC VOID MpParkNotifySecondaryCPUs(VOID)
 
 STATIC VOID MpParkEl1Init(VOID)
 {
-  ARM_HVC_ARGS StubArg;
-
   // Immediately launch all CPUs, 7 CPUs hold
   DEBUG((EFI_D_LOAD | EFI_D_INFO, "Launching CPUs\n"));
 
   if (ArmReadMpidr() == 0x80000000) {
     for (UINTN i = 1; i < FixedPcdGet32(PcdCoreCount); i++) {
+      ARM_HVC_ARGS ArmHvcArgs;
       ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_CPU_ON_AARCH64;
       ArmHvcArgs.Arg1 = ProcessorIdMapping[i];
       ArmHvcArgs.Arg2 = (UINTN)&_ModuleEntryPoint;
