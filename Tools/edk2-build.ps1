@@ -130,22 +130,22 @@ if ($commit) {
     Set-Content -Path Lumia950XLPkg/Include/Resources/ReleaseInfo.h -Value $releaseInfoContent -ErrorAction SilentlyContinue -Force
 }
 
-# Build SSDT tables
+# Build ACPI tables
 # Because this is quick enough, we build for any possible platforms
-$ssdts = Get-ChildItem Lumia950XLPkg/AcpiTables/**/src/SSDT*.asl
-if ($null -ne $ssdts) {
-    foreach ($ssdt in $ssdts) {
-        Write-Output "Build $($ssdt)."
-        $srcDir = [System.IO.Path]::GetDirectoryName($ssdt)
-        $fileName = [System.IO.Path]::GetFileNameWithoutExtension($ssdt)
+$tables = Get-ChildItem Lumia950XLPkg/AcpiTables/**/src/*.asl
+if ($null -ne $tables) {
+    foreach ($table in $tables) {
+        Write-Output "Build $($table)."
+        $srcDir = [System.IO.Path]::GetDirectoryName($table)
+        $fileName = [System.IO.Path]::GetFileNameWithoutExtension($table)
         $outDir = "$($srcDir)/../generated"
         if (!(Test-Path -Path $outDir)) {
             New-Item -ItemType Directory -Force -Path $outDir
         }
 
-        . $iaslpath -p "$($outDir)/$($fileName).aml" $ssdt
+        . $iaslpath -p "$($outDir)/$($fileName).aml" $table
         if (-not $?) {
-            Write-Error "Build SSDT $($ssdt) failed."
+            Write-Error "Build ACPI table $($table) failed."
             return $?
         }
     }

@@ -29,7 +29,7 @@
 #
 
 [Sources]
-  FADT.aslc
+  common/src/FADT.aslc
   8994/src/PPTT.aslc
 
 [BuildOptions.AARCH64]
