@@ -25,7 +25,7 @@ Applicable to all supported targets unless noted.
 
 ## What can you do?
 
-I am too busy to write an average-user tutorialspoint. So, if you are interested in, you are welcome to
+I am too busy to write an average-user tutorial. So, if you are interested in, you are welcome to
 contribute to an easy instruction for all Lumia 950 (XL) users.
 
 Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
