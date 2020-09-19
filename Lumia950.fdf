@@ -136,16 +136,16 @@ READ_LOCK_STATUS   = TRUE
 
   # ACPI Tables
   FILE FREEFORM = 7E374E25-8E01-4FEE-87F2-390C23C606CD {
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/DBG2.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/DSDT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/FACS.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/FADT.PsciSmc.acpi
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/GTDT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/MADT.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/MCFG.aml
-	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/CSRT.aml
-  SECTION RAW = Lumia950XLPkg/AcpiTables/8992/builtin/PPTT.aml
-  SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/SSDT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/DBG2.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/DSDT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/FACS.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/common/builtin/FADT.PsciSmc.acpi
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/GTDT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/MADT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/MCFG.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/CSRT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/PPTT.aml
+	SECTION RAW = Lumia950XLPkg/AcpiTables/8992/generated/SSDT.aml
 	SECTION UI = "AcpiTables"
   }
 

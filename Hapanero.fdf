@@ -130,15 +130,15 @@ READ_LOCK_STATUS   = TRUE
 
   # ACPI Tables
   FILE FREEFORM = 7E374E25-8E01-4FEE-87F2-390C23C606CD {
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/DBG2.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/DSDT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/FACS.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/FADT.PsciSmc.acpi
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/GTDT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/MADT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/MCFG.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/CSRT.aml
-    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/builtin/PPTT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/DBG2.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/DSDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/FACS.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/common/builtin/FADT.PsciSmc.acpi
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/GTDT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/MADT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/MCFG.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/CSRT.aml
+    SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/PPTT.aml
     SECTION RAW = Lumia950XLPkg/AcpiTables/Hapanero/generated/SSDT.aml
     SECTION UI = "AcpiTables"
   }
