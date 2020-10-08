@@ -55,8 +55,8 @@
   gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0xf9002000
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"LumiaWoA authors"
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"2.10"
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision|0x00021000
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"2.11"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision|0x00021001
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId|"LMNL  "
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId|0x324B44454D4F4351
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000001
