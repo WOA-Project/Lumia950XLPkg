@@ -14,12 +14,14 @@
   SplashApp.c
 
 [Packages]
+  ArmPkg/ArmPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
   ShellPkg/ShellPkg.dec
 
 [LibraryClasses]
+  ArmLib
   DevicePathLib
   BaseLib
   UefiRuntimeServicesTableLib

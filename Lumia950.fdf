@@ -164,6 +164,11 @@ READ_LOCK_STATUS   = TRUE
     SECTION UI = "BootSplashPrompt"
   }
 
+  FILE FREEFORM = 5af45c60-a0cd-4aab-b6f4-b1c07c347ad9 {
+    SECTION RAW = Lumia950XLPkg/Application/BootSplashApp/BootPromptEL2.png
+    SECTION UI = "BootSplashPromptEL2"
+  }
+
   FILE FREEFORM = 5af45c60-a0cd-4aab-b6f4-b1c07c347ad8 {
     SECTION RAW = Lumia950XLPkg/Application/BootSplashApp/BootPromptClear.png
     SECTION UI = "BootSplashPromptClear"

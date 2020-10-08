@@ -6,6 +6,7 @@
 #include <Guid/MdeModuleHii.h>
 #include <Guid/StatusCodeDataTypeId.h>
 
+#include <Library/ArmLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/BgraRgbaConvert.h>
 #include <Library/BootAppLib.h>
@@ -56,6 +57,22 @@ STATIC EFI_GUID gSplashPromptGuid = {
         0x34,
         0x7a,
         0xd7,
+    },
+};
+
+STATIC EFI_GUID gSplashPromptEL2Guid = {
+    0x5af45c60,
+    0xa0cd,
+    0x4aab,
+    {
+        0xb6,
+        0xf4,
+        0xb1,
+        0xc0,
+        0x7c,
+        0x34,
+        0x7a,
+        0xd9,
     },
 };
 
@@ -158,8 +175,14 @@ VOID EFIAPI DrawPrompt(BOOLEAN Clear)
         &gSplashPromptClearGuid, EFI_SECTION_RAW, 0, &ImageData, &ImageSize);
   }
   else {
-    Status = GetSectionFromAnyFv(
-        &gSplashPromptGuid, EFI_SECTION_RAW, 0, &ImageData, &ImageSize);
+    if (ArmReadCurrentEL() == AARCH64_EL2) {
+      Status = GetSectionFromAnyFv(
+          &gSplashPromptEL2Guid, EFI_SECTION_RAW, 0, &ImageData, &ImageSize);
+    }
+    else {
+      Status = GetSectionFromAnyFv(
+          &gSplashPromptGuid, EFI_SECTION_RAW, 0, &ImageData, &ImageSize);
+    }
   }
 
   if (!EFI_ERROR(Status)) {
