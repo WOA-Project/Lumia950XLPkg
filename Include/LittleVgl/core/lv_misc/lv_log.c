@@ -9,9 +9,6 @@
 #include "lv_log.h"
 #if USE_LV_LOG
 
-#if LV_LOG_PRINTF
-#include <stdio.h>
-#endif
 /*********************
  *      DEFINES
  *********************/

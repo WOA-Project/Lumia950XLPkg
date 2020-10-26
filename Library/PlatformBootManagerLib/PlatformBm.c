@@ -106,7 +106,7 @@ VOID FilterAndProcess(
 
   ASSERT(NoHandles > 0);
   for (Idx = 0; Idx < NoHandles; ++Idx) {
-    CHAR16 *      DevicePathText;
+    CHAR16 *DevicePathText;
     STATIC CHAR16 Fallback[] = L"<device path unavailable>";
 
     //
@@ -396,6 +396,9 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
   Print(L"Lumia AArch64 Bootstrap, version %a \n", __IMPL_COMMIT_ID__);
   Print(L"EDK2 base %a \n", __EDK2_RELEASE__);
   Print(L"Built by %a on %a \n", __BUILD_OWNER__, __RELEASE_DATE__);
+#ifdef CLANG
+  Print(L"Built using Clang %a\n", __clang_version__);
+#endif
 
   //
   // Connect the rest of the devices.

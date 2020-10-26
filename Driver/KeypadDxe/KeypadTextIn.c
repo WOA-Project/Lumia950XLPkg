@@ -414,7 +414,7 @@ KeypadSetState(
     IN EFI_KEY_TOGGLE_STATE *KeyToggleState)
 
 {
-  EFI_STATUS             Status;
+  EFI_STATUS             Status = EFI_SUCCESS;
   KEYPAD_CONSOLE_IN_DEV *ConsoleInDev;
   EFI_TPL                OldTpl;
 

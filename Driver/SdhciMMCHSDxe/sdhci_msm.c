@@ -81,8 +81,8 @@ static const uint32_t tuning_block_128[] = {
  */
 static enum handler_return sdhci_int_handler(struct sdhci_msm_data *data)
 {
-  uint32_t ack;
-  uint32_t status;
+  uint32_t ack    = 0;
+  uint32_t status = 0;
 
   /*
    * Read the mask register to check if BUS & IO level

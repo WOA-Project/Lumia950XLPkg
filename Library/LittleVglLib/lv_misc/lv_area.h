@@ -14,9 +14,9 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
+#include <Library/minstring.h>
+#include <Library/minstdbool.h>
+#include <Library/minstdint.h>
 
 /*********************
  *      DEFINES

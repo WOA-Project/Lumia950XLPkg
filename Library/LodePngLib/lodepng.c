@@ -29,19 +29,28 @@ Rename this file to lodepng.cpp to use it for C++, or to lodepng.c to use it for
 C.
 */
 
-#include <Library/ArmLib.h>
 #include <Library/BaseLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/CacheMaintenanceLib.h>
 #include <Library/DebugLib.h>
 #include <Library/IoLib.h>
 #include <Library/PrintLib.h>
-#include <Library/TimerLib.h>
 #include <Library/lodepng.h>
 
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <Library/minstdint.h>
+#include <Library/MallocLib.h>
+
+extern void *realloc(void *ptr, size_t size); /* Stub */
+
+#ifndef HAS_MEMCPY_INTRINSICS
+/*
+Compat for x86
+*/
+void *memcpy(void *dest, const void *src, size_t n)
+{
+  return CopyMem(dest, src, n);
+}
+#endif
 
 #if defined(_MSC_VER) &&                                                       \
     (_MSC_VER >=                                                               \
@@ -801,7 +810,7 @@ static void bpmnode_sort(BPMNode *leaves, size_t num)
     counter++;
   }
   if (counter & 1)
-    memcpy(leaves, mem, sizeof(*leaves) * num);
+    CopyMem(leaves, mem, sizeof(*leaves) * num);
   lodepng_free(mem);
 }
 
@@ -1340,7 +1349,7 @@ static unsigned inflateHuffmanBlock(
         }
       }
       else {
-        memcpy(out->data + *pos, out->data + backward, length);
+        CopyMem(out->data + *pos, out->data + backward, length);
         *pos += length;
       }
     }
@@ -2437,7 +2446,7 @@ unsigned lodepng_zlib_compress(
     size_t insize, const LodePNGCompressSettings *settings)
 {
   /*initially, *out must be NULL and outsize 0, if you just give some random
-  *out that's pointing to a non allocated buffer, this'll crash*/
+   *out that's pointing to a non allocated buffer, this'll crash*/
   ucvector       outv;
   size_t         i;
   unsigned       error;
@@ -3345,7 +3354,7 @@ static unsigned lodepng_assign_icc(
   if (!info->iccp_name || !info->iccp_profile)
     return 83; /*alloc fail*/
 
-  memcpy(info->iccp_profile, profile, profile_size);
+  CopyMem(info->iccp_profile, profile, profile_size);
   info->iccp_profile_size = profile_size;
 
   return 0; /*ok*/
@@ -5320,7 +5329,7 @@ static unsigned readChunk_iCCP(
     info->iccp_profile_size = decoded.size;
     info->iccp_profile      = (unsigned char *)lodepng_malloc(decoded.size);
     if (info->iccp_profile) {
-      memcpy(info->iccp_profile, decoded.data, decoded.size);
+      CopyMem(info->iccp_profile, decoded.data, decoded.size);
     }
     else {
       error = 83; /* alloc fail */
