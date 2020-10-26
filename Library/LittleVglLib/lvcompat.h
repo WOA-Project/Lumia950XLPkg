@@ -23,4 +23,11 @@
 #include <Library/CacheMaintenanceLib.h>
 #include <Library/ArmLib.h>
 
+CHAR8 *
+EFIAPI
+AsciiStrCpy (
+  OUT     CHAR8                     *Destination,
+  IN      CONST CHAR8               *Source
+  );
+
 #endif
