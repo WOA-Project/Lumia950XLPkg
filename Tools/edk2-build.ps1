@@ -8,7 +8,8 @@
 
 Param
 (
-    [switch] $Clean
+    [switch] $Clean,
+    [switch] $Release
 )
 
 Import-Module $PSScriptRoot/PsModules/redirector.psm1
@@ -70,7 +71,12 @@ if (((Test-Path -Path "BaseTools") -eq $false) -or ($Clean -eq $true)) {
 if ($Clean -eq $true) {
     foreach ($target in $availableTargets) {
         Write-Output "Clean target $($target)."
-        build -a AARCH64 -p Lumia950XLPkg/$($target).dsc -t GCC5 clean
+
+        if ($Release) {
+            build -a AARCH64 -p Lumia950XLPkg/$($target).dsc -t GCC5 clean -b RELEASE
+        } else {
+            build -a AARCH64 -p Lumia950XLPkg/$($target).dsc -t GCC5 clean
+        }
 
         if (-not $?) {
             Write-Error "Clean target $($target) failed."
@@ -152,8 +158,12 @@ if ($null -ne $ssdts) {
 }
 
 foreach ($target in $availableTargets) {
-    Write-Output "Build Lumia950XLPkg for $($target) (DEBUG)."
-    build -a AARCH64 -p Lumia950XLPkg/$($target).dsc -t GCC5
+    Write-Output "Build Lumia950XLPkg for $($target) (Release = $($Release))."
+    if ($Release) {
+        build -a AARCH64 -p Lumia950XLPkg/$($target).dsc -t GCC5 -b RELEASE
+    } else {
+        build -a AARCH64 -p Lumia950XLPkg/$($target).dsc -t GCC5
+    }
 
     if (-not $?) {
         Write-Error "Build target $($target) failed."
