@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh
+#!/usr/bin/env pwsh
 # Copyright 2018-2019, Bingxing Wang <uefi-oss-projects@imbushuo.net>
 # All rights reserved.
 #
