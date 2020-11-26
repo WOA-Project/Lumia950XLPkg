@@ -123,7 +123,7 @@ function CIBuild()
   if [ "$DB820C" = TRUE ]; then
     ./Dragonboard820cPkg/Tools/edk2-build.ps1 -Clean
   elif [ "$LUMIA950XL" = TRUE ]; then
-    ./Lumia950XLPkg/Tools/edk2-build.ps1 -Clean
+    ./Lumia950XLPkg/Tools/edk2-build.ps1 -Clean -Release
   else
     ./DragonboardPkg/Tools/edk2-build.ps1 -Clean
   fi

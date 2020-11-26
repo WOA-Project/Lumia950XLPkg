@@ -15,18 +15,21 @@
 #
 
 [BuildOptions.common]
+  # These are required by all
+  *_*_AARCH64_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES -D HAS_MEMCPY_INTRINSICS
+
+  # GCC5 to 10 are validated
   *_GCC5_AARCH64_CC_FLAGS = -mfix-cortex-a53-835769 -mfix-cortex-a53-843419
   *_GCC5_AARCH64_DLINK_FLAGS = -mfix-cortex-a53-835769 -mfix-cortex-a53-843419
+
   # Use Clang 11+ actually, some fixes are builtin
   *_CLANG38_AARCH64_CC_FLAGS = -mfix-cortex-a53-835769 -D CLANG
   *_CLANG38_AARCH64_DLINK_FLAGS = -mfix-cortex-a53-835769
-  *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES -D HAS_MEMCPY_INTRINSICS
 
 [BuildOptions.common.EDKII.DXE_CORE,BuildOptions.common.EDKII.DXE_DRIVER,BuildOptions.common.EDKII.UEFI_DRIVER,BuildOptions.common.EDKII.UEFI_APPLICATION]
   *_*_*_DLINK_FLAGS = -z common-page-size=0x1000
 
 [BuildOptions.common.EDKII.DXE_RUNTIME_DRIVER]
-  *_*_ARM_DLINK_FLAGS = -z common-page-size=0x1000
   *_*_AARCH64_DLINK_FLAGS = -z common-page-size=0x10000
 
 [PcdsFeatureFlag.common]
@@ -584,8 +587,6 @@
   MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
   MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
   FatPkg/EnhancedFatDxe/Fat.inf
-  MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
-  MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
 
   # ACPI and SMBIOS
   # We use pre-built ACPI tables, so only core components are loaded

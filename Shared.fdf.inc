@@ -1,0 +1,117 @@
+APRIORI DXE {
+    # First, install the PCD driver and call DxeInit
+    INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
+
+    # Next, install cpu protocol and enable the interrupt controller
+    INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+    INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+}
+
+# Architecture services (PI Stage)
+INF MdeModulePkg/Core/Dxe/DxeMain.inf
+INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
+INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+
+# Core Drivers
+INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+INF Lumia950XLPkg/Driver/TimerDxe/TimerDxe.inf
+INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
+INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
+INF EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
+INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
+
+# SoC Drivers (Cross-referenced from EFIDroid)
+INF Lumia950XLPkg/Driver/BamDxe/BamDxe.inf
+INF Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmDxe.inf
+INF Lumia950XLPkg/GPLDriver/GpioTlmmInterruptDxe/GpioTlmmInterruptDxe.inf
+INF Lumia950XLPkg/Driver/SpmiDxe/SpmiDxe.inf
+INF Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Dxe.inf
+INF Lumia950XLPkg/Driver/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
+INF Lumia950XLPkg/Driver/KeypadDxe/KeypadDxe.inf
+INF Lumia950XLPkg/Driver/ClockDxe/ClockDxe.inf
+INF Lumia950XLPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
+INF Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
+INF Lumia950XLPkg/Driver/SmemDxe/SmemDxe.inf
+INF Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
+INF Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
+INF Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
+INF Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
+INF Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
+INF Lumia950XLPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
+
+# PreLoader checker
+INF Lumia950XLPkg/Driver/PreLoaderDxe/PreLoaderDxe.inf
+
+# Device Drivers
+INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDevice.inf
+INF Lumia950XLPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
+
+# Debug heartbeat
+!if $(SEND_HEARTBEAT_TO_SERIAL) == 1
+INF Lumia950XLPkg/Driver/HeartbeatDxe/HeartbeatDxe.inf
+!endif
+
+# Runtime Services
+INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
+INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
+INF MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
+
+# Variable Services
+INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
+
+# Security Stub
+INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
+
+# Graphics
+INF Lumia950XLPkg/Driver/SimpleFbDxe/SimpleFbDxe.inf
+
+# Lattice UC120 Configuration
+!if $(UC120_BITSTREAM_UPLOADER) == 1
+INF Lumia950XLPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
+!endif
+INF Lumia950XLPkg/GPLDriver/QupSpiDxe/QupSpiDxe.inf
+
+# BDS
+INF MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
+INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
+INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
+INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
+INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
+INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
+INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+INF MdeModulePkg/Universal/DisplayEngineDxe/DisplayEngineDxe.inf
+INF MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
+INF MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
+INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
+INF Lumia950XLPkg/Application/BdsMenuApp/BdsMenuApp.inf
+INF Lumia950XLPkg/Driver/LogoDxe/LogoDxe.inf
+INF Lumia950XLPkg/Application/BootSplashApp/BootSplashApp.inf
+
+# Disk IO
+INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
+INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
+INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
+INF FatPkg/EnhancedFatDxe/Fat.inf
+
+# ACPI and SMBIOS
+INF MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
+INF MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf
+INF MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
+INF Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
+
+# PreLoader assets
+FILE FREEFORM = 5fdf5e3c-6b70-4acc-8330-63a673924a46 {
+SECTION RAW = Lumia950XLPkg/Driver/PreLoaderDxe/BootshimCheckFail.png
+    SECTION UI = "BootshimCheckFail"
+}
+
+# SplashApp assets
+FILE FREEFORM = 5af45c60-a0cd-4aab-b6f4-b1c07c347ad7 {
+SECTION RAW = Lumia950XLPkg/Application/BootSplashApp/BootPrompt.png
+    SECTION UI = "BootSplashPrompt"
+}
+
+FILE FREEFORM = 5af45c60-a0cd-4aab-b6f4-b1c07c347ad8 {
+SECTION RAW = Lumia950XLPkg/Application/BootSplashApp/BootPromptClear.png
+    SECTION UI = "BootSplashPromptClear"
+}
