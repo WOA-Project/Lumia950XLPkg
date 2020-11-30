@@ -17,6 +17,9 @@
 
 **/
 
+#include <Library/ArmLib.h>
+#include <Library/ArmSmcLib.h>
+
 #include <Library/BootAppLib.h>
 #include <Library/BootLogoLib.h>
 #include <Library/CapsuleLib.h>
@@ -399,6 +402,16 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
 #ifdef CLANG
   Print(L"Built using Clang %a\n", __clang_version__);
 #endif
+
+  Print(L"Hax\n");
+  ARM_SMC_ARGS SmcArgs;
+  SmcArgs.Arg0 = 0x0200030d;
+  SmcArgs.Arg1 = 0x00000022;
+  SmcArgs.Arg2 = 0x06D00000;
+  SmcArgs.Arg3 = 0x07F037C4;
+  ArmCallSmc(&SmcArgs);
+  Print(L"Result: 0x%x\n", SmcArgs.Arg0);
+  Print(L"Acurcy\n");
 
   //
   // Connect the rest of the devices.

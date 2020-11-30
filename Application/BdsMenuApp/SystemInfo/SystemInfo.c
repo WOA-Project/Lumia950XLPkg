@@ -4,7 +4,8 @@
 
 EFIAPI EFI_STATUS SystemInfoEntry(lv_obj_t *tbSysInfo)
 {
-  EFI_STATUS Status = EFI_SUCCESS;
+  EFI_STATUS Status    = EFI_SUCCESS;
+  UINT32     CpussData = 0;
   CHAR8      TempStr8[1024];
   CHAR16     TempStr[1024];
 
@@ -34,6 +35,11 @@ EFIAPI EFI_STATUS SystemInfoEntry(lv_obj_t *tbSysInfo)
   create_label_with_text(tbSysInfo, "\n\n");
   create_title_with_text(tbSysInfo, "Software Information \n\n");
   create_label_with_text(tbSysInfo, "\n\n");
+
+  CpussData = MmioRead32((UINTN)0xFD4A8000);
+  AsciiSPrint(
+      TempStr8, sizeof(TempStr8), "CPU Subsystem Data: 0x%x \n", CpussData);
+  create_label_with_text(tbSysInfo, TempStr8);
 
   AsciiSPrint(
       TempStr8, sizeof(TempStr8), "Processor: %a \n",

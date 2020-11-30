@@ -60,6 +60,7 @@
   UefiHiiServicesLib
   UefiBootManagerLib
   LittleVglLib
+  IoLib
   
 [Guids]
   gEfiIfrTianoGuid                              ## CONSUMES ## GUID (Extended IFR Guid Opcode)

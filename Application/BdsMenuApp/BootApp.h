@@ -10,6 +10,8 @@
 #include <Library/CacheMaintenanceLib.h>
 #include <Library/DebugLib.h>
 #include <Library/DevicePathLib.h>
+#include <Library/IoLib.h>
+
 #include <Library/HiiLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PcdLib.h>

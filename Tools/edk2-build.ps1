@@ -22,8 +22,7 @@ if ($null -ne $env:BUILDALL) {
     Write-Output "User requested build all available targets."
     $availableTargets = @(
         "Lumia950",
-        "Lumia950XL",
-        "Hapanero"
+        "Lumia950XL"
     )
 }
 else {
