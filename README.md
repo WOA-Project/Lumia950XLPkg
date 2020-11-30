@@ -1,6 +1,4 @@
-# EDK2 Implementation for Lumia 950 and Lumia 950 XL
-
-![Devices](https://raw.githubusercontent.com/WOA-Project/MSM8994-8992-NT-ARM64-Drivers/1911/assets/banner.png)
+# EDK2 UEFI Implementation for Lumia 950 and Lumia 950 XL
 
 ## For users
 
