@@ -17,6 +17,9 @@
 
 **/
 
+#include <Library/ArmLib.h>
+#include <Library/ArmSmcLib.h>
+
 #include <Library/BootAppLib.h>
 #include <Library/BootLogoLib.h>
 #include <Library/CapsuleLib.h>
@@ -106,7 +109,7 @@ VOID FilterAndProcess(
 
   ASSERT(NoHandles > 0);
   for (Idx = 0; Idx < NoHandles; ++Idx) {
-    CHAR16 *      DevicePathText;
+    CHAR16 *DevicePathText;
     STATIC CHAR16 Fallback[] = L"<device path unavailable>";
 
     //
@@ -396,6 +399,19 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
   Print(L"Lumia AArch64 Bootstrap, version %a \n", __IMPL_COMMIT_ID__);
   Print(L"EDK2 base %a \n", __EDK2_RELEASE__);
   Print(L"Built by %a on %a \n", __BUILD_OWNER__, __RELEASE_DATE__);
+#ifdef CLANG
+  Print(L"Built using Clang %a\n", __clang_version__);
+#endif
+
+  Print(L"Hax\n");
+  ARM_SMC_ARGS SmcArgs;
+  SmcArgs.Arg0 = 0x0200030d;
+  SmcArgs.Arg1 = 0x00000022;
+  SmcArgs.Arg2 = 0x06D00000;
+  SmcArgs.Arg3 = 0x07F037C4;
+  ArmCallSmc(&SmcArgs);
+  Print(L"Result: 0x%x\n", SmcArgs.Arg0);
+  Print(L"Acurcy\n");
 
   //
   // Connect the rest of the devices.

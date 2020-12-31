@@ -39181,7 +39181,7 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
                     CTRL = CDW3 /* \_SB_.PCI0._OSC.CDW3 */
                     If (((SUPP & 0x16) != 0x16))
                     {
-                        CTRL &= 0x1E
+                        /* (CTRL & 0x1E) */
                     }
 
                     CTRL &= 0x15

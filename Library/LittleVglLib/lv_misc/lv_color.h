@@ -32,8 +32,7 @@ extern "C" {
 #error "LV_COLOR_16_SWAP requires LV_COLOR_DEPTH == 16. Set it in lv_conf.h"
 #endif
 
-
-#include <stdint.h>
+#include <Library/minstdint.h>
 
 /*********************
  *      DEFINES

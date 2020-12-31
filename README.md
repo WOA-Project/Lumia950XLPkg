@@ -1,6 +1,4 @@
-# EDK2 Implementation for Lumia 950, Lumia 950 XL and Hapanero
-
-![Devices](https://raw.githubusercontent.com/WOA-Project/MSM8994-8992-NT-ARM64-Drivers/1911/assets/banner.png)
+# EDK2 UEFI Implementation for Lumia 950 and Lumia 950 XL
 
 ## For users
 
@@ -10,9 +8,9 @@ You can download the latest UEFI build by clicking the Azure Pipelines icon belo
 
 ## What's this?
 
-This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950, Lumia 950 XL and Hapanero. Currently it is able to boot Windows 10 ARM64 as well as various Linux distros. See notes below for more details.
+This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 and Lumia 950 XL. Currently it is able to boot Windows 10 ARM64 as well as various Linux distros. See notes below for more details. Please be aware that MSM8992 devices have limited support.
 
-**Please be aware that MSM8992 devices have limited support.**
+Hapanero support has been dropped as of 2020/11. Hapanero users are expected to completely understand all hardware, firmware and software implementation details, thus there's no point to keep an untested target floating in this project. For existing Hapanero owners, please build and fix this firmware by yourself (use 950 XL configuration as the blueprint), but no PR regarding Hapanero will be accepted.
 
 ## Support Status
 Applicable to all supported targets unless noted.
@@ -25,7 +23,7 @@ Applicable to all supported targets unless noted.
 
 ## What can you do?
 
-I am too busy to write an average-user tutorialspoint. So, if you are interested in, you are welcome to
+I am too busy to write an average-user tutorial. So, if you are interested in, you are welcome to
 contribute to an easy instruction for all Lumia 950 (XL) users.
 
 Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).

@@ -15,15 +15,19 @@
 #
 
 [BuildOptions.common]
-  GCC:*_*_AARCH64_CC_FLAGS = -mfix-cortex-a53-835769 -mfix-cortex-a53-843419
-  GCC:*_*_AARCH64_DLINK_FLAGS = -mfix-cortex-a53-835769 -mfix-cortex-a53-843419
+  *_GCC5_AARCH64_CC_FLAGS = -mfix-cortex-a53-835769 -mfix-cortex-a53-843419
+  *_GCC5_AARCH64_DLINK_FLAGS = -mfix-cortex-a53-835769 -mfix-cortex-a53-843419
+  # Use Clang 11+ actually, some fixes are builtin
+  *_CLANG38_AARCH64_CC_FLAGS = -mfix-cortex-a53-835769 -D CLANG
+  *_CLANG38_AARCH64_DLINK_FLAGS = -mfix-cortex-a53-835769
+  *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES -D HAS_MEMCPY_INTRINSICS
 
 [BuildOptions.common.EDKII.DXE_CORE,BuildOptions.common.EDKII.DXE_DRIVER,BuildOptions.common.EDKII.UEFI_DRIVER,BuildOptions.common.EDKII.UEFI_APPLICATION]
-  GCC:*_*_*_DLINK_FLAGS = -z common-page-size=0x1000
+  *_*_*_DLINK_FLAGS = -z common-page-size=0x1000
 
 [BuildOptions.common.EDKII.DXE_RUNTIME_DRIVER]
-  GCC:*_*_ARM_DLINK_FLAGS = -z common-page-size=0x1000
-  GCC:*_*_AARCH64_DLINK_FLAGS = -z common-page-size=0x10000
+  *_*_ARM_DLINK_FLAGS = -z common-page-size=0x1000
+  *_*_AARCH64_DLINK_FLAGS = -z common-page-size=0x10000
 
 [PcdsFeatureFlag.common]
   gArmTokenSpaceGuid.PcdCpuDxeProduceDebugSupport|FALSE
@@ -55,8 +59,8 @@
   gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0xf9002000
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"LumiaWoA authors"
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"2.10"
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision|0x00021000
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"2.20"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision|0x00024000
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId|"LMNL  "
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId|0x324B44454D4F4351
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000001
@@ -253,6 +257,7 @@
   CacheMaintenanceLib|ArmPkg/Library/ArmCacheMaintenanceLib/ArmCacheMaintenanceLib.inf
   CompilerIntrinsicsLib|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
   NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
+  NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
   CpuExceptionHandlerLib|ArmPkg/Library/ArmExceptionLib/ArmExceptionLib.inf
   CpuLib|MdePkg/Library/BaseCpuLib/BaseCpuLib.inf
   CustomizedDisplayLib|MdeModulePkg/Library/CustomizedDisplayLib/CustomizedDisplayLib.inf
@@ -300,6 +305,8 @@
   TpmMeasurementLib|MdeModulePkg/Library/TpmMeasurementLibNull/TpmMeasurementLibNull.inf
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
+  VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLib.inf
+  VariablePolicyHelperLib|MdeModulePkg/Library/VariablePolicyHelperLib/VariablePolicyHelperLib.inf
 
   # Platform Drivers
 !if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1
@@ -346,9 +353,6 @@
   RuntimeSpmiLib|Lumia950XLPkg/Library/RuntimeSpmiLib/RuntimeSpmiLib.inf
   RuntimeSpmiMemoryConfiguratorLib|Lumia950XLPkg/Library/RuntimeSpmiMemoryConfiguratorLib/RuntimeSpmiMemoryConfiguratorLib.inf
 
-  # Defer: Variable Services
-  # BlockRamVariableLib|Lumia950XLPkg/Library/BlockRamVariableLib/BlockRamVariableLib.inf
-
   # PCI Express Dependencies
   QcomPlatformClock2Lib|Lumia950XLPkg/Library/QcomPlatformClock2Lib/QcomPlatformClock2Lib.inf
 
@@ -393,6 +397,7 @@
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
+
   # SoC Drivers
   GpioTlmmLib|Lumia950XLPkg/GPLDriver/GpioTlmmDxe/GpioTlmmLib.inf
   SpmiLib|Lumia950XLPkg/Driver/SpmiDxe/SpmiImplLib.inf
@@ -466,8 +471,7 @@
   ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
   EfiResetSystemLib|Lumia950XLPkg/Library/QcomPmicResetSystemLib/QcomPmicResetSystemLib.inf
 
-  # Defer: Variable Services
-  # BlockRamVariableLib|Lumia950XLPkg/Library/BlockRamVariableLib/BlockRamVariableLib.inf
+  VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
 
 [Components.common]
   # PrePI

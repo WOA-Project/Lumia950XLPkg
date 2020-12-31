@@ -10,29 +10,9 @@
 #include <Library/PrintLib.h>
 #include <Library/TimerLib.h>
 
-typedef INT8  int8_t;
-typedef INT16 int16_t;
-typedef INT32 int32_t;
-typedef INT64 int64_t;
+#include "minstdbool.h"
+#include "minstdint.h"
 
-typedef UINT8  uint8_t;
-typedef UINT16 uint16_t;
-typedef UINT32 uint32_t;
-typedef UINT64 uint64_t;
-
-typedef UINTN size_t;
-typedef BOOLEAN bool;
-typedef UINTN addr_t;
-typedef UINTN paddr_t;
-
-typedef UINT8  u8;
-typedef UINT16 u16;
-typedef UINT32 u32;
-typedef UINT64 u64;
-
-#define UINT_MAX MAX_UINTN
-#define ULONG_MAX (~0UL)
-#define LONG_MAX ((long)(~0UL >> 1))
 
 #define REG32(addr) ((volatile uint32_t *)(addr))
 #define writel_rt(v, a) (*REG32(a) = (v))
@@ -68,18 +48,8 @@ typedef UINT64 u64;
 #define ERR_IO -20
 #define ERR_NOT_SUPPORTED -24
 
-#define true TRUE
-#define false FALSE
-
-#define strcmp(s1, s2) ((int)AsciiStrCmp((s1), (s2)))
-#define strncmp(s1, s2, n) ((int)AsciiStrnCmp((s1), (s2), (n)))
-#define strlen(s) ((size_t)AsciiStrLen((s)))
-#define strlcpy(dst, src, n) AsciiStrCpyS((dst), (n), (src))
-#define strstr(s1, s2) AsciiStrStr((s1), (s2))
-#define memset(s, c, n) SetMem((s), (UINTN)(n), (UINT8)(c))
-#define memcpy(s1, s2, n) CopyMem((s1), (s2), (n))
-#define memmove(s1, s2, n) CopyMem((s1), (s2), (n))
-#define memcmp(s1, s2, n) ((int)CompareMem((s1), (s2), (n)))
+#include "minstdbool.h"
+#include "minstring.h"
 
 #define va_list VA_LIST
 #define offsetof(type, member) OFFSET_OF(type, member)

@@ -198,7 +198,7 @@ EFIAPI
 RpmDxeInitialize(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
 {
   EFI_HANDLE Handle = NULL;
-  EFI_STATUS Status;
+  EFI_STATUS Status = EFI_SUCCESS;
 
   // Init RPM SMD channel
   rpm_smd_init();

@@ -10,12 +10,11 @@
 extern "C" {
 #endif
 
-
 /*********************
  *      INCLUDES
  *********************/
-#include <stddef.h>
 #include "lv_area.h"
+#include <Library/minstddef.h>
 
 /*********************
  *      DEFINES
@@ -51,21 +50,21 @@ extern "C" {
  * @param tmp point to a variable. It will store temporary data
  * @param radius radius of the circle
  */
-void lv_circ_init(lv_point_t * c, lv_coord_t * tmp, lv_coord_t radius);
+void lv_circ_init(lv_point_t *c, lv_coord_t *tmp, lv_coord_t radius);
 
 /**
  * Test the circle drawing is ready or not
  * @param c same as in circ_init
  * @return true if the circle is not ready yet
  */
-bool lv_circ_cont(lv_point_t * c);
+bool lv_circ_cont(lv_point_t *c);
 
 /**
  * Get the next point from the circle
  * @param c same as in circ_init. The next point stored here.
  * @param tmp same as in circ_init.
  */
-void lv_circ_next(lv_point_t * c, lv_coord_t * tmp);
+void lv_circ_next(lv_point_t *c, lv_coord_t *tmp);
 
 /**********************
  *      MACROS
@@ -74,6 +73,5 @@ void lv_circ_next(lv_point_t * c, lv_coord_t * tmp);
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
-
 
 #endif
