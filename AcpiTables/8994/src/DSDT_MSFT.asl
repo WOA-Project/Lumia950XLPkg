@@ -1268,42 +1268,42 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             {
                 Package(0x2)
                 {
-                    "\\_SB.CPU0",
+                    "\\_SB.SYSM.APC0.CL0.CPU0",
                     0x10
                 },
                 Package(0x2)
                 {
-                    "\\_SB.CPU1",
+                    "\\_SB.SYSM.APC0.CL0.CPU1",
                     0x11
                 },
                 Package(0x2)
                 {
-                    "\\_SB.CPU2",
+                    "\\_SB.SYSM.APC0.CL0.CPU2",
                     0x12
                 },
                 Package(0x2)
                 {
-                    "\\_SB.CPU3",
+                    "\\_SB.SYSM.APC0.CL0.CPU3",
                     0x13
                 },
                 Package(0x2)
                 {
-                    "\\_SB.CPU4",
+                    "\\_SB.SYSM.APC0.CL1.CPU4",
                     0x14
                 },
                 Package(0x2)
                 {
-                    "\\_SB.CPU5",
+                    "\\_SB.SYSM.APC0.CL1.CPU5",
                     0x15
                 },
                 Package(0x2)
                 {
-                    "\\_SB.CPU6",
+                    "\\_SB.SYSM.APC0.CL1.CPU6",
                     0x16
                 },
                 Package(0x2)
                 {
-                    "\\_SB.CPU7",
+                    "\\_SB.SYSM.APC0.CL1.CPU7",
                     0x17
                 }
             })
@@ -38529,45 +38529,65 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             })
             Name(_HID, "QCOM2414")
         }
-        Device(CPU0)
+        Device(SYSM)
         {
-            Name(_HID, "ACPI0007")
-            Name(_UID, Zero)
-        }
-        Device(CPU1)
-        {
-            Name(_HID, "ACPI0007")
-            Name(_UID, One)
-        }
-        Device(CPU2)
-        {
-            Name(_HID, "ACPI0007")
-            Name(_UID, 0x2)
-        }
-        Device(CPU3)
-        {
-            Name(_HID, "ACPI0007")
-            Name(_UID, 0x3)
-        }
-        Device(CPU4)
-        {
-            Name(_HID, "ACPI0007")
-            Name(_UID, 0x4)
-        }
-        Device(CPU5)
-        {
-            Name(_HID, "ACPI0007")
-            Name(_UID, 0x5)
-        }
-        Device(CPU6)
-        {
-            Name(_HID, "ACPI0007")
-            Name(_UID, 0x6)
-        }
-        Device(CPU7)
-        {
-            Name(_HID, "ACPI0007")
-            Name(_UID, 0x7)
+            Name (_HID, "ACPI0010")
+            Name (_UID, 0x00100000)
+            Device (APC0)
+            {
+                Name (_HID, "ACPI0010")
+                Name (_UID, 0x0100)
+                Device(CL0)
+                {
+                    Name(_HID, "ACPI0010")
+                    Name(_UID, 0x10)
+                    Device(CPU0)
+                    {
+                        Name(_HID, "ACPI0007")
+                        Name(_UID, Zero)
+                    }
+                    Device(CPU1)
+                    {
+                        Name(_HID, "ACPI0007")
+                        Name(_UID, One)
+                    }
+                    Device(CPU2)
+                    {
+                        Name(_HID, "ACPI0007")
+                        Name(_UID, 0x2)
+                    }
+                    Device(CPU3)
+                    {
+                        Name(_HID, "ACPI0007")
+                        Name(_UID, 0x3)
+                    }
+                }
+                Device(CL1)
+                {
+                    Name(_HID, "ACPI0010")
+                    Name(_UID, 0x20)
+                    Device(CPU4)
+                    {
+                        Name(_HID, "ACPI0007")
+                        Name(_UID, 0x4)
+                    }
+                    Device(CPU5)
+                    {
+                        Name(_HID, "ACPI0007")
+                        Name(_UID, 0x5)
+                    }
+                    Device(CPU6)
+                    {
+                        Name(_HID, "ACPI0007")
+                        Name(_UID, 0x6)
+                    }
+                    Device(CPU7)
+                    {
+                        Name(_HID, "ACPI0007")
+                        Name(_UID, 0x7)
+                    }
+                }
+            }
         }
         Device(GPS_)
         {
@@ -39884,14 +39904,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, Zero)
             Name(_TZD, Package(0x8)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7
             })
             Method(_PSV, 0x0, NotSerialized)
             {
@@ -39915,10 +39935,10 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, Zero)
             Name(_TZD, Package(0x4)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3
             })
             Method(_PSV, 0x0, NotSerialized)
             {
@@ -39942,10 +39962,10 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, 0x3)
             Name(_TZD, Package(0x4)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3
             })
             Method(_PSV, 0x0, NotSerialized)
             {
@@ -40071,10 +40091,10 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, Zero)
             Name(_TZD, Package(0x4)
             {
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7
             })
             Method(_PSV, 0x0, NotSerialized)
             {
@@ -40311,14 +40331,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, Zero)
             Name(_TZD, Package(0xd)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7,
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7,
                 \_SB_.PEP0,
                 \_SB_.AMSS,
                 \_SB_.GPU0,
@@ -40347,14 +40367,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, 0x2)
             Name(_TZD, Package(0xc)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7,
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7,
                 \_SB_.PEP0,
                 \_SB_.AMSS,
                 \_SB_.GPU0,
@@ -40992,14 +41012,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, 0x9)
             Name(_TZD, Package(0x9)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7,
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7,
                 \_SB_.GPU0
             })
             Method(_PSV, 0x0, NotSerialized)
@@ -41130,14 +41150,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, One)
             Name(_TZD, Package(0xc)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7,
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7,
                 \_SB_.PEP0,
                 \_SB_.AMSS,
                 \_SB_.GPU0,
@@ -41358,14 +41378,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, 0x6)
             Name(_TZD, Package(0x9)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7,
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7,
                 \_SB_.PEP0
             })
             Method(_PSV, 0x0, NotSerialized)
@@ -41394,14 +41414,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, Zero)
             Name(_TZD, Package(0x9)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7,
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7,
                 \_SB_.PEP0
             })
             Method(_PSV, 0x0, NotSerialized)
@@ -41465,14 +41485,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, 0x64)
             Name(_TZD, Package(0xe)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7,
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7,
                 \_SB_.PEP0,
                 \_SB_.AMSS,
                 \_SB_.GPU0,
@@ -42044,14 +42064,14 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, 0xa)
             Name(_TZD, Package(0x9)
             {
-                \_SB_.CPU0,
-                \_SB_.CPU1,
-                \_SB_.CPU2,
-                \_SB_.CPU3,
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7,
+                \_SB_.SYSM.APC0.CL0.CPU0,
+                \_SB_.SYSM.APC0.CL0.CPU1,
+                \_SB_.SYSM.APC0.CL0.CPU2,
+                \_SB_.SYSM.APC0.CL0.CPU3,
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7,
                 \_SB_.GPU0
             })
             Method(_PSV, 0x0, NotSerialized)
@@ -42182,10 +42202,10 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8994 ", 0x00000003)
             Name(_UID, Zero)
             Name(_TZD, Package(0x4)
             {
-                \_SB_.CPU4,
-                \_SB_.CPU5,
-                \_SB_.CPU6,
-                \_SB_.CPU7
+                \_SB_.SYSM.APC0.CL1.CPU4,
+                \_SB_.SYSM.APC0.CL1.CPU5,
+                \_SB_.SYSM.APC0.CL1.CPU6,
+                \_SB_.SYSM.APC0.CL1.CPU7
             })
             Method(_PSV, 0x0, NotSerialized)
             {
