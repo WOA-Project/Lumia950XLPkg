@@ -55,6 +55,23 @@ RtSpmiConfigMemory(VOID)
       goto exit;
   }
 
+#if SILICON_PLATFORM == 8992
+  Status = gDS->GetMemorySpaceDescriptor(
+      ROUND_TO_PAGE(MSM_SHARED_IMEM_BASE2), &imemRegionMemoryDescriptor);
+
+  if (EFI_ERROR(Status))
+    goto exit;
+
+  if (!(imemRegionMemoryDescriptor.Attributes & EFI_MEMORY_RUNTIME)) {
+    Status = gDS->SetMemorySpaceAttributes(
+        ROUND_TO_PAGE(MSM_SHARED_IMEM_BASE2), EFI_PAGE_SIZE,
+        imemRegionMemoryDescriptor.Attributes | EFI_MEMORY_RUNTIME);
+
+    if (EFI_ERROR(Status))
+      goto exit;
+  }
+#endif
+
   Status = gDS->GetMemorySpaceDescriptor(
       ROUND_TO_PAGE(SPMI_BASE), &spmiMemoryDescriptor);
 
