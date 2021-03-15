@@ -210,7 +210,14 @@ LibInitializeResetSystem(
 
   // Set Address
   pPonPsHoldAddressVirtual   = MPM2_MPM_PS_HOLD;
+
+#if SILICON_PLATFORM == 8994
   pResetReasonAddressVirtual = RESTART_REASON_ADDR;
+#elif SILICON_PLATFORM == 8992
+  pResetReasonAddressVirtual = RESTART_REASON_ADDR2;
+#else
+#error "Not a valid MSM platform"
+#endif
 
   // Register Virtual Address Change event.
   Status = gBS->CreateEventEx(
