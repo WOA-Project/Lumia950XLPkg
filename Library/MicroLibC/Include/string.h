@@ -1,7 +1,7 @@
 #ifndef _STRING_H
 #define _STRING_H
 
-#include <stdint.h>
+#include <Library/minstdint.h>
 
 #include <Library/BaseLib.h>
 #include <Library/BaseMemoryLib.h>

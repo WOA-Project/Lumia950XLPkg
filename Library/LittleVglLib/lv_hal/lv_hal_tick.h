@@ -18,8 +18,8 @@ extern "C" {
 #else
 #include <LittleVgl/lv_conf.h>
 #endif
-#include <stdint.h>
-#include <stdbool.h>
+#include <Library/minstdbool.h>
+#include <Library/minstdint.h>
 
 /*********************
  *      DEFINES
@@ -63,4 +63,4 @@ uint32_t lv_tick_elaps(uint32_t prev_tick);
 } /* extern "C" */
 #endif
 
-#endif  /*LV_HAL_TICK_H*/
+#endif /*LV_HAL_TICK_H*/

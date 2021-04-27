@@ -40,7 +40,7 @@
   ((type *)((addr_t)(ptr)-offsetof(type, member)))
 
 /* Frequency Macros */
-#define FREQ_END (UINT_MAX - 1)
+#define FREQ_END (UINT32_MAX - 1)
 #define F_END                                                                  \
   {                                                                            \
     .freq_hz = FREQ_END,                                                       \

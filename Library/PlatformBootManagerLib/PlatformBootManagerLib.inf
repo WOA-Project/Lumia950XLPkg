@@ -36,6 +36,7 @@
   PlatformBm.c
 
 [Packages]
+  ArmPkg/ArmPkg.dec
   MdeModulePkg/MdeModulePkg.dec
   MdePkg/MdePkg.dec
   ShellPkg/ShellPkg.dec
@@ -45,6 +46,8 @@
   GCC:*_*_*_CC_FLAGS = -Wno-unused-variable -Wno-unused-function
 
 [LibraryClasses]
+  ArmLib
+  ArmSmcLib
   BaseLib
   BaseMemoryLib
   BootLogoLib

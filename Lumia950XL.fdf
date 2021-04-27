@@ -149,9 +149,6 @@ READ_LOCK_STATUS   = TRUE
 	SECTION UI = "AcpiTables"
   }
 
-  # Shell
-  INF ShellPkg/Application/Shell/Shell.inf
-
   # PreLoader assets
   FILE FREEFORM = 5fdf5e3c-6b70-4acc-8330-63a673924a46 {
     SECTION RAW = Lumia950XLPkg/Driver/PreLoaderDxe/BootshimCheckFail.png

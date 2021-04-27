@@ -31,12 +31,12 @@ VOID *memalign(UINTN Boundary, UINTN Size)
 
 VOID *memalign2(UINTN Boundary, UINTN Size, BOOLEAN runtime)
 {
-  VOID *          BaseMemory;
+  VOID *          BaseMemory = NULL;
   CPOOL_HEAD *    Head;
   VOID *          RetVal;
   UINTN           HeadSize;
   UINTN           NodeSize;
-  ALLOCATION_TYPE Type;
+  ALLOCATION_TYPE Type = ALLOCTYPE_POOL;
 
   if (Size == 0) {
     DEBUG((DEBUG_ERROR, "ERROR memalign: Zero Size\n"));

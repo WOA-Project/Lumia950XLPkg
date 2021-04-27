@@ -59,10 +59,10 @@ int rpm_smd_send_data(uint32_t *data, uint32_t len, msg_type type)
 
   switch (type) {
   case RPM_REQUEST_TYPE:
-    req.hdr.type   = RPM_REQ_MAGIC;
-    req.hdr.len    = len + REQ_MSG_LENGTH; // 20
-    req.req_hdr.id = ++msg_id;
-    req.req_hdr.set = 0; // assume active set. check sleep set.
+    req.hdr.type             = RPM_REQ_MAGIC;
+    req.hdr.len              = len + REQ_MSG_LENGTH; // 20
+    req.req_hdr.id           = ++msg_id;
+    req.req_hdr.set          = 0; // assume active set. check sleep set.
     req.req_hdr.resourceType = data[RESOURCETYPE];
     req.req_hdr.resourceId   = data[RESOURCEID];
     req.req_hdr.dataLength   = len;
@@ -107,8 +107,8 @@ int rpm_smd_send_data(uint32_t *data, uint32_t len, msg_type type)
 uint32_t rpm_smd_recv_data(uint32_t *len)
 {
   rpm_ack_msg *resp;
-  msg_type     type;
-  uint32_t     ret = 0;
+  msg_type     type = RPM_ERROR_ACK;
+  uint32_t     ret  = 0;
   /* As per the current design rpm response does not exceed 20 bytes */
   uint32_t response[5];
 

@@ -21,6 +21,9 @@
   ArmLib
 
 [Sources.common]
+  lvcompat.h
+  lvgl.h
+
   lv_core/lv_group.c
   lv_core/lv_indev.c
   lv_core/lv_obj.c
@@ -105,3 +108,5 @@
   lv_themes/lv_theme_material.c
   lv_themes/lv_theme_nemo.c
   lv_themes/lv_theme_mono.c
+
+  lvstrcpy.c

@@ -26,7 +26,7 @@ freely, subject to the following restrictions:
 #ifndef LODEPNG_H
 #define LODEPNG_H
 
-#include <string.h> /*for size_t*/
+#include <Library/minstdint.h>
 
 extern const char *LODEPNG_VERSION_STRING;
 
