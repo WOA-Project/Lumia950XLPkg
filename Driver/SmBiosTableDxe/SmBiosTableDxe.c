@@ -153,10 +153,21 @@ SMBIOS_TABLE_TYPE1 mSysInfoType1 = {
     2, // ProductName String
     3, // Version String
     4, // SerialNumber String
-    {0xc08ac5fb,
-     0x2a54,
-     0x4369,
-     {0x8c, 0x51, 0xaf, 0x7d, 0x06, 0x0a, 0x93, 0xcc}},
+    {
+        0xc08ac5fb,
+        0x2a54,
+        0x4369,
+        {
+            0x8c,
+            0x51,
+            0xaf,
+            0x7d,
+            0x06,
+            0x0a,
+            0x93,
+            0xcc,
+        },
+    },
     SystemWakeupTypePowerSwitch,
     5, // SKUNumber String
     6, // Family String
@@ -419,13 +430,13 @@ SMBIOS_TABLE_TYPE17 mMemDevInfoType17 = {
     0xFFFF, // DataWidth;
     0x0C00, // Size; // When bit 15 is 0: Size in MB
             // When bit 15 is 1: Size in KB, and continues in ExtendedSize
-    MemoryFormFactorTsop, // FormFactor;                     ///< The
-                          // enumeration value from MEMORY_FORM_FACTOR.
-    0xff,                 // DeviceSet;
-    0,                    // DeviceLocator String
-    0,                    // BankLocator String
-    MemoryTypeDdr3, // MemoryType;                     ///< The enumeration
-                    // value from MEMORY_DEVICE_TYPE.
+    MemoryFormFactorRowOfChips, // FormFactor;                     ///< The
+                                // enumeration value from MEMORY_FORM_FACTOR.
+    0xff,                       // DeviceSet;
+    0,                          // DeviceLocator String
+    0,                          // BankLocator String
+    MemoryTypeLpddr4, // MemoryType;                     ///< The enumeration
+                      // value from MEMORY_DEVICE_TYPE.
     {
         // TypeDetail;
         0, // Reserved        :1;
@@ -445,7 +456,7 @@ SMBIOS_TABLE_TYPE17 mMemDevInfoType17 = {
         0, // Unbuffered      :1;
         0, // Reserved1       :1;
     },
-    1200, // Speed;
+    1600, // Speed;
     0,    // Manufacturer String
     0,    // SerialNumber String
     0,    // AssetTag String
@@ -461,8 +472,11 @@ CHAR8 *mMemDevInfoType17Strings[] = {NULL};
         SMBIOS data definition  TYPE19  Memory Array Mapped Address Information
 ************************************************************************/
 SMBIOS_TABLE_TYPE19 mMemArrMapInfoType19 = {
-    {EFI_SMBIOS_TYPE_MEMORY_ARRAY_MAPPED_ADDRESS, sizeof(SMBIOS_TABLE_TYPE19),
-     0},
+    {
+        EFI_SMBIOS_TYPE_MEMORY_ARRAY_MAPPED_ADDRESS,
+        sizeof(SMBIOS_TABLE_TYPE19),
+        0,
+    },
     0x00000000, // StartingAddress;
     0x00000000, // EndingAddress;
     0,          // MemoryArrayHandle;
@@ -476,7 +490,11 @@ CHAR8 *mMemArrMapInfoType19Strings[] = {NULL};
         SMBIOS data definition  TYPE32  Boot Information
 ************************************************************************/
 SMBIOS_TABLE_TYPE32 mBootInfoType32 = {
-    {EFI_SMBIOS_TYPE_SYSTEM_BOOT_INFORMATION, sizeof(SMBIOS_TABLE_TYPE32), 0},
+    {
+        EFI_SMBIOS_TYPE_SYSTEM_BOOT_INFORMATION,
+        sizeof(SMBIOS_TABLE_TYPE32),
+        0,
+    },
     {0, 0, 0, 0, 0, 0},          // Reserved[6];
     BootInformationStatusNoError // BootStatus
 };
@@ -604,7 +622,8 @@ VOID BIOSInfoUpdateSmbiosType0(VOID)
 
 VOID SysInfoUpdateSmbiosType1(VOID)
 {
-  char serialNo[13];
+  char     serialNo[13];
+  uint32_t serial;
 
   // Update string table before proceeds
   mSysInfoType1Strings[1] = (CHAR8 *)FixedPcdGetPtr(PcdSmbiosSystemModel);
@@ -615,6 +634,9 @@ VOID SysInfoUpdateSmbiosType1(VOID)
   if (mBoardProtocol != NULL) {
     mBoardProtocol->board_chip_serial_char8(serialNo);
     mSysInfoType1Strings[3] = serialNo;
+
+    serial                   = mBoardProtocol->board_chip_serial();
+    mSysInfoType1.Uuid.Data1 = (UINT32)serial;
   }
 
   LogSmbiosData(
