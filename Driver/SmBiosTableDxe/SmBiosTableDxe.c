@@ -210,7 +210,7 @@ CHAR8 *mBoardInfoType2Strings[] = {
 SMBIOS_TABLE_TYPE3 mEnclosureInfoType3 = {
     {EFI_SMBIOS_TYPE_SYSTEM_ENCLOSURE, sizeof(SMBIOS_TABLE_TYPE3), 0},
     1,                         // Manufacturer String
-    MiscChassisTablet,         // Type;
+    MiscChassisTypePortable,   // Type;
     2,                         // Version String
     3,                         // SerialNumber String
     4,                         // AssetTag String
