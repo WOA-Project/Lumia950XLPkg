@@ -81,7 +81,8 @@ VOID InstallEl2Patch(VOID)
   // fixed so CPU0 call would fail. Therefore we patched
   // PSCI_CPU_SUSPEND_AARCH64 handler at 0x06c03aa8.
   DEBUG((EFI_D_ERROR, "Injecting shellcode...\n"));
-  EFI_PHYSICAL_ADDRESS PsciCpuSuspendHandlerAddr = FixedPcdGet64(PsciCpuSuspendAddress);
+  EFI_PHYSICAL_ADDRESS PsciCpuSuspendHandlerAddr =
+      FixedPcdGet64(PsciCpuSuspendAddress);
   UINT8 *PsciCpuSuspendHandler = (UINT8 *)(VOID *)PsciCpuSuspendHandlerAddr;
   CopyMem(PsciCpuSuspendHandler, El2ShellCode, sizeof(El2ShellCode));
   ArmDataSynchronizationBarrier();
@@ -93,91 +94,140 @@ VOID InstallEl2Patch(VOID)
 VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
 {
 
-  EFI_HOB_HANDOFF_INFO_TABLE *HobList;
-  PRELOADER_ENVIRONMENT *     PreEnv = (VOID *)PRELOADER_ENV_ADDR;
-  UINT32                      Crc32  = 0;
-  EFI_STATUS                  Status;
+  EFI_HOB_HANDOFF_INFO_TABLE      *HobList;
+  PRELOADER_ENVIRONMENT_VERSION_2 *PreEnv = (VOID *)PRELOADER_ENV_ADDR;
+  UINT32                          Crc32   = 0;
+  EFI_STATUS                      Status;
 
   UINTN MemoryBase     = 0;
   UINTN MemorySize     = 0;
   UINTN UefiMemoryBase = 0;
   UINTN UefiMemorySize = 0;
 
+  UINTN BootMode                 = BOOT_MODE_PSCI;
+  UINTN EnablePlatformSdCardBoot = 0;
+  UINTN UseQuadCoreConfiguration = 0;
+
   // Initialize (fake) UART.
   UartInit();
 
-  // Which EL?
-  if (ArmReadCurrentEL() == AARCH64_EL2) {
-    DEBUG((EFI_D_ERROR, "Running at EL2 \n"));
-  }
-  else {
-    DEBUG((EFI_D_ERROR, "Running at EL1 \n"));
-  }
+  // Initialize Platform PreLoader HOBs
+  if (PreEnv->Header == PRELOADER_HEADER) {
+    Crc32         = PreEnv->Crc32;
+    PreEnv->Crc32 = 0x0;
+    if (CalculateCrc32(PreEnv, sizeof(PRELOADER_ENVIRONMENT_VERSION_1)) == Crc32) {
+      PreEnv->Crc32 = Crc32;
+      DEBUG((EFI_D_INFO, "CRC32 check succeeded \n"));
+    }
+    else {
+      // Hey we have memory corrpution
+      DEBUG((EFI_D_ERROR, "CRC32 check failed \n"));
+      ASSERT(FALSE);
+    }
 
-  // Immediately launch all CPUs, 7 CPUs hold
-  DEBUG((EFI_D_LOAD | EFI_D_INFO, "Launching CPUs\n"));
-
-  // Launch all CPUs, hold and jump to EL2 (only for EL1)
-  if (ArmReadCurrentEL() == AARCH64_EL1) {
-    if (ArmReadMpidr() == 0x80000000) {
-      for (UINTN i = 1; i < FixedPcdGet32(PcdCoreCount); i++) {
-        ARM_HVC_ARGS ArmHvcArgs;
-        ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_CPU_ON_AARCH64;
-        ArmHvcArgs.Arg1 = ProcessorIdMapping[i];
-        ArmHvcArgs.Arg2 = (UINTN)&_ModuleEntryPoint;
-        ArmHvcArgs.Arg3 = i;
-
-        ArmCallHvc(&ArmHvcArgs);
-        ASSERT(ArmHvcArgs.Arg0 == ARM_SMC_PSCI_RET_SUCCESS);
+    if (PreEnv->PreloaderVersion >= PRELOADER_VERSION_MIN) {
+      Crc32           = PreEnv->Crc32v2;
+      PreEnv->Crc32v2 = 0x0;
+      if (CalculateCrc32(PreEnv, sizeof(PRELOADER_ENVIRONMENT_VERSION_2)) == Crc32) {
+        PreEnv->Crc32v2 = Crc32;
+        DEBUG((EFI_D_INFO, "CRC32v2 check succeeded \n"));
       }
+      else {
+        // Hey we have memory corrpution
+        DEBUG((EFI_D_ERROR, "CRC32v2 check failed \n"));
+        ASSERT(FALSE);
+      }
+
+      BootMode                 = PreEnv->BootMode;
+      EnablePlatformSdCardBoot = PreEnv->EnablePlatformSdCardBoot;
+      UseQuadCoreConfiguration = PreEnv->UseQuadCoreConfiguration;
     }
-
-    DEBUG((EFI_D_ERROR, "Waiting for all CPUs...\n"));
-    WaitForSecondaryCPUs();
-    DEBUG((EFI_D_ERROR, "All CPU started.\n"));
-
-    // Install patch
-    InstallEl2Patch();
-
-    // Looks good. Notify all secondary CPUs to jump!
-    for (UINTN Index = 1; Index < FixedPcdGet32(PcdCoreCount); Index++) {
-      EFI_PHYSICAL_ADDRESS MailboxAddress =
-          FixedPcdGet64(SecondaryCpuMpParkRegionBase) + 0x10000 * Index +
-          0x1000;
-      PEFI_PROCESSOR_MAILBOX pMailbox =
-          (PEFI_PROCESSOR_MAILBOX)(VOID *)MailboxAddress;
-
-      pMailbox->El2JumpFlag = EL2REDIR_MAILBOX_SIGNAL;
-      ArmDataSynchronizationBarrier();
-    }
-
-    // Make sure they are all initialized
-    DEBUG((EFI_D_ERROR, "Waiting for all CPUs...\n"));
-    WaitForSecondaryCPUs();
-    DEBUG((EFI_D_ERROR, "All CPU started.\n"));
-    ArmDataSynchronizationBarrier();
-
-    DEBUG((EFI_D_ERROR, "Jump CPU0 to EL2.\n"));
-    ArmDataSynchronizationBarrier();
-
-    // Install patch again
-    InstallEl2Patch();
-
-    // Jump overself
-    ARM_HVC_ARGS StubArg;
-    // PSCI_CPU_SUSPEND_AA64
-    StubArg.Arg0 = 0xc4000001;
-    ArmCallHvc(&StubArg);
-
-    // We should not reach here
-    ASSERT(FALSE);
   }
 
-  // Architecture-specific initialization
-  // Enable cache
-  ArmInvalidateDataCache();
-  ArmEnableInstructionCache();
-  ArmEnableDataCache();
+  if (BootMode != BOOT_MODE_PSCI) {
+    // Which EL?
+    if (ArmReadCurrentEL() == AARCH64_EL2) {
+      DEBUG((EFI_D_ERROR, "Running at EL2 \n"));
+    }
+    else {
+      DEBUG((EFI_D_ERROR, "Running at EL1 \n"));
+    }
+
+    // Immediately launch all CPUs, 7 CPUs hold
+    DEBUG((EFI_D_LOAD | EFI_D_INFO, "Launching CPUs\n"));
+
+    // Launch all CPUs
+    if (ArmReadCurrentEL() == AARCH64_EL1) {
+      if (ArmReadMpidr() == 0x80000000) {
+        for (UINTN i = 1; i < FixedPcdGet32(PcdCoreCount); i++) {
+          ARM_HVC_ARGS ArmHvcArgs;
+          ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_CPU_ON_AARCH64;
+          ArmHvcArgs.Arg1 = ProcessorIdMapping[i];
+
+          if (BootMode == BOOT_MODE_MPPARK_EL2) {
+            // Hold and jump to EL2 (only for EL1)
+            ArmHvcArgs.Arg2 = (UINTN)&_ModuleEntryPoint;
+          }
+          else {
+            ArmHvcArgs.Arg2 = (UINTN)&SecondaryCpuEL1Entry;
+          }
+
+          ArmHvcArgs.Arg3 = i;
+
+          ArmCallHvc(&ArmHvcArgs);
+          ASSERT(ArmHvcArgs.Arg0 == ARM_SMC_PSCI_RET_SUCCESS);
+        }
+      }
+
+      if (BootMode == BOOT_MODE_MPPARK_EL2) {
+        DEBUG((EFI_D_ERROR, "Waiting for all CPUs...\n"));
+        WaitForSecondaryCPUs();
+        DEBUG((EFI_D_ERROR, "All CPU started.\n"));
+
+        // Install patch
+        InstallEl2Patch();
+
+        // Looks good. Notify all secondary CPUs to jump!
+        for (UINTN Index = 1; Index < FixedPcdGet32(PcdCoreCount); Index++) {
+          EFI_PHYSICAL_ADDRESS MailboxAddress =
+              FixedPcdGet64(SecondaryCpuMpParkRegionBase) + 0x10000 * Index +
+              0x1000;
+          PEFI_PROCESSOR_MAILBOX pMailbox =
+              (PEFI_PROCESSOR_MAILBOX)(VOID *)MailboxAddress;
+
+          pMailbox->El2JumpFlag = EL2REDIR_MAILBOX_SIGNAL;
+          ArmDataSynchronizationBarrier();
+        }
+
+        // Make sure they are all initialized
+        DEBUG((EFI_D_ERROR, "Waiting for all CPUs...\n"));
+        WaitForSecondaryCPUs();
+        DEBUG((EFI_D_ERROR, "All CPU started.\n"));
+        ArmDataSynchronizationBarrier();
+
+        DEBUG((EFI_D_ERROR, "Jump CPU0 to EL2.\n"));
+        ArmDataSynchronizationBarrier();
+
+        // Install patch again
+        InstallEl2Patch();
+
+        // Jump overself
+        ARM_HVC_ARGS StubArg;
+        // PSCI_CPU_SUSPEND_AA64
+        StubArg.Arg0 = 0xc4000001;
+        ArmCallHvc(&StubArg);
+
+        // We should not reach here
+        ASSERT(FALSE);
+      }
+
+      // Architecture-specific initialization
+      // Enable cache
+      ArmInvalidateDataCache();
+      ArmEnableInstructionCache();
+      ArmEnableDataCache();
+    }
+  }
 
   // Enable Floating Point
   ArmEnableVFP();
@@ -229,21 +279,24 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
     }
   }
 
-  // Notify secondary CPUs that GIC is set up
-  for (UINTN Index = 1; Index < FixedPcdGet32(PcdCoreCount); Index++) {
-    EFI_PHYSICAL_ADDRESS MailboxAddress =
-        FixedPcdGet64(SecondaryCpuMpParkRegionBase) + 0x10000 * Index + 0x1000;
-    PEFI_PROCESSOR_MAILBOX pMailbox =
-        (PEFI_PROCESSOR_MAILBOX)(VOID *)MailboxAddress;
+  if (BootMode == BOOT_MODE_MPPARK_EL2) {
+    // Notify secondary CPUs that GIC is set up
+    for (UINTN Index = 1; Index < FixedPcdGet32(PcdCoreCount); Index++) {
+      EFI_PHYSICAL_ADDRESS MailboxAddress =
+          FixedPcdGet64(SecondaryCpuMpParkRegionBase) + 0x10000 * Index +
+          0x1000;
+      PEFI_PROCESSOR_MAILBOX pMailbox =
+          (PEFI_PROCESSOR_MAILBOX)(VOID *)MailboxAddress;
 
-    pMailbox->El2JumpFlag = EL2REDIR_MAILBOX_SIGNAL;
+      pMailbox->El2JumpFlag = EL2REDIR_MAILBOX_SIGNAL;
+      ArmDataSynchronizationBarrier();
+    }
+
+    DEBUG((EFI_D_ERROR, "Waiting for all CPUs...\n"));
+    WaitForSecondaryCPUs();
+    DEBUG((EFI_D_ERROR, "All CPU entered MpPark.\n"));
     ArmDataSynchronizationBarrier();
   }
-
-  DEBUG((EFI_D_ERROR, "Waiting for all CPUs...\n"));
-  WaitForSecondaryCPUs();
-  DEBUG((EFI_D_ERROR, "All CPU entered MpPark.\n"));
-  ArmDataSynchronizationBarrier();
 
   // Add HOBs
   BuildStackHob((UINTN)StackBase, StackSize);
@@ -257,21 +310,6 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
   // Initialize Platform HOBs (CpuHob and FvHob)
   Status = PlatformPeim();
   ASSERT_EFI_ERROR(Status);
-
-  // Initialize Platform PreLoader HOBs
-  if (PreEnv->Header == PRELOADER_HEADER) {
-    Crc32         = PreEnv->Crc32;
-    PreEnv->Crc32 = 0x0;
-    if (CalculateCrc32(PreEnv, sizeof(PRELOADER_ENVIRONMENT)) == Crc32) {
-      PreEnv->Crc32 = Crc32;
-      DEBUG((EFI_D_INFO, "CRC32 check succeeded \n"));
-    }
-    else {
-      // Hey we have memory corrpution
-      DEBUG((EFI_D_ERROR, "CRC32 check failed \n"));
-      ASSERT(FALSE);
-    }
-  }
 
   // Now, the HOB List has been initialized, we can register performance
   // information PERF_START (NULL, "PEI", NULL, StartTimeStamp);
@@ -363,6 +401,80 @@ VOID SecondaryCEntryPoint(IN UINTN Index)
 
   // But turn off interrupts
   ArmDisableInterrupts();
+
+  do {
+    // Technically we should do a WFI
+    // But we just spin here instead
+    ArmDataSynchronizationBarrier();
+
+    // Technically the CPU ID should be checked
+    // against request per MpPark spec,
+    // but the actual Windows implementation guarantees
+    // that no CPU will be started simultaneously,
+    // so the check was made optional.
+    //
+    // This also enables "spin-table" startup method
+    // for Linux.
+    //
+    // Example usage:
+    // enable-method = "spin-table";
+    // cpu-release-addr = <0 0x00311008>;
+    if (FixedPcdGetBool(SecondaryCpuIgnoreCpuIdCheck) ||
+        pMailbox->ProcessorId == Index) {
+      SecondaryEntryAddr = pMailbox->JumpAddress;
+    }
+
+    AcknowledgeInterrupt = ArmGicAcknowledgeInterrupt(
+        FixedPcdGet64(PcdGicInterruptInterfaceBase), &InterruptId);
+    if (InterruptId <
+        ArmGicGetMaxNumInterrupts(FixedPcdGet64(PcdGicDistributorBase))) {
+      // Got a valid SGI number hence signal End of Interrupt
+      ArmGicEndOfInterrupt(
+          FixedPcdGet64(PcdGicInterruptInterfaceBase), AcknowledgeInterrupt);
+    }
+  } while (SecondaryEntryAddr == 0);
+
+  // Acknowledge this one
+  pMailbox->JumpAddress = 0;
+
+  SecondaryStart = (VOID(*)())SecondaryEntryAddr;
+  SecondaryStart(pMailbox);
+
+  // Should never reach here
+  ASSERT(FALSE);
+}
+
+VOID SecondaryCEL1EntryPoint(IN UINTN Index)
+{
+  ASSERT(Index >= 1 && Index <= 7);
+
+  EFI_PHYSICAL_ADDRESS MailboxAddress =
+      FixedPcdGet64(SecondaryCpuMpParkRegionBase) + 0x10000 * Index + 0x1000;
+  PEFI_PROCESSOR_MAILBOX pMailbox =
+      (PEFI_PROCESSOR_MAILBOX)(VOID *)MailboxAddress;
+
+  UINT32 CurrentProcessorId = 0;
+  VOID (*SecondaryStart)(VOID * pMailbox);
+  UINTN SecondaryEntryAddr;
+  UINTN InterruptId;
+  UINTN AcknowledgeInterrupt;
+
+  // MMU, cache and branch predicton must be disabled
+  // Cache is disabled in CRT startup code
+  ArmDisableMmu();
+  ArmDisableBranchPrediction();
+
+  // Turn on GIC CPU interface as well as SGI interrupts
+  ArmGicEnableInterruptInterface(FixedPcdGet64(PcdGicInterruptInterfaceBase));
+  MmioWrite32(FixedPcdGet64(PcdGicInterruptInterfaceBase) + 0x4, 0xf0);
+
+  // But turn off interrupts
+  ArmDisableInterrupts();
+
+  // Clear mailbox
+  pMailbox->JumpAddress = 0;
+  pMailbox->ProcessorId = 0xffffffff;
+  CurrentProcessorId    = ProcessorIdMapping[Index];
 
   do {
     // Technically we should do a WFI

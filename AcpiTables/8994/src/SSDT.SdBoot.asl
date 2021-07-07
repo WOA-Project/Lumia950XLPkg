@@ -1,24 +1,26 @@
-DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
+DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000012)
 {
     External (_SB_.ABD_.AVBL, IntObj)
     External (_SB_.GIO0, DeviceObj)
     External (_SB_.GIO0.NFFO, OpRegionObj)
     External (_SB_.GIO0.NFPO, OpRegionObj)
     External (_SB_.I2C7, UnknownObj)
+    External (_SB_.IC11, UnknownObj)
     External (_SB_.PEP0, UnknownObj)
     External (_SB_.PEP0.FLD0, UnknownObj)
+    External (_SB_.PM02, UnknownObj)
+    External (_SB_.SP10, UnknownObj)
     External (DBFL, UnknownObj)
     External (ESNL, UnknownObj)
     External (GIO0, DeviceObj)
 
     Scope (\_SB)
     {
-        Device (SDC2)
+		Device (SDC2)
         {
-            Name (_DEP, Package (0x02)  // _DEP: Dependencies
+            Name (_DEP, Package (One)  // _DEP: Dependencies
             {
-                \_SB.PEP0, 
-                \_SB.GIO0
+                \_SB.PEP0
             })
             Name (_HID, "QCOM2466")  // _HID: Hardware ID
             Name (_CID, "ACPIQCOM2466")  // _CID: Compatible ID
@@ -36,23 +38,21 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
                     {
                         0x0000009D,
                     }
-                    GpioInt (Edge, ActiveBoth, SharedAndWake, PullNone, 0x7530,
-                        "\\_SB.PM01", 0x00, ResourceConsumer, ,
-                        RawDataBuffer (0x04)  // Vendor Data
-                        {
-                            0x02, 0x03, 0x01, 0x00
-                        })
-                        {   // Pin list
-                            0x0638
-                        }
-                    GpioIo (Shared, PullNone, 0x0000, 0x0000, IoRestrictionNone,
-                        "\\_SB.PM01", 0x00, ResourceConsumer, ,
-                        )
-                        {   // Pin list
-                            0x0638
-                        }
                 })
                 Return (RBUF) /* \_SB_.SDC2._CRS.RBUF */
+            }
+
+            Device (EMMC)
+            {
+                Method (_ADR, 0, NotSerialized)  // _ADR: Address
+                {
+                    Return (0x08)
+                }
+
+                Method (_RMV, 0, NotSerialized)  // _RMV: Removal Status
+                {
+                    Return (Zero)
+                }
             }
 
             Method (_DIS, 0, NotSerialized)  // _DIS: Disable Device
@@ -64,7 +64,7 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
                 Return (0x0F)
             }
         }
-
+	
         Device (EGP0)
         {
             Name (_HID, "MSHW1008")  // _HID: Hardware ID
@@ -215,9 +215,171 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
             Name (_HID, "MSHW100D")  // _HID: Hardware ID
         }
 
+        Device (SIAD)		
+        {		
+            Name (_HID, "MSHW100F")  // _HID: Hardware ID		
+            Name (_UID, One)  // _UID: Unique ID		
+            Name (_DEP, Package (0x03)  // _DEP: Dependencies		
+            {		
+                \_SB.PEP0, 		
+                \_SB.I2C7, 		
+                \_SB.GIO0		
+            })		
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings		
+            {		
+                Name (RBUF, ResourceTemplate ()		
+                {		
+                    I2cSerialBusV2 (0x002C, ControllerInitiated, 0x00061A80,		
+                        AddressingMode7Bit, "\\_SB.I2C7",		
+                        0x00, ResourceConsumer, , Exclusive,		
+                        )		
+                    GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionNone,		
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,		
+                        )		
+                        {   // Pin list		
+                            0x0027		
+                        }		
+                    GpioInt (Edge, ActiveLow, Exclusive, PullUp, 0x0000,		
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,		
+                        )		
+                        {   // Pin list		
+                            0x0060		
+                        }		
+                })		
+                Return (RBUF) /* \_SB_.SIAD._CRS.RBUF */		
+            }		
+            Name (PGID, Buffer (0x0A)		
+            {		
+                "\\_SB.SIAD"		
+            })		
+            Name (DBUF, Buffer (DBFL){})		
+            CreateByteField (DBUF, Zero, STAT)		
+            CreateByteField (DBUF, 0x02, DVAL)		
+            CreateField (DBUF, 0x18, 0xA0, DEID)		
+            Method (_S1D, 0, NotSerialized)  // _S1D: S1 Device State		
+            {		
+                Return (0x03)		
+            }		
+            Method (_S2D, 0, NotSerialized)  // _S2D: S2 Device State		
+            {		
+                Return (0x03)		
+            }		
+            Method (_S3D, 0, NotSerialized)  // _S3D: S3 Device State		
+            {		
+                Return (0x03)		
+            }		
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0		
+            {		
+                DEID = Buffer (ESNL){}		
+                DVAL = Zero		
+                DEID = PGID /* \_SB_.SIAD.PGID */		
+                If (\_SB.ABD.AVBL)		
+                {		
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.SIAD.DBUF */		
+                }		
+            }		
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3		
+            {		
+                DEID = Buffer (ESNL){}		
+                DVAL = 0x03		
+                DEID = PGID /* \_SB_.SIAD.PGID */		
+                If (\_SB.ABD.AVBL)		
+                {		
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.SIAD.DBUF */		
+                }		
+            }		
+        }
+
         Device (MCPU)
         {
             Name (_HID, "MSHW1014")  // _HID: Hardware ID
+        }
+
+        Device (HALL)
+        {
+            Name (_HID, "MSHW1015")  // _HID: Hardware ID
+            Name (_UID, One)  // _UID: Unique ID
+            Name (_DEP, Package (0x02)  // _DEP: Dependencies
+            {
+                \_SB.PEP0, 
+                \_SB.GIO0
+            })
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+            {
+                Name (RBUF, ResourceTemplate ()
+                {
+                    GpioInt (Edge, ActiveHigh, SharedAndWake, PullUp, 0x0000,
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,
+                        )
+                        {   // Pin list
+                            0x002A
+                        }
+                    GpioIo (Shared, PullUp, 0x0000, 0x0000, IoRestrictionNone,
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,
+                        )
+                        {   // Pin list
+                            0x002A
+                        }
+                    GpioInt (Edge, ActiveHigh, SharedAndWake, PullUp, 0x0000,
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,
+                        )
+                        {   // Pin list
+                            0x004B
+                        }
+                    GpioIo (Shared, PullUp, 0x0000, 0x0000, IoRestrictionNone,
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,
+                        )
+                        {   // Pin list
+                            0x004B
+                        }
+                })
+                Return (RBUF) /* \_SB_.HALL._CRS.RBUF */
+            }
+
+            Name (PGID, Buffer (0x0A)
+            {
+                "\\_SB.HALL"
+            })
+            Name (DBUF, Buffer (DBFL){})
+            CreateByteField (DBUF, Zero, STAT)
+            CreateByteField (DBUF, 0x02, DVAL)
+            CreateField (DBUF, 0x18, 0xA0, DEID)
+            Method (_S1D, 0, NotSerialized)  // _S1D: S1 Device State
+            {
+                Return (0x03)
+            }
+
+            Method (_S2D, 0, NotSerialized)  // _S2D: S2 Device State
+            {
+                Return (0x03)
+            }
+
+            Method (_S3D, 0, NotSerialized)  // _S3D: S3 Device State
+            {
+                Return (0x03)
+            }
+
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0
+            {
+                DEID = Buffer (ESNL){}
+                DVAL = Zero
+                DEID = PGID /* \_SB_.HALL.PGID */
+                If (\_SB.ABD.AVBL)
+                {
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.HALL.DBUF */
+                }
+            }
+
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3
+            {
+                DEID = Buffer (ESNL){}
+                DVAL = 0x03
+                DEID = PGID /* \_SB_.HALL.PGID */
+                If (\_SB.ABD.AVBL)
+                {
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.HALL.DBUF */
+                }
+            }
         }
 
         Device (CESP)
@@ -587,38 +749,111 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
             }
         }
 
-        Device (FPS1)
+        Device (CPSW)
         {
-            Name (_HID, "MSHW1023")  // _HID: Hardware ID
+            Name (_HID, "MSHW1009")  // _HID: Hardware ID
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_DEP, Package (0x02)  // _DEP: Dependencies
             {
                 \_SB.PEP0, 
-                \_SB.GIO0
+                \_SB.PM02
             })
             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             {
                 Name (RBUF, ResourceTemplate ()
                 {
-                    GpioInt (Edge, ActiveHigh, Exclusive, PullUp, 0x0000,
-                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,
+                    GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionNone,
+                        "\\_SB.PM02", 0x00, ResourceConsumer, ,
                         )
                         {   // Pin list
-                            0x005A
+                            0x0620
                         }
                     GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionNone,
+                        "\\_SB.PM02", 0x00, ResourceConsumer, ,
+                        RawDataBuffer (0x04)  // Vendor Data
+                        {
+                            0x00, 0x13, 0xFF, 0xFF
+                        })
+                        {   // Pin list
+                            0x0638
+                        }
+                    GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionNone,
+                        "\\_SB.PM02", 0x00, ResourceConsumer, ,
+                        RawDataBuffer (0x04)  // Vendor Data
+                        {
+                            0x00, 0x13, 0xFF, 0xFF
+                        })
+                        {   // Pin list
+                            0x0640
+                        }
+                    GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionNone,
+                        "\\_SB.PM02", 0x00, ResourceConsumer, ,
+                        RawDataBuffer (0x04)  // Vendor Data
+                        {
+                            0x00, 0x13, 0xFF, 0xFF
+                        })
+                        {   // Pin list
+                            0x0648
+                        }
+                })
+                Return (RBUF)
+            }
+        }
+
+        Device (HDDP)
+        {
+            Name (_HID, "MSHW1007")  // _HID: Hardware ID
+            Name (_UID, Zero)  // _UID: Unique ID
+            Name (_DEP, Package (0x04)  // _DEP: Dependencies
+            {
+                \_SB.PEP0, 
+                \_SB.IC11, 
+                \_SB.GIO0, 
+                \_SB.PM02
+            })
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+            {
+                Name (RBUF, ResourceTemplate ()
+                {
+                    I2cSerialBusV2 (0x0038, ControllerInitiated, 0x00061A80,
+                        AddressingMode7Bit, "\\_SB.IC11",
+                        0x00, ResourceConsumer, , Exclusive,
+                        )
+                    I2cSerialBusV2 (0x0039, ControllerInitiated, 0x00061A80,
+                        AddressingMode7Bit, "\\_SB.IC11",
+                        0x00, ResourceConsumer, , Exclusive,
+                        )
+                    I2cSerialBusV2 (0x003D, ControllerInitiated, 0x00061A80,
+                        AddressingMode7Bit, "\\_SB.IC11",
+                        0x00, ResourceConsumer, , Exclusive,
+                        )
+                    I2cSerialBusV2 (0x003F, ControllerInitiated, 0x00061A80,
+                        AddressingMode7Bit, "\\_SB.IC11",
+                        0x00, ResourceConsumer, , Exclusive,
+                        )
+                    I2cSerialBusV2 (0x0040, ControllerInitiated, 0x00061A80,
+                        AddressingMode7Bit, "\\_SB.IC11",
+                        0x00, ResourceConsumer, , Exclusive,
+                        )
+                    GpioInt (Edge, ActiveLow, Exclusive, PullUp, 0x0000,
                         "\\_SB.GIO0", 0x00, ResourceConsumer, ,
                         )
                         {   // Pin list
-                            0x0059
+                            0x0029
+                        }
+                    GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionNone,
+                        "\\_SB.PM02", 0x00, ResourceConsumer, ,
+                        )
+                        {   // Pin list
+                            0x0630
                         }
                 })
-                Return (RBUF) /* \_SB_.FPS1._CRS.RBUF */
+                Return (RBUF) /* \_SB_.HDDP._CRS.RBUF */
             }
 
             Name (PGID, Buffer (0x0A)
             {
-                "\\_SB.FPS1"
+                "\\_SB.HDDP"
             })
             Name (DBUF, Buffer (DBFL){})
             CreateByteField (DBUF, Zero, STAT)
@@ -643,10 +878,10 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
             {
                 DEID = Buffer (ESNL){}
                 DVAL = Zero
-                DEID = PGID /* \_SB_.FPS1.PGID */
+                DEID = PGID /* \_SB_.HDDP.PGID */
                 If (\_SB.ABD.AVBL)
                 {
-                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.FPS1.DBUF */
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.HDDP.DBUF */
                 }
             }
 
@@ -654,12 +889,134 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
             {
                 DEID = Buffer (ESNL){}
                 DVAL = 0x03
-                DEID = PGID /* \_SB_.FPS1.PGID */
+                DEID = PGID /* \_SB_.HDDP.PGID */
                 If (\_SB.ABD.AVBL)
                 {
-                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.FPS1.DBUF */
+                    \_SB.PEP0.FLD0 = DBUF /* \_SB_.HDDP.DBUF */
                 }
             }
+        }
+
+        Device (LICE)
+        {
+            Name (_HID, "MSHW1006")  // _HID: Hardware ID
+            Name (_UID, Zero)  // _UID: Unique ID
+            Name (_DEP, Package (0x03)  // _DEP: Dependencies
+            {
+                \_SB.PEP0, 
+                \_SB.SP10, 
+                \_SB.GIO0
+            })
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+            {
+                Name (RBUF, ResourceTemplate ()
+                {
+                    SpiSerialBusV2 (0x0000, PolarityLow, FourWireMode, 0x08,
+                        ControllerInitiated, 0x004C4B40, ClockPolarityLow,
+                        ClockPhaseFirst, "\\_SB.SP10",
+                        0x00, ResourceConsumer, , Exclusive,
+                        RawDataBuffer (0x06)  // Vendor Data
+                        {
+                            0x00, 0x00, 0x00, 0x01, 0x00, 0x00
+                        })
+                    GpioInt (Edge, ActiveLow, ExclusiveAndWake, PullUp, 0x0000,
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,
+                        )
+                        {   // Pin list
+                            0x005F
+                        }
+                    GpioInt (Edge, ActiveLow, SharedAndWake, PullUp, 0x0000,
+                        "\\_SB.GIO0", 0x00, ResourceConsumer, ,
+                        )
+                        {   // Pin list
+                            0x0016
+                        }
+                    GpioInt (Edge, ActiveBoth, ExclusiveAndWake, PullUp, 0x0000,
+                        "\\_SB.PM02", 0x00, ResourceConsumer, ,
+                        RawDataBuffer (0x04)  // Vendor Data
+                        {
+                            0x21, 0x01, 0x02, 0x1A
+                        })
+                        {   // Pin list
+                            0x1002
+                        }
+                    GpioInt (Edge, ActiveBoth, ExclusiveAndWake, PullUp, 0x0000,
+                        "\\_SB.PM02", 0x00, ResourceConsumer, ,
+                        RawDataBuffer (0x04)  // Vendor Data
+                        {
+                            0x20, 0x01, 0x02, 0x1A
+                        })
+                        {   // Pin list
+                            0x1001
+                        }
+                })
+                Return (RBUF)
+            }
+
+            Name (PGID, Buffer (0x0A)
+            {
+                "\\_SB.LICE"
+            })
+            Name (DBUF, Buffer (DBFL){})
+            CreateByteField (DBUF, Zero, STAT)
+            CreateByteField (DBUF, 0x02, DVAL)
+            CreateField (DBUF, 0x18, 0xA0, DEID)
+            Method (_S1D, 0, NotSerialized)  // _S1D: S1 Device State
+            {
+                Return (0x03)
+            }
+
+            Method (_S2D, 0, NotSerialized)  // _S2D: S2 Device State
+            {
+                Return (0x03)
+            }
+
+            Method (_S3D, 0, NotSerialized)  // _S3D: S3 Device State
+            {
+                Return (0x03)
+            }
+
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0
+            {
+                DEID = Buffer (ESNL){}
+                DVAL = Zero
+                DEID = PGID
+                If (\_SB.ABD.AVBL)
+                {
+                    \_SB.PEP0.FLD0 = DBUF
+                }
+            }
+
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3
+            {
+                DEID = Buffer (ESNL){}
+                DVAL = 0x03
+                DEID = PGID
+                If (\_SB.ABD.AVBL)
+                {
+                    \_SB.PEP0.FLD0 = DBUF
+                }
+            }
+        }
+
+        Device (TCCT)
+        {
+            Name (_HID, "MSHW100C")  // _HID: Hardware ID
+        }
+
+        Device (DLFT)
+        {
+            // This is our DreamLifter device, which hosts the stock tyc.dll
+            // device in a specialized host process. Add a entry to let it be installed
+            // seamlessly.
+            Name (_HID, "LUMI0002")
+            Name (_UID, Zero)
+            Name (_DEP, Package (0x03)  // Depends on controller and mux devices
+            {
+                \_SB.CPSW, 
+                \_SB.LICE, 
+                \_SB.HDDP
+            })
         }
     }
 }

@@ -1,8 +1,10 @@
+#include <PiDxe.h>
 #include <Uefi.h>
 
 #include <Configuration/Hob.h>
 #include <Pi/PiFirmwareFile.h>
 
+#include <Library/BaseLib.h>
 #include <Library/BmpSupportLib.h>
 #include <Library/DebugLib.h>
 #include <Library/DxeServicesLib.h>
@@ -11,7 +13,10 @@
 #include <Library/UefiLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
 
+#include <IndustryStandard/Acpi.h>
 #include <IndustryStandard/Bmp.h>
+#include <Protocol/AcpiTable.h>
+#include <Protocol/FirmwareVolume2.h>
 #include <Protocol/GraphicsOutput.h>
 
 #include <Library/BgraRgbaConvert.h>
@@ -19,6 +24,8 @@
 #include <LittleVgl/core/lv_core/lv_refr.h>
 #include <LittleVgl/core/lvgl.h>
 #include <LittleVgl/lv_conf.h>
+
+#include "AcpiTableInstaller.h"
 
 STATIC EFI_GUID gUnsupportedImageGuid = {
     0x5fdf5e3c,
@@ -115,8 +122,8 @@ EFIAPI
 PreLoaderDxeInitialize(
     IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
 {
-  PPRELOADER_ENVIRONMENT Env    = (VOID *)PRELOADER_ENV_ADDR;
-  EFI_STATUS             Status = EFI_SUCCESS;
+  PPRELOADER_ENVIRONMENT_VERSION_2 Env    = (VOID *)PRELOADER_ENV_ADDR;
+  EFI_STATUS                       Status = EFI_SUCCESS;
 
   // Protocols
   Status = gBS->LocateProtocol(
@@ -140,6 +147,10 @@ PreLoaderDxeInitialize(
       L"UEFIDisplayInfo", &gEfiGraphicsOutputProtocolGuid,
       EFI_VARIABLE_RUNTIME_ACCESS | EFI_VARIABLE_BOOTSERVICE_ACCESS,
       sizeof(UINT32) * 30, (VOID *)Env->UefiDisplayInfo);
+  ASSERT_EFI_ERROR(Status);
+
+  // Install ACPI Tables
+  Status = InstallAcpiTables();
   ASSERT_EFI_ERROR(Status);
 
   // Install protocol

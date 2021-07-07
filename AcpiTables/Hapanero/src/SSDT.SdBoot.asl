@@ -15,10 +15,9 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
     {
         Device (SDC2)
         {
-            Name (_DEP, Package (0x02)  // _DEP: Dependencies
+            Name (_DEP, Package (One)  // _DEP: Dependencies
             {
-                \_SB.PEP0, 
-                \_SB.GIO0
+                \_SB.PEP0
             })
             Name (_HID, "QCOM2466")  // _HID: Hardware ID
             Name (_CID, "ACPIQCOM2466")  // _CID: Compatible ID
@@ -36,23 +35,21 @@ DefinitionBlock ("", "SSDT", 2, "MMO   ", "MSM8994 ", 0x00000003)
                     {
                         0x0000009D,
                     }
-                    GpioInt (Edge, ActiveBoth, SharedAndWake, PullNone, 0x7530,
-                        "\\_SB.PM01", 0x00, ResourceConsumer, ,
-                        RawDataBuffer (0x04)  // Vendor Data
-                        {
-                            0x02, 0x03, 0x01, 0x00
-                        })
-                        {   // Pin list
-                            0x0638
-                        }
-                    GpioIo (Shared, PullNone, 0x0000, 0x0000, IoRestrictionNone,
-                        "\\_SB.PM01", 0x00, ResourceConsumer, ,
-                        )
-                        {   // Pin list
-                            0x0638
-                        }
                 })
                 Return (RBUF) /* \_SB_.SDC2._CRS.RBUF */
+            }
+
+            Device (EMMC)
+            {
+                Method (_ADR, 0, NotSerialized)  // _ADR: Address
+                {
+                    Return (0x08)
+                }
+
+                Method (_RMV, 0, NotSerialized)  // _RMV: Removal Status
+                {
+                    Return (Zero)
+                }
             }
 
             Method (_DIS, 0, NotSerialized)  // _DIS: Disable Device

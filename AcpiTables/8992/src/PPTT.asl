@@ -12,12 +12,12 @@
 [024h 0036   1]                Subtable Type : 02 [ID]
 [025h 0037   1]                       Length : 1E
 [026h 0038   2]                     Reserved : 0000
-[028h 0040   4]                    VENDOR_ID : 00000000
-[02Ch 0044   8]                   LEVEL_1_ID : 0000000000000000
-[034h 0052   8]                   LEVEL_2_ID : 0000000000000000
-[03Ch 0060   2]                    MAJOR_REV : 0000
-[03Eh 0062   2]                    MINOR_REV : 0000
-[040h 0064   2]                     SPIN_REV : 0000
+[028h 0040   4]                    Vendor ID : 00000000
+[02Ch 0044   8]                    Level1 ID : 0000000000000000
+[034h 0052   8]                    Level2 ID : 0000000000000000
+[03Ch 0060   2]               Major revision : 0000
+[03Eh 0062   2]               Minor revision : 0000
+[040h 0064   2]                Spin revision : 0000
 
 [042h 0066   1]                Subtable Type : 00 [Processor Hierarchy Node]
 [043h 0067   1]                       Length : 18
@@ -25,6 +25,9 @@
 [046h 0070   4]        Flags (decoded below) : 00000001
                             Physical package : 1
                      ACPI Processor ID valid : 0
+                       Processor is a thread : 0
+                              Node is a leaf : 0
+                    Identical Implementation : 0
 [04Ah 0074   4]                       Parent : 00000000
 [04Eh 0078   4]            ACPI Processor ID : 00000000
 [052h 0082   4]      Private Resource Number : 00000001
@@ -162,6 +165,9 @@
 [0EEh 0238   4]        Flags (decoded below) : 00000002
                             Physical package : 0
                      ACPI Processor ID valid : 1
+                       Processor is a thread : 0
+                              Node is a leaf : 0
+                    Identical Implementation : 0
 [0F2h 0242   4]                       Parent : 00000042
 [0F6h 0246   4]            ACPI Processor ID : 00000000
 [0FAh 0250   4]      Private Resource Number : 00000002
@@ -174,6 +180,9 @@
 [10Ah 0266   4]        Flags (decoded below) : 00000002
                             Physical package : 0
                      ACPI Processor ID valid : 1
+                       Processor is a thread : 0
+                              Node is a leaf : 0
+                    Identical Implementation : 0
 [10Eh 0270   4]                       Parent : 00000042
 [112h 0274   4]            ACPI Processor ID : 00000001
 [116h 0278   4]      Private Resource Number : 00000002
@@ -186,6 +195,9 @@
 [126h 0294   4]        Flags (decoded below) : 00000002
                             Physical package : 0
                      ACPI Processor ID valid : 1
+                       Processor is a thread : 0
+                              Node is a leaf : 0
+                    Identical Implementation : 0
 [12Ah 0298   4]                       Parent : 00000042
 [12Eh 0302   4]            ACPI Processor ID : 00000002
 [132h 0306   4]      Private Resource Number : 00000002
@@ -198,6 +210,9 @@
 [142h 0322   4]        Flags (decoded below) : 00000002
                             Physical package : 0
                      ACPI Processor ID valid : 1
+                       Processor is a thread : 0
+                              Node is a leaf : 0
+                    Identical Implementation : 0
 [146h 0326   4]                       Parent : 00000042
 [14Ah 0330   4]            ACPI Processor ID : 00000003
 [14Eh 0334   4]      Private Resource Number : 00000002
@@ -210,6 +225,9 @@
 [15Eh 0350   4]        Flags (decoded below) : 00000002
                             Physical package : 0
                      ACPI Processor ID valid : 1
+                       Processor is a thread : 0
+                              Node is a leaf : 0
+                    Identical Implementation : 0
 [162h 0354   4]                       Parent : 00000042
 [166h 0358   4]            ACPI Processor ID : 00000004
 [16Ah 0362   4]      Private Resource Number : 00000002
@@ -222,6 +240,9 @@
 [17Ah 0378   4]        Flags (decoded below) : 00000002
                             Physical package : 0
                      ACPI Processor ID valid : 1
+                       Processor is a thread : 0
+                              Node is a leaf : 0
+                    Identical Implementation : 0
 [17Eh 0382   4]                       Parent : 00000042
 [182h 0386   4]            ACPI Processor ID : 00000005
 [186h 0390   4]      Private Resource Number : 00000002

@@ -69,58 +69,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             }
         }
 
-        Device (SDC2)
-        {
-            Name (_DEP, Package (0x02)  // _DEP: Dependencies
-            {
-                \_SB.PEP0, 
-                \_SB.GIO0
-            })
-            Name (_HID, "QCOM2466")  // _HID: Hardware ID
-            Name (_CID, "ACPIQCOM2466")  // _CID: Compatible ID
-            Name (_UID, One)  // _UID: Unique ID
-            Name (_CCA, Zero)  // _CCA: Cache Coherency Attribute
-            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-            {
-                Name (RBUF, ResourceTemplate ()
-                {
-                    Memory32Fixed (ReadWrite,
-                        0xF98A4900,         // Address Base
-                        0x00000200,         // Address Length
-                        )
-                    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive, ,, )
-                    {
-                        0x0000009D,
-                    }
-                    GpioInt (Edge, ActiveBoth, SharedAndWake, PullNone, 0x7530,
-                        "\\_SB.PM01", 0x00, ResourceConsumer, ,
-                        RawDataBuffer (0x04)  // Vendor Data
-                        {
-                            0x02, 0x03, 0x01, 0x00
-                        })
-                        {   // Pin list
-                            0x0638
-                        }
-                    GpioIo (Shared, PullNone, 0x0000, 0x0000, IoRestrictionNone,
-                        "\\_SB.PM01", 0x00, ResourceConsumer, ,
-                        )
-                        {   // Pin list
-                            0x0638
-                        }
-                })
-                Return (RBUF) /* \_SB_.SDC2._CRS.RBUF */
-            }
-
-            Method (_DIS, 0, NotSerialized)  // _DIS: Disable Device
-            {
-            }
-
-            Method (_STA, 0, NotSerialized)  // _STA: Status
-            {
-                Return (0x0F)
-            }
-        }
-
         Device (ABD)
         {
             Name (_HID, "QCOM2431")  // _HID: Hardware ID
@@ -1245,10 +1193,6 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
         Device (PEP0)
         {
             Name (_HID, "QCOM2425")  // _HID: Hardware ID
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
-            {
-                \_SB.PMIC
-            })
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
                 Interrupt (ResourceConsumer, Edge, ActiveHigh, ExclusiveAndWake, ,, )
@@ -1420,49 +1364,49 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             {
                 Package (0x02)
                 {
-                    "\\_SB.CPU0", 
+                    "\\_SB.SYSM.APC0.CL0.CPU0", 
                     0x10
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU1", 
+                    "\\_SB.SYSM.APC0.CL0.CPU1", 
                     0x11
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU2", 
+                    "\\_SB.SYSM.APC0.CL0.CPU2", 
                     0x12
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU3", 
+                    "\\_SB.SYSM.APC0.CL0.CPU3", 
                     0x13
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU4", 
+                    "\\_SB.SYSM.APC0.CL1.CPU4", 
                     0x14
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU5", 
+                    "\\_SB.SYSM.APC0.CL1.CPU5", 
                     0x15
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU6", 
+                    "\\_SB.SYSM.APC0.CL1.CPU6", 
                     0x16
                 }, 
 
                 Package (0x02)
                 {
-                    "\\_SB.CPU7", 
+                    "\\_SB.SYSM.APC0.CL1.CPU7", 
                     0x17
                 }
             })
@@ -19252,8 +19196,162 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
                     }
                 }
             })
-            Name (CHXC, Package (0x04)
+            Name (CHXC, Package (0x05)
             {
+                Package (0x06)
+                {
+                    "DEVICE",
+                    "\\_SB.SIAD", 		
+                    Package (0x06)		
+                    {		
+                        "DSTATE", 		
+                        Zero, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x0E)		
+                            {		
+                                "PPP_RESOURCE_ID_SMPS4_A", 		
+                                0x02, 		
+                                0x001B7740, 		
+                                0x000493E0, 		
+                                One, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                0x05, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x06)		
+                            {		
+                                "PPP_RESOURCE_ID_LVS2_A", 		
+                                0x04, 		
+                                0x001B7740, 		
+                                0x000493E0, 		
+                                One, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x0A)		
+                            {		
+                                "PPP_RESOURCE_ID_LDO18_A", 		
+                                One, 		
+                                0x002B7CD0, 		
+                                0x000927C0, 		
+                                One, 		
+                                Zero, 		
+                                One, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "TLMMGPIO", 		
+                            Package (0x06)		
+                            {		
+                                0x27, 		
+                                One, 		
+                                Zero, 		
+                                One, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }		
+                    }, 		
+                    Package (0x02)		
+                    {		
+                        "DSTATE", 		
+                        One		
+                    }, 		
+                    Package (0x02)		
+                    {		
+                        "DSTATE", 		
+                        0x02		
+                    }, 		
+                    Package (0x06)		
+                    {		
+                        "DSTATE", 		
+                        0x03, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x0E)		
+                            {		
+                                "PPP_RESOURCE_ID_SMPS4_A", 		
+                                0x02, 		
+                                0x001B7740, 		
+                                0x000493E0, 		
+                                One, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                0x05, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x06)		
+                            {		
+                                "PPP_RESOURCE_ID_LVS2_A", 		
+                                0x04, 		
+                                0x001B7740, 		
+                                0x000493E0, 		
+                                One, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x0A)		
+                            {		
+                                "PPP_RESOURCE_ID_LDO18_A", 		
+                                One, 		
+                                0x002B7CD0, 		
+                                0x000927C0, 		
+                                One, 		
+                                Zero, 		
+                                One, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "TLMMGPIO", 		
+                            Package (0x06)		
+                            {		
+                                0x27, 		
+                                Zero, 		
+                                Zero, 		
+                                One, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }		
+                    }		
+                }, 		
+
                 Package (0x06)
                 {
                     "DEVICE", 
@@ -39715,52 +39813,72 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_HID, "QCOM2414")  // _HID: Hardware ID
         }
 
-        Device (CPU0)
+		Device (SYSM)
         {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, Zero)  // _UID: Unique ID
-        }
+            Name (_HID, "ACPI0010" /* Processor Container Device */)  // _HID: Hardware ID
+            Name (_UID, 0x00100000)  // _UID: Unique ID
+            Device (APC0)
+            {
+                Name (_HID, "ACPI0010" /* Processor Container Device */)  // _HID: Hardware ID
+                Name (_UID, 0x0100)  // _UID: Unique ID
+                Device (CL0)
+                {
+                    Name (_HID, "ACPI0010" /* Processor Container Device */)  // _HID: Hardware ID
+                    Name (_UID, 0x10)  // _UID: Unique ID
+                    Device (CPU0)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, Zero)  // _UID: Unique ID
+                    }
 
-        Device (CPU1)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, One)  // _UID: Unique ID
-        }
+                    Device (CPU1)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, One)  // _UID: Unique ID
+                    }
 
-        Device (CPU2)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x02)  // _UID: Unique ID
-        }
+                    Device (CPU2)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x02)  // _UID: Unique ID
+                    }
 
-        Device (CPU3)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x03)  // _UID: Unique ID
-        }
+                    Device (CPU3)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x03)  // _UID: Unique ID
+                    }
+                }
 
-        Device (CPU4)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x04)  // _UID: Unique ID
-        }
+                Device (CL1)
+                {
+                    Name (_HID, "ACPI0010" /* Processor Container Device */)  // _HID: Hardware ID
+                    Name (_UID, 0x20)  // _UID: Unique ID
+                    Device (CPU4)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x04)  // _UID: Unique ID
+                    }
 
-        Device (CPU5)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x05)  // _UID: Unique ID
-        }
+                    Device (CPU5)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x05)  // _UID: Unique ID
+                    }
 
-        Device (CPU6)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x06)  // _UID: Unique ID
-        }
+                    Device (CPU6)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x06)  // _UID: Unique ID
+                    }
 
-        Device (CPU7)
-        {
-            Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
-            Name (_UID, 0x07)  // _UID: Unique ID
+                    Device (CPU7)
+                    {
+                        Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+                        Name (_UID, 0x07)  // _UID: Unique ID
+                    }
+                }
+            }
         }
 
         Device (GPS)
@@ -40676,10 +40794,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x04)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -40766,8 +40884,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x02)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU4, 
-                \_SB.CPU5
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -40941,12 +41059,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x08)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS
             })
@@ -40974,12 +41092,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x0A)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS, 
                 \_SB.DISP, 
@@ -41009,12 +41127,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x0A)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS, 
                 \_SB.DISP, 
@@ -41570,12 +41688,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x09)  // _UID: Unique ID
             Name (_TZD, Package (0x07)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.GPU0
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
@@ -41642,12 +41760,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, One)  // _UID: Unique ID
             Name (_TZD, Package (0x0B)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS, 
                 \_SB.DISP, 
@@ -41683,12 +41801,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x06)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -41714,8 +41832,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x02)  // _UID: Unique ID
             Name (_TZD, Package (0x02)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU4, 
-                \_SB.CPU5
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -41776,10 +41894,10 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x03)  // _UID: Unique ID
             Name (_TZD, Package (0x04)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
@@ -41840,12 +41958,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x04)  // _UID: Unique ID
             Name (_TZD, Package (0x07)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
@@ -41877,12 +41995,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x07)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
@@ -41944,12 +42062,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x64)  // _UID: Unique ID
             Name (_TZD, Package (0x0D)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.PEP0, 
                 \_SB.AMSS, 
                 \_SB.DISP, 
@@ -42435,12 +42553,12 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, 0x09)  // _UID: Unique ID
             Name (_TZD, Package (0x07)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU0, 
-                \_SB.CPU1, 
-                \_SB.CPU2, 
-                \_SB.CPU3, 
-                \_SB.CPU4, 
-                \_SB.CPU5, 
+                \_SB.SYSM.APC0.CL0.CPU0, 
+                \_SB.SYSM.APC0.CL0.CPU1, 
+                \_SB.SYSM.APC0.CL0.CPU2, 
+                \_SB.SYSM.APC0.CL0.CPU3, 
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5, 
                 \_SB.GPU0
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
@@ -42507,8 +42625,8 @@ DefinitionBlock ("", "DSDT", 2, "QCOMM ", "MSM8992 ", 0x00000007)
             Name (_UID, Zero)  // _UID: Unique ID
             Name (_TZD, Package (0x02)  // _TZD: Thermal Zone Devices
             {
-                \_SB.CPU4, 
-                \_SB.CPU5
+                \_SB.SYSM.APC0.CL1.CPU4, 
+                \_SB.SYSM.APC0.CL1.CPU5
             })
             Method (_PSV, 0, NotSerialized)  // _PSV: Passive Temperature
             {
