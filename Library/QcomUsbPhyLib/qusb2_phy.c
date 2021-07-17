@@ -30,48 +30,54 @@
 #include <Library/PlatformIdLib.h>
 #include <Library/QcomUsbPhyLib.h>
 
-#define QUSB2_PHY_BASE              PcdGet64(PcdUsb2PhyBase)
-#define GCC_QUSB2_PHY_BCR           PcdGet64(PcdUsb2GccPhyBcr)
-#define QUSB2PHY_PORT_POWERDOWN     (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortPowerDownOffset))
-#define QUSB2PHY_PORT_UTMI_CTRL2    (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortUtmiCtrl2Offset))
-#define QUSB2PHY_PORT_TUNE1         (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortTune1Offset))
-#define QUSB2PHY_PORT_TUNE2         (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortTune2Offset))
-#define QUSB2PHY_PORT_TUNE3         (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortTune3Offset))
-#define QUSB2PHY_PORT_TUNE4         (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortTune4Offset))
+#define QUSB2_PHY_BASE PcdGet64(PcdUsb2PhyBase)
+#define GCC_QUSB2_PHY_BCR PcdGet64(PcdUsb2GccPhyBcr)
+#define QUSB2PHY_PORT_POWERDOWN                                                \
+  (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortPowerDownOffset))
+#define QUSB2PHY_PORT_UTMI_CTRL2                                               \
+  (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortUtmiCtrl2Offset))
+#define QUSB2PHY_PORT_TUNE1                                                    \
+  (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortTune1Offset))
+#define QUSB2PHY_PORT_TUNE2                                                    \
+  (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortTune2Offset))
+#define QUSB2PHY_PORT_TUNE3                                                    \
+  (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortTune3Offset))
+#define QUSB2PHY_PORT_TUNE4                                                    \
+  (QUSB2_PHY_BASE + PcdGet64(PcdUsb2PhyPortTune4Offset))
 
 void qusb2_phy_reset(void)
 {
-	uint32_t val;
+  uint32_t val;
 
-	/* Block Reset */
-	val = readl(GCC_QUSB2_PHY_BCR) | BIT(0);
-	writel(val, GCC_QUSB2_PHY_BCR);
-	udelay(10);
-	writel(val & ~BIT(0), GCC_QUSB2_PHY_BCR);
+  /* Block Reset */
+  val = readl(GCC_QUSB2_PHY_BCR) | BIT(0);
+  writel(val, GCC_QUSB2_PHY_BCR);
+  udelay(10);
+  writel(val & ~BIT(0), GCC_QUSB2_PHY_BCR);
 
-	/* set CLAMP_N_EN and stay with disabled USB PHY */
-	writel(0x23, QUSB2PHY_PORT_POWERDOWN);
+  /* set CLAMP_N_EN and stay with disabled USB PHY */
+  writel(0x23, QUSB2PHY_PORT_POWERDOWN);
 
-	/* Set HS impedance to 42ohms */
-	writel(0xA0, QUSB2PHY_PORT_TUNE1);
+  /* Set HS impedance to 42ohms */
+  writel(0xA0, QUSB2PHY_PORT_TUNE1);
 
-	/* Set TX current to 19mA, TX SR and TX bias current to 1, 1 */
-	writel(0xA5, QUSB2PHY_PORT_TUNE2);
+  /* Set TX current to 19mA, TX SR and TX bias current to 1, 1 */
+  writel(0xA5, QUSB2PHY_PORT_TUNE2);
 
-	/* Increase autocalibration bias circuit settling time
-	 * and enable utocalibration  */
-	writel(0x81, QUSB2PHY_PORT_TUNE3);
+  /* Increase autocalibration bias circuit settling time
+   * and enable utocalibration  */
+  writel(0x81, QUSB2PHY_PORT_TUNE3);
 
-	writel(0x85, QUSB2PHY_PORT_TUNE4);
-	/* Wait for tuning params to take effect right before re-enabling power*/
-	udelay(10);
+  writel(0x85, QUSB2PHY_PORT_TUNE4);
+  /* Wait for tuning params to take effect right before re-enabling power*/
+  udelay(10);
 
-	/* Disable the PHY */
-	writel(0x23, QUSB2PHY_PORT_POWERDOWN);
-	/* Enable ULPI mode */
-	if (platform_is_msm8994())
-		writel(0x0,  QUSB2PHY_PORT_UTMI_CTRL2);
-	/* Enable PHY */
-	/* set CLAMP_N_EN and USB PHY is enabled*/
-	writel(0x22, QUSB2PHY_PORT_POWERDOWN);
+  /* Disable the PHY */
+  writel(0x23, QUSB2PHY_PORT_POWERDOWN);
+  /* Enable ULPI mode */
+  if (platform_is_msm8994())
+    writel(0x0, QUSB2PHY_PORT_UTMI_CTRL2);
+  /* Enable PHY */
+  /* set CLAMP_N_EN and USB PHY is enabled*/
+  writel(0x22, QUSB2PHY_PORT_POWERDOWN);
 }
