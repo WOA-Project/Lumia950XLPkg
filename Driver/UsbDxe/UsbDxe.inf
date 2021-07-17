@@ -1,0 +1,56 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = UsbDxe
+  FILE_GUID                      = b20933aa-0a9f-453d-90f1-c266f8b95f4e
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = UsbEntryPoint
+
+[Sources.common]
+  usb30_dwc.c
+  usb30_dwc_hw.c
+  usb30_udc.c
+  usb30_wrapper.c
+
+  Usb.c
+
+[Sources.ARM]
+  hsusb.c
+
+[LibraryClasses]
+  DebugLib
+  IoLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  MallocLib
+  LcmLib
+  StrLib
+  BoardLib
+  InterruptsLib
+  PlatformIdLib
+  QcomPlatformUsbLib
+  TimerLib
+  CacheMaintenanceLib
+  UefiLib
+  QcomUsbPhyLib
+
+[Protocols]
+  gEFIDroidUsbDeviceProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  ArmPkg/ArmPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+
+[Pcd]
+  gQcomTokenSpaceGuid.PcdUsb30Ee1Irq
+  gQcomTokenSpaceGuid.PcdUsb30Base
+  gQcomTokenSpaceGuid.PcdUsb30ScratchBase
+  gQcomTokenSpaceGuid.PcdUsbHsBase
+  gQcomTokenSpaceGuid.PcdUsbHsIrq
+
+[Depex]
+  TRUE

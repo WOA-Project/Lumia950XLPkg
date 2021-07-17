@@ -108,4 +108,7 @@
 
 #define ROUND_TO_PAGE(x) (x & (~(EFI_PAGE_SIZE - 1)))
 
+#define upper_32_bits(n) ((UINT32)(((n) >> 16) >> 16))
+#define lower_32_bits(n) ((UINT32)(n))
+
 #endif

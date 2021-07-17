@@ -67,6 +67,7 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/Driver/SmemDxe/SmemDxe.inf
   INF Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
   INF Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
+  INF Lumia950XLPkg/Driver/UsbDxe/UsbDxe.inf
   INF Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   INF Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   INF Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf

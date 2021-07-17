@@ -337,6 +337,8 @@
   MicroLibC|Lumia950XLPkg/Library/MicroLibC/MicroLibC.inf
   StrLib|Lumia950XLPkg/Library/StrLib/StrLib.inf
   QcomPlatformI2cQupLib|Lumia950XLPkg/Library/StaticQcomPlatformI2cQupLib/StaticQcomPlatformI2cQupLib.inf
+  QcomPlatformUsbLib|Lumia950XLPkg/Library/QcomPlatformUsbLib/QcomPlatformUsbLib.inf
+  QcomUsbPhyLib|Lumia950XLPkg/Library/QcomUsbPhyLib/QcomUsbPhyLib.inf
   SmemLib|Lumia950XLPkg/Driver/SmemDxe/SmemImplLib.inf
   SmemPtableLib|Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableImplLib.inf
   PTableLib|Lumia950XLPkg/Library/PTableLib/PTableLib.inf
@@ -526,6 +528,7 @@
   Lumia950XLPkg/Driver/SmemDxe/SmemDxe.inf
   Lumia950XLPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
   Lumia950XLPkg/Driver/SmdRpmDxe/RpmDxe.inf
+  Lumia950XLPkg/Driver/UsbDxe/UsbDxe.inf
   Lumia950XLPkg/Driver/SsbiDxe/SsbiDxe.inf
   Lumia950XLPkg/Driver/BoardDxe/BoardDxe.inf
   Lumia950XLPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
