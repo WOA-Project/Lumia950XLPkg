@@ -11,7 +11,7 @@ trigger:
     - LICENSE
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  vmImage: 'Ubuntu-latest'
 
 steps:
 - script: sudo apt update 
