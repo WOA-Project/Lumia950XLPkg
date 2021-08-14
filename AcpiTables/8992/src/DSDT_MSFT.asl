@@ -17620,8 +17620,161 @@ DefinitionBlock("dsdt.aml", "DSDT", 0x02, "QCOMM ", "MSM8992 ", 0x00000003)
                     }
                 }
             })
-            Name(CHXC, Package(0x4)
+            Name(CHXC, Package(0x5)
             {
+                Package (0x06)
+                {
+                    "DEVICE",
+                    "\\_SB.SIAD", 		
+                    Package (0x06)		
+                    {		
+                        "DSTATE", 		
+                        Zero, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x0E)		
+                            {		
+                                "PPP_RESOURCE_ID_SMPS4_A", 		
+                                0x02, 		
+                                0x001B7740, 		
+                                0x000493E0, 		
+                                One, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                0x05, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x06)		
+                            {		
+                                "PPP_RESOURCE_ID_LVS2_A", 		
+                                0x04, 		
+                                0x001B7740, 		
+                                0x000493E0, 		
+                                One, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x0A)		
+                            {		
+                                "PPP_RESOURCE_ID_LDO18_A", 		
+                                One, 		
+                                0x002B7CD0, 		
+                                0x000927C0, 		
+                                One, 		
+                                Zero, 		
+                                One, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "TLMMGPIO", 		
+                            Package (0x06)		
+                            {		
+                                0x27, 		
+                                One, 		
+                                Zero, 		
+                                One, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }		
+                    }, 		
+                    Package (0x02)		
+                    {		
+                        "DSTATE", 		
+                        One		
+                    }, 		
+                    Package (0x02)		
+                    {		
+                        "DSTATE", 		
+                        0x02		
+                    }, 		
+                    Package (0x06)		
+                    {		
+                        "DSTATE", 		
+                        0x03, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x0E)		
+                            {		
+                                "PPP_RESOURCE_ID_SMPS4_A", 		
+                                0x02, 		
+                                0x001B7740, 		
+                                0x000493E0, 		
+                                One, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                0x05, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x06)		
+                            {		
+                                "PPP_RESOURCE_ID_LVS2_A", 		
+                                0x04, 		
+                                0x001B7740, 		
+                                0x000493E0, 		
+                                One, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "PMICVREGVOTE", 		
+                            Package (0x0A)		
+                            {		
+                                "PPP_RESOURCE_ID_LDO18_A", 		
+                                One, 		
+                                0x002B7CD0, 		
+                                0x000927C0, 		
+                                One, 		
+                                Zero, 		
+                                One, 		
+                                Zero, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }, 		
+                        Package (0x02)		
+                        {		
+                            "TLMMGPIO", 		
+                            Package (0x06)		
+                            {		
+                                0x27, 		
+                                Zero, 		
+                                Zero, 		
+                                One, 		
+                                Zero, 		
+                                Zero		
+                            }		
+                        }		
+                    }		
+                }, 		
                 Package(0x6)
                 {
                     "DEVICE",
