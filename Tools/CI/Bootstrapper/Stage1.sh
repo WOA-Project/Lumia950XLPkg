@@ -9,6 +9,8 @@
 # Checkout EDK2 at master and recent commit only
 echo "Checking out EDK2 workspace"
 
+cd ..
+
 mkdir edk2
 cd edk2
 
