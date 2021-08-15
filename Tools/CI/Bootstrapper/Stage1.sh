@@ -25,6 +25,7 @@ git fetch --depth 1 --recurse-submodules origin 03e77558d4939b9c21e94f03072360e9
 git reset --hard FETCH_HEAD
 
 # fetch submodules
+git submodule update --init --recursive
 git submodule foreach --recursive git fetch
 
 cd ..
