@@ -9,10 +9,21 @@
 # Checkout EDK2 at master and recent commit only
 echo "Checking out EDK2 workspace"
 
-cd ..
-git clone --single-branch --depth 1 --recurse-submodules --branch master https://github.com/tianocore/edk2
+mkdir edk2
 cd edk2
-git checkout 03e77558d4939b9c21e94f03072360e9b00bb559
+
+# create and initialize an empty repository
+git init
+ 
+# add a remote named origin for the repository at https://github.com/tianocore/edk2.git
+git remote add origin https://github.com/tianocore/edk2.git
+ 
+# fetch a commit using its hash
+git fetch --depth 1 --recurse-submodules origin 03e77558d4939b9c21e94f03072360e9b00bb559
+ 
+# reset repository to that commit
+git reset –hard FETCH_HEAD
+
 cd ..
 
 # Set a link to EDK2 workspace
