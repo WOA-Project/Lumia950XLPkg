@@ -12,7 +12,7 @@ echo "Checking out EDK2 workspace"
 cd ..
 git clone --single-branch --depth 1 --recurse-submodules --branch master https://github.com/tianocore/edk2
 cd edk2
-git reset --hard 03e77558
+git reset --hard 03e77558d4939b9c21e94f03072360e9b00bb559
 cd ..
 
 # Set a link to EDK2 workspace
