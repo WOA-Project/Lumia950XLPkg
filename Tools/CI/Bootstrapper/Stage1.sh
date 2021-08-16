@@ -21,7 +21,7 @@ git init
 git remote add origin https://github.com/tianocore/edk2.git
  
 # fetch a commit using its hash
-git fetch --depth 1 --recurse-submodules origin ab796d3e2ab41bde3a0bdd932cdcd09fd641e00c
+git fetch --depth 1 --recurse-submodules origin 610bcc69ed3d1e8c016332a1862465d41d95dd6c
  
 # reset repository to that commit
 git reset --hard FETCH_HEAD
