@@ -17,7 +17,7 @@ echo "Installing build components..."
 # Host utilities
 apt-get install git-core git
 apt-get install build-essential
-apt-get install python
+apt-get install python3
 
 # PowerShell
 # Import the public repository GPG keys
