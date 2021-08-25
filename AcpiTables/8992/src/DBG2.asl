@@ -1,7 +1,7 @@
 [000h 0000   4]                    Signature : "DBG2"    [Debug Port table type 2]
 [004h 0004   4]                 Table Length : 0000036A
 [008h 0008   1]                     Revision : 01
-[009h 0009   1]                     Checksum : 00     /* Incorrect checksum, should be 85 */
+[009h 0009   1]                     Checksum : 85
 [00Ah 0010   6]                       Oem ID : "QCOM  "
 [010h 0016   8]                 Oem Table ID : "QCOMEDK2"
 [018h 0024   4]                 Oem Revision : 00008994

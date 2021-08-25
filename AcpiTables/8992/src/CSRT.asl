@@ -1,7 +1,7 @@
 [000h 0000   4]                    Signature : "CSRT"    [Core System Resource Table]
 [004h 0004   4]                 Table Length : 0000005C
 [008h 0008   1]                     Revision : 00
-[009h 0009   1]                     Checksum : 00     /* Incorrect checksum, should be C3 */
+[009h 0009   1]                     Checksum : C3
 [00Ah 0010   6]                       Oem ID : "QCOM  "
 [010h 0016   8]                 Oem Table ID : "QCOMEDK2"
 [018h 0024   4]                 Oem Revision : 00008994
