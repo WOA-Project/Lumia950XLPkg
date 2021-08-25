@@ -1,4 +1,3 @@
-
 [000h 0000   4]                    Signature : "APIC"    [Multiple APIC Description Table (MADT)]
 [004h 0004   4]                 Table Length : 0000023C
 [008h 0008   1]                     Revision : 03

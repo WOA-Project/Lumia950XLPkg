@@ -1,4 +1,3 @@
-
 [000h 0000   4]                    Signature : "MCFG"    [Memory Mapped Configuration table]
 [004h 0004   4]                 Table Length : 0000003C
 [008h 0008   1]                     Revision : 01
@@ -16,10 +15,3 @@
 [036h 0054   1]             Start Bus Number : 00
 [037h 0055   1]               End Bus Number : 01
 [038h 0056   4]                     Reserved : 00000000
-
-Raw Table Data: Length 60 (0x3C)
-
-    0000: 4D 43 46 47 3C 00 00 00 01 39 51 43 4F 4D 20 20  // MCFG<....9QCOM  
-    0010: 51 43 4F 4D 45 44 4B 32 94 89 00 00 51 43 4F 4D  // QCOMEDK2....QCOM
-    0020: 01 00 00 00 00 00 00 00 00 00 00 00 00 00 80 F8  // ................
-    0030: 00 00 00 00 00 00 00 01 00 00 00 00              // ............

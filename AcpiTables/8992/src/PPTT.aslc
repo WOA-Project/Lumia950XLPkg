@@ -1,0 +1,276 @@
+#include <Library/AcpiLib.h>
+#include <IndustryStandard/Acpi.h>
+#include <Include/Platform.h>
+
+#pragma pack(1)
+
+typedef struct {
+  UINT8                                         Type;
+  UINT8                                         Length;
+  UINT8                                         Reserved[2];
+  EFI_ACPI_6_2_PPTT_STRUCTURE_PROCESSOR_FLAGS   Flags;
+  UINT32                                        Parent;
+  UINT32                                        AcpiProcessorId;
+  UINT32                                        NumberOfPrivateResources;
+  UINT32                                        IdResPtr;
+} MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE;
+
+typedef struct {
+  UINT8                                         Type;
+  UINT8                                         Length;
+  UINT8                                         Reserved[2];
+  EFI_ACPI_6_2_PPTT_STRUCTURE_PROCESSOR_FLAGS   Flags;
+  UINT32                                        Parent;
+  UINT32                                        AcpiProcessorId;
+  UINT32                                        NumberOfPrivateResources;
+  UINT32                                        L1CResPtr;
+  UINT32                                        L1DResPtr;
+} MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC;
+
+typedef struct _EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE {
+    EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER Header;
+    EFI_ACPI_6_2_PPTT_STRUCTURE_ID Id;
+    MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE Package;
+    EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE CortexA53L2Cache;
+    EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE CortexA53L1CCache;
+    EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE CortexA53L1DCache;
+    EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE CortexA57L2Cache;
+    EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE CortexA57L1CCache;
+    EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE CortexA57L1DCache;
+    MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC Processor0;
+    MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC Processor1;
+    MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC Processor2;
+    MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC Processor3;
+    MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC Processor4;
+    MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC Processor5;
+} EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE, *PEFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE;
+
+#define LOC_ID_TABLE_START sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER)
+#define LOC_PACKAGE_START sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER) \
+        + sizeof (EFI_ACPI_6_2_PPTT_STRUCTURE_ID)
+
+#define LOC_CA53_L2_TABLE_START sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER) \
+        + sizeof (EFI_ACPI_6_2_PPTT_STRUCTURE_ID) \
+        + sizeof (MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE)
+#define LOC_CA57_L2_TABLE_START sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER) \
+        + sizeof (EFI_ACPI_6_2_PPTT_STRUCTURE_ID) \
+        + sizeof (MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE)
+
+#define LOC_CA53_L1C_TABLE_START sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER) \
+        + sizeof (EFI_ACPI_6_2_PPTT_STRUCTURE_ID) \
+        + sizeof (MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE)
+#define LOC_CA53_L1D_TABLE_START sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER) \
+        + sizeof (EFI_ACPI_6_2_PPTT_STRUCTURE_ID) \
+        + sizeof (MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE)
+
+#define LOC_CA57_L1C_TABLE_START sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER) \
+        + sizeof (EFI_ACPI_6_2_PPTT_STRUCTURE_ID) \
+        + sizeof (MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE)
+#define LOC_CA57_L1D_TABLE_START sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER) \
+        + sizeof (EFI_ACPI_6_2_PPTT_STRUCTURE_ID) \
+        + sizeof (MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE) \
+        + sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE)
+
+#pragma pack()
+
+EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE Pptt = 
+{
+    {
+        EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_STRUCTURE_SIGNATURE,
+        sizeof (EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE),
+        EFI_ACPI_6_2_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_REVISION,
+        0,
+        ACPI_OEM_ID,
+        ACPI_OEM_TABLE_ID,
+        ACPI_OEM_REVISION,
+        ACPI_CREATOR_ID,
+        ACPI_CREATOR_REVISION,
+    },
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_ID,
+        sizeof (EFI_ACPI_6_2_PPTT_STRUCTURE_ID),
+        0, 0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_PROCESSOR,
+        sizeof (MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC_PACKAGE),
+        0, 0,
+        { 1, 0, 0, }, // Physical Package
+        0,
+        0,
+        1,
+        LOC_ID_TABLE_START,
+    },
+    /* Cortex A53 L2 */
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_CACHE,
+        sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE),
+        0, 0,
+        { 0, 0, 0, 0, 0, 0, 0, 0, },
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    /* Cortex A53 L1C */
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_CACHE,
+        sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE),
+        0, 0,
+        { 0, 0, 0, 0, 0, 0, 0, 0, },
+        LOC_CA53_L2_TABLE_START,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    /* Cortex A53 L1D */
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_CACHE,
+        sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE),
+        0, 0,
+        { 0, 0, 0, 0, 0, 0, 0, 0, },
+        LOC_CA53_L2_TABLE_START,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    /* Cortex A57 L2 */
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_CACHE,
+        sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE),
+        0, 0,
+        { 0, 0, 0, 0, 0, 0, 0, 0, },
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    /* Cortex A57 L1C */
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_CACHE,
+        sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE),
+        0, 0,
+        { 0, 0, 0, 0, 0, 0, 0, 0, },
+        LOC_CA57_L2_TABLE_START,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    /* Cortex A57 L1D */
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_CACHE,
+        sizeof(EFI_ACPI_6_2_PPTT_STRUCTURE_CACHE),
+        0, 0,
+        { 0, 0, 0, 0, 0, 0, 0, 0, },
+        LOC_CA57_L2_TABLE_START,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    /* Processors 0-3, Cortex A53 */
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_PROCESSOR,
+        sizeof(MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC),
+        0, 0,
+        { 0, 1, 0, }, // Acpi Valid
+        LOC_PACKAGE_START,
+        0,
+        2,
+        LOC_CA53_L1C_TABLE_START,
+        LOC_CA53_L1D_TABLE_START,
+    },
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_PROCESSOR,
+        sizeof(MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC),
+        0, 0,
+        { 0, 1, 0, }, // Acpi Valid
+        LOC_PACKAGE_START,
+        1,
+        2,
+        LOC_CA53_L1C_TABLE_START,
+        LOC_CA53_L1D_TABLE_START,
+    },
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_PROCESSOR,
+        sizeof(MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC),
+        0, 0,
+        { 0, 1, 0, }, // Acpi Valid
+        LOC_PACKAGE_START,
+        2,
+        2,
+        LOC_CA53_L1C_TABLE_START,
+        LOC_CA53_L1D_TABLE_START,
+    },
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_PROCESSOR,
+        sizeof(MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC),
+        0, 0,
+        { 0, 1, 0, }, // Acpi Valid
+        LOC_PACKAGE_START,
+        3,
+        2,
+        LOC_CA53_L1C_TABLE_START,
+        LOC_CA53_L1D_TABLE_START,
+    },
+    /* Processors 4-5, Cortex A57 */
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_PROCESSOR,
+        sizeof(MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC),
+        0, 0,
+        { 0, 1, 0, }, // Acpi Valid
+        LOC_PACKAGE_START,
+        4,
+        2,
+        LOC_CA57_L1C_TABLE_START,
+        LOC_CA57_L1D_TABLE_START,
+    },
+    {
+        EFI_ACPI_6_2_PPTT_TYPE_PROCESSOR,
+        sizeof(MSM8992_EFI_ACPI_6_2_PPTT_STRUCTURE_PROC),
+        0, 0,
+        { 0, 1, 0, }, // Acpi Valid
+        LOC_PACKAGE_START,
+        5,
+        2,
+        LOC_CA57_L1C_TABLE_START,
+        LOC_CA57_L1D_TABLE_START,
+    },
+};
+
+//
+// Reference the table being generated to prevent the optimizer from removing the
+// data structure from the executable
+//
+VOID* CONST ReferenceAcpiTable = &Pptt;
