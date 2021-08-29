@@ -27,11 +27,11 @@ steps:
 
 # Build iASL tool from repository
 # Eventually we will just install prepackaged version
-- script: git clone https://github.com/acpica/acpica acpica-tools
-  displayName: 'Checkout ACPICA tools repository'
+# - script: git clone https://github.com/acpica/acpica acpica-tools
+#   displayName: 'Checkout ACPICA tools repository'
 
-- script: cd acpica-tools && make clean && make && sudo make install && cd ..
-  displayName: 'Build and install ACPICA tools'
+# - script: cd acpica-tools && make clean && make && sudo make install && cd ..
+#   displayName: 'Build and install ACPICA tools'
 
 - script: sudo ./Tools/CI/Bootstrapper/Stage0.sh
   displayName: 'Prepare pre-build environment, phase 0'

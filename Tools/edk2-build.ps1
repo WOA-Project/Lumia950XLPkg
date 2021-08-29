@@ -53,9 +53,9 @@ $env:GCC5_AARCH64_PREFIX = $ccprefix
 Write-Output "Use GCC at $($ccprefix) to run builds."
 
 # Probe iASL
-$iaslpath = Get-AcpiToolsPath
-if ($null -eq $iaslpath) { return -1 }
-Write-Output "Use iASL at $($iaslpath) to compile SSDTs."
+# $iaslpath = Get-AcpiToolsPath
+# if ($null -eq $iaslpath) { return -1 }
+# Write-Output "Use iASL at $($iaslpath) to compile SSDTs."
 
 # Build base tools if not exist (dev).
 if (((Test-Path -Path "BaseTools") -eq $false) -or ($Clean -eq $true)) {
@@ -137,24 +137,24 @@ if ($commit) {
 
 # Build SSDT tables
 # Because this is quick enough, we build for any possible platforms
-$ssdts = Get-ChildItem Lumia950XLPkg/AcpiTables/**/src/SSDT*.asl
-if ($null -ne $ssdts) {
-    foreach ($ssdt in $ssdts) {
-        Write-Output "Build $($ssdt)."
-        $srcDir = [System.IO.Path]::GetDirectoryName($ssdt)
-        $fileName = [System.IO.Path]::GetFileNameWithoutExtension($ssdt)
-        $outDir = "$($srcDir)/../generated"
-        if (!(Test-Path -Path $outDir)) {
-            New-Item -ItemType Directory -Force -Path $outDir
-        }
-
-        . $iaslpath -p "$($outDir)/$($fileName).aml" $ssdt
-        if (-not $?) {
-            Write-Error "Build SSDT $($ssdt) failed."
-            return $?
-        }
-    }
-}
+# $ssdts = Get-ChildItem Lumia950XLPkg/AcpiTables/**/src/SSDT*.asl
+# if ($null -ne $ssdts) {
+#     foreach ($ssdt in $ssdts) {
+#         Write-Output "Build $($ssdt)."
+#         $srcDir = [System.IO.Path]::GetDirectoryName($ssdt)
+#         $fileName = [System.IO.Path]::GetFileNameWithoutExtension($ssdt)
+#         $outDir = "$($srcDir)/../generated"
+#         if (!(Test-Path -Path $outDir)) {
+#             New-Item -ItemType Directory -Force -Path $outDir
+#         }
+# 
+#         . $iaslpath -p "$($outDir)/$($fileName).aml" $ssdt
+#         if (-not $?) {
+#             Write-Error "Build SSDT $($ssdt) failed."
+#             return $?
+#         }
+#     }
+# }
 
 foreach ($target in $availableTargets) {
     Write-Output "Build Lumia950XLPkg for $($target) (Release = $($Release))."
