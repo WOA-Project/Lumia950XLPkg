@@ -4,15 +4,15 @@
 # This script module provides shared utilities.
 #
 
-function Get-AcpiToolsPath {
-    $iaslPath = which "iasl"
-    if ($null -eq $iaslPath) {
-        Write-Error -Message "ACPI tools are not present on this system."
-        return $null
-    }
-
-    return $iaslPath
-}
+# function Get-AcpiToolsPath {
+#     $iaslPath = which "iasl"
+#     if ($null -eq $iaslPath) {
+#         Write-Error -Message "ACPI tools are not present on this system."
+#         return $null
+#     }
+# 
+#     return $iaslPath
+# }
 
 function Get-GnuAarch64CrossCollectionPath {
     param(

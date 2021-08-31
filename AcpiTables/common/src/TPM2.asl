@@ -9,5 +9,5 @@
 [020h 0032   4]        Asl Compiler Revision : 00000001
 
 [024h 0036   4]                     Reserved : 00000000
-[028h 0040   8]              Control Address : 0000000000000000
+[028h 0040   8]              Control Address : 0000000000386000
 [030h 0048   4]                 Start Method : 00000009

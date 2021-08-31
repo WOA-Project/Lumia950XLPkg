@@ -1,15 +1,14 @@
-
 [000h 0000   4]                    Signature : "GTDT"    [Generic Timer Description Table]
 [004h 0004   4]                 Table Length : 0000009C
 [008h 0008   1]                     Revision : 02
-[009h 0009   1]                     Checksum : DB
+[009h 0009   1]                     Checksum : 8F
 [00Ah 0010   6]                       Oem ID : "QCOM  "
 [010h 0016   8]                 Oem Table ID : "QCOMEDK2"
 [018h 0024   4]                 Oem Revision : 00008994
 [01Ch 0028   4]              Asl Compiler ID : "QCOM"
 [020h 0032   4]        Asl Compiler Revision : 00000001
 
-[024h 0036   8]        Counter Block Address : FFFFFFFFFFFFFFFF
+[024h 0036   8]        Counter Block Address : 00000000F9020000
 [02Ch 0044   4]                     Reserved : 00000000
 
 [030h 0048   4]         Secure EL1 Interrupt : 00000012
@@ -62,16 +61,3 @@
 [098h 0152   4] Common Flags (decoded below) : 00000002
                                       Secure : 0
                                    Always On : 1
-
-Raw Table Data: Length 156 (0x9C)
-
-    0000: 47 54 44 54 9C 00 00 00 02 DB 51 43 4F 4D 20 20  // GTDT......QCOM  
-    0010: 51 43 4F 4D 45 44 4B 32 94 89 00 00 51 43 4F 4D  // QCOMEDK2....QCOM
-    0020: 01 00 00 00 FF FF FF FF FF FF FF FF 00 00 00 00  // ................
-    0030: 12 00 00 00 00 00 00 00 13 00 00 00 00 00 00 00  // ................
-    0040: 14 00 00 00 00 00 00 00 11 00 00 00 00 00 00 00  // ................
-    0050: FF FF FF FF FF FF FF FF 01 00 00 00 60 00 00 00  // ............`...
-    0060: 00 3C 00 00 00 00 02 F9 00 00 00 00 01 00 00 00  // .<..............
-    0070: 14 00 00 00 00 00 00 00 00 10 02 F9 00 00 00 00  // ................
-    0080: 00 20 02 F9 00 00 00 00 29 00 00 00 00 00 00 00  // . ......).......
-    0090: 28 00 00 00 00 00 00 00 02 00 00 00              // (...........
