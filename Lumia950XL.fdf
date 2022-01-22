@@ -95,6 +95,11 @@ READ_LOCK_STATUS   = TRUE
   # Security Stub
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
 
+  # Secure Boot Key Enroll
+  !if $(SECURE_BOOT_ENABLE) == TRUE
+    INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+  !endif
+
   # Graphics
   INF Lumia950XLPkg/Driver/SimpleFbDxe/SimpleFbDxe.inf
 

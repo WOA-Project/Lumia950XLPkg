@@ -30,6 +30,7 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Lumia950XLPkg/Lumia950XL.fdf
 
+  DEFINE SECURE_BOOT_ENABLE           = TRUE
   DEFINE USE_SCREEN_FOR_SERIAL_OUTPUT = 0
   DEFINE MEMORY_4GB                   = 0
 
