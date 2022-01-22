@@ -486,6 +486,8 @@
 
   VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
 
+  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/RuntimeCryptLib.inf
+
 [Components.common]
   # PrePI
   Lumia950XLPkg/PrePi/PrePi.inf {
