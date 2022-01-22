@@ -30,7 +30,9 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Lumia950XLPkg/Lumia950.fdf
 
-  DEFINE SECURE_BOOT_ENABLE      = TRUE
+  DEFINE SECURE_BOOT_ENABLE           = TRUE
+  DEFINE USE_SCREEN_FOR_SERIAL_OUTPUT = 0
+  DEFINE MEMORY_4GB                   = 0
 
 [BuildOptions.common]
   GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8992
@@ -48,7 +50,4 @@
   gLumia950XLPkgTokenSpaceGuid.SynapticsYMax|2660
   gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03920
   
-[PcdsFeatureFlag.common]
-  gLumia950XLPkgTokenSpaceGuid.PcdIs4GBSystem|FALSE
-
 !include Lumia950XLPkg/Shared.dsc.inc
