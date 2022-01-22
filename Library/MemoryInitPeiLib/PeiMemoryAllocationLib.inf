@@ -41,7 +41,6 @@
 
 [FeaturePcd]
   gEmbeddedTokenSpaceGuid.PcdPrePiProduceMemoryTypeInformationHob
-  gLumia950XLPkgTokenSpaceGuid.PcdIs4GBSystem
 
 [FixedPcd]
   gArmTokenSpaceGuid.PcdSystemMemoryBase
