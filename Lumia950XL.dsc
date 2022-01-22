@@ -30,6 +30,9 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Lumia950XLPkg/Lumia950XL.fdf
 
+  DEFINE USE_SCREEN_FOR_SERIAL_OUTPUT = 0
+  DEFINE MEMORY_4GB                   = 0
+
 [BuildOptions.common]
   GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8994
   
