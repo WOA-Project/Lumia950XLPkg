@@ -335,11 +335,11 @@
 !endif
 
   # Platform Drivers
-# !if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1
+!if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1
   SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
-# !else
-#   SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
-# !endif
+!else
+  SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
+!endif
   
   MemoryInitPeiLib|Lumia950XLPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
   PlatformPeiLib|Lumia950XLPkg/Library/PlatformPeiLib/PlatformPeiLib.inf
