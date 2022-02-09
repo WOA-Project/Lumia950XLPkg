@@ -336,19 +336,26 @@ EnableLink(VOID)
     DmCoreBase = 0xf8800000;
   }
 
+  // PCIE20_PARF_DEVICE_TYPE: this is RC
   MmioWrite32(ParfBase + 0x1000, 0x4);
+  // PCIE20_ELBI_SYS_CTRL
   MmioWrite32(DmCoreBase + 0xf24, 0x1);
+  // What's this? A guess is PCIE20_CAP_LINKCTRLSTATUS2
   MmioWrite32(DmCoreBase + 0x88, 0x1000000);
   gBS->Stall(1000);
 
+  // PCIE20_COMMAND_STATUS
   Val = MmioRead32(DmCoreBase + 0x4);
   MmioWrite32(DmCoreBase + 0x4, Val | 0x46);
 
+  // PCIE20_LINK_CONTROL2_LINK_STATUS2
   Val = MmioRead32(DmCoreBase + 0xa0);
   MmioWrite32(DmCoreBase + 0xa0, (Val & 0xFFFFFFF0) + 1);
+
+  // Enable Link Training State Machine
   MmioWrite32(ParfBase + PCIE20_PARF_LTSSM, 0x100);
 
-  // Check link (PCIE20_ELBI_SYS_STTS + 0x8)
+  // Check link (PCIE20_ELBI_SYS_STTS)
   while ((MmioRead32(DmCoreBase + 0xf28) & 0x400) != 0x400)
     gBS->Stall(1000);
 
@@ -371,14 +378,20 @@ ConfigDmCore(VOID)
     DmCoreBase = 0xf8800000;
   }
 
+  // PCIE20_MISC_CONTROL_1
   MmioWrite32(DmCoreBase + 0x8bc, 0x1);
+  // PCIE20_LINK_CAPABILITIES
   Val = MmioRead32(DmCoreBase + 0x7c);
   MmioWrite32(DmCoreBase + 0x7c, (Val & 0xFFFFFBFF) | 0x400800);
+  // PCIE20_MISC_CONTROL_1
   MmioWrite32(DmCoreBase + 0x8bc, 0x0);
+  // PCIE20_L1SUB_CAPABILITY
   Val = MmioRead32(DmCoreBase + 0x154);
   MmioWrite32(DmCoreBase + 0x154, Val | 0xF);
+  // PCIE20_L1SUB_CONTROL1
   Val = MmioRead32(DmCoreBase + 0x158);
   MmioWrite32(DmCoreBase + 0x158, Val | 0xF);
+  // PCIE20_DEVICE_CONTROL2_STATUS2
   Val = MmioRead32(DmCoreBase + 0x98);
   MmioWrite32(DmCoreBase + 0x98, 0x400);
 
@@ -413,18 +426,30 @@ ConfigSpace(VOID)
 
   while (TRUE) {
     // DM_CORE, base varies
+    // PCIE20_PLR_IATU_VIEWPORT
     MmioWrite32(DmCoreBase + 0x900, i);
+    // PCIE20_PLR_IATU_CTRL1
     MmioWrite32(DmCoreBase + 0x904, j);
+    // PCIE20_PLR_IATU_CTRL2
     MmioWrite32(DmCoreBase + 0x908, 0x80000000);
+    // PCIE20_PLR_IATU_VIEWPORT
     Addr = DmCoreBase + 0x900 + (k << 20) + 0x100000;
+    // PCIE20_PLR_IATU_LBAR
     MmioWrite32(DmCoreBase + 0x90c, Addr);
+    // PCIE20_PLR_IATU_UBAR
     MmioWrite32(DmCoreBase + 0x910, 0);
+    // PCIE20_PLR_IATU_LAR
     MmioWrite32(DmCoreBase + 0x914, Addr);
+    // PCIE20_PLR_IATU_LTAR
     MmioWrite32(DmCoreBase + 0x918, ((k + 1) << 24));
+    // PCIE20_PLR_IATU_UTAR
     MmioWrite32(DmCoreBase + 0x91c, 0);
+    // What's this? PCIE20_BUSNUMBERS?
     MmioWrite32(DmCoreBase + 0x18, 0x30100);
+    // What's this?
     Val = MmioRead32(Addr + 0x188);
     MmioWrite32(Addr + 0x188, Val | 0xF);
+    // PCIE20_DEVICE_CONTROL2_STATUS2
     Val = MmioRead32(Addr + 0x98);
     MmioWrite32(Addr + 0x98, Val | 0x400);
     // Three bars
