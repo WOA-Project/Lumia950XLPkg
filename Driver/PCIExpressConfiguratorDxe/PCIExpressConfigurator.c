@@ -268,9 +268,9 @@ InitializePciePHY(VOID)
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_ENABLES, 0x40);
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_CNTRL, 0x70);
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_DEGLITCH_CNTRL, 0x0C);
-  MmioWrite32(MsmPciePhyBase + 0xb4, 0x1);
-  MmioWrite32(MsmPciePhyBase + 0xb8, 0x2);
-  MmioWrite32(MsmPciePhyBase + 0xc0, 0x31);
+  MmioWrite32(MsmPciePhyBase + QSERDES_COM_SSC_EN_CENTER, 0x1);
+  MmioWrite32(MsmPciePhyBase + QSERDES_COM_SSC_ADJ_PER1, 0x2);
+  MmioWrite32(MsmPciePhyBase + QSERDES_COM_SSC_PER1, 0x31);
   MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNTRL1, 0x1);
   MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNTRL2, 0x19);
   MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNT_VAL_L, 0x19);
@@ -514,6 +514,8 @@ PCIExpressConfiguratorEntry(
   Status = ConfigurePCIeAndCnssGpio();
   if (EFI_ERROR(Status))
     goto exit;
+
+  // TODO: Call msm_pcie_restore_sec_config to restore security config
 
   Status = InitializePciePHY();
   if (EFI_ERROR(Status))
