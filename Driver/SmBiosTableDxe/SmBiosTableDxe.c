@@ -651,7 +651,9 @@ VOID BoardInfoUpdateSmbiosType2(VOID)
   CHAR8  serialNo[13];
 
   // Update string table before proceeds
-  mBoardInfoType2Strings[1] = (CHAR8 *)FixedPcdGetPtr(PcdSmbiosBoardModel);
+  mBoardInfoType2Strings[1] = (CHAR8 *)FixedPcdGetPtr(PcdSmbiosSystemModel);
+  mBoardInfoType2Strings[2] =
+      (CHAR8 *)FixedPcdGetPtr(PcdSmbiosSystemRetailModel);
 
   // Update serial number from Board DXE
   if (mBoardProtocol != NULL) {
