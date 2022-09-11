@@ -173,8 +173,8 @@ SMBIOS_TABLE_TYPE1 mSysInfoType1 = {
     6, // Family String
 };
 CHAR8 *mSysInfoType1Strings[] = {
-    "Microsoft Mobile", "Lumia 950 XL", "RM-1085", "Unknown",
-    "RM-1085",          "Phone",        NULL};
+    "Microsoft Mobile", "Lumia 950 XL", "RM-1085", "Not Specified",
+    "RM-1085",      "Phone",        NULL};
 
 /***********************************************************************
         SMBIOS data definition  TYPE2  Board Information
@@ -202,7 +202,7 @@ SMBIOS_TABLE_TYPE2 mBoardInfoType2 = {
     {0}                       // ContainedObjectHandles[1];
 };
 CHAR8 *mBoardInfoType2Strings[] = {
-    "Microsoft Mobile", "Lumia 950 XL", "RM-1085", "Unknown", "", "", NULL};
+    "Microsoft Mobile", "Lumia 950 XL", "RM-1085", "Not Specified", "Not Specified", "Not Specified", NULL};
 
 /***********************************************************************
         SMBIOS data definition  TYPE3  Enclosure Information
@@ -225,7 +225,7 @@ SMBIOS_TABLE_TYPE3 mEnclosureInfoType3 = {
     0,                         // ContainedElementRecordLength;
     {{0}},                     // ContainedElements[1];
 };
-CHAR8 *mEnclosureInfoType3Strings[] = {"Lumia 950 XL", "1", "Unknown", "",
+CHAR8 *mEnclosureInfoType3Strings[] = {"Lumia 950 XL", "Not Specified", "Not Specified", "Not Specified",
                                        NULL};
 
 /***********************************************************************
@@ -466,7 +466,7 @@ SMBIOS_TABLE_TYPE17 mMemDevInfoType17 = {
     0,    // ConfiguredMemoryClockSpeed;
 };
 
-CHAR8 *mMemDevInfoType17Strings[] = {NULL};
+CHAR8 *mMemDevInfoType17Strings[] = {"Top - on board", "Bank 0", "Not Specified", "Not Specified", "Not Specified", "Not Specified", NULL};
 
 /***********************************************************************
         SMBIOS data definition  TYPE19  Memory Array Mapped Address Information
@@ -622,8 +622,8 @@ VOID BIOSInfoUpdateSmbiosType0(VOID)
 
 VOID SysInfoUpdateSmbiosType1(VOID)
 {
-  char     serialNo[13];
-  uint32_t serial;
+  CHAR8  serialNo[13];
+  UINT32 serial;
 
   // Update string table before proceeds
   mSysInfoType1Strings[1] = (CHAR8 *)FixedPcdGetPtr(PcdSmbiosSystemModel);
@@ -648,12 +648,10 @@ VOID SysInfoUpdateSmbiosType1(VOID)
 ************************************************************************/
 VOID BoardInfoUpdateSmbiosType2(VOID)
 {
-  char serialNo[13];
+  CHAR8  serialNo[13];
 
   // Update string table before proceeds
-  mBoardInfoType2Strings[1] = (CHAR8 *)FixedPcdGetPtr(PcdSmbiosSystemModel);
-  mBoardInfoType2Strings[2] =
-      (CHAR8 *)FixedPcdGetPtr(PcdSmbiosSystemRetailModel);
+  mBoardInfoType2Strings[1] = (CHAR8 *)FixedPcdGetPtr(PcdSmbiosBoardModel);
 
   // Update serial number from Board DXE
   if (mBoardProtocol != NULL) {
@@ -671,7 +669,7 @@ VOID BoardInfoUpdateSmbiosType2(VOID)
 ************************************************************************/
 VOID EnclosureInfoUpdateSmbiosType3(VOID)
 {
-  char serialNo[13];
+  CHAR8  serialNo[13];
 
   // Update serial number from Board DXE
   if (mBoardProtocol != NULL) {
