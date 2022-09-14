@@ -15,6 +15,7 @@ RtSpmiConfigMemory(VOID)
   EFI_GCD_MEMORY_SPACE_DESCRIPTOR psHoldMemoryDescriptor;
   EFI_GCD_MEMORY_SPACE_DESCRIPTOR imemRegionMemoryDescriptor;
   EFI_GCD_MEMORY_SPACE_DESCRIPTOR spmiMemoryDescriptor;
+  EFI_PHYSICAL_ADDRESS            imemCookieAddr;
 
   EFI_STATUS Status;
 
@@ -40,37 +41,26 @@ RtSpmiConfigMemory(VOID)
       goto exit;
   }
 
-  Status = gDS->GetMemorySpaceDescriptor(
-      ROUND_TO_PAGE(MSM_SHARED_IMEM_BASE), &imemRegionMemoryDescriptor);
-
-  if (EFI_ERROR(Status))
-    goto exit;
-
-  if (!(imemRegionMemoryDescriptor.Attributes & EFI_MEMORY_RUNTIME)) {
-    Status = gDS->SetMemorySpaceAttributes(
-        ROUND_TO_PAGE(MSM_SHARED_IMEM_BASE), EFI_PAGE_SIZE,
-        imemRegionMemoryDescriptor.Attributes | EFI_MEMORY_RUNTIME);
-
-    if (EFI_ERROR(Status))
-      goto exit;
-  }
-
 #if SILICON_PLATFORM == 8992
+  imemCookieAddr = MSM_SHARED_IMEM_BASE2;
+#else
+  imemCookieAddr = MSM_SHARED_IMEM_BASE;
+#endif
+
   Status = gDS->GetMemorySpaceDescriptor(
-      ROUND_TO_PAGE(MSM_SHARED_IMEM_BASE2), &imemRegionMemoryDescriptor);
+      ROUND_TO_PAGE(imemCookieAddr), &imemRegionMemoryDescriptor);
 
   if (EFI_ERROR(Status))
     goto exit;
 
   if (!(imemRegionMemoryDescriptor.Attributes & EFI_MEMORY_RUNTIME)) {
     Status = gDS->SetMemorySpaceAttributes(
-        ROUND_TO_PAGE(MSM_SHARED_IMEM_BASE2), EFI_PAGE_SIZE,
+        ROUND_TO_PAGE(imemCookieAddr), EFI_PAGE_SIZE,
         imemRegionMemoryDescriptor.Attributes | EFI_MEMORY_RUNTIME);
 
     if (EFI_ERROR(Status))
       goto exit;
   }
-#endif
 
   Status = gDS->GetMemorySpaceDescriptor(
       ROUND_TO_PAGE(SPMI_BASE), &spmiMemoryDescriptor);
