@@ -1,0 +1,35 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ClockDxe
+  FILE_GUID                      = 3EBA1869-45CA-41E1-AD6B-40BA8012A538
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = ClockDxeInitialize
+
+[Sources.common]
+  Driver.c
+  LibraryImpl.c
+  clock.c
+  clock_lib2.c
+  clock-local.c
+  clock_pll.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  QcomPlatformClockInitLib
+  TimerLib
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-overflow
+
+[Protocols]
+  gQcomClockProtocolGuid
+
+[Depex]
+  TRUE

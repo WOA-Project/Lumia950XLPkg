@@ -1,0 +1,49 @@
+## @file
+#  Instance of Debug Library based on Serial Port Library.
+#  It uses Print Library to produce formatted output strings to seiral port device.
+#
+#  Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaseDebugLibFrameBuffer
+  MODULE_UNI_FILE                = BaseDebugLibFrameBuffer.uni
+  FILE_GUID                      = BB83F95F-EDBC-4884-A520-CD42AF388FAE
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = DebugLib
+  CONSTRUCTOR                    = BaseDebugLibFrameBufferConstructor
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 EBC
+#
+
+[Sources]
+  DebugLib.c
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  MdePkg/MdePkg.dec
+  LumiaFamilyPkg/LumiaFamilyPkg.dec
+
+[LibraryClasses]
+  BaseMemoryLib
+  CacheMaintenanceLib
+  PcdLib
+  PrintLib
+  BaseLib
+  DebugPrintErrorLevelLib
+  MemoryMapHelperLib
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdDebugClearMemoryValue  ## SOMETIMES_CONSUMES
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask      ## CONSUMES
+  gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel ## CONSUMES
+  gLumiaFamilyPkgTokenSpaceGuid.PcdMipiFrameBufferWidth
+  gLumiaFamilyPkgTokenSpaceGuid.PcdMipiFrameBufferHeight
+  gLumiaFamilyPkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp

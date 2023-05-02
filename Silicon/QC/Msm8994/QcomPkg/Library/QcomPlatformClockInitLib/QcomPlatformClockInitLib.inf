@@ -1,0 +1,23 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = QcomPlatformClockInitLib
+  FILE_GUID                      = 6B439EE9-31E2-4486-A95F-0AF5FAA31599
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = QcomPlatformClockInitLib
+
+[Sources.common]
+  msm8994-clock.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-overflow -Wno-unused-variable
+
+[LibraryClasses]
+  IoLib
+  ArmLib

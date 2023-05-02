@@ -1,8 +1,0 @@
-[Defines]
-  DEC_SPECIFICATION              = 0x00010005
-  PACKAGE_NAME                   = Lumia950XLAcpiTablesPkg
-  PACKAGE_GUID                   = 525a79c8-9ee2-477d-85a9-54acaaeaaa6a
-  PACKAGE_VERSION                = 0.1
-
-[Includes.common]
-  Include                        # Root include for the package

@@ -1,0 +1,57 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SynapticsTouchDxe
+  FILE_GUID                      = f0d87c5e-4d5d-4fb5-939f-a6768ae8a309
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SynaInitialize
+
+[Sources.common]
+  SynapticsTouchDxe.c
+  I2cOps.c
+  ComponentName.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  QcomPkg/QcomPkg.dec
+  LumiaFamilyPkg/LumiaFamilyPkg.dec
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Werror -Wno-error=unused-variable
+
+[LibraryClasses]
+  ArmLib
+  UefiDriverEntryPoint
+  IoLib
+  InterruptsLib
+  MallocLib
+  TimerLib
+  BaseLib
+  DebugLib
+  PrintLib
+  CompilerIntrinsicsLib
+  CacheMaintenanceLib
+  UefiLib
+
+[FixedPcd]
+  gQcomPkgTokenSpaceGuid.SynapticsCtlrAddress
+  gQcomPkgTokenSpaceGuid.SynapticsCtlrResetPin
+  gQcomPkgTokenSpaceGuid.SynapticsCtlrIntPin
+  gQcomPkgTokenSpaceGuid.SynapticsCtlrI2cDevice
+  gLumiaFamilyPkgTokenSpaceGuid.PcdMipiFrameBufferWidth
+  gLumiaFamilyPkgTokenSpaceGuid.PcdMipiFrameBufferHeight
+  gQcomPkgTokenSpaceGuid.SynapticsXMax
+  gQcomPkgTokenSpaceGuid.SynapticsYMax
+
+[Protocols]
+  gQcomI2cQupProtocolGuid
+  gHardwareInterruptProtocolGuid
+  gQcomGpioTlmmProtocolGuid
+  gEfiAbsolutePointerProtocolGuid
+  gSynapticsTouchDeviceProtocolGuid
+  gEfiDevicePathProtocolGuid
+
+[Depex]
+  gSynapticsTouchDeviceProtocolGuid

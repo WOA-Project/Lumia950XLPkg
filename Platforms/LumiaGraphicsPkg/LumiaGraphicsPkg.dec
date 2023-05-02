@@ -1,0 +1,22 @@
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = LumiaGraphicsPkg
+  PACKAGE_GUID                   = 5fd522a5-b671-429f-957f-75113dd02438
+  PACKAGE_VERSION                = 0.1
+
+[Includes.common]
+  Include                        # Root include for the package
+
+[Guids.common]
+  gLumiaGraphicsPkgTokenSpaceGuid = { 0x4c59628e, 0x0a8a, 0x4099, { 0x8d, 0xe5, 0xf2, 0x08, 0xff, 0x80, 0xc4, 0xbf } }
+
+  # BootSplash 93be6759-7d1a-4d69-986d-d78e54c9f930
+  gLumiaBootSplashAppGuid = { 0x93be6759, 0x7d1a, 0x4d69, { 0x98, 0x6d, 0xd7, 0x8e, 0x54, 0xc9, 0xf9, 0x30 } }
+
+[Protocols]
+  gPreLoaderProtocolGuid = { 0x10117639, 0x42b0, 0x4f64, { 0x9d, 0x0b, 0xe0, 0x45, 0x24, 0x81, 0xf9, 0x35 } }
+
+[PcdsFixedAtBuild.common]
+  # Boot Applications
+  # 93be6759-7d1a-4d69-986d-d78e54c9f930
+  gLumiaGraphicsPkgTokenSpaceGuid.PcdBootSplashAppFile|{ 0x59, 0x67, 0xbe, 0x93, 0x1a, 0x7d, 0x69, 0x4d, 0x6d, 0x98, 0x30, 0xf9, 0xc9, 0x54, 0x8e, 0xd7 }|VOID*|0x00000401

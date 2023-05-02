@@ -1,0 +1,28 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SpmiLib
+  FILE_GUID                      = BDFA79E1-35FF-4D22-A6C9-A8FB031E0937
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SpmiLib|DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = SpmiLibConstructor
+
+[Sources.common]
+  LibraryBS.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-incompatible-pointer-types
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+
+[Protocols]
+  gQcomSpmiProtocolGuid
+
+[Depex]
+  gQcomSpmiProtocolGuid

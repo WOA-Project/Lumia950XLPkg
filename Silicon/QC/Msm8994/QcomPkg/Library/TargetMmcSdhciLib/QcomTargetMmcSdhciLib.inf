@@ -1,0 +1,28 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = 9323E416-C7F1-4F93-86A5-7C795A100012
+  FILE_GUID                      = 23C31F59-1AAA-4853-A54F-608ABE882C45
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = QcomTargetMmcSdhciLib
+
+
+[Sources.common]
+  QcomTargetMmcSdhciLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  DebugLib
+  GpioTlmmLib
+  MicroLibC
+
+[Pcd.common]
+  gQcomTokenSpaceGuid.PcdGpioTlmmBaseAddress
+  gQcomTokenSpaceGuid.PcdGicSpiStart
+  gQcomTokenSpaceGuid.PcdMmcSdc1HdrvPullCtlOffset
+  gQcomTokenSpaceGuid.PcdMmcSdc2HdrvPullCtlOffset

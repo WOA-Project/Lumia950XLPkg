@@ -1,0 +1,16 @@
+// /** @file
+// Uart instance of Serial Port Library.
+//
+// Uart instance of Serial Port Library.
+//
+// Copyright (c) 2006 - 2014, Intel Corporation. All rights reserved.<BR>
+//
+// SPDX-License-Identifier: BSD-2-Clause-Patent
+//
+// **/
+
+
+#string STR_MODULE_ABSTRACT             #language en-US "Uart instance of Serial Port Library"
+
+#string STR_MODULE_DESCRIPTION          #language en-US "Uart instance of Serial Port Library."
+

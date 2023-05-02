@@ -1,0 +1,33 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BoardDxe
+  FILE_GUID                      = 6AF42ED6-2B48-4433-8385-A5D400409254
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = BoardDxeInitialize
+
+[Sources.common]
+  Driver.c
+  LibraryImpl.c
+  board.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  QcomTargetBoardLib
+  SmemLib
+  PrintLib
+  IoLib
+  ArmLib
+
+[Protocols]
+  gQcomBoardProtocolGuid
+
+[Depex]
+  TRUE

@@ -1,0 +1,25 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SsbiLib
+  FILE_GUID                      = E0218758-1BB5-4AFC-A95F-81AC50E7E5EB
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SsbiLib|DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = SsbiLibConstructor
+
+[Sources.common]
+  LibraryBS.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+
+[Protocols]
+  gQcomSsbiProtocolGuid
+
+[Depex]
+  gQcomSsbiProtocolGuid

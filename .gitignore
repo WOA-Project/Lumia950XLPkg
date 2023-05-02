@@ -1,26 +1,21 @@
 # Dynamic Generated
-Driver/SmBiosTableDxe/ReleaseInfo.h
-Application/BdsMenuApp/ReleaseInfo.h
-Include/Resources/ReleaseInfo.h
+Platforms/Lumia950Pkg/Include/Resources/ReleaseInfo.h
+Platforms/Lumia950XLPkg/Include/Resources/ReleaseInfo.h
 
 # Local
 .DS_Store
 .vs
 .vscode
 
-# Variable Services: Defer
-Driver/BlockRamVariableDxe
-Driver/FaultTolerantWriteDxe
-Driver/VariableRuntimeDxe
-Library/BlockRamVariableLib
+/Build/
+.DS_Store
+*_extdep/
+*.pyc
+__pycache__/
+tags/
+.vscode/
+*.bak
+BuildConfig.conf
 
-# USB: Defer
-Driver/UsbTypeCDxe
-
-# RTC: Defer
-Library/QcomPmicRealTimeClockLib
-
-# SSDT
-AcpiTables/8992/generated
-AcpiTables/8994/generated
-AcpiTables/Hapanero/generated
+/Conf/
+/Lumia/

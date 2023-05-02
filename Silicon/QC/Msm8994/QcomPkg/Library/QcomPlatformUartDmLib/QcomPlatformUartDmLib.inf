@@ -1,0 +1,26 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = QcomPlatformUartDmLib
+  FILE_GUID                      = 2547F5D3-7E48-4DBE-A3BA-684577C7083F
+  MODULE_TYPE                    = SEC
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = QcomPlatformUartDmLib
+
+
+[Sources.common]
+  QcomPlatformUartDmLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[Protocols]
+  gQcomClockProtocolGuid
+
+[LibraryClasses]
+  IoLib
+  DebugLib
+  ClockLib
+  GpioTlmmLib

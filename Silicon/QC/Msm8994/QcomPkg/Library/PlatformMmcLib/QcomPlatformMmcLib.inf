@@ -1,0 +1,25 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = QcomPlatformMmcLib
+  FILE_GUID                      = 1197B80A-1722-4601-8526-BB84C301A912
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = QcomPlatformMmcLib
+
+
+[Sources.common]
+  QcomPlatformMmcLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-unused-value
+
+[LibraryClasses]
+  DebugLib
+  ClockLib
+  QcomPlatformMmcClockOverrideLib

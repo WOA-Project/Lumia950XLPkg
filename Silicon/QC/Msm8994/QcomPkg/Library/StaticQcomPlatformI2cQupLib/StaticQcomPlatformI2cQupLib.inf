@@ -1,0 +1,29 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = StaticQcomPlatformI2cQupLib
+  FILE_GUID                      = 8adb68c9-7696-4279-9230-a10e9a5f3810
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = QcomPlatformI2cQupLib
+  CONSTRUCTOR                    = PlatformI2cQupLibConstructor
+
+
+[Sources.common]
+  StaticQcomPlatformI2cQupLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  DebugLib
+  ClockLib
+  GpioTlmmLib
+  MicroLibC
+
+[Pcd.common]
+  gQcomTokenSpaceGuid.PcdGicSpiStart
+
+[Depex]
+  TRUE
