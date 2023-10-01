@@ -196,8 +196,10 @@ ArmGicAcknowledgeInterrupt(
 }
 
 VOID EFIAPI ArmGicSendSgiTo(
-    IN INTN GicDistributorBase, IN INTN TargetListFilter, IN INTN CPUTargetList,
-    IN INTN SgiId)
+  IN  UINTN  GicDistributorBase,
+  IN  UINT8  TargetListFilter,
+  IN  UINT8  CPUTargetList,
+  IN  UINT8  SgiId)
 {
   MmioWrite32(
       GicDistributorBase + ARM_GIC_ICDSGIR, ((TargetListFilter & 0x3) << 24) |
@@ -205,7 +207,7 @@ VOID EFIAPI ArmGicSendSgiTo(
                                                 SgiId);
 }
 
-VOID EFIAPI ArmGicV2EnableInterruptInterface(IN INTN GicInterruptInterfaceBase)
+VOID EFIAPI ArmGicV2EnableInterruptInterface(IN UINTN GicInterruptInterfaceBase)
 {
   /*
    * Enable the CPU interface in Non-Secure world
@@ -215,7 +217,7 @@ VOID EFIAPI ArmGicV2EnableInterruptInterface(IN INTN GicInterruptInterfaceBase)
   MmioWrite32(GicInterruptInterfaceBase + ARM_GIC_ICCICR, 0x1);
 }
 
-VOID EFIAPI ArmGicEnableInterruptInterface(IN INTN GicInterruptInterfaceBase)
+VOID EFIAPI ArmGicEnableInterruptInterface(IN UINTN GicInterruptInterfaceBase)
 {
   ArmGicV2EnableInterruptInterface(GicInterruptInterfaceBase);
 }
@@ -228,7 +230,7 @@ VOID EFIAPI
 
 UINTN
 EFIAPI
-ArmGicGetMaxNumInterrupts(IN INTN GicDistributorBase)
+ArmGicGetMaxNumInterrupts(IN UINTN GicDistributorBase)
 {
   return 32 * ((MmioRead32(GicDistributorBase + ARM_GIC_ICDICTR) & 0x1F) + 1);
 }

@@ -47,7 +47,7 @@ VOID QgicCpuInitSecondary(VOID);
 
 UINTN EFIAPI ArmGicAcknowledgeInterrupt(
     IN UINTN GicInterruptInterfaceBase, OUT UINTN *InterruptId);
-VOID EFIAPI ArmGicEnableInterruptInterface(IN INTN GicInterruptInterfaceBase);
+VOID EFIAPI ArmGicEnableInterruptInterface(IN UINTN GicInterruptInterfaceBase);
 
 VOID EFIAPI
 ArmGicV2EndOfInterrupt(IN UINTN GicInterruptInterfaceBase, IN UINTN Source);
@@ -55,7 +55,7 @@ ArmGicV2EndOfInterrupt(IN UINTN GicInterruptInterfaceBase, IN UINTN Source);
 VOID EFIAPI
 ArmGicEndOfInterrupt(IN UINTN GicInterruptInterfaceBase, IN UINTN Source);
 
-UINTN EFIAPI ArmGicGetMaxNumInterrupts(IN INTN GicDistributorBase);
+UINTN EFIAPI ArmGicGetMaxNumInterrupts(IN UINTN GicDistributorBase);
 
 #pragma pack(1)
 typedef struct {

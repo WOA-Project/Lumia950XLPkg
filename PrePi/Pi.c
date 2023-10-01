@@ -32,6 +32,18 @@
 #include <Library/ArmHvcLib.h>
 #include <Library/ArmSmcLib.h>
 
+#define MDP_BASE                    (0xfd900000)
+#define REG_MDP(off)                (MDP_BASE + (off))
+#define MDP_VP_0_RGB_0_BASE         REG_MDP(0x15000)
+#define MDP_VP_0_RGB_1_BASE         REG_MDP(0x17000)
+#define MDP_VP_0_VIG_0_BASE         REG_MDP(0x5000)
+#define MDP_VP_0_VIG_1_BASE         REG_MDP(0x7000)
+#define MDP_CTL_0_BASE				      REG_MDP(0x2000)
+#define MDP_CTL_1_BASE				      REG_MDP(0x2200)
+
+#define PIPE_SSPP_SRC0_ADDR         0x14
+#define CTL_FLUSH                   0x18
+
 VOID EFIAPI ProcessLibraryConstructorList(VOID);
 
 STATIC VOID UartInit(VOID)
@@ -101,6 +113,12 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
 
   /* Enable program flow prediction, if supported */
   ArmEnableBranchPrediction();
+
+  // Relocate MDP Framebuffer address
+  MmioWrite32(MDP_VP_0_RGB_0_BASE + PIPE_SSPP_SRC0_ADDR, FixedPcdGet64(PcdMipiFrameBufferAddress));
+  MmioWrite32(MDP_VP_0_RGB_1_BASE + PIPE_SSPP_SRC0_ADDR, FixedPcdGet64(PcdMipiFrameBufferAddress));
+	MmioWrite32(MDP_CTL_0_BASE + CTL_FLUSH, 0x1f);
+	MmioWrite32(MDP_CTL_1_BASE + CTL_FLUSH, 0x1f);
 
   // Initialize (fake) UART.
   UartInit();
