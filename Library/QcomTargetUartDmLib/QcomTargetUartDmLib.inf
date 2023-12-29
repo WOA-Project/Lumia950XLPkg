@@ -6,7 +6,6 @@
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = QcomTargetUartDmLib
 
-
 [Sources.common]
   QcomTargetUartDmLib.c
 
@@ -15,7 +14,3 @@
   ArmPkg/ArmPkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
-
-[LibraryClasses]
-  GpioTlmmLib
-  ClockLib

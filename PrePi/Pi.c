@@ -52,9 +52,9 @@ STATIC VOID UartInit(VOID)
 {
   SerialPortInitialize();
 
-  DEBUG((EFI_D_INFO, "\nTianoCore on MSM8992/MSM8994 (AArch64)\n"));
+  DEBUG((EFI_D_INFO | EFI_D_LOAD, "\nTianoCore on MSM8992/MSM8994 (AArch64)\n"));
   DEBUG(
-      (EFI_D_INFO, "Firmware version %s built %a %a\n\n",
+      (EFI_D_INFO | EFI_D_LOAD, "Firmware version %s built %a %a\n\n",
        (CHAR16 *)PcdGetPtr(PcdFirmwareVersionString), __TIME__, __DATE__));
 }
 
@@ -150,21 +150,29 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
        "Size = 0x%llx\n",
        UefiMemoryBase, UefiMemorySize, StackBase, StackSize));
 
-  CpuDeadLoop();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "-> HobConstructor\n"));
 
   // Set up HOB
   HobList = HobConstructor(
       (VOID *)UefiMemoryBase, UefiMemorySize, (VOID *)UefiMemoryBase,
       StackBase);
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "<- HobConstructor\n"));
+
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "-> PrePeiSetHobList\n"));
   PrePeiSetHobList(HobList);
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "<- PrePeiSetHobList\n"));
 
   // Invalidate cache
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "-> InvalidateDataCacheRange\n"));
   InvalidateDataCacheRange(
       (VOID *)(UINTN)PcdGet64(PcdFdBaseAddress), PcdGet32(PcdFdSize));
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "<- InvalidateDataCacheRange\n"));
 
   // Initialize MMU
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "-> MemoryPeim\n"));
   Status = MemoryPeim(UefiMemoryBase, UefiMemorySize);
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "<- MemoryPeim\n"));
 
   if (EFI_ERROR(Status)) {
     DEBUG((EFI_D_ERROR, "Failed to configure MMU\n"));
@@ -223,6 +231,7 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
   ASSERT_EFI_ERROR(Status);
 
   // Load the DXE Core and transfer control to it
+  DEBUG((EFI_D_LOAD | EFI_D_INFO, "-> LoadDxeCoreFromFv\n"));
   Status = LoadDxeCoreFromFv(NULL, 0);
   ASSERT_EFI_ERROR(Status);
 

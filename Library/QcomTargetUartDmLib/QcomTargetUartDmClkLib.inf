@@ -1,0 +1,20 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = QcomTargetUartDmClkLib
+  FILE_GUID                      = F47BDBE8-4894-4471-A4FA-5A2E57DB894C
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = QcomTargetUartDmClkLib
+
+[Sources.common]
+  QcomTargetUartDmClkLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+
+[LibraryClasses]
+  GpioTlmmLib
+  ClockLib

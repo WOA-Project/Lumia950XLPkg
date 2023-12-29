@@ -11,6 +11,9 @@
   uart_dm_init.c
   uart_dm_rw.c
 
+[BuildOptions]
+  GCC:*_*_*_CC_FLAGS = -DEARLY_UART
+
 [Pcd.common]
   gQcomTokenSpaceGuid.PcdUartDmClkRxTxBitRate
   gQcomTokenSpaceGuid.PcdUartDmCsrOffset
@@ -32,6 +35,7 @@
   IoLib
   QcomPlatformUartDmLib
   QcomTargetUartDmLib
+  QcomTargetUartDmClkLib
 
 [Packages]
   ArmPkg/ArmPkg.dec

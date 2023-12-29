@@ -10,11 +10,14 @@
 [Sources.common]
   UartDmSerialPortLib.c
   uart_dm_rw.c
+  Timer/ArmArchTimerLib.c
+
+[Sources.AARCH64]
+  Timer/AArch64/ArchTimer.S
 
 [LibraryClasses]
-  HobLib
   IoLib
-  TimerLib
+  QcomTargetUartDmLib
 
 [Guids]
   gQcomUartDmBaseGuid
@@ -33,9 +36,9 @@
   gQcomTokenSpaceGuid.PcdUartDmRxTotalSnapOffset
 
 [Packages]
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  ArmPkg/ArmPkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
-  ArmPlatformPkg/ArmPlatformPkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
-  ArmPkg/ArmPkg.dec

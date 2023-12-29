@@ -186,7 +186,7 @@ msm_boot_uart_dm_write(uint32_t base, char *data, unsigned int num_of_chars)
    * If not we'll wait for TX_READY interrupt. */
   if (!(readl(MSM_BOOT_UART_DM_SR(base)) & MSM_BOOT_UART_DM_SR_TXEMT)) {
     while (!(readl(MSM_BOOT_UART_DM_ISR(base)) & MSM_BOOT_UART_DM_TX_READY)) {
-      udelay(1);
+      _UartBuiltIn_MicroSecondDelay(1);
       /* Kick watchdog? */
     }
   }
@@ -210,7 +210,7 @@ msm_boot_uart_dm_write(uint32_t base, char *data, unsigned int num_of_chars)
 
     /* Wait till TX FIFO has space */
     while (!(readl(MSM_BOOT_UART_DM_SR(base)) & MSM_BOOT_UART_DM_SR_TXRDY)) {
-      udelay(1);
+      _UartBuiltIn_MicroSecondDelay(1);
     }
 
     /* TX FIFO has space. Write the chars */

@@ -2,7 +2,7 @@
 
 #include <Library/LKEnvLib.h>
 #include <Library/SerialPortLib.h>
-#include <Library/HobLib.h>
+#include <Library/QcomTargetUartDmLib.h>
 
 #include "uartdm_p.h"
 
@@ -21,17 +21,17 @@ UartDmSerialPortLibInitialize (
   VOID
   )
 {
-  VOID                *Hob;
-  CONST UINT64        *UartBase;
+  RETURN_STATUS Status;
+  UINT8         Id;
+  UINTN         GsbiBase;
+  UINTN         UartDmBase;
 
-  Hob = GetFirstGuidHob (&gQcomUartDmBaseGuid);
-  if (Hob == NULL || GET_GUID_HOB_DATA_SIZE (Hob) != sizeof *UartBase) {
-    return RETURN_NOT_FOUND;
+  Status = LibQcomTargetGetUartDmConfig(&Id, &GsbiBase, &UartDmBase);
+  if (RETURN_ERROR(Status)) {
+    return Status;
   }
-  UartBase = GET_GUID_HOB_DATA (Hob);
-
-  g_uart_dm_base = (UINTN)*UartBase;
-
+  
+  g_uart_dm_base = UartDmBase;
   return RETURN_SUCCESS;
 }
 

@@ -10,4 +10,10 @@ int  uart_putc(char c);
 int  uart_getc(uint8_t *byte, bool wait);
 int  uart_tstc(void);
 
+#ifdef EARLY_UART
+#define _UartBuiltIn_MicroSecondDelay MicroSecondDelay
+#else
+extern UINTN EFIAPI _UartBuiltIn_MicroSecondDelay(IN UINTN MicroSeconds);
+#endif
+
 #endif // _UARTDM_PRIVATE_H
