@@ -1,0 +1,5 @@
+{
+    "platform": "intrinsyc,dragonboard810",
+    "soc": "qcom,msm8994",
+    "variant": "db810c"
+}
