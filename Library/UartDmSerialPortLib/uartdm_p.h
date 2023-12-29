@@ -16,4 +16,8 @@ int  uart_tstc(void);
 extern UINTN EFIAPI _UartBuiltIn_MicroSecondDelay(IN UINTN MicroSeconds);
 #endif
 
+extern UINTN EFIAPI _UartBuiltin_ArmGetInterruptState(VOID);
+extern VOID EFIAPI _UartBuiltin_ArmEnableInterrupts(VOID);
+extern VOID EFIAPI _UartBuiltin_ArmDisableInterrupts(VOID);
+
 #endif // _UARTDM_PRIVATE_H

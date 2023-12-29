@@ -170,6 +170,7 @@ msm_boot_uart_dm_write(uint32_t base, char *data, unsigned int num_of_chars)
   unsigned int tx_word = 0;
   int          i;
   char *       tx_data = NULL;
+  UINTN        interruptState = 0;
 
   if ((data == NULL) || (num_of_chars <= 0)) {
     return MSM_BOOT_UART_DM_E_INVAL;
@@ -190,6 +191,10 @@ msm_boot_uart_dm_write(uint32_t base, char *data, unsigned int num_of_chars)
       /* Kick watchdog? */
     }
   }
+
+  // We need to make sure the DM_NO_CHARS_FOR_TX&DM_TF are are programmed atmoically.
+  interruptState = _UartBuiltin_ArmGetInterruptState();
+  _UartBuiltin_ArmDisableInterrupts();
 
   /* We are here. FIFO is ready to be written. */
   /* Write number of characters to be written */
@@ -217,6 +222,10 @@ msm_boot_uart_dm_write(uint32_t base, char *data, unsigned int num_of_chars)
     writel(tx_word, MSM_BOOT_UART_DM_TF(base, 0));
     tx_char_left = num_of_chars - (i + 1) * 4;
     tx_data      = tx_data + 4;
+  }
+
+  if (interruptState) {
+    _UartBuiltin_ArmEnableInterrupts();
   }
 
   return MSM_BOOT_UART_DM_E_SUCCESS;

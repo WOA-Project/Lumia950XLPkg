@@ -95,6 +95,7 @@ SerialPortRead (
       Num += rc;
     }
   }
+
   return Num;
 }
 

@@ -13,7 +13,8 @@
   Timer/ArmArchTimerLib.c
 
 [Sources.AARCH64]
-  Timer/AArch64/ArchTimer.S
+  AArch64/ArchTimer.S
+  AArch64/Interrupt.S
 
 [LibraryClasses]
   IoLib

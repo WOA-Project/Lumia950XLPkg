@@ -11,6 +11,9 @@
   uart_dm_init.c
   uart_dm_rw.c
 
+[Sources.AARCH64]
+  AArch64/Interrupt.S
+
 [BuildOptions]
   GCC:*_*_*_CC_FLAGS = -DEARLY_UART
 
