@@ -36,14 +36,15 @@
   DEFINE DRAGONBOARD                  = 1
   DEFINE NOPSCI                       = 1
   DEFINE ANDROID_MEMMAP               = 1
+  DEFINE OMIT_DEBUG_OUTPUT            = 0
 
 [BuildOptions.common]
-  GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8994 -DDRAGONBOARD=1 -DNOPSCI=1 -DANDROID_MEMMAP=1
+  GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8994 -DMEMORY_4GB=1 -DDRAGONBOARD=1 -DNOPSCI=1 -DANDROID_MEMMAP=1
   
 [PcdsFixedAtBuild.common]
   # Platform-specific
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x00000000         # 0GB Base
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0xC0000000         # 3GB Size (actually 4GB?)
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0x100000000        # 4GB Size
   gEmbeddedTokenSpaceGuid.PcdPrePiStackBase|0x00C00000
   gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0x00040000      # 256K stack
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8

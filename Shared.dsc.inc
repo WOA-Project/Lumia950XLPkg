@@ -59,8 +59,8 @@
   gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0xf9002000
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"LumiaWoA authors"
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"2.24"
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision|0x00024001
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"2.26"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision|0x00027001
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId|"LMNL  "
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId|0x324B44454D4F4351
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000001
@@ -278,7 +278,7 @@
   DebugAgentLib|MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf
   DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
 
-!if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1
+!if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1 || $(OMIT_DEBUG_OUTPUT) == 1
   DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
 !else
   DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
@@ -640,7 +640,12 @@
   MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
 !if $(DRAGONBOARD) == 1
   # Dragonboard uses this
-  MdeModulePkg/Application/UiApp/UiApp.inf
+  MdeModulePkg/Application/UiApp/UiApp.inf {
+    <LibraryClasses>
+      NULL|MdeModulePkg/Library/DeviceManagerUiLib/DeviceManagerUiLib.inf
+      NULL|MdeModulePkg/Library/BootManagerUiLib/BootManagerUiLib.inf
+      NULL|MdeModulePkg/Library/BootMaintenanceManagerUiLib/BootMaintenanceManagerUiLib.inf
+  }
 !else
   # Phone uses this
   Lumia950XLPkg/Application/BdsMenuApp/BdsMenuApp.inf {

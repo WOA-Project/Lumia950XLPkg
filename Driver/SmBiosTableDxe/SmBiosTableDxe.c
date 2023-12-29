@@ -411,10 +411,18 @@ SMBIOS_TABLE_TYPE16 mPhyMemArrayInfoType16 = {
     MemoryErrorCorrectionUnknown,   // MemoryErrorCorrection;          ///< The
                                     // enumeration value from
                                     // MEMORY_ERROR_CORRECTION.
+#ifdef MEMORY_4GB
+    0xFFFFFFFF,                    // MaximumCapacity;
+#else
     0xC0000000,                     // MaximumCapacity;
+#endif
     0xFFFE,                         // MemoryErrorInformationHandle;
     1,                              // NumberOfMemoryDevices;
-    0xC0000000ULL,                  // ExtendedMaximumCapacity;
+#ifdef MEMORY_4GB
+    0x100000000ULL,                  // ExtendedMaximumCapacity;
+#else
+    0x0C0000000ULL,                  // ExtendedMaximumCapacity;
+#endif
 };
 CHAR8 *mPhyMemArrayInfoType16Strings[] = {NULL};
 
