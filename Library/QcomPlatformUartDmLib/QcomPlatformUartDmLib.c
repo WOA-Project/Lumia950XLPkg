@@ -9,11 +9,12 @@
 VOID LibQcomPlatformUartDmClockConfig(UINT8 id)
 {
   int   ret;
+  int   discard;
   CHAR8 iclk[64];
   CHAR8 cclk[64];
 
-  snprintf(iclk, sizeof(iclk), "uart%u_iface_clk", id);
-  snprintf(cclk, sizeof(cclk), "uart%u_core_clk", id);
+  discard = snprintf(iclk, sizeof(iclk), "uart%u_iface_clk", id);
+  discard = snprintf(cclk, sizeof(cclk), "uart%u_core_clk", id);
 
   ret = gClock->clk_get_set_enable(iclk, 0, 1);
   if (ret) {

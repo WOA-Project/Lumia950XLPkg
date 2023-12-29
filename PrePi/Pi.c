@@ -43,6 +43,8 @@
 
 #define PIPE_SSPP_SRC0_ADDR         0x14
 #define CTL_FLUSH                   0x18
+#define PIPE_SSPP_SRC_FORMAT                    0x30
+#define PIPE_SSPP_SRC_UNPACK_PATTERN            0x34
 
 VOID EFIAPI ProcessLibraryConstructorList(VOID);
 
@@ -50,7 +52,7 @@ STATIC VOID UartInit(VOID)
 {
   SerialPortInitialize();
 
-  DEBUG((EFI_D_INFO, "\nTianoCore on 950XL (AArch64)\n"));
+  DEBUG((EFI_D_INFO, "\nTianoCore on MSM8992/MSM8994 (AArch64)\n"));
   DEBUG(
       (EFI_D_INFO, "Firmware version %s built %a %a\n\n",
        (CHAR16 *)PcdGetPtr(PcdFirmwareVersionString), __TIME__, __DATE__));
@@ -91,6 +93,10 @@ STATIC VOID PsciFixupInit(VOID)
   ArmCallSmc(&StubArgsSmc);
 }
 
+extern int uart_putc(char c);
+extern void uart_dm_init_direct(unsigned int addr);
+extern void RebootDeviceViaSecureWatchdog();
+
 VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
 {
 
@@ -104,8 +110,13 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
   UINTN UefiMemoryBase = 0;
   UINTN UefiMemorySize = 0;
 
+#ifndef NOPSCI
   // PSCI fixup init
   PsciFixupInit();
+#endif
+
+  // Initialize (fake) UART.
+  UartInit();
 
   // Architecture-specific initialization
   // Enable Floating Point
@@ -114,14 +125,17 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
   /* Enable program flow prediction, if supported */
   ArmEnableBranchPrediction();
 
-  // Relocate MDP Framebuffer address
+  // Relocate MDP Framebuffer address and set pixel format
+#ifdef MOVE_FRAMEBUFFER
+  MmioWrite32(MDP_VP_0_RGB_0_BASE + PIPE_SSPP_SRC_FORMAT, 0x000236FF);
+  MmioWrite32(MDP_VP_0_RGB_0_BASE + PIPE_SSPP_SRC_UNPACK_PATTERN, 0x03020001);
+  MmioWrite32(MDP_VP_0_RGB_1_BASE + PIPE_SSPP_SRC_FORMAT, 0x000236FF);
+  MmioWrite32(MDP_VP_0_RGB_1_BASE + PIPE_SSPP_SRC_UNPACK_PATTERN, 0x03020001);
   MmioWrite32(MDP_VP_0_RGB_0_BASE + PIPE_SSPP_SRC0_ADDR, FixedPcdGet64(PcdMipiFrameBufferAddress));
   MmioWrite32(MDP_VP_0_RGB_1_BASE + PIPE_SSPP_SRC0_ADDR, FixedPcdGet64(PcdMipiFrameBufferAddress));
 	MmioWrite32(MDP_CTL_0_BASE + CTL_FLUSH, 0x1f);
 	MmioWrite32(MDP_CTL_1_BASE + CTL_FLUSH, 0x1f);
-
-  // Initialize (fake) UART.
-  UartInit();
+#endif
 
   // Declare UEFI region
   MemoryBase     = FixedPcdGet32(PcdSystemMemoryBase);
@@ -135,6 +149,8 @@ VOID Main(IN VOID *StackBase, IN UINTN StackSize, IN UINT64 StartTimeStamp)
        "UEFI Memory Base = 0x%llx, Size = 0x%llx, Stack Base = 0x%llx, Stack "
        "Size = 0x%llx\n",
        UefiMemoryBase, UefiMemorySize, StackBase, StackSize));
+
+  CpuDeadLoop();
 
   // Set up HOB
   HobList = HobConstructor(

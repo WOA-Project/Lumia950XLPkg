@@ -14,10 +14,8 @@
   MdePkg/MdePkg.dec
   ArmPkg/ArmPkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
-  EFIDroidPkg/EFIDroidPkg.dec
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
-  DebugLib
   GpioTlmmLib
   ClockLib

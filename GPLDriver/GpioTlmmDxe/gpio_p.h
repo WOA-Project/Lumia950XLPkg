@@ -11,6 +11,10 @@ EFI_STATUS msm_pinmux_set_function(UINTN id, UINTN function);
 EFI_STATUS msm_pinmux_set_drive_strength(UINTN id, UINTN ma);
 EFI_STATUS msm_pinmux_set_pull(UINTN id, GPIO_PULL pull);
 
+VOID gpio_tlmm_config(UINT32 gpio, UINT8 func,
+    UINT8 dir, UINT8 pull,
+    UINT8 drvstr, UINT32 enable);
+
 /* APIs: exposed for other drivers */
 /* API: Hdrive control for tlmm pins */
 void tlmm_set_hdrive_ctrl(struct tlmm_cfgs *, uint8_t);

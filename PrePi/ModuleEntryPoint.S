@@ -33,6 +33,9 @@ _SecondaryCpuStackSize:
 _MpParkBase:
   .quad FixedPcdGet64(SecondaryCpuMpParkRegionBase)
 
+_ResetCode:
+  .quad 0x0000000002000108
+
 _ModuleEntryPoint:
   mov x0, #0
 
@@ -101,7 +104,7 @@ _DonNotTrap_VFP_SIMD:
   /* Bit 20 and 21 */
   orr x0, x0, #0x300000
   msr CPACR_EL1, x0
-    
+
 _SetupPrimaryCoreStack:
   ldr x0, _StackBase     /* Stack base arg0 */
   ldr x1, _StackSize     /* Stack size arg1 */
@@ -122,5 +125,22 @@ _PrepareArguments:
   bl CEntryPoint
 
 .align 3
-dead:  
-  b dead                      /* We should never get here */
+dead:
+  b _RebootDeviceViaSecureWatchdog
+  b dead                 /* We should never get here */
+
+_RebootDeviceViaSecureWatchdog:
+  mov     x7, #0
+  mov     x6, #0
+  mov     x5, #0
+  mov     x4, #0
+  mov     x3, #0
+  mov     x2, #0
+  mov     x1, #1
+  ldr     x0, _ResetCode
+  smc     #0
+  b       dead
+
+ASM_FUNC(RebootDeviceViaSecureWatchdog)
+  b _RebootDeviceViaSecureWatchdog
+  ret

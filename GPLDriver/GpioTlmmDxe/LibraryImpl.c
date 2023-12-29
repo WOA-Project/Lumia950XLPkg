@@ -3,6 +3,8 @@
 
 #include <Library/QcomGpioTlmmLib.h>
 
+#include <Platform/iomap.h>
+
 #include "gpio_p.h"
 
 QCOM_GPIO_TLMM_PROTOCOL *gGpioTlmm = NULL;
@@ -20,6 +22,8 @@ STATIC QCOM_GPIO_TLMM_PROTOCOL mInternalGpioTlmm = {
 
     tlmm_set_hdrive_ctrl,
     tlmm_set_pull_ctrl,
+
+    gpio_tlmm_config,
 };
 
 #if defined(MDE_CPU_ARM)
@@ -396,4 +400,17 @@ GpioTlmmImplLibInitialize(VOID)
   gGpioTlmm = &mInternalGpioTlmm;
 
   return RETURN_SUCCESS;
+}
+
+EFIAPI void gpio_tlmm_config(UINT32 gpio, UINT8 func,
+    UINT8 dir, UINT8 pull,
+    UINT8 drvstr, UINT32 enable)
+{
+	uint32_t val = 0;
+	val |= pull;
+	val |= func << 2;
+	val |= drvstr << 6;
+	val |= enable << 9;
+	writel(val, GPIO_CONFIG_ADDR(gpio));
+	return;
 }
