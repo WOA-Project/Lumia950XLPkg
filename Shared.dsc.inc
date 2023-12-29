@@ -277,7 +277,7 @@
   DefaultExceptionHandlerLib|ArmPkg/Library/DefaultExceptionHandlerLib/DefaultExceptionHandlerLib.inf
   DebugAgentLib|MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf
   DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
-  DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
+  DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
   DxeServicesLib|MdePkg/Library/DxeServicesLib/DxeServicesLib.inf
   DxeServicesTableLib|MdePkg/Library/DxeServicesTableLib/DxeServicesTableLib.inf
@@ -340,7 +340,9 @@
 !if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1
   SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
 !else
-  SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
+  SerialPortLib|Lumia950XLPkg/Library/UartDmSerialPortLib/UartDmSerialPortLib.inf
+  QcomTargetUartDmLib|Lumia950XLPkg/Library/QcomTargetUartDmLib/QcomTargetUartDmLib.inf
+  QcomPlatformUartDmLib|Lumia950XLPkg/Library/QcomPlatformUartDmLib/QcomPlatformUartDmLib.inf
 !endif
   
   MemoryInitPeiLib|Lumia950XLPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
@@ -521,7 +523,12 @@
   # PrePI
   Lumia950XLPkg/PrePi/PrePi.inf {
     <LibraryClasses>
+  !if $(USE_SCREEN_FOR_SERIAL_OUTPUT) == 1
     SerialPortLib|Lumia950XLPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+  !else
+    SerialPortLib|Lumia950XLPkg/Library/UartDmSerialPortLib/EarlyUartDmSerialPortLib.inf
+  !endif
+    DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
   }
 
   # DXE
