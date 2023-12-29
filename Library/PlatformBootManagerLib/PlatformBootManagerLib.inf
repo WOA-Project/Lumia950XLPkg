@@ -85,6 +85,7 @@
   gEfiTtyTermGuid
   gUefiShellFileGuid
   gLumiaBootSplashAppGuid
+  gFastbootResetAppGuid
 
 [Protocols]
   gEfiDevicePathProtocolGuid

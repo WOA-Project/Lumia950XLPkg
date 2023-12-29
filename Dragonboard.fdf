@@ -74,8 +74,6 @@ READ_LOCK_STATUS   = TRUE
   INF Lumia950XLPkg/GPLDriver/GpioTlmmInterruptDxe/GpioTlmmInterruptDxe.inf
   INF Lumia950XLPkg/Driver/SpmiDxe/SpmiDxe.inf
   INF Lumia950XLPkg/Driver/Pm8x41Dxe/Pm8x41Dxe.inf
-  INF Lumia950XLPkg/Driver/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
-  INF Lumia950XLPkg/Driver/KeypadDxe/KeypadDxe.inf
   INF Lumia950XLPkg/Driver/ClockDxe/ClockDxe.inf
   INF Lumia950XLPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
   INF Lumia950XLPkg/Driver/I2cQupDxe/I2cQupDxe.inf
@@ -135,6 +133,9 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf
   INF MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
   INF Lumia950XLPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
+
+  # Utilities
+  INF Lumia950XLPkg/Application/FastbootResetApp/FastbootResetApp.inf
 
   # ACPI: Removed for Dragonboard for now
 

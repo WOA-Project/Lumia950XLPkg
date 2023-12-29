@@ -57,3 +57,6 @@
   
 !include Lumia950XLPkg/Library/UartDmSerialPortLib/UartDmSerialConfigBlkBlsp.dsc.inc
 !include Lumia950XLPkg/Shared.dsc.inc
+
+[Components.common]
+  Lumia950XLPkg/Application/FastbootResetApp/FastbootResetApp.inf

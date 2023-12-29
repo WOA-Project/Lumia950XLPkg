@@ -265,26 +265,29 @@ INTN PlatformRegisterFvBootOption(
 STATIC
 VOID PlatformRegisterOptionsAndKeys(VOID)
 {
-  INTN          ShellOption;
-  INTN          SplashOption;
+  INTN          Option;
   EFI_INPUT_KEY VolUpBtn;
   EFI_STATUS    Status;
 
-  ShellOption = PlatformRegisterFvBootOption(
+  Option = PlatformRegisterFvBootOption(
       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
 
-  if (ShellOption != -1) {
+  if (Option != -1) {
     VolUpBtn.ScanCode    = SCAN_UP;
     VolUpBtn.UnicodeChar = SCAN_UP;
     Status               = EfiBootManagerAddKeyOptionVariable(
-        NULL, ShellOption, 0, &VolUpBtn, NULL);
+        NULL, Option, 0, &VolUpBtn, NULL);
     ASSERT(Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
   }
 
 #ifndef DRAGONBOARD
-  SplashOption = PlatformRegisterFvBootOption(
+  Option = PlatformRegisterFvBootOption(
       &gLumiaBootSplashAppGuid, LUMIA_BOOTAPP_TITLE, LOAD_OPTION_ACTIVE);
-  ASSERT(SplashOption != -1);
+  ASSERT(Option != -1);
+#else
+  Option = PlatformRegisterFvBootOption(
+      &gFastbootResetAppGuid, RESET_FASTBOOT_TITLE, LOAD_OPTION_CATEGORY_APP);
+  ASSERT(Option != -1);
 #endif
 }
 
