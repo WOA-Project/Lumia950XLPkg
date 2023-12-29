@@ -35,9 +35,10 @@
   DEFINE MEMORY_4GB                   = 1
   DEFINE DRAGONBOARD                  = 1
   DEFINE NOPSCI                       = 1
+  DEFINE ANDROID_MEMMAP               = 1
 
 [BuildOptions.common]
-  GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8994 -DANDROID_RELOC_FRAMEBUFFER=1 -DDRAGONBOARD=1 -DNOPSCI=1
+  GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=8994 -DDRAGONBOARD=1 -DNOPSCI=1 -DANDROID_MEMMAP=1
   
 [PcdsFixedAtBuild.common]
   # Platform-specific
@@ -51,6 +52,7 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Qualcomm Snapdragon 810 Processor (8994)"
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"Dragonboard 810"
   gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03aa8
+  gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|TRUE
   
 !include Lumia950XLPkg/Library/UartDmSerialPortLib/UartDmSerialConfigBlkBlsp.dsc.inc
 !include Lumia950XLPkg/Shared.dsc.inc

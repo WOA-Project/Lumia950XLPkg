@@ -23,7 +23,11 @@
 #include <Library/PcdLib.h>
 
 // This varies by device
+#ifndef ANDROID_MEMMAP
 #include <Configuration/DeviceMemoryMap.h>
+#else
+#include <Configuration/DeviceMemoryMap.Android.h>
+#endif
 
 extern UINT64 mSystemMemoryEnd;
 
