@@ -281,9 +281,11 @@ VOID PlatformRegisterOptionsAndKeys(VOID)
     ASSERT(Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
   }
 
+#ifndef DRAGONBOARD
   SplashOption = PlatformRegisterFvBootOption(
       &gLumiaBootSplashAppGuid, LUMIA_BOOTAPP_TITLE, LOAD_OPTION_ACTIVE);
   ASSERT(SplashOption != -1);
+#endif
 }
 
 STATIC

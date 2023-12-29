@@ -115,9 +115,7 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
   INF MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
-  # INF Lumia950XLPkg/Application/BdsMenuApp/BdsMenuApp.inf
-  # INF Lumia950XLPkg/Driver/LogoDxe/LogoDxe.inf
-  # INF Lumia950XLPkg/Application/BootSplashApp/BootSplashApp.inf
+  INF MdeModulePkg/Application/UiApp/UiApp.inf
 
   # Disk IO
   INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
@@ -126,6 +124,10 @@ READ_LOCK_STATUS   = TRUE
   INF FatPkg/EnhancedFatDxe/Fat.inf
   INF MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
   INF MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
+
+  # Serial
+  INF MdeModulePkg/Universal/SerialDxe/SerialDxe.inf
+  INF MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe.inf
 
   # ACPI and SMBIOS
   INF MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf

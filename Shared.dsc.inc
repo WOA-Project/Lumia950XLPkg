@@ -638,12 +638,18 @@
   MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
   MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
   MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
+!if $(DRAGONBOARD) == 1
+  # Dragonboard uses this
+  MdeModulePkg/Application/UiApp/UiApp.inf
+!else
+  # Phone uses this
   Lumia950XLPkg/Application/BdsMenuApp/BdsMenuApp.inf {
     <LibraryClasses>
       NULL|MdeModulePkg/Library/DeviceManagerUiLib/DeviceManagerUiLib.inf
       NULL|MdeModulePkg/Library/BootManagerUiLib/BootManagerUiLib.inf
       NULL|MdeModulePkg/Library/BootMaintenanceManagerUiLib/BootMaintenanceManagerUiLib.inf
   }
+!endif
   Lumia950XLPkg/Driver/LogoDxe/LogoDxe.inf
   Lumia950XLPkg/Application/BootSplashApp/BootSplashApp.inf
 
@@ -654,6 +660,12 @@
   FatPkg/EnhancedFatDxe/Fat.inf
   MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
   MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
+
+  # Serial
+!if $(USE_SCREEN_FOR_SERIAL_OUTPUT) != 1
+  MdeModulePkg/Universal/SerialDxe/SerialDxe.inf
+  MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe.inf
+!endif
 
   # ACPI and SMBIOS
   # We use pre-built ACPI tables, so only core components are loaded
