@@ -111,12 +111,16 @@ STATIC VOID shutdown_device(VOID)
   ASSERT(0);
 }
 
-STATIC VOID reboot_device(UINTN warm)
+STATIC VOID reboot_device(UINTN warm, EFI_STATUS status)
 {
   UINT8 reset_type = 0;
 
   /* Write the reboot reason */
-  writel_rt(0, pResetReasonAddressVirtual);
+  if (warm == 1 && status == EFI_MEDIA_CHANGED) {
+    writel_rt(FASTBOOT_MODE, pResetReasonAddressVirtual);
+  } else {
+    writel_rt(0, pResetReasonAddressVirtual);
+  }
 
   if (warm == 1) {
     reset_type = PON_PSHOLD_WARM_RESET;
@@ -156,11 +160,11 @@ LibResetSystem(
     // Map the platform specific reset as reboot
   case EfiResetWarm:
     // Issue warm reset
-    reboot_device(1);
+    reboot_device(1, ResetStatus);
     break;
   case EfiResetCold:
     // Issue cold reset
-    reboot_device(0);
+    reboot_device(0, ResetStatus);
     break;
   case EfiResetShutdown:
     shutdown_device();
