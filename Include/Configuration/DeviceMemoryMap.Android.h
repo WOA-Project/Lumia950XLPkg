@@ -58,7 +58,8 @@ typedef struct {
 
 static ARM_MEMORY_REGION_DESCRIPTOR_EX gDeviceMemoryDescriptorEx[] = {
     /* Name               Address     Length      HobOption        ResourceAttribute    ArmAttributes */
-    {"Free Memory 0",     0x00000000, 0x00080000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
+    {"Reserved",          0x00000000, 0x00001000, AddMem, SYS_MEM, SYS_MEM_CAP,     Reserv, NS_DEVICE},
+    {"Free Memory 0",     0x00001000, 0x0007F000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
     {"UEFI FD",           0x00080000, 0x00180000, AddMem, SYS_MEM, SYS_MEM_CAP,     BsCode, WRITE_BACK},
     {"Free Memory 1",     0x00200000, 0x00A00000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
     {"UEFI Stack PEI",    0x00C00000, 0x00040000, AddMem, SYS_MEM, SYS_MEM_CAP,     BsData, WRITE_BACK},
@@ -67,14 +68,16 @@ static ARM_MEMORY_REGION_DESCRIPTOR_EX gDeviceMemoryDescriptorEx[] = {
     {"Cont Splash",       0x03401000, 0x02200000, AddMem, MEM_RES, WRITE_THROUGH,   MaxMem, WRITE_THROUGH},
     {"Free Memory 3",     0x05601000, 0x00CFF000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
     {"Modem and Periph",  0x06300000, 0x08400000, AddMem, SYS_MEM, SYS_MEM_CAP,     Reserv, NS_DEVICE},
-    {"Free Memory 4",     0x0E700000, 0x51900000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
+    {"Free Memory 4",     0x0E700000, 0x71900000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
     /* DDR Bank 2 */
-    {"Free Memory 5",     0x80000000, 0x5F400000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
+    {"Free Memory 5",     0x80000000, 0x2C1C0000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
+    {"Reserved 2",        0xac1c0000, 0x00001000, AddMem, SYS_MEM, SYS_MEM_CAP,     Reserv, NS_DEVICE},
+    {"Free Memory 6",     0xac1c1000, 0x3323F000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
     {"Audio",             0xdf400000, 0x00614000, AddMem, SYS_MEM, SYS_MEM_CAP,     Reserv, NS_DEVICE},
-    {"Free Memory 6",     0xDFA14000, 0x001EC000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
+    {"Free Memory 7",     0xDFA14000, 0x001EC000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
     {"QSEE",              0xdfc00000, 0x01800000, AddMem, SYS_MEM, SYS_MEM_CAP,     Reserv, NS_DEVICE},
     {"ADSP Memory",       0xe1400000, 0x03F00000, AddMem, SYS_MEM, SYS_MEM_CAP,     Reserv, NS_DEVICE},
-    {"Free Memory 7",     0xE5300000, 0x00100000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
+    {"Free Memory 8",     0xE5300000, 0x00100000, AddMem, SYS_MEM, SYS_MEM_CAP,     Conv,   WRITE_BACK},
     {"Secure Memory",     0xe5400000, 0x12c00000, AddMem, MMAP_IO, INITIALIZED,     Reserv, NS_DEVICE},
     /* Other memory regions */
     {"IMEM SMEM Base",    0xFE805000, 0x00001000, NoHob,  MMAP_IO, INITIALIZED,     Conv,   NS_DEVICE},
