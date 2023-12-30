@@ -3,6 +3,7 @@
 #include <Library/LKEnvLib.h>
 
 #include <Library/ArmLib.h>
+#include <Library/ArmSmcLib.h>
 #include <Library/DebugLib.h>
 #include <Library/IoLib.h>
 #include <Library/UefiBootServicesTableLib.h>
@@ -23,12 +24,16 @@
 
 #include "PCIeDefinition.h"
 
+#define ENABLE_QCOM_RPM
+
 QCOM_GPIO_TLMM_PROTOCOL *mTlmmProtocol;
 #ifdef ENABLE_QCOM_RPM
 QCOM_RPM_PROTOCOL *mRpmProtocol;
 #endif
 QCOM_PM8X41_PROTOCOL *mPmicProtocol;
 QCOM_BOARD_PROTOCOL * mBoardProtocol;
+
+uint32_t mBoardId = 0;
 
 EFI_STATUS
 EFIAPI
@@ -57,6 +62,8 @@ AcquireEfiProtocols(VOID)
   if (EFI_ERROR(Status))
     goto exit;
 
+  mBoardId = mBoardProtocol->board_platform_id();
+
 exit:
   return Status;
 }
@@ -65,11 +72,11 @@ EFI_STATUS
 EFIAPI
 VerifyPlatform(VOID)
 {
-  if (mBoardProtocol->board_platform_id() != MSM8994 &&
-      mBoardProtocol->board_platform_id() != MSM8992) {
+  if (mBoardId != MSM8994 && mBoardId != MSM8992 && mBoardId != APQ8094) {
     DEBUG(
         (EFI_D_ERROR | EFI_D_WARN,
-         "Target platform is not MSM8992 or MSM8994. PCIe init skipped \n"));
+         "Target platform is not MSM8992 or MSM8994/APQ8094. PCIe init skipped \n"));
+    ASSERT(FALSE);
     return EFI_UNSUPPORTED;
   }
 
@@ -81,18 +88,32 @@ EFIAPI
 EnableClocksMsm8994(VOID)
 {
   EFI_STATUS Status = EFI_SUCCESS;
+  BOOLEAN initializePCIe1 = mBoardId == MSM8994 || mBoardId == APQ8094;
 
-  if (mBoardProtocol->board_platform_id() == MSM8992) {
+  switch (mBoardId)
+  {
+  case MSM8992:
     // HWIO_GCC_PCIE_0_PIPE_CBCR_ADDR
     MmioWrite32(0xFC401B14, 0);
     // HWIO_GCC_PCIE_0_PIPE_CMD_RCGR_ADDR
     MmioWrite32(0xFC401B18, 0);
-  }
-  else {
+    break;
+  case MSM8994:
     // HWIO_GCC_PCIE_1_PIPE_CBCR_ADDR
     MmioWrite32(0xFC401B94, 0);
     // HWIO_GCC_PCIE_1_PIPE_CMD_RCGR_ADDR
     MmioWrite32(0xFC401B98, 0);
+    break;
+  case APQ8094:
+    // HWIO_GCC_PCIE_0_PIPE_CBCR_ADDR
+    MmioWrite32(0xFC401B14, 0);
+    // HWIO_GCC_PCIE_0_PIPE_CMD_RCGR_ADDR
+    MmioWrite32(0xFC401B18, 0);
+    // HWIO_GCC_PCIE_1_PIPE_CBCR_ADDR
+    MmioWrite32(0xFC401B94, 0);
+    // HWIO_GCC_PCIE_1_PIPE_CMD_RCGR_ADDR
+    MmioWrite32(0xFC401B98, 0);
+    break;
   }
 
   // Clocks & LDOs
@@ -108,40 +129,33 @@ EnableClocksMsm8994(VOID)
 
   // GDSC
   gdsc_pcie0_enable();
-  if (mBoardProtocol->board_platform_id() == MSM8994)
-    gdsc_pcie1_enable();
-    // pcie_1_ref_clk_src
+  if (initializePCIe1) gdsc_pcie1_enable();
+  // pcie_1_ref_clk_src
 #ifdef ENABLE_QCOM_RPM
   rpm_smd_ln_bb_clk_enable();
 #endif
   // pcie_1_aux_clk
   pcie_0_aux_clk_set_rate_and_enable();
-  if (mBoardProtocol->board_platform_id() == MSM8994)
-    pcie_1_aux_clk_set_rate_and_enable();
+  if (initializePCIe1) pcie_1_aux_clk_set_rate_and_enable();
   // pcie_1_cfg_ahb_clk
   pcie_0_cfg_ahb_clk_enable();
-  if (mBoardProtocol->board_platform_id() == MSM8994)
-    pcie_1_cfg_ahb_clk_enable();
+  if (initializePCIe1) pcie_1_cfg_ahb_clk_enable();
   // pcie_1_mstr_axi_clk
   pcie_0_mstr_axi_clk_enable();
-  if (mBoardProtocol->board_platform_id() == MSM8994)
-    pcie_1_mstr_axi_clk_enable();
+  if (initializePCIe1) pcie_1_mstr_axi_clk_enable();
   // pcie_1_slv_axi_clk
   pcie_0_slv_axi_clk_enable();
-  if (mBoardProtocol->board_platform_id() == MSM8994)
-    pcie_1_slv_axi_clk_enable();
+  if (initializePCIe1) pcie_1_slv_axi_clk_enable();
   // pcie_1_phy_ldo
   pcie_0_phy_ldo_enable();
-  if (mBoardProtocol->board_platform_id() == MSM8994)
-    pcie_1_phy_ldo_enable();
+  if (initializePCIe1) pcie_1_phy_ldo_enable();
   // pcie_phy_1_reset
   pcie_phy_0_reset_enable();
-  if (mBoardProtocol->board_platform_id() == MSM8994)
-    pcie_phy_1_reset_enable();
+  if (initializePCIe1) pcie_phy_1_reset_enable();
   // Memory fence
   MemoryFence();
 
-  // exit:
+  exit:
   return Status;
 }
 
@@ -156,6 +170,17 @@ ConfigurePCIeAndCnssGpio(VOID)
   mTlmmProtocol->SetPull(35, GPIO_PULL_NONE);
   mTlmmProtocol->DirectionOutput(35, 1);
   mTlmmProtocol->Set(35, 0);
+
+  // DB: GPIO 53 PERST#, func Generic I/O (0), Dir Out, No Pull (0), Drive 2mA (0),
+  // assert -> deassert
+  if (mBoardId == APQ8094)
+  {
+    mTlmmProtocol->SetFunction(53, 0);
+    mTlmmProtocol->SetDriveStrength(53, 2);
+    mTlmmProtocol->SetPull(53, GPIO_PULL_NONE);
+    mTlmmProtocol->DirectionOutput(53, 1);
+    mTlmmProtocol->Set(53, 0);
+  }
 
   // GPIO 1, func Generic I/O, dir Out, No Pull, Drive 2mA, keep assert
   mTlmmProtocol->SetFunction(1, 0);
@@ -198,40 +223,79 @@ ConfigurePCIeAndCnssGpio(VOID)
   mTlmmProtocol->Set(113, 1);
   gBS->Stall(1000);
 
-  // Assert GPIO 35 PERST#
-  mTlmmProtocol->SetFunction(35, 0);
-  mTlmmProtocol->SetDriveStrength(35, 2);
-  mTlmmProtocol->SetPull(35, GPIO_PULL_NONE);
-  mTlmmProtocol->DirectionOutput(35, 1);
-  mTlmmProtocol->Set(35, 1);
-
   return EFI_SUCCESS;
 }
 
-EFI_STATUS
-EFIAPI
-InitializePciePHY(VOID)
+static inline void InitializePCIePHYWithBase(UINTN MsmPciePhyBase)
 {
-  UINTN MsmPciePhyBase = 0;
+  if (mBoardId == APQ8094)
+  {
+    MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_DOWN_CONTROL, 0x03);
 
-  if (mBoardProtocol->board_platform_id() == MSM8992) {
-    // GCC clks (GCC_PCIE_0_BCR)
-    MmioWrite32(0xFC401AC0, 0x1);
-    gBS->Stall(2000);
-    MmioWrite32(0xFC401AC0, 0x0);
-    // PHY base
-    MsmPciePhyBase = 0xfc526000;
-  }
-  else {
-    // GCC clks (GCC_PCIE_1_BCR)
-    MmioWrite32(0xFC401B40, 0x1);
-    gBS->Stall(2000);
-    MmioWrite32(0xFC401B40, 0x0);
-    // PHY base
-    MsmPciePhyBase = 0xfc52e000;
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_SYSCLK_EN_SEL_TXBAND, 0x08);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_DEC_START1, 0x82);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_DEC_START2, 0x03);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_DIV_FRAC_START1, 0xD5);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_DIV_FRAC_START2, 0xAA);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_DIV_FRAC_START3, 0x4D);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLLLOCK_CMP_EN, 0x03);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLLLOCK_CMP1, 0x06);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLLLOCK_CMP2, 0x1A);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CRCTRL, 0x7C);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CP_SETI, 0x1F);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_IP_SETP, 0x12);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CP_SETP, 0x0F);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_IP_SETI, 0x01);
+
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_IE_TRIM, 0x0F);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_IP_TRIM, 0x0F);
+
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CNTRL, 0x46);
+
+    /* CDR Settings */
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_CDR_CONTROL1, 0xF4);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_CDR_CONTROL_HALF, 0x2C);
+
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_VCOTAIL_EN, 0xE1);
+
+    /* Calibration Settings */
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_RESETSM_CNTRL, 0x91);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_RESETSM_CNTRL2, 0x07);
+
+    /* Additional writes */
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_CODE_START_SEG1, 0x20);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_CODE_CAL_CSR, 0x77);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_TRIM_CONTROL, 0x15);
+    MmioWrite32(MsmPciePhyBase + QSERDES_TX_RCV_DETECT_LVL, 0x03);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_UCDR_FO_GAIN, 0x09);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_UCDR_SO_GAIN, 0x04);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_UCDR_SO_SATURATION_AND_ENABLE,
+          0x49);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN1_LSB, 0xFF);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN1_MSB, 0x1F);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN2_LSB, 0xFF);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN2_MSB, 0x00);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQU_ADAPTOR_CNTRL2, 0x1E);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1,
+          0x67);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_OFFSET_ADAPTOR_CNTRL2, 0x80);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_ENABLES, 0x40);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_CNTRL, 0xB0);
+    MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_DEGLITCH_CNTRL, 0x06);
+    MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_RXTXEPCLK_EN, 0x10);
+    MmioWrite32(MsmPciePhyBase + PCIE_PHY_ENDPOINT_REFCLK_DRIVE, 0x10);
+    MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_STATE_CONFIG1, 0xA3);
+    MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_STATE_CONFIG2, 0x4B);
+    MmioWrite32(MsmPciePhyBase + PCIE_PHY_RX_IDLE_DTCT_CNTRL, 0x4D);
+
+    MmioWrite32(MsmPciePhyBase + PCIE_PHY_SW_RESET, 0x00);
+    MmioWrite32(MsmPciePhyBase + PCIE_PHY_START, 0x03);
+
+    return;
   }
 
   MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_DOWN_CONTROL, 0x3);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_SYSCLK_EN_SEL_TXBAND, 0x8);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_DEC_START1, 0x82);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_DEC_START2, 0x3);
@@ -246,18 +310,25 @@ InitializePciePHY(VOID)
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_IP_SETP, 0x1F);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CP_SETP, 0xF);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_IP_SETI, 0x1);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_IE_TRIM, 0xF);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_IP_TRIM, 0xF);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_CNTRL, 0x46);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_CDR_CONTROL1, 0xF5);
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_CDR_CONTROL_HALF, 0x2C);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_RESETSM_CNTRL, 0x91);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_RESETSM_CNTRL2, 0x7);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_VCOTAIL_EN, 0x0E1);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_CODE_START_SEG1, 0x24);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_CODE_CAL_CSR, 0x77);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_RES_TRIM_CONTROL, 0x15);
   MmioWrite32(MsmPciePhyBase + QSERDES_TX_RCV_DETECT_LVL, 0x3);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN1_LSB, 0xFF);
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN1_MSB, 0x7);
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_RX_EQ_GAIN2_LSB, 0xFF);
@@ -268,23 +339,148 @@ InitializePciePHY(VOID)
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_ENABLES, 0x40);
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_CNTRL, 0x70);
   MmioWrite32(MsmPciePhyBase + QSERDES_RX_SIGDET_DEGLITCH_CNTRL, 0x0C);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_SSC_EN_CENTER, 0x1);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_SSC_ADJ_PER1, 0x2);
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_SSC_PER1, 0x31);
   MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNTRL1, 0x1);
   MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNTRL2, 0x19);
   MmioWrite32(MsmPciePhyBase + QPHY_FLL_CNT_VAL_L, 0x19);
+
   MmioWrite32(MsmPciePhyBase + QSERDES_COM_PLL_RXTXEPCLK_EN, 0x10);
   MmioWrite32(MsmPciePhyBase + PCIE_PHY_ENDPOINT_REFCLK_DRIVE, 0x10);
   MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_STATE_CONFIG1, 0x23);
   MmioWrite32(MsmPciePhyBase + PCIE_PHY_POWER_STATE_CONFIG2, 0x4B);
   MmioWrite32(MsmPciePhyBase + PCIE_PHY_RX_IDLE_DTCT_CNTRL, 0x4D);
+
   MmioWrite32(MsmPciePhyBase + PCIE_PHY_SW_RESET, 0x0);
   MmioWrite32(MsmPciePhyBase + PCIE_PHY_START, 0x3);
+}
 
+static inline void msm_pcie_write_mask(UINTN addr, uint32_t clear_mask, uint32_t set_mask)
+{
+	uint32_t val;
+
+	val = (readl_relaxed(addr) & ~clear_mask) | set_mask;
+	writel_relaxed(val, addr);
+	dmb();  /* ensure data is written to hardware register */
+}
+
+EFI_STATUS
+EFIAPI
+InitializePciePHY(VOID)
+{
+  switch (mBoardId)
+  {
+  case MSM8992:
+    // GCC clks (GCC_PCIE_0_BCR)
+    MmioWrite32(0xFC401AC0, 0x1);
+    gBS->Stall(2000);
+    MmioWrite32(0xFC401AC0, 0x0);
+    // PHY base
+    InitializePCIePHYWithBase(0xfc526000);
+    break;
+  case MSM8994:
+    // GCC clks (GCC_PCIE_1_BCR)
+    MmioWrite32(0xFC401B40, 0x1);
+    gBS->Stall(2000);
+    MmioWrite32(0xFC401B40, 0x0);
+    // PHY base
+    InitializePCIePHYWithBase(0xfc52e000);
+    break;
+  case APQ8094:
+    // DB-specific: set some PARF flags
+    msm_pcie_write_mask(0xfc520000 + PCIE20_PARF_PHY_CTRL, BIT(0), 0);
+    msm_pcie_write_mask(0xfc528000 + PCIE20_PARF_PHY_CTRL, BIT(0), 0);
+
+    // GCC clks (GCC_PCIE_0_BCR)
+    MmioWrite32(0xFC401AC0, 0x1);
+    gBS->Stall(2000);
+    MmioWrite32(0xFC401AC0, 0x0);
+    // PHY base
+    InitializePCIePHYWithBase(0xfc526000);
+
+    // GCC clks (GCC_PCIE_1_BCR)
+    MmioWrite32(0xFC401B40, 0x1);
+    gBS->Stall(2000);
+    MmioWrite32(0xFC401B40, 0x0);
+    // PHY base
+    InitializePCIePHYWithBase(0xfc52e000);
+    break;
+  }
+
+  return EFI_SUCCESS;
+}
+
+static inline int WaitForPCIePHYReadyWithBase(UINTN MsmPciePhyBase)
+{
   // Wait for PHY to get ready
-  while (MmioRead32(MsmPciePhyBase + PCIE_PHY_PCS_STATUS) & 0x40)
+  UINTN status = MmioRead32(MsmPciePhyBase + PCIE_PHY_PCS_STATUS);
+  UINTN cnt = 0;
+  UINTN sec = 0;
+
+  while (status & 0x40)
+  {
     gBS->Stall(5);
+    cnt += 5;
+
+    if (cnt > 1000000) {
+      cnt = 0;
+      sec++;
+      DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR,
+        "Waiting for PCIe PHY to get ready... BASE: 0x%x, STATUS: 0x%x\n", MsmPciePhyBase, status));
+
+      if (sec > 10) {
+        DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR,
+          "PHY didn't come up! BASE: 0x%x, STATUS: 0x%x\n", MsmPciePhyBase, status));
+        return -1;
+      }
+    }
+    status = MmioRead32(MsmPciePhyBase + PCIE_PHY_PCS_STATUS);
+  }
+
+  return 0;
+}
+
+EFI_STATUS
+EFIAPI
+WaitForPCIePHYReady(VOID)
+{
+  int ret = 0;
+
+  switch (mBoardId)
+  {
+  case MSM8992:
+    ret = WaitForPCIePHYReadyWithBase(0xfc526000);
+    if (ret < 0) return EFI_TIMEOUT;
+    break;
+  case MSM8994:
+    ret = WaitForPCIePHYReadyWithBase(0xfc52e000);
+    if (ret < 0) return EFI_TIMEOUT;
+    break;
+  case APQ8094:
+    ret = WaitForPCIePHYReadyWithBase(0xfc526000);
+    ret = WaitForPCIePHYReadyWithBase(0xfc52e000);
+    if (ret < 0) return EFI_TIMEOUT;
+    break;
+  }
+
+  // Assert GPIO 35 PERST#
+  mTlmmProtocol->SetFunction(35, 0);
+  mTlmmProtocol->SetDriveStrength(35, 2);
+  mTlmmProtocol->SetPull(35, GPIO_PULL_NONE);
+  mTlmmProtocol->DirectionOutput(35, 1);
+  mTlmmProtocol->Set(35, 1);
+
+  // Assert GPIO 53 PERST#
+  if (mBoardId == APQ8094)
+  {
+    mTlmmProtocol->SetFunction(53, 0);
+    mTlmmProtocol->SetDriveStrength(53, 2);
+    mTlmmProtocol->SetPull(53, GPIO_PULL_NONE);
+    mTlmmProtocol->DirectionOutput(53, 1);
+    mTlmmProtocol->Set(53, 1);
+  }
 
   return EFI_SUCCESS;
 }
@@ -317,24 +513,9 @@ SetPipeClock(VOID)
   return EFI_SUCCESS;
 }
 
-EFI_STATUS
-EFIAPI
-EnableLink(VOID)
+static inline void EnableLinkWithAddr(UINTN ParfBase, UINTN DmCoreBase)
 {
-  UINT32 Val        = 0;
-  UINTN  ParfBase   = 0;
-  UINTN  DmCoreBase = 0;
-
-  if (mBoardProtocol->board_platform_id() == MSM8992) {
-    // PARF: 0xfc520000, DM Core: 0xff000000
-    ParfBase   = 0xfc520000;
-    DmCoreBase = 0xff000000;
-  }
-  else {
-    // PARF: 0xfc528000, DM Core: 0xf8800000
-    ParfBase   = 0xfc528000;
-    DmCoreBase = 0xf8800000;
-  }
+  UINT32 Val = 0;
 
   // PCIE20_PARF_DEVICE_TYPE: this is RC
   MmioWrite32(ParfBase + 0x1000, 0x4);
@@ -358,25 +539,36 @@ EnableLink(VOID)
   // Check link (PCIE20_ELBI_SYS_STTS)
   while ((MmioRead32(DmCoreBase + 0xf28) & 0x400) != 0x400)
     gBS->Stall(1000);
-
-  return EFI_SUCCESS;
 }
 
 EFI_STATUS
 EFIAPI
-ConfigDmCore(VOID)
+EnableLink(VOID)
 {
-  UINT32 Val        = 0;
+  
+  UINTN  ParfBase   = 0;
   UINTN  DmCoreBase = 0;
 
-  if (mBoardProtocol->board_platform_id() == MSM8992) {
-    // DM Core: 0xff000000
-    DmCoreBase = 0xff000000;
+  switch (mBoardId)
+  {
+    case MSM8992:
+      EnableLinkWithAddr(0xfc520000, 0xff000000);
+      break;
+    case MSM8994:
+      EnableLinkWithAddr(0xfc528000, 0xf8800000);
+      break;
+    case APQ8094:
+      EnableLinkWithAddr(0xfc520000, 0xff000000);
+      EnableLinkWithAddr(0xfc528000, 0xf8800000);
+      break;
   }
-  else {
-    // DM Core: 0xf8800000
-    DmCoreBase = 0xf8800000;
-  }
+
+  return EFI_SUCCESS;
+}
+
+static inline void ConfigureDmCoreWithBase(UINTN DmCoreBase)
+{
+  UINT32 Val = 0;
 
   // PCIE20_MISC_CONTROL_1
   MmioWrite32(DmCoreBase + 0x8bc, 0x1);
@@ -394,6 +586,25 @@ ConfigDmCore(VOID)
   // PCIE20_DEVICE_CONTROL2_STATUS2
   Val = MmioRead32(DmCoreBase + 0x98);
   MmioWrite32(DmCoreBase + 0x98, 0x400);
+}
+
+EFI_STATUS
+EFIAPI
+ConfigDmCore(VOID)
+{
+  switch (mBoardId)
+  {
+  case MSM8992:
+    ConfigureDmCoreWithBase(0xff000000);
+    break;
+  case MSM8994:
+    ConfigureDmCoreWithBase(0xf8800000);
+    break;
+  case APQ8094:
+    ConfigureDmCoreWithBase(0xff000000);
+    ConfigureDmCoreWithBase(0xf8800000);
+    break;
+  }
 
   // GPIO 36, in, function 2, 2mA drive, no pull (clkreq)
   mTlmmProtocol->SetFunction(36, 2);
@@ -401,28 +612,25 @@ ConfigDmCore(VOID)
   mTlmmProtocol->SetPull(36, GPIO_PULL_NONE);
   mTlmmProtocol->DirectionInput(36);
 
+  // GPIO 54, in, function 2, 2mA drive, no pull (clkreq)
+  if (mBoardId == APQ8094)
+  {
+    mTlmmProtocol->SetFunction(54, 2);
+    mTlmmProtocol->SetDriveStrength(54, 2);
+    mTlmmProtocol->SetPull(54, GPIO_PULL_NONE);
+    mTlmmProtocol->DirectionInput(54);
+  }
+
   return EFI_SUCCESS;
 }
 
-EFI_STATUS
-EFIAPI
-ConfigSpace(VOID)
+static inline void ConfigSpaceWithBase(UINTN DmCoreBase)
 {
   UINT32 i          = 1;
   UINT32 j          = 4;
   UINT32 k          = 0;
   UINT32 Addr       = 0;
   UINT32 Val        = 0;
-  UINTN  DmCoreBase = 0;
-
-  if (mBoardProtocol->board_platform_id() == MSM8992) {
-    // DM Core: 0xff000000
-    DmCoreBase = 0xff000000;
-  }
-  else {
-    // DM Core: 0xf8800000
-    DmCoreBase = 0xf8800000;
-  }
 
   while (TRUE) {
     // DM_CORE, base varies
@@ -459,29 +667,36 @@ ConfigSpace(VOID)
     if (k)
       j = 5;
   }
-
-  return EFI_SUCCESS;
 }
 
 EFI_STATUS
 EFIAPI
-FinishingUp(VOID)
+ConfigSpace(VOID)
+{
+  switch (mBoardId)
+  {
+    case MSM8992:
+      ConfigSpaceWithBase(0xff000000);
+      break;
+    case MSM8994:
+      ConfigSpaceWithBase(0xf8800000);
+      break;
+    case APQ8094:
+      ConfigSpaceWithBase(0xff000000);
+      ConfigSpaceWithBase(0xf8800000);
+      break;
+  }
+
+  return EFI_SUCCESS;
+}
+
+static inline void ConfigBARWithBase(UINTN DmCoreBase)
 {
   UINT32  i          = 0;
   UINT32  j          = 0;
-  UINTN   DmCoreBase = 0;
   UINT32  k          = 16;
   UINT32  Val        = 0;
   BOOLEAN SetI       = FALSE;
-
-  if (mBoardProtocol->board_platform_id() == MSM8992) {
-    // DM Core: 0xff000000
-    DmCoreBase = 0xff000000;
-  }
-  else {
-    // DM Core: 0xf8800000
-    DmCoreBase = 0xf8800000;
-  }
 
   UINT32 Addr = DmCoreBase + 0x100000;
   UINT32 Adr1 = DmCoreBase + 0x400000;
@@ -514,6 +729,33 @@ FinishingUp(VOID)
   MmioWrite32(
       DmCoreBase + 0x24,
       ((Adr1 + j + i) & 0xFFFF0000) | ((Adr1 + j + i) >> 16));
+}
+
+EFI_STATUS
+EFIAPI
+FinishingUp(VOID)
+{
+  UINT32  i          = 0;
+  UINT32  j          = 0;
+  UINTN   DmCoreBase = 0;
+  UINT32  k          = 16;
+  UINT32  Val        = 0;
+  BOOLEAN SetI       = FALSE;
+
+  switch (mBoardId)
+  {
+  case MSM8992:
+    ConfigBARWithBase(0xff000000);
+    break;
+  case MSM8994:
+    ConfigBARWithBase(0xf8800000);
+    break;
+  case APQ8094:
+    ConfigBARWithBase(0xff000000);
+    ConfigBARWithBase(0xf8800000);
+    break;
+  }
+
   return EFI_SUCCESS;
 }
 
@@ -524,51 +766,80 @@ PCIExpressConfiguratorEntry(
 {
   EFI_STATUS Status;
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry ->\n"));
+
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> AcquireEfiProtocols\n"));
   Status = AcquireEfiProtocols();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- AcquireEfiProtocols\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> VerifyPlatform\n"));
   Status = VerifyPlatform();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- VerifyPlatform\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> EnableClocksMsm8994\n"));
   Status = EnableClocksMsm8994();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- EnableClocksMsm8994\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> ConfigurePCIeAndCnssGpio\n"));
   Status = ConfigurePCIeAndCnssGpio();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- ConfigurePCIeAndCnssGpio\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
   // TODO: Call msm_pcie_restore_sec_config to restore security config
-
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> InitializePciePHY\n"));
   Status = InitializePciePHY();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- InitializePciePHY\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
 #ifdef ENABLE_QCOM_RPM
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> RpmTurnOnLdo30\n"));
   Status = RpmTurnOnLdo30();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- RpmTurnOnLdo30\n"));
   if (EFI_ERROR(Status))
     goto exit;
 #endif
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> SetPipeClock\n"));
   Status = SetPipeClock();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- SetPipeClock\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> WaitForPCIePHYReady\n"));
+  Status = WaitForPCIePHYReady();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- WaitForPCIePHYReady\n"));
+  if (EFI_ERROR(Status))
+    goto exit;
+
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> EnableLink\n"));
   Status = EnableLink();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- EnableLink\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> ConfigDmCore\n"));
   Status = ConfigDmCore();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- ConfigDmCore\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> ConfigSpace\n"));
   Status = ConfigSpace();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- ConfigSpace\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry -> FinishingUp\n"));
   Status = FinishingUp();
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <- FinishingUp\n"));
   if (EFI_ERROR(Status))
     goto exit;
 
@@ -577,5 +848,6 @@ PCIExpressConfiguratorEntry(
       &ImageHandle);
 
 exit:
+  DEBUG((EFI_D_LOAD | EFI_D_INFO | EFI_D_ERROR, "PCIExpressConfiguratorEntry <-\n"));
   return Status;
 }

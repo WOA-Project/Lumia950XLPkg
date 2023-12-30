@@ -1,0 +1,47 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Usb3PhyDxe
+  FILE_GUID                      = 058f0796-85a9-4cfa-8b84-04bd0d218dde
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.1
+
+  ENTRY_POINT                    = Usb3PhyDxeEntry
+
+[Sources.common]
+  Usb3Phy.c
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+
+[LibraryClasses]
+  ArmLib
+  ArmSmcLib
+  DebugLib
+  DevicePathLib
+  DxeServicesTableLib
+  MemoryAllocationLib
+  QcomPlatformClock2Lib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-unused-function -Wno-unused-variable
+
+[Protocols]
+  gQcomGpioTlmmProtocolGuid
+  gQcomRpmProtocolGuid
+  gQcomPm8x41ProtocolGuid
+  gQcomBoardProtocolGuid
+  gQcomClockProtocolGuid
+
+[Depex]
+  gQcomGpioTlmmProtocolGuid AND 
+  gQcomRpmProtocolGuid AND 
+  gQcomPm8x41ProtocolGuid AND 
+  gQcomBoardProtocolGuid AND
+  gQcomClockProtocolGuid

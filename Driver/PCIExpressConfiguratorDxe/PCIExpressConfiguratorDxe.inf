@@ -19,14 +19,15 @@
   Lumia950XLPkg/Lumia950XLPkg.dec
 
 [LibraryClasses]
-  UefiDriverEntryPoint
   ArmLib
+  ArmSmcLib
   DebugLib
   DevicePathLib
-  MemoryAllocationLib
-  UefiBootServicesTableLib
   DxeServicesTableLib
+  MemoryAllocationLib
   QcomPlatformClock2Lib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
 
 [BuildOptions.AARCH64]
   GCC:*_*_*_CC_FLAGS = -Wno-unused-function -Wno-unused-variable
@@ -34,14 +35,12 @@
 [Protocols]
   gQcomGpioTlmmProtocolGuid
   gQcomMsmPCIExpressInitProtocolGuid
-  # Wont enable RPM until future use
-  # gQcomRpmProtocolGuid
+  gQcomRpmProtocolGuid
   gQcomPm8x41ProtocolGuid
   gQcomBoardProtocolGuid
 
 [Depex]
   gQcomGpioTlmmProtocolGuid AND 
-  # Wont enable RPM until future use
-  # gQcomRpmProtocolGuid AND 
+  gQcomRpmProtocolGuid AND 
   gQcomPm8x41ProtocolGuid AND 
   gQcomBoardProtocolGuid

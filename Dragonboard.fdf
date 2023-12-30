@@ -137,6 +137,9 @@ READ_LOCK_STATUS   = TRUE
   # Utilities
   INF Lumia950XLPkg/Application/FastbootResetApp/FastbootResetApp.inf
 
+  # Extra debug drivers
+  INF Lumia950XLPkg/Driver/Usb3PhyDxe/Usb3PhyDxe.inf
+
   # ACPI: Removed for Dragonboard for now
 
   # SplashApp assets

@@ -54,9 +54,13 @@
   gLumia950XLPkgTokenSpaceGuid.PcdSmbiosSystemRetailModel|"Dragonboard 810"
   gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03aa8
   gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|TRUE
+
+[PcdsFeatureFlag.common]
+  gQcomTokenSpaceGuid.PcdInstallRpmProtocol|TRUE
   
 !include Lumia950XLPkg/Library/UartDmSerialPortLib/UartDmSerialConfigBlkBlsp.dsc.inc
 !include Lumia950XLPkg/Shared.dsc.inc
 
 [Components.common]
   Lumia950XLPkg/Application/FastbootResetApp/FastbootResetApp.inf
+  Lumia950XLPkg/Driver/Usb3PhyDxe/Usb3PhyDxe.inf
