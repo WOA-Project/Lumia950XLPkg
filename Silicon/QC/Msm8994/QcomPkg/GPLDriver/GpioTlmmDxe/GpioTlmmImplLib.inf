@@ -1,0 +1,34 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = GpioTlmmImplLib
+  FILE_GUID                      = AE79CEF4-1C0A-4BD9-906B-E60E93887057
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = GpioTlmmLib
+  CONSTRUCTOR                    = GpioTlmmImplLibInitialize
+
+[Sources.common]
+  LibraryImpl.c
+  tlmm.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  IoLib
+
+[Pcd.common]
+  gQcomTokenSpaceGuid.PcdGpioTlmmBaseAddress
+  gQcomTokenSpaceGuid.PcdGpioTlmmCtlOffset
+  gQcomTokenSpaceGuid.PcdGpioTlmmCtlElementSize
+  gQcomTokenSpaceGuid.PcdGpioTlmmIoOffset
+  gQcomTokenSpaceGuid.PcdGpioTlmmIoElementSize
+  gQcomTokenSpaceGuid.PcdGpioTlmmOeBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmMuxBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmOutBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmInBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmNumFunctions
+  gQcomTokenSpaceGuid.PcdGpioTlmmDrvBit
+  gQcomTokenSpaceGuid.PcdGpioTlmmPullBit

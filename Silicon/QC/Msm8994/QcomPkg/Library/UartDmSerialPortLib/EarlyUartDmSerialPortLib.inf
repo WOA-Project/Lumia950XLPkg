@@ -1,0 +1,41 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = EarlyUartDmSerialPortLib
+  FILE_GUID                      = 0983616A-49BC-4732-B531-4AF98D2056F0
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SerialPortLib|SEC PEI_CORE PEIM
+
+[Sources.common]
+  EarlyUartDmSerialPortLib.c
+  uart_dm_init.c
+  uart_dm_rw.c
+
+[Pcd.common]
+  gQcomTokenSpaceGuid.PcdUartDmClkRxTxBitRate
+  gQcomTokenSpaceGuid.PcdUartDmCsrOffset
+  gQcomTokenSpaceGuid.PcdUartDmTfOffset
+  gQcomTokenSpaceGuid.PcdUartDmCrOffset
+  gQcomTokenSpaceGuid.PcdUartDmImrOffset
+  gQcomTokenSpaceGuid.PcdUartDmIrdaOffset
+  gQcomTokenSpaceGuid.PcdUartDmSrOffset
+  gQcomTokenSpaceGuid.PcdUartDmRfOffset
+  gQcomTokenSpaceGuid.PcdUartDmMisrOffset
+  gQcomTokenSpaceGuid.PcdUartDmIsrOffset
+  gQcomTokenSpaceGuid.PcdUartDmRxTotalSnapOffset
+
+[Guids]
+  gQcomUartDmBaseGuid
+
+[LibraryClasses]
+  PcdLib
+  IoLib
+  QcomPlatformUartDmLib
+  QcomTargetUartDmLib
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  MdePkg/MdePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  QcomPkg/QcomPkg.dec

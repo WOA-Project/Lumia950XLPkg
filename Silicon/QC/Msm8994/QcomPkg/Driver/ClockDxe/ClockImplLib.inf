@@ -1,0 +1,26 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ClockImplLib
+  FILE_GUID                      = 44790987-E75E-4178-AE98-AC961D33D8FE
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = ClockLib
+  CONSTRUCTOR                    = ClockImplLibInitialize
+
+[Sources.common]
+  LibraryImpl.c
+  clock.c
+  clock_lib2.c
+  clock-local.c
+  clock_pll.c
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-overflow
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  QcomPlatformClockInitLib

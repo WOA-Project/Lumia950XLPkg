@@ -1,0 +1,38 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PreLoaderDxe
+  FILE_GUID                      = d78220d3-e5b5-4e80-a5b5-002948b4bb67
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = PreLoaderDxeInitialize
+
+[Sources.common]
+  PreLoader.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  LumiaGraphicsPkg/LumiaGraphicsPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  PrintLib
+  EfiResetSystemLib
+  DxeServicesLib
+  BmpSupportLib
+  LittleVglLib
+  LodePngLib
+
+[Protocols]
+  gPreLoaderProtocolGuid
+
+[Depex]
+  gEfiGraphicsOutputProtocolGuid AND
+  gEfiVariableArchProtocolGuid AND
+  gEfiVariableWriteArchProtocolGuid

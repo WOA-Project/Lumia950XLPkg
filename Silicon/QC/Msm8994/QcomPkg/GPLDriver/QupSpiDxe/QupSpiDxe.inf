@@ -1,0 +1,48 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = QupSpiDxe
+  FILE_GUID                      = e0781fcd-cec3-4415-916d-169faf9675c9
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = QupSpiDxeEntry
+
+[Sources.common]
+  QupSpiDxe.c
+  QupSpiImpl.c
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  ArmLib
+  DebugLib
+  DevicePathLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  DxeServicesTableLib
+  QcomPlatformClock2Lib
+  InterruptsLib
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-unused-function -Wno-unused-variable
+
+[Protocols]
+  gQcomGpioTlmmProtocolGuid
+  gQcomPm8x41ProtocolGuid
+  gQcomClockProtocolGuid
+  gHardwareInterruptProtocolGuid
+  gQcomSpiQupProtocolGuid
+
+[FixedPcd]
+  gQcomTokenSpaceGuid.PcdGicSpiStart
+
+[Depex]
+  gQcomGpioTlmmProtocolGuid AND
+  gQcomPm8x41ProtocolGuid AND
+  gQcomClockProtocolGuid

@@ -3,54 +3,52 @@
 trigger:
   branches:
     include:
-    - master
-    - psci-scm
+    - main
   paths:
     exclude:
     - README.md
     - LICENSE
 
 pool:
-  vmImage: 'Ubuntu-latest'
-
+  vmImage: 'ubuntu-latest'
+  
 steps:
 - script: sudo apt update 
   displayName: 'Update APT sources'
 
-# Travis have this by default, because we preinstalled build-essentials
-- script: sudo apt install uuid-dev flex bison
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'
+    architecture: 'x64'
+  displayName: Install correct Python
+
+- script: sudo apt install -y uuid-dev clang llvm gcc-aarch64-linux-gnu
   displayName: 'Install VSTS dependencies'
 
-# Fix-up directory link for VSTS, force replace current reference
-- script: sudo ln -sfn $(pwd) ../Lumia950XLPkg
-  displayName: 'Fix directory links'
+- script: export CLANG38_BIN=/usr/lib/llvm-38/bin/ && export CLANG38_AARCH64_PREFIX=aarch64-linux-gnu-
+  displayName: 'Setup CLANG environment'
 
-# Build iASL tool from repository
-# Eventually we will just install prepackaged version
-# - script: git clone https://github.com/acpica/acpica acpica-tools
-#   displayName: 'Checkout ACPICA tools repository'
+- script: pip install --upgrade -r ./pip-requirements.txt
+  displayName: 'Install Python dependencies'
 
-# - script: cd acpica-tools && make clean && make && sudo make install && cd ..
-#   displayName: 'Build and install ACPICA tools'
+- script: chmod +x ./build_uefi_talkman.sh && ./build_uefi_talkman.sh
+  displayName: 'UEFI build (Lumia 950)'
 
-- script: sudo ./Tools/CI/Bootstrapper/Stage0.sh
-  displayName: 'Prepare pre-build environment, phase 0'
+- script: chmod +x ./build_uefi_cityman.sh && ./build_uefi_cityman.sh
+  displayName: 'UEFI build (Lumia 950 XL)'
 
-- script: ./Tools/CI/Bootstrapper/Stage1.sh
-  displayName: 'Prepare pre-build environment, phase 1'
+- script: chmod +x ./Tools/edk2-build.ps1 && ./Tools/edk2-build.ps1
+  displayName: 'UEFI boot image build'
 
-- script: ./Tools/CI/Builder/Build.sh
-  displayName: 'UEFI build'
-
-# Publish UEFI (3 targets)
+# Publish UEFI (2 targets)
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish UEFI build (Lumia 950)'
+  displayName: 'Publish MSM8992 UEFI build (Lumia 950)'
   inputs:
-    pathtoPublish: ../edk2/Build/Lumia950-AARCH64/DEBUG_GCC5/FV/
+    pathtoPublish: ./Build/Lumia950-AARCH64/DEBUG_CLANG38/FV/
     artifactName: MSM8992 UEFI (Lumia 950)
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish UEFI build (Lumia 950 XL)'
+  displayName: 'Publish MSM8994 UEFI build (Lumia 950 XL)'
   inputs:
-    pathtoPublish: ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/
+    pathtoPublish: ./Build/Lumia950XL-AARCH64/DEBUG_CLANG38/FV/
     artifactName: MSM8994 UEFI (Lumia 950 XL)

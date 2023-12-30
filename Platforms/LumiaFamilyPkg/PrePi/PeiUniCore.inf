@@ -1,0 +1,92 @@
+#/** @file
+#
+#  (C) Copyright 2015 Hewlett-Packard Development Company, L.P.<BR>
+#  Copyright (c) 2011-2017, ARM Ltd. All rights reserved.<BR>
+#  Copyright (c) 2020, Arm Limited. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ArmPlatformPrePiUniCore
+  FILE_GUID                      = 3e401783-cc94-4fcd-97bc-bd35ac369d2f
+  MODULE_TYPE                    = SEC
+  VERSION_STRING                 = 1.0
+
+[Sources]
+  PrePi.h
+  PrePi.c
+  EarlyQGic/EarlyQGic.c
+
+[Sources.AArch64]
+  AArch64/ModuleEntryPoint.S    | GCC
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Werror -Wno-error=unused-function
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  LumiaFamilyPkg/LumiaFamilyPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  ArmLib
+  ArmMmuLib
+  BaseLib
+  DebugLib
+  IoLib
+  ExtractGuidedSectionLib
+  LzmaDecompressLib
+  PeCoffGetEntryPointLib
+  PrePiHobListPointerLib
+  CacheMaintenanceLib
+  DebugAgentLib
+  SerialPortLib
+  MemoryAllocationLib
+  PrePiMemoryAllocationLib
+  PerformanceLib
+  HobLib
+  CompilerIntrinsicsLib
+  # Platform-specific libraries
+  MemoryInitPeiLib
+  PlatformPeiLib
+  # MpPark
+  ArmHvcLib
+  ArmSmcLib
+
+[Guids]
+  gEfiSystemNvDataFvGuid
+  gEfiVariableGuid
+
+[FixedPcd]
+  gArmTokenSpaceGuid.PcdSystemMemoryBase
+  gArmTokenSpaceGuid.PcdSystemMemorySize
+  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress
+  gArmTokenSpaceGuid.PcdFvBaseAddress
+  gArmTokenSpaceGuid.PcdFvSize
+  gArmTokenSpaceGuid.PcdFdBaseAddress
+  gArmTokenSpaceGuid.PcdFdSize
+  gArmTokenSpaceGuid.PcdGicDistributorBase
+  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase
+  gArmPlatformTokenSpaceGuid.PcdCoreCount
+  gEfiMdePkgTokenSpaceGuid.PcdUartDefaultBaudRate
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize
+  gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize
+  gQcomPkgTokenSpaceGuid.PcdPreAllocatedMemorySize
+  gQcomPkgTokenSpaceGuid.PcdUefiMemPoolSize
+  gQcomPkgTokenSpaceGuid.PcdBootShimInfo1
+  gQcomPkgTokenSpaceGuid.SecondaryCpuStackSize
+  gQcomPkgTokenSpaceGuid.SecondaryCpuMpParkRegionBase
+  gQcomPkgTokenSpaceGuid.SecondaryCpuIgnoreCpuIdCheck
+  gQcomPkgTokenSpaceGuid.PsciCpuSuspendAddress
+
+[FeaturePcd]
+  gQcomPkgTokenSpaceGuid.PcdIsLkBuild

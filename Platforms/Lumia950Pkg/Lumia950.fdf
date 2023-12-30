@@ -1,0 +1,268 @@
+## @file
+#
+#  Copyright (c) 2018, Linaro Limited. All rights reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+################################################################################
+#
+# FD Section
+# The [FD] Section is made up of the definition statements and a
+# description of what goes into  the Flash Device Image.  Each FD section
+# defines one flash "device" image.  A flash device image may be one of
+# the following: Removable media bootable image (like a boot floppy
+# image,) an Option ROM image (that would be "flashed" into an add-in
+# card,) a System "Flash"  image (that would be burned into a system's
+# flash) or an Update ("Capsule") image that will be used to update and
+# existing system flash.
+#
+################################################################################
+
+[FD.MSM8992_EFI]
+BaseAddress   = 0x00200000|gArmTokenSpaceGuid.PcdFdBaseAddress #The base address of the FLASH Device.
+Size          = 0x00100000|gArmTokenSpaceGuid.PcdFdSize        #The size in bytes of the FLASH Device
+ErasePolarity = 1
+BlockSize     = 0x200
+NumBlocks     = 0x800
+
+################################################################################
+#
+# Following are lists of FD Region layout which correspond to the locations of different
+# images within the flash device.
+#
+# Regions must be defined in ascending order and may not overlap.
+#
+# A Layout Region start with a eight digit hex offset (leading "0x" required) followed by
+# the pipe "|" character, followed by the size of the region, also in hex with the leading
+# "0x" characters. Like:
+# Offset|Size
+# PcdOffsetCName|PcdSizeCName
+# RegionType <FV, DATA, or FILE>
+#
+################################################################################
+0x00000000|0x00100000
+gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
+FV = FVMAIN_COMPACT
+
+################################################################################
+#
+# FV Section
+#
+# [FV] section is used to define what components or modules are placed within a flash
+# device file.  This section also defines order the components and modules are positioned
+# within the image.  The [FV] section consists of define statements, set statements and
+# module statements.
+#
+################################################################################
+
+[FV.FvMain]
+FvNameGuid         = 9a15aa37-d555-4a4e-b541-86391ff68164
+BlockSize          = 0x40
+NumBlocks          = 0        # This FV gets compressed so make it just big enough
+FvAlignment        = 8        # FV alignment and FV attributes setting.
+ERASE_POLARITY     = 1
+MEMORY_MAPPED      = TRUE
+STICKY_WRITE       = TRUE
+LOCK_CAP           = TRUE
+LOCK_STATUS        = TRUE
+WRITE_DISABLED_CAP = TRUE
+WRITE_ENABLED_CAP  = TRUE
+WRITE_STATUS       = TRUE
+WRITE_LOCK_CAP     = TRUE
+WRITE_LOCK_STATUS  = TRUE
+READ_DISABLED_CAP  = TRUE
+READ_ENABLED_CAP   = TRUE
+READ_STATUS        = TRUE
+READ_LOCK_CAP      = TRUE
+READ_LOCK_STATUS   = TRUE
+
+  APRIORI DXE {
+    # First, install the PCD driver and call DxeInit
+    INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
+
+    # Next, install cpu protocol and enable the interrupt controller
+    INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+    INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+  }
+
+  # Architecture services (PI Stage)
+  INF MdeModulePkg/Core/Dxe/DxeMain.inf
+  INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
+  INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+
+  # Core Drivers
+  INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+  INF QcomPkg/Driver/TimerDxe/TimerDxe.inf
+  INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
+  INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
+  INF MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
+  INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
+
+  # SoC Drivers (Cross-referenced from EFIDroid)
+  INF QcomPkg/Driver/BamDxe/BamDxe.inf
+  INF QcomPkg/GPLDriver/GpioTlmmDxe/GpioTlmmDxe.inf
+  INF QcomPkg/GPLDriver/GpioTlmmInterruptDxe/GpioTlmmInterruptDxe.inf
+  INF QcomPkg/Driver/SpmiDxe/SpmiDxe.inf
+  INF QcomPkg/Driver/Pm8x41Dxe/Pm8x41Dxe.inf
+  INF QcomPkg/Driver/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
+  INF QcomPkg/Driver/KeypadDxe/KeypadDxe.inf
+  INF QcomPkg/Driver/ClockDxe/ClockDxe.inf
+  INF QcomPkg/Driver/SdhciMMCHSDxe/SdhciMMCHS.inf
+  INF QcomPkg/Driver/I2cQupDxe/I2cQupDxe.inf
+  INF QcomPkg/Driver/SmemDxe/SmemDxe.inf
+  INF QcomPkg/Driver/SmemPtableDxe/SmemPtableDxe.inf
+  INF QcomPkg/Driver/SmdRpmDxe/RpmDxe.inf
+  INF QcomPkg/Driver/SsbiDxe/SsbiDxe.inf
+  INF QcomPkg/Driver/BoardDxe/BoardDxe.inf
+  INF QcomPkg/Driver/RuntimeMemoryConfigDxe/RuntimeMemoryConfigDxe.inf
+  INF QcomPkg/Driver/PCIExpressConfiguratorDxe/PCIExpressConfiguratorDxe.inf
+
+  # Device Drivers
+  INF QcomPkg/Driver/SynapticsTouchDxe/SynapticsTouchDevice.inf
+  INF QcomPkg/Driver/SynapticsTouchDxe/SynapticsTouchDxe.inf
+
+  # Debug heartbeat
+!if $(SEND_HEARTBEAT_TO_SERIAL) == 1
+  INF LumiaFamilyPkg/Driver/HeartbeatDxe/HeartbeatDxe.inf
+!endif
+
+  # Runtime Services
+  INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
+  INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
+  INF EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
+
+  # Variable Services
+  INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
+
+  # Security Stub
+  INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
+
+  # Secure Boot Key Enroll
+  !if $(SECURE_BOOT_ENABLE) == 1
+    # INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+    # INF LumiaFamilyPkg/Driver/SecureBootProvisioningDxe/SecureBootProvisioningDxe.inf
+  !endif
+
+  INF LumiaFamilyPkg/Driver/GpioButtons/GpioButtons.inf
+
+  # Graphics
+  INF LumiaFamilyPkg/Driver/SimpleFbDxe/SimpleFbDxe.inf
+
+  # Lattice UC120 Configuration
+!if $(UC120_BITSTREAM_UPLOADER) == 1
+  INF QcomPkg/Driver/LiCE40SpiConfigDxe/LiCE40SpiConfigDxe.inf
+!endif
+  INF QcomPkg/GPLDriver/QupSpiDxe/QupSpiDxe.inf
+
+  # BDS
+  INF MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
+  INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
+  INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
+  INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
+  INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
+  INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
+  INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+  INF MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
+  INF MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
+  INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
+
+  # HID Support
+  INF HidPkg/HidKeyboardDxe/HidKeyboardDxe.inf
+  INF HidPkg/HidMouseAbsolutePointerDxe/HidMouseAbsolutePointerDxe.inf
+
+  # Disk IO
+  INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
+  INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
+  INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
+  INF FatPkg/EnhancedFatDxe/Fat.inf
+  INF MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
+  INF MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
+
+  # ACPI and SMBIOS
+  INF MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
+  INF MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  INF MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
+  INF LumiaFamilyPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
+
+  # ACPI Tables
+  !include Lumia950Pkg/Include/ACPI.inc
+
+  INF MdeModulePkg/Universal/EsrtFmpDxe/EsrtFmpDxe.inf
+
+  !include LumiaFamilyPkg/Frontpage.fdf.inc
+
+  FILE FREEFORM = PCD(gMsCorePkgTokenSpaceGuid.PcdRegulatoryGraphicFileGuid) {
+    SECTION RAW = Lumia950Pkg/Include/Resources/RegulatoryLogos.png
+  }
+
+  # INF LumiaFamilyPkg/UFP/ufpdevicefw.inf
+
+  # INF LumiaFamilyPkg/Driver/KernelErrataPatcher/KernelErrataPatcher.inf
+
+  INF AdvLoggerPkg/AdvancedFileLogger/AdvancedFileLogger.inf
+  INF ArmPkg/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
+  INF CryptoPkg/Driver/CryptoDxe.inf
+  INF MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+  INF MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+  INF MdeModulePkg/Bus/Usb/UsbMouseAbsolutePointerDxe/UsbMouseAbsolutePointerDxe.inf
+  INF MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableDxe/FirmwarePerformanceDxe.inf
+  INF MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystemDxe.inf
+  INF MdeModulePkg/Universal/MemoryTest/NullMemoryTestDxe/NullMemoryTestDxe.inf
+  INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
+  INF MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf
+  # INF MsCorePkg/MuVarPolicyFoundationDxe/MuVarPolicyFoundationDxe.inf
+  # INF NetworkPkg/ArpDxe/ArpDxe.inf
+  # INF NetworkPkg/Dhcp4Dxe/Dhcp4Dxe.inf
+  # INF NetworkPkg/Dhcp6Dxe/Dhcp6Dxe.inf
+  # INF NetworkPkg/DnsDxe/DnsDxe.inf
+  # INF NetworkPkg/DpcDxe/DpcDxe.inf
+  # INF NetworkPkg/HttpDxe/HttpDxe.inf
+  # INF NetworkPkg/HttpUtilitiesDxe/HttpUtilitiesDxe.inf
+  # INF NetworkPkg/Ip4Dxe/Ip4Dxe.inf
+  # INF NetworkPkg/Ip6Dxe/Ip6Dxe.inf
+  # INF NetworkPkg/MnpDxe/MnpDxe.inf
+  # INF NetworkPkg/Mtftp4Dxe/Mtftp4Dxe.inf
+  # INF NetworkPkg/Mtftp6Dxe/Mtftp6Dxe.inf
+  # INF NetworkPkg/SnpDxe/SnpDxe.inf
+  # INF NetworkPkg/TcpDxe/TcpDxe.inf
+  # INF NetworkPkg/TlsDxe/TlsDxe.inf
+  # INF NetworkPkg/Udp4Dxe/Udp4Dxe.inf
+  # INF NetworkPkg/Udp6Dxe/Udp6Dxe.inf
+  # INF NetworkPkg/UefiPxeBcDxe/UefiPxeBcDxe.inf
+  # INF NetworkPkg/VlanConfigDxe/VlanConfigDxe.inf
+  INF LumiaFamilyPkg/Driver/ColorbarsDxe/ColorbarsDxe.inf
+
+[FV.FVMAIN_COMPACT]
+FvAlignment        = 8
+ERASE_POLARITY     = 1
+MEMORY_MAPPED      = TRUE
+STICKY_WRITE       = TRUE
+LOCK_CAP           = TRUE
+LOCK_STATUS        = TRUE
+WRITE_DISABLED_CAP = TRUE
+WRITE_ENABLED_CAP  = TRUE
+WRITE_STATUS       = TRUE
+WRITE_LOCK_CAP     = TRUE
+WRITE_LOCK_STATUS  = TRUE
+READ_DISABLED_CAP  = TRUE
+READ_ENABLED_CAP   = TRUE
+READ_STATUS        = TRUE
+READ_LOCK_CAP      = TRUE
+READ_LOCK_STATUS   = TRUE
+
+  INF LumiaFamilyPkg/PrePi/PeiUniCore.inf
+
+  FILE FREEFORM = a4c429b1-046a-4e7d-afbc-c6988e8fe7cc {
+    SECTION UI = "platform.json"
+    SECTION RAW = QcomPkg/Resources/Platform.8992.json
+  }
+
+  FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
+    SECTION GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE {
+      SECTION FV_IMAGE = FVMAIN
+    }
+  }
+
+  !include LumiaFamilyPkg/LumiaFamily.fdf.inc

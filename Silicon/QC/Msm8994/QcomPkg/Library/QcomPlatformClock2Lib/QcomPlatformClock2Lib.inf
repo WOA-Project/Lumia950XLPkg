@@ -1,0 +1,30 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = QcomPlatformClock2Lib
+  FILE_GUID                      = 23fcbf5a-9bfb-4e1f-8d9b-37bc0495b64d
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = QcomPlatformClock2Lib
+
+[Sources.common]
+  clock-gcc-msm8994.c
+  clock-rpm-msm8994.c
+  gdsc-msm8994.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-overflow -Wno-unused-variable
+
+[LibraryClasses]
+  IoLib
+  ArmLib
+  UefiBootServicesTableLib
+  TimerLib
+
+[Protocols]
+  gQcomRpmProtocolGuid

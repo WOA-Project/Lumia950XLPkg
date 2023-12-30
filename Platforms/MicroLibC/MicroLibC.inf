@@ -1,0 +1,22 @@
+[Defines]
+  INF_VERSION       = 0x00010006
+  BASE_NAME         = MicroLibC
+  FILE_GUID         = 0432f840-b39b-4a32-bb7c-5ef5d7af47a7
+  MODULE_TYPE       = BASE
+  VERSION_STRING    = 0.1
+  LIBRARY_CLASS     = MicroLibC
+
+[Sources]
+  atoi.c
+  ctype.c
+  bsearch.c
+  errno.c
+  stdio.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  Lumia950XLPkg/Lumia950XLPkg.dec
+  MicroLibC/MicroLibC.dec
+
+[LibraryClasses]
+  StrLib

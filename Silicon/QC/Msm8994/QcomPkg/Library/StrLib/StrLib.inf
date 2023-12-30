@@ -1,0 +1,19 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = StrLib
+  FILE_GUID                      = 8FA1EC56-464F-41D3-BF55-B215D763172E
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = StrLib
+
+
+[Sources.common]
+  strtok.c
+  strlcat.c
+  strspn.c
+  strchr.c
+  strpbrk.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  QcomPkg/QcomPkg.dec

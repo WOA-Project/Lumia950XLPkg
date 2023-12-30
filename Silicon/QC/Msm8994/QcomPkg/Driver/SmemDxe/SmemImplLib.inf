@@ -1,0 +1,24 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmemImplLib
+  FILE_GUID                      = E3287235-3074-4371-8E78-BD0025BD1DFE
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SmemLib
+  CONSTRUCTOR                    = SmemImplLibInitialize
+
+[Sources.common]
+  LibraryImpl.c
+  smem.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+
+[Pcd.common]
+  gQcomTokenSpaceGuid.PcdMsmSharedBase
+  gQcomTokenSpaceGuid.PcdSmemTargetInfoAddress

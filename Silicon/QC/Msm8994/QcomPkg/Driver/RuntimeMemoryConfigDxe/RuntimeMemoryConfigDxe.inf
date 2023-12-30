@@ -1,0 +1,23 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = RuntimeMemoryConfigDxe
+  FILE_GUID                      = 30aa890e-af4b-4c90-a421-19d1d845d687
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = RtMemoryConfigEntry
+
+[Sources.common]
+  Driver.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  RuntimeSpmiMemoryConfiguratorLib
+
+[Depex]
+  TRUE

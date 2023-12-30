@@ -1,0 +1,44 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SpmiDxe
+  FILE_GUID                      = 480C5DE7-8A8A-4675-9EC1-38BB5257D923
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = SpmiDxeInitialize
+
+[Sources.common]
+  Driver.c
+  LibraryImpl.c
+  spmi.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  ArmLib
+  UefiDriverEntryPoint
+  IoLib
+  MemoryAllocationLib
+  MallocLib
+  CompilerIntrinsicsLib
+  CacheMaintenanceLib
+
+[Pcd.common]
+  gQcomTokenSpaceGuid.PcdSpmiMaxPeripherals
+  gQcomTokenSpaceGuid.PcdSpmiBaseAddress
+  gQcomTokenSpaceGuid.PcdPmicArbCoreAddress
+  gQcomTokenSpaceGuid.PcdSpmiVersion
+  gQcomTokenSpaceGuid.PcdPmicArbChannelNum
+  gQcomTokenSpaceGuid.PcdPmicArbOwnerId
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-incompatible-pointer-types
+
+[Protocols]
+  gQcomSpmiProtocolGuid
+
+[Depex]
+  TRUE

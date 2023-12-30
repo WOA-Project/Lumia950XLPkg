@@ -1,0 +1,28 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SsbiDxe
+  FILE_GUID                      = 36BCBC50-2FD8-42D8-9A52-F215BC158A1B
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = SsbiDxeInitialize
+
+[Sources.common]
+  Driver.c
+  LibraryImpl.c
+  ssbi.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  IoLib
+
+[Protocols]
+  gQcomSsbiProtocolGuid
+
+[Depex]
+  TRUE

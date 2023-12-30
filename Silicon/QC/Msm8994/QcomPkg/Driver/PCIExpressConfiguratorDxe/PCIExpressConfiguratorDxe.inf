@@ -1,0 +1,47 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PCIExpressConfiguratorDxe
+  FILE_GUID                      = 058f0796-85a9-4cfa-8b84-04bd0d218ddb
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.1
+
+  ENTRY_POINT                    = PCIExpressConfiguratorEntry
+
+[Sources.common]
+  PCIExpressConfigurator.c
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  QcomPkg/QcomPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  ArmLib
+  DebugLib
+  DevicePathLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  DxeServicesTableLib
+  QcomPlatformClock2Lib
+
+[BuildOptions.AARCH64]
+  GCC:*_*_*_CC_FLAGS = -Wno-unused-function -Wno-unused-variable
+
+[Protocols]
+  gQcomGpioTlmmProtocolGuid
+  gQcomMsmPCIExpressInitProtocolGuid
+  # Wont enable RPM until future use
+  # gQcomRpmProtocolGuid
+  gQcomPm8x41ProtocolGuid
+  gQcomBoardProtocolGuid
+
+[Depex]
+  gQcomGpioTlmmProtocolGuid AND
+  # Wont enable RPM until future use
+  # gQcomRpmProtocolGuid AND
+  gQcomPm8x41ProtocolGuid AND
+  gQcomBoardProtocolGuid
