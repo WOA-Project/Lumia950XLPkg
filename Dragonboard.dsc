@@ -55,12 +55,44 @@
   gLumia950XLPkgTokenSpaceGuid.PsciCpuSuspendAddress|0x6c03aa8
   gLumia950XLPkgTokenSpaceGuid.PcdIsLkBuild|TRUE
 
+  # PCIe (RP 0)
+  gArmTokenSpaceGuid.PcdPciBusMin|0
+  gArmTokenSpaceGuid.PcdPciBusMax|1
+  gArmTokenSpaceGuid.PcdPciIoBase|0
+  gArmTokenSpaceGuid.PcdPciIoSize|0
+  gArmTokenSpaceGuid.PcdPciMmio32Base|0xFF000000
+  gArmTokenSpaceGuid.PcdPciMmio32Size|0x00800000
+  gArmTokenSpaceGuid.PcdPciMmio64Base|0xFFFFFFFFFFFFFFFF
+  gArmTokenSpaceGuid.PcdPciMmio64Size|0
+
 [PcdsFeatureFlag.common]
   gQcomTokenSpaceGuid.PcdInstallRpmProtocol|TRUE
   
 !include Lumia950XLPkg/Library/UartDmSerialPortLib/UartDmSerialConfigBlkBlsp.dsc.inc
 !include Lumia950XLPkg/Shared.dsc.inc
 
+[LibraryClasses.common]
+  # PCIe things are currently only expose to Dragonboard
+  PciLib|MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf
+  PciExpressLib|MdePkg/Library/BasePciExpressLib/BasePciExpressLib.inf
+  PciHostBridgeLib|Lumia950XLPkg/Library/QcomPciHostBridgeLib/QcomPciHostBridgeLib.inf
+  PciSegmentLib|MdePkg/Library/BasePciSegmentLibPci/BasePciSegmentLibPci.inf
+  PciCapLib|OvmfPkg/Library/BasePciCapLib/BasePciCapLib.inf
+  PciCapPciSegmentLib|OvmfPkg/Library/BasePciCapPciSegmentLib/BasePciCapPciSegmentLib.inf
+
 [Components.common]
   Lumia950XLPkg/Application/FastbootResetApp/FastbootResetApp.inf
+
+  # Debug only, not ship to FDF
   Lumia950XLPkg/Driver/Usb3PhyDxe/Usb3PhyDxe.inf
+
+  # PCIe things
+  ArmPkg/Drivers/ArmPciCpuIo2Dxe/ArmPciCpuIo2Dxe.inf
+  Lumia950XLPkg/Driver/PciHostBridgeDxe/PciHostBridgeDxe.inf
+  MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+
+  # PCIe periph
+  MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+  MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
+  MdeModulePkg/Bus/Pci/EhciDxe/EhciDxe.inf
+  MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf

@@ -139,6 +139,15 @@ READ_LOCK_STATUS   = TRUE
 
   # ACPI: Removed for Dragonboard for now
 
+  # PCIe things
+  INF ArmPkg/Drivers/ArmPciCpuIo2Dxe/ArmPciCpuIo2Dxe.inf
+  INF MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+  INF Lumia950XLPkg/Driver/PciHostBridgeDxe/PciHostBridgeDxe.inf
+  INF MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+  INF MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
+  INF MdeModulePkg/Bus/Pci/EhciDxe/EhciDxe.inf
+  INF MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf
+
   # SplashApp assets
   FILE FREEFORM = 5af45c60-a0cd-4aab-b6f4-b1c07c347ad7 {
     SECTION RAW = Lumia950XLPkg/Application/BootSplashApp/BootPrompt.png

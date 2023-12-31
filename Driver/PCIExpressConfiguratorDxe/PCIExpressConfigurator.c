@@ -45,6 +45,8 @@ static QCOM_BOARD_PROTOCOL * mBoardProtocol;
 static QCOM_CLOCK_PROTOCOL *mClockProtocol;
 
 static uint32_t mBoardId = 0;
+static BOOLEAN initializePCIe0 = FALSE;
+static BOOLEAN initializePCIe1 = FALSE;
 static struct pcie_clocks mPCIeClocks[2] = { {0}, {0}, };
 
 EFI_STATUS
@@ -80,6 +82,8 @@ AcquireEfiProtocols(VOID)
     goto exit;
 
   mBoardId = mBoardProtocol->board_platform_id();
+  initializePCIe0 = mBoardId == MSM8992 || mBoardId == APQ8094;
+  initializePCIe1 = mBoardId == MSM8994 || mBoardId == APQ8094;
 
 exit:
   return Status;
@@ -105,12 +109,9 @@ EFIAPI
 EnableClocksMsm8994(VOID)
 {
   EFI_STATUS Status = EFI_SUCCESS;
-  BOOLEAN initializePCIe1 = mBoardId == MSM8994 || mBoardId == APQ8094;
 
-  switch (mBoardId)
+  if (initializePCIe0)
   {
-  case MSM8992:
-  case APQ8094:
     mPCIeClocks[0].pipe_clk = mClockProtocol->clk_get("pcie_0_pipe_clk");
     mPCIeClocks[0].aux_clk = mClockProtocol->clk_get("pcie_0_aux_clk");
     mPCIeClocks[0].cfg_ahb_clk = mClockProtocol->clk_get("pcie_0_cfg_ahb_clk");
@@ -126,10 +127,10 @@ EnableClocksMsm8994(VOID)
     mClockProtocol->clk_reset(mPCIeClocks[0].slv_axi_clk, CLK_RESET_DEASSERT);
     mClockProtocol->clk_reset(mPCIeClocks[0].phy_ldo, CLK_RESET_DEASSERT);
     mClockProtocol->clk_reset(mPCIeClocks[0].phy_reset, CLK_RESET_DEASSERT);
-    if (mBoardId == APQ8094) goto get_pcie_clk1;
-    break;
-  case MSM8994:
-  get_pcie_clk1:
+  }
+
+  if (initializePCIe1)
+  {
     mPCIeClocks[1].pipe_clk = mClockProtocol->clk_get("pcie_1_pipe_clk");
     mPCIeClocks[1].aux_clk = mClockProtocol->clk_get("pcie_1_aux_clk");
     mPCIeClocks[1].cfg_ahb_clk = mClockProtocol->clk_get("pcie_1_cfg_ahb_clk");
@@ -145,7 +146,6 @@ EnableClocksMsm8994(VOID)
     mClockProtocol->clk_reset(mPCIeClocks[1].slv_axi_clk, CLK_RESET_DEASSERT);
     mClockProtocol->clk_reset(mPCIeClocks[1].phy_ldo, CLK_RESET_DEASSERT);
     mClockProtocol->clk_reset(mPCIeClocks[1].phy_reset, CLK_RESET_DEASSERT);
-    break;
   }
 
   // Clocks & LDOs
@@ -160,7 +160,7 @@ EnableClocksMsm8994(VOID)
 #endif
 
   // GDSC
-  gdsc_pcie0_enable();
+  if (initializePCIe0) gdsc_pcie0_enable();
   if (initializePCIe1) gdsc_pcie1_enable();
 
   // pcie_1_ref_clk_src
@@ -169,8 +169,11 @@ EnableClocksMsm8994(VOID)
 #endif
 
   // Auxiliary Clock
-  mClockProtocol->clk_enable(mPCIeClocks[0].aux_clk);
-  mClockProtocol->clk_set_rate(mPCIeClocks[0].aux_clk, 1011000);
+  if (initializePCIe0)
+  {
+    mClockProtocol->clk_enable(mPCIeClocks[0].aux_clk);
+    mClockProtocol->clk_set_rate(mPCIeClocks[0].aux_clk, 1011000);
+  }
   if (initializePCIe1)
   {
     mClockProtocol->clk_enable(mPCIeClocks[1].aux_clk);
@@ -178,27 +181,29 @@ EnableClocksMsm8994(VOID)
   }
 
   // AHB Config Clock
-  mClockProtocol->clk_enable(mPCIeClocks[0].cfg_ahb_clk);
+  if (initializePCIe0) mClockProtocol->clk_enable(mPCIeClocks[0].cfg_ahb_clk);
   if (initializePCIe1) mClockProtocol->clk_enable(mPCIeClocks[1].cfg_ahb_clk);
 
   // AXI Memory Stream Clock
-  mClockProtocol->clk_enable(mPCIeClocks[0].mstr_axi_clk);
+  if (initializePCIe0) mClockProtocol->clk_enable(mPCIeClocks[0].mstr_axi_clk);
   if (initializePCIe1) mClockProtocol->clk_enable(mPCIeClocks[1].mstr_axi_clk);
 
   // AXI Slave Clock
-  mClockProtocol->clk_enable(mPCIeClocks[0].slv_axi_clk);
+  if (initializePCIe0) mClockProtocol->clk_enable(mPCIeClocks[0].slv_axi_clk);
   if (initializePCIe1) mClockProtocol->clk_enable(mPCIeClocks[1].slv_axi_clk);
 
   // PHY LDO Clock
-  mClockProtocol->clk_enable(mPCIeClocks[0].phy_ldo);
+  if (initializePCIe0) mClockProtocol->clk_enable(mPCIeClocks[0].phy_ldo);
   if (initializePCIe1) mClockProtocol->clk_enable(mPCIeClocks[1].phy_ldo);
 
   // PHY Reset (?)
-  mClockProtocol->clk_reset(mPCIeClocks[0].phy_reset, CLK_RESET_ASSERT);
-  udelay(100);
-  mClockProtocol->clk_reset(mPCIeClocks[0].phy_reset, CLK_RESET_DEASSERT);
-  mClockProtocol->clk_enable(mPCIeClocks[0].phy_reset);
-
+  if (initializePCIe0)
+  {
+    mClockProtocol->clk_reset(mPCIeClocks[0].phy_reset, CLK_RESET_ASSERT);
+    udelay(100);
+    mClockProtocol->clk_reset(mPCIeClocks[0].phy_reset, CLK_RESET_DEASSERT);
+    mClockProtocol->clk_enable(mPCIeClocks[0].phy_reset);
+  }
   if (initializePCIe1)
   {
     mClockProtocol->clk_reset(mPCIeClocks[1].phy_reset, CLK_RESET_ASSERT);
@@ -359,26 +364,8 @@ EFI_STATUS
 EFIAPI
 InitializePciePHY(VOID)
 {
-  switch (mBoardId)
-  {
-  case MSM8992:
-    // PHY base
-    InitializePCIePHYWithBase(0xfc526000);
-    break;
-  case MSM8994:
-    // PHY base
-    InitializePCIePHYWithBase(0xfc52e000);
-    break;
-  case APQ8094:
-    // DB-specific: set some PARF flags
-    // msm_pcie_write_mask(0xfc520000 + PCIE20_PARF_PHY_CTRL, BIT(0), 0);
-    // msm_pcie_write_mask(0xfc528000 + PCIE20_PARF_PHY_CTRL, BIT(0), 0);
-
-    // PHY base
-    InitializePCIePHYWithBase(0xfc526000);
-    InitializePCIePHYWithBase(0xfc52e000);
-    break;
-  }
+  if (initializePCIe0) InitializePCIePHYWithBase(0xfc526000);
+  if (initializePCIe1) InitializePCIePHYWithBase(0xfc52e000);
 
   return EFI_SUCCESS;
 }
@@ -420,21 +407,16 @@ WaitForPCIePHYReady(VOID)
 {
   int ret = 0;
 
-  switch (mBoardId)
+  if (initializePCIe0)
   {
-  case MSM8992:
     ret = WaitForPCIePHYReadyWithBase(0xfc526000);
     if (ret < 0) return EFI_TIMEOUT;
-    break;
-  case MSM8994:
+  }
+
+  if (initializePCIe1)
+  {
     ret = WaitForPCIePHYReadyWithBase(0xfc52e000);
     if (ret < 0) return EFI_TIMEOUT;
-    break;
-  case APQ8094:
-    ret = WaitForPCIePHYReadyWithBase(0xfc526000);
-    ret = WaitForPCIePHYReadyWithBase(0xfc52e000);
-    if (ret < 0) return EFI_TIMEOUT;
-    break;
   }
 
   // Assert GPIO 35 PERST#
@@ -472,23 +454,20 @@ EFI_STATUS
 EFIAPI
 SetPipeClock(VOID)
 {
-  switch (mBoardId)
+  if (initializePCIe0)
   {
-  case MSM8992:
-  case APQ8094:
     mClockProtocol->clk_enable(mPCIeClocks[0].pipe_clk);
     mClockProtocol->clk_set_rate(mPCIeClocks[0].pipe_clk, 125000000);
     MemoryFence();
     gBS->Stall(REFCLK_STABILIZATION_DELAY_US_MIN);
-    if (mBoardId == APQ8094) goto pipe_clk_pcie1;
-    break;
-  case MSM8994:
-  pipe_clk_pcie1:
+  }
+
+  if (initializePCIe1)
+  {
     mClockProtocol->clk_enable(mPCIeClocks[1].pipe_clk);
     mClockProtocol->clk_set_rate(mPCIeClocks[1].pipe_clk, 125000000);
     MemoryFence();
     gBS->Stall(REFCLK_STABILIZATION_DELAY_US_MIN);
-    break;
   }
 
   return EFI_SUCCESS;
@@ -498,21 +477,25 @@ EFI_STATUS
 EFIAPI
 RestoreSecurityConfig(VOID)
 {
-  if (mBoardId != APQ8094) return EFI_SUCCESS;
-
   ARM_SMC_ARGS RestoreSecConfigArgs;
 
-  ZeroMem(&RestoreSecConfigArgs, sizeof(RestoreSecConfigArgs));
-  RestoreSecConfigArgs.Arg0 = 0x02000C02;
-  RestoreSecConfigArgs.Arg1 = 2;
-  RestoreSecConfigArgs.Arg2 = 11;
-  ArmCallSmc(&RestoreSecConfigArgs);
-
-  ZeroMem(&RestoreSecConfigArgs, sizeof(RestoreSecConfigArgs));
-  RestoreSecConfigArgs.Arg0 = 0x02000C02;
-  RestoreSecConfigArgs.Arg1 = 2;
-  RestoreSecConfigArgs.Arg2 = 12;
-  ArmCallSmc(&RestoreSecConfigArgs);
+  if (mBoardId != APQ8094 && mBoardId != MSM8994) return EFI_SUCCESS;
+  if (initializePCIe0)
+  {
+    ZeroMem(&RestoreSecConfigArgs, sizeof(RestoreSecConfigArgs));
+    RestoreSecConfigArgs.Arg0 = 0x02000C02;
+    RestoreSecConfigArgs.Arg1 = 2;
+    RestoreSecConfigArgs.Arg2 = 11;
+    ArmCallSmc(&RestoreSecConfigArgs);
+  }
+  if (initializePCIe1)
+  {
+    ZeroMem(&RestoreSecConfigArgs, sizeof(RestoreSecConfigArgs));
+    RestoreSecConfigArgs.Arg0 = 0x02000C02;
+    RestoreSecConfigArgs.Arg1 = 2;
+    RestoreSecConfigArgs.Arg2 = 12;
+    ArmCallSmc(&RestoreSecConfigArgs);
+  }
 
   return EFI_SUCCESS;
 }
@@ -553,19 +536,8 @@ EnableLink(VOID)
   UINTN  ParfBase   = 0;
   UINTN  DmCoreBase = 0;
 
-  switch (mBoardId)
-  {
-    case MSM8992:
-      EnableLinkWithAddr(0xfc520000, 0xff000000);
-      break;
-    case MSM8994:
-      EnableLinkWithAddr(0xfc528000, 0xf8800000);
-      break;
-    case APQ8094:
-      EnableLinkWithAddr(0xfc520000, 0xff000000);
-      EnableLinkWithAddr(0xfc528000, 0xf8800000);
-      break;
-  }
+  if (initializePCIe0) EnableLinkWithAddr(0xfc520000, 0xff000000);
+  if (initializePCIe1) EnableLinkWithAddr(0xfc528000, 0xf8800000);
 
   return EFI_SUCCESS;
 }
@@ -596,19 +568,8 @@ EFI_STATUS
 EFIAPI
 ConfigDmCore(VOID)
 {
-  switch (mBoardId)
-  {
-  case MSM8992:
-    ConfigureDmCoreWithBase(0xff000000);
-    break;
-  case MSM8994:
-    ConfigureDmCoreWithBase(0xf8800000);
-    break;
-  case APQ8094:
-    ConfigureDmCoreWithBase(0xff000000);
-    ConfigureDmCoreWithBase(0xf8800000);
-    break;
-  }
+  if (initializePCIe0) ConfigureDmCoreWithBase(0xff000000);
+  if (initializePCIe1) ConfigureDmCoreWithBase(0xf8800000);
 
   // GPIO 36, in, function 2, 2mA drive, no pull (clkreq)
   mTlmmProtocol->SetFunction(36, 2);
@@ -677,19 +638,8 @@ EFI_STATUS
 EFIAPI
 ConfigSpace(VOID)
 {
-  switch (mBoardId)
-  {
-    case MSM8992:
-      ConfigSpaceWithBase(0xff000000);
-      break;
-    case MSM8994:
-      ConfigSpaceWithBase(0xf8800000);
-      break;
-    case APQ8094:
-      ConfigSpaceWithBase(0xff000000);
-      ConfigSpaceWithBase(0xf8800000);
-      break;
-  }
+  if (initializePCIe0) ConfigSpaceWithBase(0xff000000);
+  if (initializePCIe1) ConfigSpaceWithBase(0xf8800000);
 
   return EFI_SUCCESS;
 }
@@ -739,26 +689,8 @@ EFI_STATUS
 EFIAPI
 FinishingUp(VOID)
 {
-  UINT32  i          = 0;
-  UINT32  j          = 0;
-  UINTN   DmCoreBase = 0;
-  UINT32  k          = 16;
-  UINT32  Val        = 0;
-  BOOLEAN SetI       = FALSE;
-
-  switch (mBoardId)
-  {
-  case MSM8992:
-    ConfigBARWithBase(0xff000000);
-    break;
-  case MSM8994:
-    ConfigBARWithBase(0xf8800000);
-    break;
-  case APQ8094:
-    ConfigBARWithBase(0xff000000);
-    ConfigBARWithBase(0xf8800000);
-    break;
-  }
+  if (initializePCIe0) ConfigBARWithBase(0xff000000);
+  if (initializePCIe1) ConfigBARWithBase(0xf8800000);
 
   return EFI_SUCCESS;
 }
