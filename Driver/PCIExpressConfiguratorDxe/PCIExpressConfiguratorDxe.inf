@@ -38,9 +38,11 @@
   gQcomRpmProtocolGuid
   gQcomPm8x41ProtocolGuid
   gQcomBoardProtocolGuid
+  gQcomClockProtocolGuid
 
 [Depex]
   gQcomGpioTlmmProtocolGuid AND 
   gQcomRpmProtocolGuid AND 
   gQcomPm8x41ProtocolGuid AND 
-  gQcomBoardProtocolGuid
+  gQcomBoardProtocolGuid AND
+  gQcomClockProtocolGuid

@@ -413,6 +413,7 @@ Usb3PhyDxeEntry(
     DEBUG((EFI_D_INFO | EFI_D_LOAD, "<- usb30_qmp_phy_init\n"));
 
 exit:
+	ASSERT(hsonly_mode == false);
     DEBUG((EFI_D_INFO | EFI_D_LOAD, "<- Usb3PhyDxeEntry 0x%x\n", status));
     return status;
 }
