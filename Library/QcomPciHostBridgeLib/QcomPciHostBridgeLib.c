@@ -218,7 +218,7 @@ PciHostBridgeGetRootBridges (
   )
 {
   *Count = 2;
-  return &mRootBridgeCollection;
+  return mRootBridgeCollection;
 }
 
 /**
