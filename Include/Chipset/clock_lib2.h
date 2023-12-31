@@ -46,13 +46,15 @@
     .freq_hz = FREQ_END,                                                       \
   }
 
+#define FIXDIV(div) (div ? (2 * (div) - 1) : (0))
+
 /* F(frequency, source, div, m, n) */
 #define F(f, s, div, m, n)                                                     \
   {                                                                            \
     .freq_hz = (f), .src_clk = &s##_clk_src.c, .m_val = (m),                   \
     .n_val = ~((n) - (m)) * !!(n), .d_val = ~(n),                              \
     .div_src_val =                                                             \
-        BVAL(4, 0, (int)(2 * (div)-1)) | BVAL(10, 8, s##_source_val),          \
+        BVAL(4, 0, (int)FIXDIV(div)) | BVAL(10, 8, s##_source_val),          \
   }
 
 /* F(frequency, source, div, m, n) */
@@ -61,7 +63,7 @@
     .freq_hz = (f), .m_val = (m), .n_val = ~((n) - (m)) * !!(n),               \
     .d_val = ~(n),                                                             \
     .div_src_val =                                                             \
-        BVAL(4, 0, (int)(2 * (div)-1)) | BVAL(10, 8, s##_source_val),          \
+        BVAL(4, 0, (int)FIXDIV(div)) | BVAL(10, 8, s##_source_val),          \
   }
 
 /* F_MM(frequency, source, div, m, n) */
@@ -70,7 +72,7 @@
     .freq_hz = (f), .src_clk = &s##_clk_src.c, .m_val = (m),                   \
     .n_val = ~((n) - (m)) * !!(n), .d_val = ~(n),                              \
     .div_src_val =                                                             \
-        BVAL(4, 0, (int)(2 * (div)-1)) | BVAL(10, 8, s##_mm_source_val),       \
+        BVAL(4, 0, (int)FIXDIV(div)) | BVAL(10, 8, s##_mm_source_val),       \
   }
 
 #define F_MDSS(f, s, div, m, n)                                                \
@@ -78,7 +80,7 @@
     .freq_hz = (f), .m_val = (m), .n_val = ~((n) - (m)) * !!(n),               \
     .d_val = ~(n),                                                             \
     .div_src_val =                                                             \
-        BVAL(4, 0, (int)(2 * (div)-1)) | BVAL(10, 8, s##_mm_source_val),       \
+        BVAL(4, 0, (int)FIXDIV(div)) | BVAL(10, 8, s##_mm_source_val),       \
   }
 
 /* Branch Clock Bits */
@@ -177,6 +179,13 @@ struct reset_clk {
   struct clk c;
 };
 
+struct gate_clk {
+  uint32_t en_reg;
+  uint32_t en_mask;
+  unsigned int delay_us;
+  struct clk c;
+};
+
 static inline struct reset_clk *to_reset_clk(struct clk *clk)
 {
   return container_of(clk, struct reset_clk, c);
@@ -195,6 +204,11 @@ static inline struct branch_clk *to_branch_clk(struct clk *clk)
 static inline struct vote_clk *to_local_vote_clk(struct clk *clk)
 {
   return container_of(clk, struct vote_clk, c);
+}
+
+static inline struct gate_clk *to_gate_clk(struct clk *clk)
+{
+  return container_of(clk, struct gate_clk, c);
 }
 
 /* RCG clock functions */
@@ -217,6 +231,11 @@ int  clock_lib2_branch_set_rate(struct clk *c, unsigned rate);
 /* Vote clock functions*/
 int  clock_lib2_vote_clk_enable(struct clk *c);
 void clock_lib2_vote_clk_disable(struct clk *c);
+
+/* Reset clock functions */
+int clock_lib2_gate_clk_enable(struct clk *c);
+void clock_lib2_gate_clk_disable(struct clk *c);
+
 /* clock reset function */
 int clock_lib2_reset_clk_reset(struct clk *c, enum clk_reset_action action);
 int clock_lib2_branch_clk_reset(struct clk *c, enum clk_reset_action action);

@@ -228,6 +228,35 @@ void clock_lib2_vote_clk_disable(struct clk *c)
   writel_relaxed(vote_regval, vclk->vote_reg);
 }
 
+/*=============== Gate clock ops =============*/
+#define GATE_EN_REG(x)	((UINTN) (x)->en_reg)
+
+int clock_lib2_gate_clk_enable(struct clk *c)
+{
+	u32 regval;
+	struct gate_clk *g = to_gate_clk(c);
+
+	regval = readl_relaxed(GATE_EN_REG(g));
+	regval |= g->en_mask;
+	writel_relaxed(regval, GATE_EN_REG(g));
+	if (g->delay_us)
+		udelay(g->delay_us);
+
+	return 0;
+}
+
+void clock_lib2_gate_clk_disable(struct clk *c)
+{
+	u32 regval;
+	struct gate_clk *g = to_gate_clk(c);
+
+	regval = readl_relaxed(GATE_EN_REG(g));
+	regval &= ~(g->en_mask);
+	writel_relaxed(regval, GATE_EN_REG(g));
+	if (g->delay_us)
+		udelay(g->delay_us);
+}
+
 /* Reset clock */
 static int
 __clock_lib2_branch_clk_reset(uint32_t bcr_reg, enum clk_reset_action action)

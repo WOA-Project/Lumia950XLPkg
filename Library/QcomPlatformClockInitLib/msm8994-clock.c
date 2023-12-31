@@ -37,6 +37,17 @@
 #include <Platform/clock.h>
 #include <Platform/iomap.h>
 
+// Copied from clock-local.h
+/*
+ * Halt/Status Checking Mode Macros
+ */
+#define HALT 0         /* Bit pol: 1 = halted */
+#define NOCHECK 1      /* No bit to check, do nothing */
+#define HALT_VOTED 2   /* Bit pol: 1 = halted; delay on disable */
+#define ENABLE 3       /* Bit pol: 1 = running */
+#define ENABLE_VOTED 4 /* Bit pol: 1 = running; delay on disable */
+#define DELAY 5        /* No bit to check, just delay */
+
 /* Mux source select values */
 #define cxo_source_val 0
 #define gpll0_source_val 1
@@ -90,6 +101,11 @@ static struct clk_ops clk_ops_pll_vote = {
 static struct clk_ops clk_ops_vote = {
     .enable  = clock_lib2_vote_clk_enable,
     .disable = clock_lib2_vote_clk_disable,
+};
+
+static struct clk_ops clk_ops_gate = {
+    .enable = clock_lib2_gate_clk_enable,
+	.disable = clock_lib2_gate_clk_disable,
 };
 
 /* Clock Sources */
@@ -491,6 +507,206 @@ static struct branch_clk gcc_usb_phy_cfg_ahb2phy_clk = {
             .dbg_name = "usb_phy_cfg_ahb2phy_clk",
             .ops      = &clk_ops_branch,
         },
+};
+
+/* PCIe clocks */
+static struct clk_freq_tbl ftbl_pcie_pipe_clk_src[] = {
+	F_EXT_SRC(125000000, pcie_pipe, 1, 0, 0),
+	F_END,
+};
+
+static struct rcg_clk pcie_0_pipe_clk_src = {
+	.cmd_reg  = (uint32_t*) PCIE_0_PIPE_CMD_RCGR,
+    .cfg_reg  = (uint32_t*) PCIE_0_PIPE_CFG_RCGR,
+	.set_rate = clock_lib2_rcg_set_rate_hid,
+	.freq_tbl = ftbl_pcie_pipe_clk_src,
+	.current_freq = &rcg_dummy_freq,
+	.c = {
+		.dbg_name = "pcie_0_pipe_clk_src",
+		.ops = &clk_ops_rcg,
+		/* VDD_DIG_FMAX_MAP2(LOWER, 62500000, LOW, 125000000), */
+	},
+};
+
+static struct branch_clk gcc_pcie_0_pipe_clk = {
+    .cbcr_reg = (uint32_t*) PCIE_0_PIPE_CBCR,
+	.bcr_reg = (uint32_t*) PCIE_PHY_0_PHY_BCR,
+	.has_sibling = 0,
+	.halt_check = DELAY,
+    .parent = &pcie_0_pipe_clk_src.c,
+    .c = {
+		.dbg_name = "gcc_pcie_0_pipe_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct clk_freq_tbl ftbl_pcie_0_aux_clk_src[] = {
+	F(1011000, cxo,    1,    1,    19),
+	F_END,
+};
+
+static struct rcg_clk pcie_0_aux_clk_src = {
+	.cmd_reg =  (uint32_t*) PCIE_0_AUX_CMD_RCGR,
+    .cfg_reg  = (uint32_t*) PCIE_0_AUX_CFG_RCGR,
+	.set_rate = clock_lib2_rcg_set_rate_mnd,
+	.freq_tbl = ftbl_pcie_0_aux_clk_src,
+	.current_freq = &rcg_dummy_freq,
+	.c = {
+		.dbg_name = "pcie_0_aux_clk_src",
+		.ops = &clk_ops_rcg_mnd,
+		/* VDD_DIG_FMAX_MAP1(LOWER, 1011000), */
+	},
+};
+
+static struct branch_clk gcc_pcie_0_aux_clk = {
+	.cbcr_reg = (uint32_t*) PCIE_0_AUX_CBCR,
+	.has_sibling = 0,
+	.parent = &pcie_0_aux_clk_src.c,
+	.c = {
+		.dbg_name = "gcc_pcie_0_aux_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct branch_clk gcc_pcie_0_cfg_ahb_clk = {
+	.cbcr_reg = (uint32_t*) PCIE_0_CFG_AHB_CBCR,
+	.has_sibling = 1,
+	.c = {
+		.dbg_name = "gcc_pcie_0_cfg_ahb_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct branch_clk gcc_pcie_0_mstr_axi_clk = {
+	.cbcr_reg = (uint32_t*) PCIE_0_MSTR_AXI_CBCR,
+	.has_sibling = 1,
+	.c = {
+		.dbg_name = "gcc_pcie_0_mstr_axi_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct branch_clk gcc_pcie_0_slv_axi_clk = {
+	.cbcr_reg = (uint32_t*) PCIE_0_SLV_AXI_CBCR,
+	.has_sibling = 1,
+	.c = {
+		.dbg_name = "gcc_pcie_0_slv_axi_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct reset_clk gcc_pcie_phy_0_reset = {
+	.bcr_reg = (uint32_t) PCIE_PHY_0_BCR,
+	.c = {
+		.dbg_name = "gcc_pcie_phy_0_reset",
+		.ops = &clk_ops_rst,
+	},
+};
+
+static struct gate_clk pcie_0_phy_ldo = {
+	.en_reg = PCIE_0_PHY_LDO_EN,
+	.en_mask = BIT(0),
+	.c = {
+		.dbg_name = "pcie_0_phy_ldo",
+		.ops = &clk_ops_gate,
+	},
+};
+
+static struct rcg_clk pcie_1_pipe_clk_src = {
+	.cmd_reg  = (uint32_t*) PCIE_1_PIPE_CMD_RCGR,
+    .cfg_reg  = (uint32_t*) PCIE_1_PIPE_CFG_RCGR,
+	.set_rate = clock_lib2_rcg_set_rate_hid,
+	.freq_tbl = ftbl_pcie_pipe_clk_src,
+	.current_freq = &rcg_dummy_freq,
+	.c = {
+		.dbg_name = "pcie_1_pipe_clk_src",
+		.ops = &clk_ops_rcg,
+		/* VDD_DIG_FMAX_MAP2(LOWER, 62500000, LOW, 125000000), */
+	},
+};
+
+static struct branch_clk gcc_pcie_1_pipe_clk = {
+    .cbcr_reg = (uint32_t*) PCIE_1_PIPE_CBCR,
+	.bcr_reg = (uint32_t*) PCIE_PHY_1_PHY_BCR,
+	.has_sibling = 0,
+	.halt_check = DELAY,
+    .parent = &pcie_1_pipe_clk_src.c,
+    .c = {
+		.dbg_name = "gcc_pcie_1_pipe_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct clk_freq_tbl ftbl_pcie_1_aux_clk_src[] = {
+	F(   1011000,         cxo,    1,    1,    19),
+	F_END
+};
+
+static struct rcg_clk pcie_1_aux_clk_src = {
+	.cmd_reg =  (uint32_t*) PCIE_1_AUX_CMD_RCGR,
+    .cfg_reg  = (uint32_t*) PCIE_1_AUX_CFG_RCGR,
+	.set_rate = clock_lib2_rcg_set_rate_mnd,
+	.freq_tbl = ftbl_pcie_1_aux_clk_src,
+	.current_freq = &rcg_dummy_freq,
+	.c = {
+		.dbg_name = "pcie_1_aux_clk_src",
+		.ops = &clk_ops_rcg_mnd,
+		/* VDD_DIG_FMAX_MAP1(LOWER, 1011000), */
+	},
+};
+
+static struct branch_clk gcc_pcie_1_aux_clk = {
+	.cbcr_reg = (uint32_t*) PCIE_1_AUX_CBCR,
+	.has_sibling = 0,
+	.parent = &pcie_1_aux_clk_src.c,
+	.c = {
+		.dbg_name = "gcc_pcie_1_aux_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct branch_clk gcc_pcie_1_cfg_ahb_clk = {
+	.cbcr_reg = (uint32_t*) PCIE_1_CFG_AHB_CBCR,
+	.has_sibling = 1,
+	.c = {
+		.dbg_name = "gcc_pcie_1_cfg_ahb_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct branch_clk gcc_pcie_1_mstr_axi_clk = {
+	.cbcr_reg = (uint32_t*) PCIE_1_MSTR_AXI_CBCR,
+	.has_sibling = 1,
+	.c = {
+		.dbg_name = "gcc_pcie_1_mstr_axi_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct branch_clk gcc_pcie_1_slv_axi_clk = {
+	.cbcr_reg = (uint32_t*) PCIE_1_SLV_AXI_CBCR,
+	.has_sibling = 1,
+	.c = {
+		.dbg_name = "gcc_pcie_1_slv_axi_clk",
+		.ops = &clk_ops_branch,
+	},
+};
+
+static struct reset_clk gcc_pcie_phy_1_reset = {
+	.bcr_reg = (uint32_t) PCIE_PHY_1_BCR,
+	.c = {
+		.dbg_name = "gcc_pcie_phy_1_reset",
+		.ops = &clk_ops_rst,
+	},
+};
+
+static struct gate_clk pcie_1_phy_ldo = {
+	.en_reg = PCIE_1_PHY_LDO_EN,
+	.en_mask = BIT(0),
+	.c = {
+		.dbg_name = "pcie_1_phy_ldo",
+		.ops = &clk_ops_gate,
+	},
 };
 
 /* Display clocks */
@@ -992,9 +1208,6 @@ static struct branch_clk gcc_blsp2_qup1_i2c_apps_clk = {
         },
 };
 
-static struct clk_freq_tbl ftbl_pcie_0_aux_clk_src[] = {
-    F(1011000, cxo, 1, 1, 19), F_END};
-
 /* Clock lookup table */
 static struct clk_lookup msm_8994_clocks[] = {
     CLK_LOOKUP("sdc1_iface_clk", gcc_sdcc1_ahb_clk.c),
@@ -1020,6 +1233,27 @@ static struct clk_lookup msm_8994_clocks[] = {
     CLK_LOOKUP("usb30_phy_reset", gcc_usb30_phy_reset.c),
 
     CLK_LOOKUP("usb_phy_cfg_ahb2phy_clk", gcc_usb_phy_cfg_ahb2phy_clk.c),
+
+    /* PCIe clocks */
+    CLK_LOOKUP("pcie_0_pipe_clk_src", pcie_0_pipe_clk_src.c),
+    CLK_LOOKUP("pcie_0_pipe_clk", gcc_pcie_0_pipe_clk.c),
+    CLK_LOOKUP("pcie_0_aux_clk_src", pcie_0_aux_clk_src.c),
+    CLK_LOOKUP("pcie_0_aux_clk", gcc_pcie_0_aux_clk.c),
+    CLK_LOOKUP("pcie_0_cfg_ahb_clk", gcc_pcie_0_cfg_ahb_clk.c),
+    CLK_LOOKUP("pcie_0_mstr_axi_clk", gcc_pcie_0_mstr_axi_clk.c),
+    CLK_LOOKUP("pcie_0_slv_axi_clk", gcc_pcie_0_slv_axi_clk.c),
+    CLK_LOOKUP("pcie_0_phy_ldo", pcie_0_phy_ldo.c),
+    CLK_LOOKUP("pcie_phy_0_reset", gcc_pcie_phy_0_reset.c),
+
+    CLK_LOOKUP("pcie_1_pipe_clk_src", pcie_1_pipe_clk_src.c),
+    CLK_LOOKUP("pcie_1_pipe_clk", gcc_pcie_1_pipe_clk.c),
+    CLK_LOOKUP("pcie_1_aux_clk_src", pcie_1_aux_clk_src.c),
+    CLK_LOOKUP("pcie_1_aux_clk", gcc_pcie_1_aux_clk.c),
+    CLK_LOOKUP("pcie_1_cfg_ahb_clk", gcc_pcie_1_cfg_ahb_clk.c),
+    CLK_LOOKUP("pcie_1_mstr_axi_clk", gcc_pcie_1_mstr_axi_clk.c),
+    CLK_LOOKUP("pcie_1_slv_axi_clk", gcc_pcie_1_slv_axi_clk.c),
+    CLK_LOOKUP("pcie_1_phy_ldo", pcie_1_phy_ldo.c),
+    CLK_LOOKUP("pcie_phy_1_reset", gcc_pcie_phy_1_reset.c),
 
     /* mdss clocks */
     CLK_LOOKUP("mdp_ahb_clk", mdp_ahb_clk.c),
