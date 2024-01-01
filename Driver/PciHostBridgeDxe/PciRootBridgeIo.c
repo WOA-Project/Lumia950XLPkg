@@ -71,20 +71,20 @@ CreateRootBridge (
 
   DevicePathStr = NULL;
 
-  DEBUG ((DEBUG_INFO, "RootBridge: "));
-  DEBUG ((DEBUG_INFO, "%s\n", DevicePathStr = ConvertDevicePathToText (Bridge->DevicePath, FALSE, FALSE)));
-  DEBUG ((DEBUG_INFO, "  Support/Attr: %lx / %lx\n", Bridge->Supports, Bridge->Attributes));
-  DEBUG ((DEBUG_INFO, "    DmaAbove4G: %s\n", Bridge->DmaAbove4G ? L"Yes" : L"No"));
-  DEBUG ((DEBUG_INFO, "NoExtConfSpace: %s\n", Bridge->NoExtendedConfigSpace ? L"Yes" : L"No"));
+  DEBUG ((EFI_D_LOAD | DEBUG_INFO, "RootBridge: "));
+  DEBUG ((EFI_D_LOAD | DEBUG_INFO, "%s\n", DevicePathStr = ConvertDevicePathToText (Bridge->DevicePath, FALSE, FALSE)));
+  DEBUG ((EFI_D_LOAD | DEBUG_INFO, "  Support/Attr: %lx / %lx\n", Bridge->Supports, Bridge->Attributes));
+  DEBUG ((EFI_D_LOAD | DEBUG_INFO, "    DmaAbove4G: %s\n", Bridge->DmaAbove4G ? L"Yes" : L"No"));
+  DEBUG ((EFI_D_LOAD | DEBUG_INFO, "NoExtConfSpace: %s\n", Bridge->NoExtendedConfigSpace ? L"Yes" : L"No"));
   DEBUG ((
-    DEBUG_INFO,
+    EFI_D_LOAD | DEBUG_INFO,
     "     AllocAttr: %lx (%s%s)\n",
     Bridge->AllocationAttributes,
     (Bridge->AllocationAttributes & EFI_PCI_HOST_BRIDGE_COMBINE_MEM_PMEM) != 0 ? L"CombineMemPMem " : L"",
     (Bridge->AllocationAttributes & EFI_PCI_HOST_BRIDGE_MEM64_DECODE) != 0 ? L"Mem64Decode" : L""
     ));
   DEBUG ((
-    DEBUG_INFO,
+    EFI_D_LOAD | DEBUG_INFO,
     "           Bus: %lx - %lx Translation=%lx\n",
     Bridge->Bus.Base,
     Bridge->Bus.Limit,
@@ -99,35 +99,35 @@ CreateRootBridge (
   }
 
   DEBUG ((
-    DEBUG_INFO,
+    EFI_D_LOAD | DEBUG_INFO,
     "            Io: %lx - %lx Translation=%lx\n",
     Bridge->Io.Base,
     Bridge->Io.Limit,
     Bridge->Io.Translation
     ));
   DEBUG ((
-    DEBUG_INFO,
+    EFI_D_LOAD | DEBUG_INFO,
     "           Mem: %lx - %lx Translation=%lx\n",
     Bridge->Mem.Base,
     Bridge->Mem.Limit,
     Bridge->Mem.Translation
     ));
   DEBUG ((
-    DEBUG_INFO,
+    EFI_D_LOAD | DEBUG_INFO,
     "    MemAbove4G: %lx - %lx Translation=%lx\n",
     Bridge->MemAbove4G.Base,
     Bridge->MemAbove4G.Limit,
     Bridge->MemAbove4G.Translation
     ));
   DEBUG ((
-    DEBUG_INFO,
+    EFI_D_LOAD | DEBUG_INFO,
     "          PMem: %lx - %lx Translation=%lx\n",
     Bridge->PMem.Base,
     Bridge->PMem.Limit,
     Bridge->PMem.Translation
     ));
   DEBUG ((
-    DEBUG_INFO,
+    EFI_D_LOAD | DEBUG_INFO,
     "   PMemAbove4G: %lx - %lx Translation=%lx\n",
     Bridge->PMemAbove4G.Base,
     Bridge->PMemAbove4G.Limit,

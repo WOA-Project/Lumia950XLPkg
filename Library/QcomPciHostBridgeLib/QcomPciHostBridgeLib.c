@@ -101,12 +101,12 @@ STATIC PCI_ROOT_BRIDGE mRootBridgeCollection[2] = {
     FALSE,
 
     /* UINT64 AllocationAttributes; Allocation attributes. */
-    EFI_PCI_HOST_BRIDGE_COMBINE_MEM_PMEM,
+    0,
 
     {
       /* PCI_ROOT_BRIDGE_APERTURE Bus; Bus aperture which can be used by the
         * root bridge. */
-      0, 1
+      0, 255
     },
 
     /* PCI_ROOT_BRIDGE_APERTURE Io; IO aperture which can be used by the root
@@ -162,12 +162,12 @@ STATIC PCI_ROOT_BRIDGE mRootBridgeCollection[2] = {
     FALSE,
 
     /* UINT64 AllocationAttributes; Allocation attributes. */
-    EFI_PCI_HOST_BRIDGE_COMBINE_MEM_PMEM,
+    0,
 
     {
       /* PCI_ROOT_BRIDGE_APERTURE Bus; Bus aperture which can be used by the
         * root bridge. */
-      0, 1
+      0, 255
     },
 
     /* PCI_ROOT_BRIDGE_APERTURE Io; IO aperture which can be used by the root
@@ -217,8 +217,8 @@ PciHostBridgeGetRootBridges (
   UINTN *Count
   )
 {
-  *Count = 2;
-  return mRootBridgeCollection;
+  *Count = 1;
+  return &mRootBridgeCollection[0];
 }
 
 /**
@@ -235,7 +235,7 @@ PciHostBridgeFreeRootBridges (
   UINTN           Count
   )
 {
-  ASSERT (Count == 2);
+  ASSERT (Count == 1);
 }
 
 /**

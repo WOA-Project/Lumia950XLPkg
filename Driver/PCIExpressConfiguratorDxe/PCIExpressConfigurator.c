@@ -47,6 +47,8 @@ static QCOM_CLOCK_PROTOCOL *mClockProtocol;
 static uint32_t mBoardId = 0;
 static BOOLEAN initializePCIe0 = FALSE;
 static BOOLEAN initializePCIe1 = FALSE;
+static BOOLEAN isPCIe0LinkUp = FALSE;
+static BOOLEAN isPCIe1LinkUp = FALSE;
 static struct pcie_clocks mPCIeClocks[2] = { {0}, {0}, };
 
 EFI_STATUS
@@ -85,6 +87,7 @@ AcquireEfiProtocols(VOID)
   initializePCIe0 = mBoardId == MSM8992 || mBoardId == APQ8094;
   initializePCIe1 = mBoardId == MSM8994 || mBoardId == APQ8094;
 
+  DEBUG((EFI_D_INFO | EFI_D_LOAD, "Initialize PCIe0: %d, PCIe1: %d\n", initializePCIe0, initializePCIe1));
 exit:
   return Status;
 }
@@ -419,14 +422,14 @@ WaitForPCIePHYReady(VOID)
     if (ret < 0) return EFI_TIMEOUT;
   }
 
-  // Assert GPIO 35 PERST#
+  // DeAssert GPIO 35 PERST#
   mTlmmProtocol->SetFunction(35, 0);
   mTlmmProtocol->SetDriveStrength(35, 2);
   mTlmmProtocol->SetPull(35, GPIO_PULL_NONE);
   mTlmmProtocol->DirectionOutput(35, 1);
   mTlmmProtocol->Set(35, 1);
 
-  // Assert GPIO 53 PERST#
+  // DeAssert GPIO 53 PERST#
   if (mBoardId == APQ8094)
   {
     mTlmmProtocol->SetFunction(53, 0);
@@ -500,15 +503,16 @@ RestoreSecurityConfig(VOID)
   return EFI_SUCCESS;
 }
 
-static inline void EnableLinkWithAddr(UINTN ParfBase, UINTN DmCoreBase)
+static inline void EnableLinkWithAddr(UINTN ParfBase, UINTN DmCoreBase, BOOLEAN *pLinkUp)
 {
   UINT32 Val = 0;
+  UINT32 Cnt = 0;
 
   // PCIE20_PARF_DEVICE_TYPE: this is RC
   MmioWrite32(ParfBase + 0x1000, 0x4);
-  // PCIE20_ELBI_SYS_CTRL
+  // PCIE20_ELBI_SYS_CTRL (LTSSM_EN = 1)
   MmioWrite32(DmCoreBase + 0xf24, 0x1);
-  // What's this? A guess is PCIE20_CAP_LINKCTRLSTATUS2
+  // PCIE20_SLOT_CAS (DSC = 1)
   MmioWrite32(DmCoreBase + 0x88, 0x1000000);
   gBS->Stall(1000);
 
@@ -523,9 +527,21 @@ static inline void EnableLinkWithAddr(UINTN ParfBase, UINTN DmCoreBase)
   // Enable Link Training State Machine
   MmioWrite32(ParfBase + PCIE20_PARF_LTSSM, 0x100);
 
-  // Check link (PCIE20_ELBI_SYS_STTS)
+  // Check link (PCIE20_ELBI_SYS_STTS), wait 100ms
   while ((MmioRead32(DmCoreBase + 0xf28) & 0x400) != 0x400)
+  {
     gBS->Stall(1000);
+    Cnt++;
+
+    if (Cnt > 100)
+    {
+      DEBUG((EFI_D_LOAD | EFI_D_ERROR, "PCIe link doesn't come up in 100ms! BASE 0x%x\n", DmCoreBase));
+      *pLinkUp = FALSE;
+      return;
+    }
+  }
+
+  *pLinkUp = TRUE;
 }
 
 EFI_STATUS
@@ -536,8 +552,9 @@ EnableLink(VOID)
   UINTN  ParfBase   = 0;
   UINTN  DmCoreBase = 0;
 
-  if (initializePCIe0) EnableLinkWithAddr(0xfc520000, 0xff000000);
-  if (initializePCIe1) EnableLinkWithAddr(0xfc528000, 0xf8800000);
+  if (initializePCIe0) EnableLinkWithAddr(0xfc520000, 0xff000000, &isPCIe0LinkUp);
+  if (initializePCIe1) EnableLinkWithAddr(0xfc528000, 0xf8800000, &isPCIe1LinkUp);
+  DEBUG((EFI_D_INFO | EFI_D_LOAD, "PCIe0 link: %d, PCIe1 link: %d\n", isPCIe0LinkUp, isPCIe1LinkUp));
 
   return EFI_SUCCESS;
 }
@@ -568,13 +585,13 @@ EFI_STATUS
 EFIAPI
 ConfigDmCore(VOID)
 {
-  if (initializePCIe0) ConfigureDmCoreWithBase(0xff000000);
-  if (initializePCIe1) ConfigureDmCoreWithBase(0xf8800000);
+  if (initializePCIe0 && isPCIe0LinkUp) ConfigureDmCoreWithBase(0xff000000);
+  if (initializePCIe1 && isPCIe1LinkUp) ConfigureDmCoreWithBase(0xf8800000);
 
   // GPIO 36, in, function 2, 2mA drive, no pull (clkreq)
   mTlmmProtocol->SetFunction(36, 2);
   mTlmmProtocol->SetDriveStrength(36, 2);
-  mTlmmProtocol->SetPull(36, GPIO_PULL_NONE);
+  mTlmmProtocol->SetPull(36, GPIO_PULL_UP);
   mTlmmProtocol->DirectionInput(36);
 
   // GPIO 54, in, function 2, 2mA drive, no pull (clkreq)
@@ -582,64 +599,61 @@ ConfigDmCore(VOID)
   {
     mTlmmProtocol->SetFunction(54, 2);
     mTlmmProtocol->SetDriveStrength(54, 2);
-    mTlmmProtocol->SetPull(54, GPIO_PULL_NONE);
+    mTlmmProtocol->SetPull(54, GPIO_PULL_UP);
     mTlmmProtocol->DirectionInput(54);
   }
 
   return EFI_SUCCESS;
 }
 
-static inline void ConfigSpaceWithBase(UINTN DmCoreBase)
+// WP-only configuration steps. Need more investigation
+static inline void ConfigSpaceWithBase(UINTN DmCoreBase, UINTN Type, UINTN DeviceId)
 {
-  UINT32 i          = 1;
-  UINT32 j          = 4;
+  // UINT32 i          = 1;
+  // UINT32 j          = 4;
   UINT32 k          = 0;
   UINT32 Addr       = 0;
   UINT32 Val        = 0;
 
-  while (TRUE) {
-    // DM_CORE, base varies
-    // PCIE20_PLR_IATU_VIEWPORT
-    MmioWrite32(DmCoreBase + 0x900, i);
-    // PCIE20_PLR_IATU_CTRL1
-    MmioWrite32(DmCoreBase + 0x904, j);
-    // PCIE20_PLR_IATU_CTRL2
-    MmioWrite32(DmCoreBase + 0x908, 0x80000000);
-    // PCIE20_PLR_IATU_VIEWPORT
-    Addr = DmCoreBase + 0x900 + (k << 20) + 0x100000;
-    // PCIE20_PLR_IATU_LBAR
-    MmioWrite32(DmCoreBase + 0x90c, Addr);
-    // PCIE20_PLR_IATU_UBAR
-    MmioWrite32(DmCoreBase + 0x910, 0);
-    // PCIE20_PLR_IATU_LAR
-    MmioWrite32(DmCoreBase + 0x914, Addr);
-    // PCIE20_PLR_IATU_LTAR
-    MmioWrite32(DmCoreBase + 0x918, ((k + 1) << 24));
-    // PCIE20_PLR_IATU_UTAR
-    MmioWrite32(DmCoreBase + 0x91c, 0);
-    // What's this? PCIE20_BUSNUMBERS?
-    MmioWrite32(DmCoreBase + 0x18, 0x30100);
-    // What's this?
-    Val = MmioRead32(Addr + 0x188);
-    MmioWrite32(Addr + 0x188, Val | 0xF);
-    // PCIE20_DEVICE_CONTROL2_STATUS2
-    Val = MmioRead32(Addr + 0x98);
-    MmioWrite32(Addr + 0x98, Val | 0x400);
-    // Three bars
-    ++i;
-    if (++k < 2)
-      break;
-    if (k)
-      j = 5;
-  }
+  // DM_CORE, base varies
+  // PCIE20_PLR_IATU_VIEWPORT (region index)
+  MmioWrite32(DmCoreBase + 0x900, DeviceId);
+  // PCIE20_PLR_IATU_CTRL1 (ATU_REG_TYPE difference?)
+  MmioWrite32(DmCoreBase + 0x904, Type);
+  // PCIE20_PLR_IATU_CTRL2
+  MmioWrite32(DmCoreBase + 0x908, 0x80000000);
+  // PCIE20_PLR_IATU_VIEWPORT
+  Addr = DmCoreBase + 0x900 + /* (k << 20) */ + 0x100000;
+  DEBUG((EFI_D_ERROR | EFI_D_INFO, "PCIE20_PLR_IATU_VIEWPORT: 0x%x\n", Addr));
+  // PCIE20_PLR_IATU_LBAR (iATU Region Lower Base Address Register)
+  MmioWrite32(DmCoreBase + 0x90c, Addr);
+  // PCIE20_PLR_IATU_UBAR (iATU Region Upper Base Address Register)
+  MmioWrite32(DmCoreBase + 0x910, 0);
+  // PCIE20_PLR_IATU_LAR (iATU Region Limited Address Register)
+  MmioWrite32(DmCoreBase + 0x914, Addr);
+  // PCIE20_PLR_IATU_LTAR (iATU Region Lower Target Address Register)
+  MmioWrite32(DmCoreBase + 0x918, /* ((k + 1) << 24) */ /* 0x01000000 */ 0x01000000);
+  // PCIE20_PLR_IATU_UTAR (iATU Region Upper Target Address Register)
+  MmioWrite32(DmCoreBase + 0x91c, 0);
+  // PCIE20_BUS_NUM_REG
+  // MmioWrite32(DmCoreBase + 0x18, 0x30100);
+  // What's this?
+  Val = MmioRead32(Addr + 0x188);
+  MmioWrite32(Addr + 0x188, Val | 0xF);
+  // PCIE20_DEVICE_CONTROL2_STATUS2
+  Val = MmioRead32(Addr + 0x98);
+  MmioWrite32(Addr + 0x98, Val | 0x400);
+  // Three bars
+  // i++;
+  // if (k) j = 5;
 }
 
 EFI_STATUS
 EFIAPI
 ConfigSpace(VOID)
 {
-  if (initializePCIe0) ConfigSpaceWithBase(0xff000000);
-  if (initializePCIe1) ConfigSpaceWithBase(0xf8800000);
+  if (initializePCIe0 && isPCIe0LinkUp) ConfigSpaceWithBase(0xff000000, PCIE20_CTRL1_TYPE_CFG0, 0);
+  if (initializePCIe1 && isPCIe1LinkUp) ConfigSpaceWithBase(0xf8800000, PCIE20_CTRL1_TYPE_CFG0, 1);
 
   return EFI_SUCCESS;
 }
@@ -689,8 +703,8 @@ EFI_STATUS
 EFIAPI
 FinishingUp(VOID)
 {
-  if (initializePCIe0) ConfigBARWithBase(0xff000000);
-  if (initializePCIe1) ConfigBARWithBase(0xf8800000);
+  if (initializePCIe0 && isPCIe0LinkUp) ConfigBARWithBase(0xff000000);
+  // if (initializePCIe1 && isPCIe1LinkUp) ConfigBARWithBase(0xf8800000);
 
   return EFI_SUCCESS;
 }
@@ -773,18 +787,29 @@ PCIExpressConfiguratorEntry(
   if (EFI_ERROR(Status))
     goto exit;
 
-  DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry -> ConfigSpace\n"));
-  Status = ConfigSpace();
-  DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry <- ConfigSpace\n"));
-  if (EFI_ERROR(Status))
-    goto exit;
+  if (mBoardId != APQ8094)
+  {
+    DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry -> ConfigSpace\n"));
+    Status = ConfigSpace();
+    DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry <- ConfigSpace\n"));
+    if (EFI_ERROR(Status))
+      goto exit;
 
-  DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry -> FinishingUp\n"));
-  Status = FinishingUp();
-  DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry <- FinishingUp\n"));
-  if (EFI_ERROR(Status))
-    goto exit;
-
+    DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry -> FinishingUp\n"));
+    Status = FinishingUp();
+    DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry <- FinishingUp\n"));
+    if (EFI_ERROR(Status))
+      goto exit;
+  }
+  else
+  {
+    DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry -> ConfigSpace\n"));
+    Status = ConfigSpace();
+    DEBUG((EFI_D_LOAD | EFI_D_INFO, "PCIExpressConfiguratorEntry <- ConfigSpace\n"));
+    if (EFI_ERROR(Status))
+      goto exit;
+  }
+  
   Status = gBS->InstallProtocolInterface(
       &ImageHandle, &gQcomMsmPCIExpressInitProtocolGuid, EFI_NATIVE_INTERFACE,
       &ImageHandle);

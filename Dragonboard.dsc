@@ -57,9 +57,10 @@
 
   # PCIe (RP 0)
   gArmTokenSpaceGuid.PcdPciBusMin|0
-  gArmTokenSpaceGuid.PcdPciBusMax|1
+  gArmTokenSpaceGuid.PcdPciBusMax|255
   gArmTokenSpaceGuid.PcdPciIoBase|0
   gArmTokenSpaceGuid.PcdPciIoSize|0
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress|0xFF000000
   gArmTokenSpaceGuid.PcdPciMmio32Base|0xFF000000
   gArmTokenSpaceGuid.PcdPciMmio32Size|0x00800000
   gArmTokenSpaceGuid.PcdPciMmio64Base|0xFFFFFFFFFFFFFFFF

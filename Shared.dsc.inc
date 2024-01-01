@@ -224,7 +224,6 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSupport|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdAriSupport|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdMrIovSupport|FALSE
-  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress|0xf8800000
   gArmTokenSpaceGuid.PcdPciBusMin|0x0
   gArmTokenSpaceGuid.PcdPciBusMax|0xff
 
