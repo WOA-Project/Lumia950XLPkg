@@ -101,7 +101,7 @@ STATIC PCI_ROOT_BRIDGE mRootBridgeCollection[2] = {
     FALSE,
 
     /* UINT64 AllocationAttributes; Allocation attributes. */
-    0,
+    EFI_PCI_HOST_BRIDGE_COMBINE_MEM_PMEM,
 
     {
       /* PCI_ROOT_BRIDGE_APERTURE Bus; Bus aperture which can be used by the
@@ -162,7 +162,7 @@ STATIC PCI_ROOT_BRIDGE mRootBridgeCollection[2] = {
     FALSE,
 
     /* UINT64 AllocationAttributes; Allocation attributes. */
-    0,
+    EFI_PCI_HOST_BRIDGE_COMBINE_MEM_PMEM,
 
     {
       /* PCI_ROOT_BRIDGE_APERTURE Bus; Bus aperture which can be used by the

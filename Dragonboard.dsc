@@ -65,9 +65,15 @@
   gArmTokenSpaceGuid.PcdPciMmio32Size|0x00800000
   gArmTokenSpaceGuid.PcdPciMmio64Base|0xFFFFFFFFFFFFFFFF
   gArmTokenSpaceGuid.PcdPciMmio64Size|0
+  
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciDisableBusEnumeration|FALSE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPcieResizableBarSupport|FALSE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSupport|FALSE
 
 [PcdsFeatureFlag.common]
   gQcomTokenSpaceGuid.PcdInstallRpmProtocol|TRUE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciBusHotplugDeviceSupport|FALSE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciDegradeResourceForOptionRom|TRUE
   
 !include Lumia950XLPkg/Library/UartDmSerialPortLib/UartDmSerialConfigBlkBlsp.dsc.inc
 !include Lumia950XLPkg/Shared.dsc.inc
