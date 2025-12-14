@@ -19,6 +19,8 @@ git init
 git remote add origin https://github.com/tianocore/edk2
 git fetch --depth=1 origin 838c730fe61578847823da1b815e4c9c5ee1bed4
 git checkout FETCH_HEAD
+git submodule init
+git submodule update
 cd ..
 
 # Set a link to EDK2 workspace
