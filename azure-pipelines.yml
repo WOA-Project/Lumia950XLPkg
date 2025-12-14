@@ -54,3 +54,9 @@ steps:
   inputs:
     pathtoPublish: ../edk2/Build/Lumia950XL-AARCH64/DEBUG_GCC5/FV/
     artifactName: MSM8994 UEFI (Lumia 950 XL)
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish UEFI build (Hapanero)'
+  inputs:
+    pathtoPublish: ../edk2/Build/LumiaHapanero-AARCH64/DEBUG_GCC5/FV/
+    artifactName: MSM8994 UEFI (Hapanero)
