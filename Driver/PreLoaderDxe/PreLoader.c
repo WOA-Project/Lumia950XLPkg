@@ -115,8 +115,8 @@ EFIAPI
 PreLoaderDxeInitialize(
     IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
 {
-  PPRELOADER_ENVIRONMENT Env    = (VOID *)PRELOADER_ENV_ADDR;
-  EFI_STATUS             Status = EFI_SUCCESS;
+  PPRELOADER_ENVIRONMENT_VERSION_2 Env    = (VOID *)PRELOADER_ENV_ADDR;
+  EFI_STATUS                       Status = EFI_SUCCESS;
 
   // Protocols
   Status = gBS->LocateProtocol(
