@@ -97,7 +97,9 @@ READ_LOCK_STATUS   = TRUE
 
   # Secure Boot Key Enroll
   !if $(SECURE_BOOT_ENABLE) == TRUE
+    !include ArmPlatformPkg/SecureBootDefaultKeys.fdf.inc
     INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+    INF SecurityPkg/VariableAuthenticated/SecureBootDefaultKeysDxe/SecureBootDefaultKeysDxe.inf
   !endif
 
   # Graphics
